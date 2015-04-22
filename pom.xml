@@ -1,86 +1,100 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>nl.tudelft.dnainator</groupId>
-	<artifactId>dnainator</artifactId>
-	<version>0.1</version>
-	<packaging>pom</packaging>
-	<name>DNAinator</name>
-	
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.8.2</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.5.1</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.7.2.201409121644</version>
-				<executions>
-					<execution>
-						<id>default-prepare-agent</id>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>default-report</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-site-plugin</artifactId>
-				<version>3.3</version>
-				<configuration>
-					<reportPlugins>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-project-info-reports-plugin</artifactId>
-							<version>2.4</version>
-						</plugin>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-javadoc-plugin</artifactId>
-							<version>2.9.1</version>
-						</plugin>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-checkstyle-plugin</artifactId>
-							<version>2.12</version>
-							<configuration>
-								<configLocation>${basedir}/checkstyle.xml</configLocation>
-								<includeTestSourceDirectory> true </includeTestSourceDirectory>
-							</configuration>
-						</plugin>
-						<plugin>
-							  <groupId>org.jacoco</groupId>
-							  <artifactId>jacoco-maven-plugin</artifactId>
-							  <version>0.7.2.201409121644</version>
-						</plugin>
-					</reportPlugins>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+  <groupId>nl.tudelft.dnainator</groupId>
+  <artifactId>dnainator</artifactId>
+  <packaging>jar</packaging>
+  <version>0.1-SNAPSHOT</version>
+  <name>DNAinator</name>
+  <url>https://github.com/DNAinator/dnainator</url>
+  <description>Visualize DNA</description>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- Compile Java 8 sources -->
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-compiler-plugin</artifactId>
+	<version>3.3</version>
+	<configuration>
+	  <source>1.8</source>
+	  <target>1.8</target>
+	</configuration>
+      </plugin>
+      <!-- Checkstyle -->
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-checkstyle-plugin</artifactId>
+	<version>2.15</version>
+	<executions>
+	  <execution>
+	    <id>verify-style</id>
+	    <phase>process-classes</phase>
+	    <configuration>
+	      <failOnViolation>true</failOnViolation>
+	      <logViolationsToConsole>true</logViolationsToConsole>
+	      <!-- Use failOnViolation instead so violations get printed
+	      <failsOnError>true</failsOnError>-->
+	      <consoleOutput>true</consoleOutput>
+	      <configLocation>checkstyle.xml</configLocation>
+	      <includeTestSourceDirectory>true</includeTestSourceDirectory>
+	    </configuration>
+	    <goals>
+	      <goal>check</goal>
+	    </goals>
+	  </execution>
+	</executions>
+      </plugin>
+      <!-- PMD -->
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-pmd-plugin</artifactId>
+	<version>3.4</version>
+	<executions>
+	  <execution>
+	    <id>verify-pmd</id>
+	    <phase>process-classes</phase>
+	    <configuration>
+		<printFailingErrors>false</printFailingErrors>
+	    </configuration>
+	    <goals>
+	      <goal>pmd</goal>
+	    </goals>
+	  </execution>
+	</executions>
+      </plugin>
+      <!-- FindBugs -->
+      <plugin>
+	<groupId>org.codehaus.mojo</groupId>
+	<artifactId>findbugs-maven-plugin</artifactId>
+	<version>3.0.1</version>
+	<executions>
+	  <execution>
+	    <id>verify-findbugs</id>
+	    <phase>process-classes</phase>
+	    <configuration>
+	      <failOnError>true</failOnError>
+	    </configuration>
+	    <goals>
+	      <goal>check</goal>
+	    </goals>
+	  </execution>
+	</executions>
+      </plugin>
+    </plugins>
+  </build>
 </project>
