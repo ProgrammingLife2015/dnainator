@@ -89,6 +89,7 @@
 	    <configuration>
 	      <failOnViolation>true</failOnViolation>
 	      <logViolationsToConsole>true</logViolationsToConsole>
+	      <violationSeverity>warning</violationSeverity>
 	      <!-- Use failOnViolation instead so violations get printed
 	      <failsOnError>true</failsOnError>-->
 	      <consoleOutput>true</consoleOutput>
