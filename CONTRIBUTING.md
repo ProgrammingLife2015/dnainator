@@ -1,3 +1,9 @@
+Please note that while this repository is public, at the moment no
+contributions from outside contributors are accepted. This project
+is a TU Delft course project (TI2806) and the course rules disallow
+this. As such, for now this documents merely acts as an internal set
+of guidelines.
+
 ## Submitting contributions
 
 - Make it clear in the issue tracker what you are working on.
@@ -43,6 +49,10 @@ $ git rebase master
 
 ### For code pull requests
 
+Before making a pull request, please rebase on upstream master (see above) and
+provide a clean history (see above). Please also make sure to run `mvn test`,
+to see if there are any outstanding issues (Checkstyle (see below), PMD, FindBugs, etc).
+
 #### Testing
 
 All PRs are expected to have (unit) tests to go with them. If no tests
@@ -52,7 +62,9 @@ PRs will also not be merged if the Travis build fails.
 #### Coding style
 
 For new code, run Checkstyle to detect style errors. It's not perfect,
-so some warnings may be false positives/negatives. To have Checkstyle
+so some warnings may be false positives/negatives. Maven is set up to
+fail on every style error. Should Checkstyle report too much false
+positives/negatives, please edit Checkstyle's [configuration][checkstyle-config]. To have Checkstyle
 ignore certain cases, see [this][so-checkstyle] stackoverflow question.
 
 ### Commit guidelines
@@ -86,6 +98,7 @@ such as [`tig`][tig].
 <sup>Kindly taken and modified from [neovim][neovim].</sup>
 
 [backlogs]: https://docs.google.com/spreadsheets/d/1r16xAJVS-ZjbkE4yLyhmW7in13BhqFE8-04LQggYHPg/edit?usp=sharing
+[checkstyle-config]: https://github.com/DNAinator/dnainator/blob/master/checkstyle.xml
 [so-checkstyle]: http://stackoverflow.com/questions/4023185/how-to-disable-a-particular-checkstyle-rule-for-a-particular-line-of-code
 [git-bisect]: http://git-scm.com/book/tr/v2/Git-Tools-Debugging-with-Git
 [git-feature-branch]: https://www.atlassian.com/git/tutorials/comparing-workflows
