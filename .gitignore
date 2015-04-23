@@ -10,5 +10,9 @@
 .project
 .settings/
 
+# IntelliJ-IDEA generated files
+.idea
+*.iml
+
 # Maven target
 target/
