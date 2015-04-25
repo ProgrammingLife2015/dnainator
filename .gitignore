@@ -10,5 +10,12 @@
 .project
 .settings/
 
+# IntelliJ-IDEA generated files
+*.iml
+.idea/
+
 # Maven target
 target/
+
+# Data sets
+*strains*/
