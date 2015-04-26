@@ -2,6 +2,8 @@ package nl.tudelft.dnainator.parser;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import nl.tudelft.dnainator.core.Sequence;
+import nl.tudelft.dnainator.core.SequenceFactory;
 
 import org.junit.Test;
 
@@ -45,6 +47,21 @@ public class HeaderParserTest {
 		} catch (InvalidHeaderFormatException e) {
 			assertEquals("Leftover string:  6", e.getMessage());
 		}
+	}
+
+	@Test(expected = NumberFormatException.class)
+	public void testParseHeaderNumberException() throws Exception {
+		HeaderParser hp = new HeaderParser("1 | a,b,c | no number!! | 6");
+		hp.fill(new SequenceFactory() {
+			@Override
+			public void setContent(String content) {
+			}
+
+			@Override
+			public Sequence build(String refs, int startPos, int endPos) {
+				return null;
+			}
+		});
 	}
 
 }
