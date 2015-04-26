@@ -6,6 +6,7 @@
 .DS_Store
 
 # Eclipse generated files
+.checkstyle
 .classpath
 .project
 .settings/

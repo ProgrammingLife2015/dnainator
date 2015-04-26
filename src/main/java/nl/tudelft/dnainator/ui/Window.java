@@ -12,7 +12,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JRadioButtonMenuItem;
 
-import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.ui.actions.FilterAction;
 import nl.tudelft.dnainator.ui.actions.OpenAction;
 
@@ -48,11 +47,10 @@ public class Window {
 
 		/* Populate the window. */
 		window.setJMenuBar(createMenuBar());
-		window.add(new Graph().getView());
+		window.add(new DNAViewer().addDefaultView(false));
 
 		/* Finally: show the window. */
 		window.setVisible(true);
-
 	}
 
 	/**
