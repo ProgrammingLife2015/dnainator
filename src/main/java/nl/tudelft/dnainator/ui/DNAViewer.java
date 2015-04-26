@@ -3,7 +3,7 @@ package nl.tudelft.dnainator.ui;
 import nl.tudelft.dnainator.graph.DNAGraph;
 
 import org.graphstream.graph.Graph;
-import org.graphstream.ui.swingViewer.Viewer;
+import org.graphstream.ui.view.Viewer;
 
 /**
  * The viewer is responsible for managing the interactable views of the the strain graph.
