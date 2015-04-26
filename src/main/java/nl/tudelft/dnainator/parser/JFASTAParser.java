@@ -25,9 +25,8 @@ public class JFASTAParser extends NodeParser {
 		super(sf);
 	}
 
-	@Override
-	public Map<String, Sequence> parse(File f) throws NumberFormatException,
-													  InvalidHeaderFormatException {
+	public Map<String, Sequence> parse(File f)
+			throws NumberFormatException, InvalidHeaderFormatException {
 		try (FASTAFileReader fr = new FASTAFileReaderImpl(f)) {
 			Map<String, Sequence> result = new HashMap<String, Sequence>();
 			FASTAElementIterator it = fr.getIterator();

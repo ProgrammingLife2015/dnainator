@@ -33,8 +33,8 @@ public class HeaderParser {
 	 * be parsed.
 	 * @throws InvalidHeaderFormatException if the header has too little or too many tokens.
 	 */
-	public Sequence fill(SequenceFactory sf) throws NumberFormatException,
-													InvalidHeaderFormatException {
+	public Sequence fill(SequenceFactory sf)
+			throws NumberFormatException, InvalidHeaderFormatException {
 		return sf.build(next(), parseInt(next()), parseInt(next()));
 	}
 
@@ -51,7 +51,7 @@ public class HeaderParser {
 		if (nextIndex < 0) {
 			if (count < MAX_TOKENS) {
 				throw new InvalidHeaderFormatException("Not enough tokens, wanted " + MAX_TOKENS
-																				+ ", got " + count);
+						+ ", got " + count);
 			}
 			return header.trim();
 		}

@@ -14,5 +14,6 @@ public abstract class NodeParser {
 		this.sf = sf;
 	}
 
-	public abstract Map<String, Sequence> parse(File f) throws NumberFormatException, InvalidHeaderFormatException;
+	public abstract Map<String, Sequence> parse(File f)
+			throws NumberFormatException, InvalidHeaderFormatException;
 }
