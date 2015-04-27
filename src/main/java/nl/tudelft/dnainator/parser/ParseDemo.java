@@ -3,6 +3,7 @@ package nl.tudelft.dnainator.parser;
 import nl.tudelft.dnainator.core.Sequence;
 import nl.tudelft.dnainator.core.SequenceFactory;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
@@ -36,14 +37,17 @@ final class ParseDemo {
 	 * @param args Command line arguments. Not used.
 	 */
 	public static void main(String[] args) {
-		GraphParser gp = new GraphParser("10_strains_graph/simple_graph",
-				new JFASTAParser(new PrintSequenceFactory()), null);
 		try {
+			GraphParser gp = new GraphParser("10_strains_graph/simple_graph",
+					new JFASTAParser(new PrintSequenceFactory()), null);
 			gp.parse();
 		} catch (NumberFormatException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InvalidHeaderFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {

@@ -2,9 +2,13 @@ package nl.tudelft.dnainator.parser;
 
 import nl.tudelft.dnainator.core.SequenceGraph;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 /**
  * Parses the node and edge files to a {@link SequenceGraph}, where the
@@ -14,8 +18,8 @@ import java.io.IOException;
 public class GraphParser {
 	public static final String NODE_EXT = ".node.graph";
 	public static final String EDGE_EXT = ".edge.graph";
-	private File nodeFile;
-	private File edgeFile;
+	private BufferedReader nodeReader;
+	private BufferedReader edgeReader;
 	private NodeParser np;
 	private EdgeParser ep;
 
@@ -26,8 +30,9 @@ public class GraphParser {
 	 * @param basename The basename of the node and edge files.
 	 * @param ep       The EdgeParser used to parse the edge file.
 	 * @param np       The NodeParser used to parse the node file.
+	 * @throws FileNotFoundException if one of the files was not found.
 	 */
-	public GraphParser(String basename, NodeParser np, EdgeParser ep) {
+	public GraphParser(String basename, NodeParser np, EdgeParser ep) throws FileNotFoundException {
 		this(basename + NODE_EXT, basename + EDGE_EXT, np, ep);
 	}
 
@@ -39,23 +44,53 @@ public class GraphParser {
 	 * @param edgeFilename The filename of the file containing the edges.
 	 * @param ep           The EdgeParser used to parse the edge file.
 	 * @param np           The NodeParser used to parse the node file.
+	 * @throws FileNotFoundException if one of the files was not found.
 	 */
-	public GraphParser(String nodeFilename, String edgeFilename, NodeParser np, EdgeParser ep) {
+	public GraphParser(String nodeFilename, String edgeFilename, NodeParser np, EdgeParser ep)
+			throws FileNotFoundException {
 		this(new File(nodeFilename), new File(edgeFilename), np, ep);
 	}
 
 	/**
 	 * Construct a new {@link GraphParser} using the file descriptors of the
 	 * node and edge files.
-	 *
 	 * @param nodeFile The {@link File} containing the nodes in FASTA format.
 	 * @param edgeFile The {@link File} containing the edges.
-	 * @param ep       The EdgeParser used to parse the edge file.
 	 * @param np       The NodeParser used to parse the node file.
+	 * @param ep       The EdgeParser used to parse the edge file.
+	 * @throws FileNotFoundException if one of the files was not found.
 	 */
-	public GraphParser(File nodeFile, File edgeFile, NodeParser np, EdgeParser ep) {
-		this.nodeFile = nodeFile;
-		this.edgeFile = edgeFile;
+	public GraphParser(File nodeFile, File edgeFile, NodeParser np, EdgeParser ep)
+			throws FileNotFoundException {
+		this(new FileInputStream(nodeFile), new FileInputStream(edgeFile), np, ep);
+	}
+
+	/**
+	 * Create a new {@link GraphParser} using the {@link InputStream}s as a source
+	 * for the nodes and edges.
+	 * @param nodeStream An {@link InputStream} for reading the nodes in FASTA format.
+	 * @param edgeStream An {@link InputStream} for reading the edges.
+	 * @param np         The {@link NodeParser} used to parse the nodes.
+	 * @param ep         The {@link EdgeParser} used to parse the edges.
+	 */
+	public GraphParser(InputStream nodeStream, InputStream edgeStream,
+			NodeParser np, EdgeParser ep) {
+		this(new BufferedReader(new InputStreamReader(nodeStream)),
+				new BufferedReader(new InputStreamReader(edgeStream)), np, ep);
+	}
+
+	/**
+	 * Create a new {@link GraphParser} using the {@link BufferedReader}s as a source
+	 * for the nodes and edges.
+	 * @param nodeReader An {@link BufferedReader} for reading the nodes in FASTA format.
+	 * @param edgeReader An {@link BufferedReader} for reading the edges.
+	 * @param np         The {@link NodeParser} used to parse the nodes.
+	 * @param ep         The {@link EdgeParser} used to parse the edges.
+	 */
+	public GraphParser(BufferedReader nodeReader, BufferedReader edgeReader,
+			NodeParser np, EdgeParser ep) {
+		this.nodeReader = nodeReader;
+		this.edgeReader = edgeReader;
 		this.np = np;
 		this.ep = ep;
 	}
@@ -72,11 +107,6 @@ public class GraphParser {
 	 */
 	public SequenceGraph parse() throws NumberFormatException, InvalidHeaderFormatException,
 			IOException {
-		try (
-				FileInputStream nodeFIn = new FileInputStream(nodeFile);
-				FileInputStream edgeFIn = new FileInputStream(edgeFile)
-		) {
-			return ep.parse(np.parse(nodeFIn), edgeFIn);
-		}
+		return ep.parse(np.parse(nodeReader), edgeReader);
 	}
 }
