@@ -61,6 +61,10 @@ public class HeaderParserTest {
 		}
 	}
 
+	/**
+	 * Test the parsing fails when a header contains a NaN when it shouldn't.
+	 * @throws Exception Thrown when the SequenceFactory fails to succeed.
+	 */
 	@Test(expected = NumberFormatException.class)
 	public void testParseHeaderNumberException() throws Exception {
 		HeaderParser hp = new HeaderParser("1 | a,b,c | no number!! | 6");
