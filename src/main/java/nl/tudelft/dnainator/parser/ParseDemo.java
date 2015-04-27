@@ -28,7 +28,6 @@ final class ParseDemo {
             System.out.println("Refs: " + refs + ", start: " + startPos + ", end: " + endPos);
             return null;
         }
-
     }
 
     /**

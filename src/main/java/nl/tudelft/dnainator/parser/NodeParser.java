@@ -4,6 +4,7 @@ import nl.tudelft.dnainator.core.Sequence;
 import nl.tudelft.dnainator.core.SequenceFactory;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -32,7 +33,8 @@ public abstract class NodeParser {
      * @throws NumberFormatException        Thrown when the input contains a NaN where it should
      *                                      not.
      * @throws InvalidHeaderFormatException Thrown when a FASTA header section is invalid.
+     * @throws IOException Thrown when reading the FileInputStream fails.
      */
     public abstract Map<String, Sequence> parse(FileInputStream fIn) throws NumberFormatException,
-            InvalidHeaderFormatException;
+            InvalidHeaderFormatException, IOException;
 }

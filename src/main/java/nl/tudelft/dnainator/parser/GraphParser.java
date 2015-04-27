@@ -76,8 +76,7 @@ public class GraphParser {
                 FileInputStream nodeFIn = new FileInputStream(nodeFile);
                 FileInputStream edgeFIn = new FileInputStream(edgeFile)
         ) {
-            SequenceGraph graph = ep.parse(np.parse(nodeFIn), edgeFIn);
-            return graph;
+            return ep.parse(np.parse(nodeFIn), edgeFIn);
         }
     }
 }

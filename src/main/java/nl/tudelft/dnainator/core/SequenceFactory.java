@@ -4,7 +4,7 @@ package nl.tudelft.dnainator.core;
  * An abstract factory for generating sequences.
  */
 public interface SequenceFactory {
-
+	
     /**
      * Sets the content (i.e. DNA) for the Sequence to use.
      * @param content the new content type.

@@ -4,6 +4,7 @@ import nl.tudelft.dnainator.core.Sequence;
 import nl.tudelft.dnainator.core.SequenceGraph;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -19,6 +20,5 @@ public interface EdgeParser {
      * @param edgeIn The file input stream describing the edges.
      * @return a complete SequenceGraph instance.
      */
-    SequenceGraph parse(Map<String, Sequence> nodes, FileInputStream edgeIn);
-
+    SequenceGraph parse(Map<String, Sequence> nodes, FileInputStream edgeIn) throws IOException;
 }
