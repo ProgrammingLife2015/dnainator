@@ -12,13 +12,13 @@ import java.util.Map;
  */
 public interface EdgeParser {
 
-    /**
-     * Connects the nodes given according to the edge
-     * file.
-     *
-     * @param nodes  The nodes which should be connected.
-     * @param edgeIn The file input stream describing the edges.
-     * @return a complete SequenceGraph instance.
-     */
-    SequenceGraph parse(Map<String, Sequence> nodes, FileInputStream edgeIn) throws IOException;
+	/**
+	 * Connects the nodes given according to the edge
+	 * file.
+	 *
+	 * @param nodes  The nodes which should be connected.
+	 * @param edgeIn The file input stream describing the edges.
+	 * @return a complete SequenceGraph instance.
+	 */
+	SequenceGraph parse(Map<String, Sequence> nodes, FileInputStream edgeIn) throws IOException;
 }

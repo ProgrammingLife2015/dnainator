@@ -6,12 +6,12 @@ package nl.tudelft.dnainator.parser;
  */
 public class InvalidHeaderFormatException extends Exception {
 
-    /**
-     * Constructs the exception with the provided message.
-     *
-     * @param msg The message to display.
-     */
-    public InvalidHeaderFormatException(String msg) {
-        super(msg);
-    }
+	/**
+	 * Constructs the exception with the provided message.
+	 *
+	 * @param msg The message to display.
+	 */
+	public InvalidHeaderFormatException(String msg) {
+		super(msg);
+	}
 }
