@@ -3,8 +3,7 @@ package nl.tudelft.dnainator.parser;
 import nl.tudelft.dnainator.core.Sequence;
 import nl.tudelft.dnainator.core.SequenceGraph;
 
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.BufferedReader;
 import java.util.Map;
 
 /**
@@ -13,8 +12,8 @@ import java.util.Map;
 public class DefaultEdgeParser implements EdgeParser {
 
 	@Override
-	public SequenceGraph parse(Map<String, Sequence> nodes, FileInputStream edgeIn)
-			throws IOException {
+	public SequenceGraph parse(Map<String, Sequence> nodes, BufferedReader br) {
+		// TODO Auto-generated method stub
 		return null;
 	}
 }

@@ -7,7 +7,7 @@ import net.sf.jfasta.impl.FASTAFileReaderImpl;
 import nl.tudelft.dnainator.core.Sequence;
 import nl.tudelft.dnainator.core.SequenceFactory;
 
-import java.io.FileInputStream;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,9 +27,9 @@ public class JFASTAParser extends NodeParser {
 	}
 
 	@Override
-	public Map<String, Sequence> parse(FileInputStream fIn)
-			throws NumberFormatException, InvalidHeaderFormatException {
-		try (FASTAFileReader fr = new FASTAFileReaderImpl(fIn)) {
+	public Map<String, Sequence> parse(BufferedReader br)
+			throws NumberFormatException, InvalidHeaderFormatException, IOException {
+		try (FASTAFileReader fr = new FASTAFileReaderImpl(br)) {
 			Map<String, Sequence> result = new HashMap<>();
 			FASTAElementIterator it = fr.getIterator();
 			while (it.hasNext()) {
@@ -39,10 +39,6 @@ public class JFASTAParser extends NodeParser {
 				result.put(p.next(), p.fill(sf));
 			}
 			return result;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
-		return null;
 	}
 }
