@@ -17,32 +17,32 @@ import java.util.Map;
  */
 public class JFASTAParser extends NodeParser {
 
-    /**
-     * Constructs a new JFASTAParser.
-     *
-     * @param sf The {@link SequenceFactory} used to created {@link Sequence}s.
-     */
-    public JFASTAParser(SequenceFactory sf) {
-        super(sf);
-    }
+	/**
+	 * Constructs a new JFASTAParser.
+	 *
+	 * @param sf The {@link SequenceFactory} used to created {@link Sequence}s.
+	 */
+	public JFASTAParser(SequenceFactory sf) {
+		super(sf);
+	}
 
-    @Override
-    public Map<String, Sequence> parse(FileInputStream fIn)
-            throws NumberFormatException, InvalidHeaderFormatException {
-        try (FASTAFileReader fr = new FASTAFileReaderImpl(fIn)) {
-            Map<String, Sequence> result = new HashMap<>();
-            FASTAElementIterator it = fr.getIterator();
-            while (it.hasNext()) {
-                FASTAElement next = it.next();
-                HeaderParser p = new HeaderParser(next.getHeader());
-                sf.setContent(next.getSequence());
-                result.put(p.next(), p.fill(sf));
-            }
-            return result;
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return null;
-    }
+	@Override
+	public Map<String, Sequence> parse(FileInputStream fIn)
+			throws NumberFormatException, InvalidHeaderFormatException {
+		try (FASTAFileReader fr = new FASTAFileReaderImpl(fIn)) {
+			Map<String, Sequence> result = new HashMap<>();
+			FASTAElementIterator it = fr.getIterator();
+			while (it.hasNext()) {
+				FASTAElement next = it.next();
+				HeaderParser p = new HeaderParser(next.getHeader());
+				sf.setContent(next.getSequence());
+				result.put(p.next(), p.fill(sf));
+			}
+			return result;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
 }
