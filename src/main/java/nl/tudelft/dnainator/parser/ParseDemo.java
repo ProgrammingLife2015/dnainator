@@ -5,7 +5,13 @@ import nl.tudelft.dnainator.core.SequenceFactory;
 
 import java.io.IOException;
 
-public class ParseDemo {
+/**
+ * An implementation for parser testing purposes. Should not be used.
+ */
+final class ParseDemo {
+
+    private ParseDemo() {
+    }
 
     /**
      * Prints the sequence to standard output, doesn't build anything.
@@ -25,6 +31,10 @@ public class ParseDemo {
 
     }
 
+    /**
+     * Main method.
+     * @param args Command line arguments. Not used.
+     */
     public static void main(String[] args) {
         GraphParser gp = new GraphParser("10_strains_graph/simple_graph",
                 new JFASTAParser(new PrintSequenceFactory()), null);

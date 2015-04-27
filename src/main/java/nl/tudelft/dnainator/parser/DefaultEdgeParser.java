@@ -6,6 +6,9 @@ import nl.tudelft.dnainator.core.SequenceGraph;
 import java.io.FileInputStream;
 import java.util.Map;
 
+/**
+ * An implementation for parsing an edge file input stream.
+ */
 public class DefaultEdgeParser implements EdgeParser {
 
     @Override
