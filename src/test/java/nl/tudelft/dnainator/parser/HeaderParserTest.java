@@ -7,8 +7,14 @@ import nl.tudelft.dnainator.core.SequenceFactory;
 
 import org.junit.Test;
 
+/**
+ * JUnit test suite for {@link HeaderParser.java}.
+ */
 public class HeaderParserTest {
 
+	/**
+	 * Tests the correctness of the result of parsing.
+	 */
 	@Test
 	public void testParseHeaderGood() {
 		HeaderParser hp = new HeaderParser("1 | a,b,c | 3 | 5");
@@ -22,6 +28,9 @@ public class HeaderParserTest {
 		}
 	}
 
+	/**
+	 * Tests the parsing fails when a header contains too few elements.
+	 */
 	@Test
 	public void testParseHeaderTooLittle() {
 		HeaderParser hp = new HeaderParser("1 | a,b,c | 3");
@@ -35,6 +44,9 @@ public class HeaderParserTest {
 		}
 	}
 
+	/**
+	 * Tests the parsing fails when a header contains too many elements.
+	 */
 	@Test
 	public void testParseHeaderTooMuch() {
 		HeaderParser hp = new HeaderParser("1 | a,b,c | 3 | 5 | 6");
@@ -49,6 +61,10 @@ public class HeaderParserTest {
 		}
 	}
 
+	/**
+	 * Test the parsing fails when a header contains a NaN when it shouldn't.
+	 * @throws Exception Thrown when the SequenceFactory fails to succeed.
+	 */
 	@Test(expected = NumberFormatException.class)
 	public void testParseHeaderNumberException() throws Exception {
 		HeaderParser hp = new HeaderParser("1 | a,b,c | no number!! | 6");

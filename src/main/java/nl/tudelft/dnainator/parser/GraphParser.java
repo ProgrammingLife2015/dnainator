@@ -64,18 +64,20 @@ public class GraphParser {
      * Parse the files to a {@link SequenceGraph}.
      *
      * @return a {@link SequenceGraph} representing the graph given in the files.
-     * @throws NumberFormatException        if one of the nodes' start or end position can't be parsed.
+     * @throws NumberFormatException        if one of the nodes' start or end position can't be
+     *                                      parsed.
      * @throws InvalidHeaderFormatException if one of the nodes' header's format is invalid.
-     * @throws IOException                  if either of the files could not be found or if closing the streams
-     *                                      fails.
+     * @throws IOException                  if either of the files could not be found or if closing
+     *                                      the streams fails.
      */
     public SequenceGraph parse() throws NumberFormatException, InvalidHeaderFormatException,
             IOException {
-        FileInputStream nodeFIn = new FileInputStream(nodeFile);
-        FileInputStream edgeFIn = new FileInputStream(edgeFile);
-        SequenceGraph graph = ep.parse(np.parse(nodeFIn), edgeFIn);
-        nodeFIn.close();
-        edgeFIn.close();
-        return graph;
+        try (
+                FileInputStream nodeFIn = new FileInputStream(nodeFile);
+                FileInputStream edgeFIn = new FileInputStream(edgeFile)
+        ) {
+            SequenceGraph graph = ep.parse(np.parse(nodeFIn), edgeFIn);
+            return graph;
+        }
     }
 }
