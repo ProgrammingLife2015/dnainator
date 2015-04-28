@@ -7,6 +7,11 @@ package nl.tudelft.dnainator.parser;
 public class InvalidHeaderFormatException extends Exception {
 
 	/**
+	 * Generated serialVersionUID.
+	 */
+	private static final long serialVersionUID = -8296140307732116580L;
+
+	/**
 	 * Constructs the exception with the provided message.
 	 *
 	 * @param msg The message to display.
