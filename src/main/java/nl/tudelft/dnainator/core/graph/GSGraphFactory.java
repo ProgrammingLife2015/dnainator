@@ -2,41 +2,36 @@ package nl.tudelft.dnainator.core.graph;
 
 import nl.tudelft.dnainator.core.Sequence;
 
-import org.graphstream.graph.implementations.SingleGraph;
+import org.graphstream.stream.Sink;
+import org.graphstream.stream.SourceBase;
 
 /**
  * This class realizes a graphfactory using GraphStream as it's backend.
  */
-public class GSGraphFactory implements GraphFactory<SingleGraph> {
-	private SingleGraph graph;
+public class GSGraphFactory extends SourceBase implements GraphFactory {
 	private int edgecount;
 	
 	/**
 	 * This factory constructs a GraphStream graph with the given title.
-	 * @param title	the title of the graph
+	 * @param g		the initial sink of the graphfactory
 	 */
-	public GSGraphFactory(String title) {
-		graph = new SingleGraph(title);
+	public GSGraphFactory(Sink g) {
+		this.addSink(g);
 	}
+	
 	@Override
 	public void addEdge(int l, int r) {
-		graph.addEdge(Integer.toString(edgecount++), l, r);
+		sendEdgeAdded(this.sourceId, Integer.toString(edgecount++),
+					  Integer.toString(l), Integer.toString(r), false);
 	}
 
 	@Override
 	public void addNode(Sequence s) {
-		graph.addNode(Integer.toString(s.getId()));
-		graph.addAttribute("start", s.getStartRef());
-		graph.addAttribute("end",   s.getEndRef());
-		graph.addAttribute("source", s.getSource());
-		graph.addAttribute("sequence", s.getSequence());
-	}
-	
-	/**
-	 * Return the constructed GraphStream graph.
-	 * @return	the constructed graph
-	 */
-	public SingleGraph getGraph() {
-		return graph;
+		String id = Integer.toString(s.getId());
+		sendNodeAdded(this.sourceId, id);
+		sendNodeAttributeAdded(this.sourceId, id, "start", s.getStartRef());
+		sendNodeAttributeAdded(this.sourceId, id, "end", s.getEndRef());
+		sendNodeAttributeAdded(this.sourceId, id, "sequence", s.getSource());
+		sendNodeAttributeAdded(this.sourceId, id, "source", s.getSequence());
 	}
 }
