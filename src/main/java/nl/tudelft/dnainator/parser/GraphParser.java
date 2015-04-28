@@ -2,13 +2,11 @@ package nl.tudelft.dnainator.parser;
 
 import nl.tudelft.dnainator.core.SequenceGraph;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 
 /**
  * Parses the node and edge files to a {@link SequenceGraph}, where the
@@ -18,8 +16,8 @@ import java.io.InputStreamReader;
 public class GraphParser {
 	public static final String NODE_EXT = ".node.graph";
 	public static final String EDGE_EXT = ".edge.graph";
-	private BufferedReader nodeReader;
-	private BufferedReader edgeReader;
+	private InputStream nodeStream;
+	private InputStream edgeStream;
 	private NodeParser np;
 	private EdgeParser ep;
 
@@ -75,22 +73,8 @@ public class GraphParser {
 	 */
 	public GraphParser(InputStream nodeStream, InputStream edgeStream,
 			NodeParser np, EdgeParser ep) {
-		this(new BufferedReader(new InputStreamReader(nodeStream)),
-				new BufferedReader(new InputStreamReader(edgeStream)), np, ep);
-	}
-
-	/**
-	 * Create a new {@link GraphParser} using the {@link BufferedReader}s as a source
-	 * for the nodes and edges.
-	 * @param nodeReader An {@link BufferedReader} for reading the nodes in FASTA format.
-	 * @param edgeReader An {@link BufferedReader} for reading the edges.
-	 * @param np         The {@link NodeParser} used to parse the nodes.
-	 * @param ep         The {@link EdgeParser} used to parse the edges.
-	 */
-	public GraphParser(BufferedReader nodeReader, BufferedReader edgeReader,
-			NodeParser np, EdgeParser ep) {
-		this.nodeReader = nodeReader;
-		this.edgeReader = edgeReader;
+		this.nodeStream = nodeStream;
+		this.edgeStream = edgeStream;
 		this.np = np;
 		this.ep = ep;
 	}
@@ -107,6 +91,6 @@ public class GraphParser {
 	 */
 	public SequenceGraph parse() throws NumberFormatException, InvalidHeaderFormatException,
 			IOException {
-		return ep.parse(np.parse(nodeReader), edgeReader);
+		return ep.parse(np.parse(nodeStream), edgeStream);
 	}
 }
