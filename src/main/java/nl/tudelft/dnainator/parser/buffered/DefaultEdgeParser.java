@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.parser;
+package nl.tudelft.dnainator.parser.buffered;
 
 import nl.tudelft.dnainator.core.Sequence;
 import nl.tudelft.dnainator.core.SequenceGraph;

@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.parser;
+package nl.tudelft.dnainator.parser.buffered;
 
 import net.sf.jfasta.FASTAElement;
 import net.sf.jfasta.FASTAFileReader;
@@ -6,6 +6,9 @@ import net.sf.jfasta.impl.FASTAElementIterator;
 import net.sf.jfasta.impl.FASTAFileReaderImpl;
 import nl.tudelft.dnainator.core.Sequence;
 import nl.tudelft.dnainator.core.SequenceFactory;
+import nl.tudelft.dnainator.parser.HeaderParser;
+import nl.tudelft.dnainator.parser.InvalidHeaderFormatException;
+import nl.tudelft.dnainator.parser.NodeParser;
 
 import java.io.BufferedReader;
 import java.io.IOException;

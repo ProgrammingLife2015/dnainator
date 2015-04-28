@@ -2,6 +2,7 @@ package nl.tudelft.dnainator.parser;
 
 import nl.tudelft.dnainator.core.Sequence;
 import nl.tudelft.dnainator.core.SequenceFactory;
+import nl.tudelft.dnainator.parser.buffered.JFASTAParser;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.parser;
+package nl.tudelft.dnainator.parser.buffered;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -7,6 +7,7 @@ import java.util.Map;
 
 import nl.tudelft.dnainator.core.Sequence;
 import nl.tudelft.dnainator.core.SequenceGraph;
+import nl.tudelft.dnainator.parser.EdgeParser;
 
 /**
  * A variant of {@link EdgeParser}, which uses a {@link BufferedReader}.
