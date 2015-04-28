@@ -2,13 +2,12 @@ package nl.tudelft.dnainator.core.graph;
 
 import nl.tudelft.dnainator.core.Sequence;
 
-import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.SingleGraph;
 
 /**
  * This class realizes a graphfactory using GraphStream as it's backend.
  */
-public class GSGraphFactory implements GraphFactory {
+public class GSGraphFactory implements GraphFactory<SingleGraph> {
 	private SingleGraph graph;
 	private int edgecount;
 	
@@ -26,16 +25,18 @@ public class GSGraphFactory implements GraphFactory {
 
 	@Override
 	public void addNode(Sequence s) {
-		graph.addNode(s.getId());
-		graph.addAttribute("x", s.getStart());
-		graph.addAttribute("sequence", s);
+		graph.addNode(Integer.toString(s.getId()));
+		graph.addAttribute("start", s.getStartRef());
+		graph.addAttribute("end",   s.getEndRef());
+		graph.addAttribute("source", s.getSource());
+		graph.addAttribute("sequence", s.getSequence());
 	}
 	
 	/**
 	 * Return the constructed GraphStream graph.
 	 * @return	the constructed graph
 	 */
-	public Graph getGSGraph() {
+	public SingleGraph getGraph() {
 		return graph;
 	}
 }

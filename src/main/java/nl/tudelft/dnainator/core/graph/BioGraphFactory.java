@@ -8,7 +8,7 @@ import nl.tudelft.dnainator.core.Sequence;
 /**
  * This class realizes a graphfactory using BioJava as it's backend.
  */
-public class BioGraphFactory implements GraphFactory {
+public class BioGraphFactory implements GraphFactory<Graph<Sequence>> {
 	private SimpleGraph<Sequence> graph;
 	
 	/**
@@ -21,7 +21,7 @@ public class BioGraphFactory implements GraphFactory {
 	
 	@Override
 	public void addEdge(int l, int r) {
-		graph.addEdge(graph.getVertex(l - 1), graph.getVertex(r - 1));
+		graph.addEdge(graph.getVertex(l), graph.getVertex(r));
 	}
 
 	@Override
@@ -33,7 +33,7 @@ public class BioGraphFactory implements GraphFactory {
 	 * Return the constructed GraphStream graph.
 	 * @return	the constructed graph
 	 */
-	public Graph<Sequence> getGSGraph() {
+	public Graph<Sequence> getGraph() {
 		return graph;
 	}
 }
