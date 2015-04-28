@@ -9,10 +9,11 @@ import java.util.Map;
 /**
  * An implementation for parsing an edge file input stream.
  */
-public class DefaultEdgeParser implements EdgeParser {
+public class DefaultEdgeParser implements BufferedEdgeParser {
 
 	@Override
-	public SequenceGraph parse(Map<String, Sequence> nodes, BufferedReader br) {
+	public SequenceGraph parse(Map<String, ? extends Sequence> nodes,
+			BufferedReader br) {
 		// TODO Auto-generated method stub
 		return null;
 	}

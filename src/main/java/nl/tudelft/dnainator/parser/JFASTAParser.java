@@ -15,7 +15,7 @@ import java.util.Map;
 /**
  * A {@link NodeParser} which uses JFASTA's parser internally.
  */
-public class JFASTAParser extends NodeParser {
+public class JFASTAParser extends BufferedNodeParser {
 
 	/**
 	 * Constructs a new JFASTAParser.
