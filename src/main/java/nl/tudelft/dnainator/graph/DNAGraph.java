@@ -1,7 +1,6 @@
 package nl.tudelft.dnainator.graph;
 
 import org.graphstream.algorithm.generator.Generator;
-import org.graphstream.algorithm.generator.RandomGenerator;
 import org.graphstream.graph.implementations.SingleGraph;
 
 /**
@@ -14,9 +13,17 @@ public class DNAGraph extends SingleGraph {
 	 * Constructs a new graph.
 	 */
 	public DNAGraph() {
-		super("Random");
-
-		Generator gen = new RandomGenerator(2);
+		this("Tree", new TreeGenerator());
+	}
+	
+	/**
+	 * Constructs a new graph with a given name and generator.
+	 * @param name	name of the graph
+	 * @param gen	generator of this graph
+	 */
+	public DNAGraph(String name, Generator gen) {
+		super("Tree");
+		
 		gen.addSink(this);
 		gen.begin();
 		for (int i = 0; i < N_NODES; i++) {
