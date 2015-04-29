@@ -1,9 +1,5 @@
 package nl.tudelft.dnainator.parser;
 
-import static java.lang.Integer.parseInt;
-import nl.tudelft.dnainator.core.Sequence;
-import nl.tudelft.dnainator.core.SequenceFactory;
-
 /**
  * Parses the header of a node.
  */
@@ -22,20 +18,6 @@ public class HeaderParser {
 		this.header = header;
 		count = 0;
 		nextIndex = header.indexOf(DELIM);
-	}
-
-	/**
-	 * Fills a {@link Sequence} using the given {@link SequenceFactory} with the parsed
-	 * header.
-	 * @param sf The {@link SequenceFactory} used to create a {@link Sequence}.
-	 * @return The sequence containing the header information.
-	 * @throws NumberFormatException if the start and/or end position of the sequence can't
-	 * be parsed.
-	 * @throws InvalidHeaderFormatException if the header has too little or too many tokens.
-	 */
-	public Sequence fill(SequenceFactory sf)
-			throws NumberFormatException, InvalidHeaderFormatException {
-		return sf.build(next(), parseInt(next()), parseInt(next()));
 	}
 
 	/**

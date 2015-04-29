@@ -8,40 +8,46 @@ import nl.tudelft.dnainator.core.Sequence;
 import nl.tudelft.dnainator.core.SequenceFactory;
 import nl.tudelft.dnainator.parser.HeaderParser;
 import nl.tudelft.dnainator.parser.InvalidHeaderFormatException;
-import nl.tudelft.dnainator.parser.NodeParser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+
+import static java.lang.Integer.parseInt;
 
 /**
- * A {@link NodeParser} which uses JFASTA's parser internally.
+ * A {@link BufferedNodeParser} which uses JFASTA's parser internally.
  */
 public class JFASTAParser extends BufferedNodeParser {
+
+	private FASTAFileReader fr;
+	private FASTAElementIterator it;
 
 	/**
 	 * Constructs a new JFASTAParser.
 	 *
+	 * @param br The {@link BufferedReader} from which to read.
 	 * @param sf The {@link SequenceFactory} used to created {@link Sequence}s.
+	 * @throws IOException If something goes wrong constructing.
 	 */
-	public JFASTAParser(SequenceFactory sf) {
-		super(sf);
+	public JFASTAParser(SequenceFactory sf, BufferedReader br) throws IOException {
+		super(sf, br);
+		fr = new FASTAFileReaderImpl(br);
+		it = fr.getIterator();
 	}
 
 	@Override
-	public Map<String, Sequence> parse(BufferedReader br)
-			throws NumberFormatException, InvalidHeaderFormatException, IOException {
-		try (FASTAFileReader fr = new FASTAFileReaderImpl(br)) {
-			Map<String, Sequence> result = new HashMap<>();
-			FASTAElementIterator it = fr.getIterator();
-			while (it.hasNext()) {
-				FASTAElement next = it.next();
-				HeaderParser p = new HeaderParser(next.getHeader());
-				sf.setContent(next.getSequence());
-				result.put(p.next(), p.fill(sf));
-			}
-			return result;
-		}
+	public boolean hasNext() throws IOException {
+		return it.hasNext();
 	}
+
+	@Override
+	public Sequence next() throws IOException, InvalidHeaderFormatException {
+		FASTAElement next = it.next();
+		HeaderParser p = new HeaderParser(next.getHeader());
+		sf.setContent(next.getSequence());
+		p.next();
+		Sequence s = sf.build(p.next(), parseInt(p.next()), parseInt(p.next()));
+		return s;
+	}
+
 }

@@ -1,23 +1,27 @@
 package nl.tudelft.dnainator.parser;
 
-import nl.tudelft.dnainator.core.Sequence;
-import nl.tudelft.dnainator.core.SequenceGraph;
+import nl.tudelft.dnainator.util.Edge;
 
-import java.io.InputStream;
-import java.util.Map;
+import java.io.IOException;
 
 /**
- * An interface for parsing a file input stream containing edge entries.
+ * An interface for parsing edge entries.
  */
 public interface EdgeParser {
 
 	/**
-	 * Connects the nodes given according to the edges read from the
-	 * given {@link InputStream}, and returns a {@link SequenceGraph}.
-	 * @param nodes  The nodes which should be connected.
-	 * @param is The {@link InputStream} describing the edges.
-	 * @return a complete SequenceGraph instance.
+	 * Whether there's a next edge that can be parsed.
+	 * @return true if there's a next edge, false otherwise.
+	 * @throws IOException when an error occurs while reading.
 	 */
-	SequenceGraph parse(Map<String, ? extends Sequence> nodes, InputStream is);
+	boolean hasNext() throws IOException;
+
+	/**
+	 * Returns the next {@link Edge}, or throws a {@link NoSuchElementException}
+	 * if there's nothing left to be parsed.
+	 * @return A parsed {@link Edge}.
+	 * @throws IOException when an error occurs while reading.
+	 */
+	Edge<Integer> next() throws IOException;
 
 }
