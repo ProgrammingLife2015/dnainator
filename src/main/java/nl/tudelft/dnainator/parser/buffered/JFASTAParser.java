@@ -44,9 +44,8 @@ public class JFASTAParser extends BufferedNodeParser {
 	public SequenceNode next() throws IOException, InvalidHeaderFormatException {
 		FASTAElement next = it.next();
 		HeaderParser p = new HeaderParser(next.getHeader());
-		sf.setContent(next.getSequence());
-		p.next();
-		SequenceNode s = sf.build(p.next(), parseInt(p.next()), parseInt(p.next()));
+		SequenceNode s = sf.build(p.next(), p.next(), parseInt(p.next()),
+				parseInt(p.next()), next.getSequence());
 		return s;
 	}
 
