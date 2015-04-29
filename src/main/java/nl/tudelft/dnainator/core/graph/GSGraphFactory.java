@@ -1,6 +1,7 @@
 package nl.tudelft.dnainator.core.graph;
 
 import nl.tudelft.dnainator.core.SequenceNode;
+import nl.tudelft.dnainator.util.Edge;
 
 import org.graphstream.stream.Sink;
 import org.graphstream.stream.SourceBase;
@@ -20,9 +21,9 @@ public class GSGraphFactory extends SourceBase implements GraphBuilder {
 	}
 	
 	@Override
-	public void addEdge(int l, int r) {
+	public void addEdge(Edge<Integer> e) {
 		sendEdgeAdded(this.sourceId, Integer.toString(edgecount++),
-					  Integer.toString(l), Integer.toString(r), false);
+					  Integer.toString(e.source), Integer.toString(e.dest), false);
 	}
 
 	@Override
