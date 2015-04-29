@@ -5,7 +5,7 @@ import nl.tudelft.dnainator.util.Edge;
 import java.io.IOException;
 
 /**
- * An interface for parsing edge entries.
+ * An interface for parsing edge entries, using the Iterator pattern.
  */
 public interface EdgeParser {
 

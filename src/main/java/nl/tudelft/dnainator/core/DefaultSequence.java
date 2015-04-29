@@ -13,11 +13,11 @@ public class DefaultSequence implements SequenceNode {
 
 	/**
 	 * Constructs a default sequence with all parameters specified.
-	 * @param id
-	 * @param source
-	 * @param start
-	 * @param end
-	 * @param sequence
+	 * @param id The ID of this sequence.
+	 * @param source The sources of the sequence (from where it was sequenced).
+	 * @param start The start position of the sequence.
+	 * @param end The end position of the sequence.
+	 * @param sequence The sequence.
 	 */
 	public DefaultSequence(int id, String source, int start, int end, String sequence) {
 		this.id = id;
