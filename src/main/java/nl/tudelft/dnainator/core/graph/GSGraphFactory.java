@@ -1,6 +1,6 @@
 package nl.tudelft.dnainator.core.graph;
 
-import nl.tudelft.dnainator.core.Sequence;
+import nl.tudelft.dnainator.core.SequenceNode;
 
 import org.graphstream.stream.Sink;
 import org.graphstream.stream.SourceBase;
@@ -8,7 +8,7 @@ import org.graphstream.stream.SourceBase;
 /**
  * This class realizes a graphfactory using GraphStream as it's backend.
  */
-public class GSGraphFactory extends SourceBase implements GraphFactory {
+public class GSGraphFactory extends SourceBase implements GraphBuilder {
 	private int edgecount;
 	
 	/**
@@ -26,7 +26,7 @@ public class GSGraphFactory extends SourceBase implements GraphFactory {
 	}
 
 	@Override
-	public void addNode(Sequence s) {
+	public void addNode(SequenceNode s) {
 		String id = Integer.toString(s.getId());
 		sendNodeAdded(this.sourceId, id);
 		sendNodeAttributeAdded(this.sourceId, id, "start", s.getStartRef());

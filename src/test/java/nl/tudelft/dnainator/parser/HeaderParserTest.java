@@ -2,7 +2,7 @@ package nl.tudelft.dnainator.parser;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
-import nl.tudelft.dnainator.core.Sequence;
+import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.SequenceFactory;
 
 import org.junit.Test;

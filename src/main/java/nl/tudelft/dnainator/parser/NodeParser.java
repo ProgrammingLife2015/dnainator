@@ -2,12 +2,12 @@ package nl.tudelft.dnainator.parser;
 
 import java.io.IOException;
 
-import nl.tudelft.dnainator.core.Sequence;
+import nl.tudelft.dnainator.core.SequenceNode;
 
 public interface NodeParser {
 
 	boolean hasNext() throws IOException;
 
-	Sequence next() throws IOException, InvalidHeaderFormatException;
+	SequenceNode next() throws IOException, InvalidHeaderFormatException;
 
 }

@@ -2,7 +2,7 @@ package nl.tudelft.dnainator.util;
 
 /**
  * Class representing an edge, for containing
- * identifiers of {@link Sequence}s or other kinds of
+ * identifiers of {@link SequenceNode}s or other kinds of
  * nodes.
  * @param <T> The type of the identifiers.
  */

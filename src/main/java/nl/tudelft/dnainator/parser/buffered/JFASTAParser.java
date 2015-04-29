@@ -4,7 +4,7 @@ import net.sf.jfasta.FASTAElement;
 import net.sf.jfasta.FASTAFileReader;
 import net.sf.jfasta.impl.FASTAElementIterator;
 import net.sf.jfasta.impl.FASTAFileReaderImpl;
-import nl.tudelft.dnainator.core.Sequence;
+import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.SequenceFactory;
 import nl.tudelft.dnainator.parser.HeaderParser;
 import nl.tudelft.dnainator.parser.InvalidHeaderFormatException;
@@ -26,7 +26,7 @@ public class JFASTAParser extends BufferedNodeParser {
 	 * Constructs a new JFASTAParser.
 	 *
 	 * @param br The {@link BufferedReader} from which to read.
-	 * @param sf The {@link SequenceFactory} used to created {@link Sequence}s.
+	 * @param sf The {@link SequenceFactory} used to created {@link SequenceNode}s.
 	 * @throws IOException If something goes wrong constructing.
 	 */
 	public JFASTAParser(SequenceFactory sf, BufferedReader br) throws IOException {
@@ -41,12 +41,12 @@ public class JFASTAParser extends BufferedNodeParser {
 	}
 
 	@Override
-	public Sequence next() throws IOException, InvalidHeaderFormatException {
+	public SequenceNode next() throws IOException, InvalidHeaderFormatException {
 		FASTAElement next = it.next();
 		HeaderParser p = new HeaderParser(next.getHeader());
 		sf.setContent(next.getSequence());
 		p.next();
-		Sequence s = sf.build(p.next(), parseInt(p.next()), parseInt(p.next()));
+		SequenceNode s = sf.build(p.next(), parseInt(p.next()), parseInt(p.next()));
 		return s;
 	}
 

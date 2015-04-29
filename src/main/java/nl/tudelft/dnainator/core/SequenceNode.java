@@ -3,7 +3,7 @@ package nl.tudelft.dnainator.core;
 /**
  * Interface that all sequences should implement.
  */
-public interface Sequence {
+public interface SequenceNode {
 	/**
 	 * The id of this nucleotide sequence, for example it's node number.
 	 * @return	the id of this sequence

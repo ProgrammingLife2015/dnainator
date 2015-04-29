@@ -21,5 +21,5 @@ public interface SequenceFactory {
 	 * @param endPos   The ending position.
 	 * @return The built Sequence.
 	 */
-	Sequence build(String refs, int startPos, int endPos);
+	SequenceNode build(String refs, int startPos, int endPos);
 }
