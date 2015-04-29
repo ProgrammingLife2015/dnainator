@@ -10,8 +10,14 @@
 -->
 <module name="Checker">
   <property name="severity" value="warning"/>
+  <module name="SuppressionCommentFilter">
+    <property name="offCommentFormat" value="CHECKSTYLE.OFF\: ([\w\|]+)"/>
+    <property name="onCommentFormat" value="CHECKSTYLE.ON\: ([\w\|]+)"/>
+    <property name="checkFormat" value="$1"/>
+  </module>
   <module name="TreeWalker">
     <property name="tabWidth" value="4"/>
+    <module name="FileContentsHolder"/>
     <module name="JavadocMethod">
       <property name="scope" value="package"/>
       <property name="suppressLoadErrors" value="true"/>
