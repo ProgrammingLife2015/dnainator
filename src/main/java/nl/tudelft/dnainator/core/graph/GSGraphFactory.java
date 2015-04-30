@@ -23,7 +23,7 @@ public class GSGraphFactory extends SourceBase implements GraphBuilder {
 	@Override
 	public void addEdge(Edge<Integer> e) {
 		sendEdgeAdded(this.sourceId, Integer.toString(edgecount++),
-					  Integer.toString(e.source), Integer.toString(e.dest), false);
+					  Integer.toString(e.getSource()), Integer.toString(e.getDest()), false);
 	}
 
 	@Override

@@ -26,8 +26,8 @@ public class DefaultEdgeParserTest {
 	}
 
 	private static void assertEdgeEquals(Edge<Integer> expected, Edge<Integer> actual) {
-		assertEquals(expected.source, actual.source);
-		assertEquals(expected.dest, actual.dest);
+		assertEquals(expected.getSource(), actual.getSource());
+		assertEquals(expected.getDest(), actual.getDest());
 	}
 
 	/**

@@ -7,8 +7,8 @@ package nl.tudelft.dnainator.util;
  * @param <T> The type of the identifiers.
  */
 public final class Edge<T> {
-	public final T source;
-	public final T dest;
+	private final T source;
+	private final T dest;
 
 	/**
 	 * Constructs a new {@link Edge}.
@@ -18,5 +18,21 @@ public final class Edge<T> {
 	public Edge(T source, T dest) {
 		this.source = source;
 		this.dest = dest;
+	}
+
+	/**
+	 * Get's the source node identifier of this edge.
+	 * @return the source node identifier.
+	 */
+	public T getSource() {
+		return source;
+	}
+
+	/**
+	 * Get's the destination node identifier of this edge.
+	 * @return the destination node identifier.
+	 */
+	public T getDest() {
+		return dest;
 	}
 }
