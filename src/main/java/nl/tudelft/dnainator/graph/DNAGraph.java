@@ -22,7 +22,7 @@ public class DNAGraph extends SingleGraph {
 	 * @param gen	generator of this graph
 	 */
 	public DNAGraph(String name, Generator gen) {
-		super("Tree");
+		super(name);
 		
 		gen.addSink(this);
 		gen.begin();
