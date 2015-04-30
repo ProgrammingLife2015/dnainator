@@ -6,6 +6,11 @@ package nl.tudelft.dnainator.parser.exceptions;
  */
 public class InvalidEdgeFormatException extends Exception {
 	/**
+	 * Generated serialVersionUID.
+	 */
+	private static final long serialVersionUID = -4475355560535116525L;
+
+	/**
 	 * Constructs the exception with the provided message.
 	 *
 	 * @param msg The message to display.
