@@ -1,5 +1,6 @@
 package nl.tudelft.dnainator.parser.buffered;
 
+import nl.tudelft.dnainator.parser.exceptions.InvalidEdgeFormatException;
 import nl.tudelft.dnainator.util.Edge;
 
 import java.io.BufferedReader;
@@ -17,6 +18,7 @@ public class DefaultEdgeParser extends BufferedEdgeParser {
 	/**
 	 * Constructs a {@link DefaultEdgeParser}, which reads from
 	 * the given {@link BufferedReader}.
+	 *
 	 * @param br The {@link BufferedReader} to read from.
 	 */
 	public DefaultEdgeParser(BufferedReader br) {
@@ -25,7 +27,7 @@ public class DefaultEdgeParser extends BufferedEdgeParser {
 	}
 
 	@Override
-	public boolean hasNext() throws IOException {
+	public boolean hasNext() throws IOException, InvalidEdgeFormatException {
 		if (needParse) {
 			current = parse();
 			needParse = false;
@@ -41,7 +43,7 @@ public class DefaultEdgeParser extends BufferedEdgeParser {
 	 * the first character marked the end of the file.
 	 * @throws IOException Thrown when the reader fails.
 	 */
-	private Edge<Integer>parse() throws IOException {
+	private Edge<Integer> parse() throws IOException, InvalidEdgeFormatException {
 		int first = br.read();
 		if (first == -1) {
 			return null;
@@ -56,16 +58,16 @@ public class DefaultEdgeParser extends BufferedEdgeParser {
 	 * @return The source id, as an int.
 	 * @throws IOException Thrown when the reader fails.
 	 */
-	private int parseSource(char first) throws IOException {
+	private int parseSource(char first) throws IOException, InvalidEdgeFormatException {
 		StringBuilder source = new StringBuilder(ID_LENGTH_GUESS);
 		char next = first;
 
 		do {
 			source.append(next);
 			next = (char) br.read();
-		} while (next != ' ');
+		} while (isNum(next));
 
-		return Integer.parseInt(source.toString());
+		return validateOutput(source);
 	}
 
 	/*
@@ -74,25 +76,41 @@ public class DefaultEdgeParser extends BufferedEdgeParser {
 	 * @return The destination id, as an int.
 	 * @throws IOException Thrown when the BufferedReader fails.
 	 */
-	private int parseDest() throws IOException {
+	private int parseDest() throws IOException, InvalidEdgeFormatException {
 		StringBuilder dest = new StringBuilder(ID_LENGTH_GUESS);
 		int point = br.read();
 		char next;
 
-		while (point != -1) {
+		while (isValidInput(point)) {
 			next = (char) point;
-			if (next == '\n' || next == '\r') {
-				return Integer.parseInt(dest.toString());
-			}
 			dest.append(next);
 			point = br.read();
 		}
 
-		return Integer.parseInt(dest.toString());
+		return validateOutput(dest);
+	}
+
+	private boolean isValidInput(int in) {
+		return in != -1 && isNum((char) in);
+	}
+
+	private boolean isNum(char c) {
+		return Character.isDigit(c);
+	}
+
+	private int validateOutput(StringBuilder sb) throws InvalidEdgeFormatException {
+		for (int i = 0; i < sb.length(); i++) {
+			if (!isNum(sb.charAt(i))) {
+				throw new InvalidEdgeFormatException("Invalid character in edge file: "
+						+ sb.charAt(i));
+			}
+		}
+
+		return Integer.parseInt(sb.toString());
 	}
 
 	@Override
-	public Edge<Integer> next() throws IOException {
+	public Edge<Integer> next() throws IOException, InvalidEdgeFormatException {
 		if (hasNext()) {
 			needParse = true;
 			return current;

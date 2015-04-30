@@ -1,5 +1,7 @@
 package nl.tudelft.dnainator.parser;
 
+import nl.tudelft.dnainator.parser.exceptions.InvalidHeaderFormatException;
+
 /**
  * Parses the header of a node.
  */

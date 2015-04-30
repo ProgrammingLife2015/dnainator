@@ -11,6 +11,7 @@ import java.io.StringReader;
 import java.util.NoSuchElementException;
 
 import nl.tudelft.dnainator.parser.EdgeParser;
+import nl.tudelft.dnainator.parser.exceptions.InvalidEdgeFormatException;
 import nl.tudelft.dnainator.util.Edge;
 
 import org.junit.Test;
@@ -40,7 +41,7 @@ public class DefaultEdgeParserTest {
 		try {
 			assertFalse(ep.hasNext());
 			ep.next();
-		} catch (IOException e) {
+		} catch (IOException | InvalidEdgeFormatException e) {
 			fail("Shouldn't happen.");
 		}
 
@@ -64,19 +65,19 @@ public class DefaultEdgeParserTest {
 			//CHECKSTYLE.OFF: MagicNumber
 			assertTrue(ep.hasNext());
 			Edge<Integer> next = ep.next();
-			assertEdgeEquals(new Edge<Integer>(1, 2), next);
+			assertEdgeEquals(new Edge<>(1, 2), next);
 			assertTrue(ep.hasNext());
 			next = ep.next();
-			assertEdgeEquals(new Edge<Integer>(3, 4), next);
+			assertEdgeEquals(new Edge<>(3, 4), next);
 			assertTrue(ep.hasNext());
 			next = ep.next();
-			assertEdgeEquals(new Edge<Integer>(6, 40), next);
+			assertEdgeEquals(new Edge<>(6, 40), next);
 			assertTrue(ep.hasNext());
 			next = ep.next();
-			assertEdgeEquals(new Edge<Integer>(123, 456), next);
+			assertEdgeEquals(new Edge<>(123, 456), next);
 			assertFalse(ep.hasNext());
 			//CHECKSTYLE.ON: MagicNumber
-		} catch (IOException e) {
+		} catch (IOException | InvalidEdgeFormatException e) {
 			fail("Shouldn't happen.");
 		}
 	}

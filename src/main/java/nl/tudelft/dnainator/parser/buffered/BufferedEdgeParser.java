@@ -2,6 +2,7 @@ package nl.tudelft.dnainator.parser.buffered;
 
 import java.io.BufferedReader;
 import nl.tudelft.dnainator.parser.EdgeParser;
+import nl.tudelft.dnainator.parser.streamed.StreamEdgeParser;
 
 /**
  * A variant of {@link StreamEdgeParser}, which uses a {@link BufferedReader}.

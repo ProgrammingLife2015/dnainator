@@ -3,6 +3,7 @@ package nl.tudelft.dnainator.parser;
 import java.io.IOException;
 
 import nl.tudelft.dnainator.core.SequenceNode;
+import nl.tudelft.dnainator.parser.exceptions.InvalidHeaderFormatException;
 
 /**
  * An interface for parsing nodes, using the Iterator pattern.

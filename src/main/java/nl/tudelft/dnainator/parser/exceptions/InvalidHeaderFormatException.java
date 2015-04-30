@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.parser;
+package nl.tudelft.dnainator.parser.exceptions;
 
 /**
  * A customized exception that is thrown when a FASTA file contains

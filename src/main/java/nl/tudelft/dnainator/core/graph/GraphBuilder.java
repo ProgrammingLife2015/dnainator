@@ -4,7 +4,8 @@ import java.io.IOException;
 
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.parser.EdgeParser;
-import nl.tudelft.dnainator.parser.InvalidHeaderFormatException;
+import nl.tudelft.dnainator.parser.exceptions.InvalidEdgeFormatException;
+import nl.tudelft.dnainator.parser.exceptions.InvalidHeaderFormatException;
 import nl.tudelft.dnainator.parser.NodeParser;
 import nl.tudelft.dnainator.util.Edge;
 
@@ -32,9 +33,10 @@ public interface GraphBuilder {
 	 * @param gb The {@link GraphBuilder} used to add the nodes and edges.
 	 * @throws IOException If something goes wrong with IO while parsing.
 	 * @throws InvalidHeaderFormatException If the header of a node is of an invalid format.
+	 * @throws InvalidEdgeFormatException If the edge file contains invalid lines.
 	 */
 	static void constructGraph(NodeParser np, EdgeParser ep, GraphBuilder gb)
-			throws IOException, InvalidHeaderFormatException {
+			throws IOException, InvalidHeaderFormatException, InvalidEdgeFormatException {
 		while (np.hasNext()) {
 			gb.addNode(np.next());
 		}

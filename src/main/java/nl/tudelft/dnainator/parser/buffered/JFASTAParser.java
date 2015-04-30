@@ -7,7 +7,7 @@ import net.sf.jfasta.impl.FASTAFileReaderImpl;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.SequenceFactory;
 import nl.tudelft.dnainator.parser.HeaderParser;
-import nl.tudelft.dnainator.parser.InvalidHeaderFormatException;
+import nl.tudelft.dnainator.parser.exceptions.InvalidHeaderFormatException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
