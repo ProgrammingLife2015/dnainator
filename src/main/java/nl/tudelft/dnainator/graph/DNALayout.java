@@ -12,12 +12,14 @@ import org.graphstream.ui.layout.Layout;
  * For now this class calculates a tree layout based on node index.
  */
 public class DNALayout extends PipeBase implements Layout {
+	private static final String NAME = "DNALayout";
+
 	private SinkTime sinkTime;
 	private long lastStepTime;
 	private int nodeMoved;
 	private Graph internalGraph;
 	private static final int SCALE = 4;
-	
+
 	/**
 	 * Creates a new DNALayout given a certain graph.
 	 * @param g	the graph that needs a layout
@@ -40,7 +42,7 @@ public class DNALayout extends PipeBase implements Layout {
 
 	@Override
 	public String getLayoutAlgorithmName() {
-		return "DNALayout";
+		return NAME;
 	}
 
 	@Override
