@@ -31,7 +31,7 @@ public class JFASTAParser extends BufferedNodeParser {
 	 */
 	public JFASTAParser(SequenceFactory sf, BufferedReader br) throws IOException {
 		super(sf, br);
-		fr = new FASTAFileReaderImpl(br);
+		fr = new FASTAFileReaderImpl(this.br);
 		it = fr.getIterator();
 	}
 
