@@ -6,7 +6,7 @@ import nl.tudelft.dnainator.core.SequenceFactory;
 import nl.tudelft.dnainator.parser.NodeParser;
 
 /**
- * A variant of the {@link StreamNodeParser}, which uses a {@link BufferedReader}.
+ * A {@link NodeParser}, which uses a {@link BufferedReader} as its source.
  */
 public abstract class BufferedNodeParser implements NodeParser {
 

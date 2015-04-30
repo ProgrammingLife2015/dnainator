@@ -2,10 +2,9 @@ package nl.tudelft.dnainator.parser.buffered;
 
 import java.io.BufferedReader;
 import nl.tudelft.dnainator.parser.EdgeParser;
-import nl.tudelft.dnainator.parser.streamed.StreamEdgeParser;
 
 /**
- * A variant of {@link StreamEdgeParser}, which uses a {@link BufferedReader}.
+ * An {@link EdgeParser} which uses a {@link BufferedReader} as its source.
  */
 public abstract class BufferedEdgeParser implements EdgeParser {
 	protected BufferedReader br;
