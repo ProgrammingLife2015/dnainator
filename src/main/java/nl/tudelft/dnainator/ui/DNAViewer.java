@@ -1,10 +1,8 @@
 package nl.tudelft.dnainator.ui;
 
 import nl.tudelft.dnainator.graph.DNAGraph;
-import nl.tudelft.dnainator.graph.DNALayout;
 
 import org.graphstream.graph.Graph;
-import org.graphstream.ui.layout.Layout;
 import org.graphstream.ui.view.Viewer;
 
 /**
@@ -36,8 +34,7 @@ public class DNAViewer extends Viewer {
 	public DNAViewer(Graph graph, ThreadingModel model) {
 		super(graph, model);
 		
-		Layout layout = new DNALayout(graph);
-		this.enableAutoLayout(layout);
+		this.enableAutoLayout();
 		this.setCloseFramePolicy(Viewer.CloseFramePolicy.EXIT);
 	}
 }
