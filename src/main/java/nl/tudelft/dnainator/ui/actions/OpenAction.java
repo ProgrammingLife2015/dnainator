@@ -4,6 +4,7 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.util.concurrent.ExecutionException;
 
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
@@ -51,8 +52,15 @@ public class OpenAction extends AbstractAction {
 			File edgeFile = openEdgeFile(nodeFile.getPath());
 			lastDirectory = nodeFile.getParent();
 
-			FileLoader loader = new FileLoader(parent, nodeFile, edgeFile);
-			parent.setView(new DNAViewer(loader.doInBackground()).addDefaultView(false));
+			FileLoader loader = new FileLoader(nodeFile, edgeFile);
+			loader.execute();
+
+			try {
+				DNAViewer v = new DNAViewer(loader.get());
+				parent.setViewer(v);
+			} catch (InterruptedException | ExecutionException e1) {
+				parent.spawnErrorDialog(e1.getMessage(), "Error opening file");
+			}
 		}
 	}
 

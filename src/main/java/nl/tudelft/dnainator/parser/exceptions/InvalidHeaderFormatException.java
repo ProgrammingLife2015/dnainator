@@ -4,8 +4,7 @@ package nl.tudelft.dnainator.parser.exceptions;
  * A customized exception that is thrown when a FASTA file contains
  * an incorrectly formatted header section.
  */
-public class InvalidHeaderFormatException extends Exception {
-
+public class InvalidHeaderFormatException extends ParseException {
 	/**
 	 * Generated serialVersionUID.
 	 */
