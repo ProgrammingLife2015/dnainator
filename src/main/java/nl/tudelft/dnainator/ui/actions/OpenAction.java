@@ -39,7 +39,7 @@ public class OpenAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		final JFileChooser chooser = new JFileChooser(lastDirectory);
-		chooser.setFileFilter(new FileNameExtensionFilter("Graphs", "node.graph", "edge.graph"));
+		chooser.setFileFilter(new FileNameExtensionFilter("Graphs", "graph"));
 
 		if (chooser.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
 			File file = chooser.getSelectedFile();
