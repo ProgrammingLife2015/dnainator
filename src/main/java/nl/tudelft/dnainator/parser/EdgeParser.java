@@ -1,7 +1,7 @@
 package nl.tudelft.dnainator.parser;
 
+import nl.tudelft.dnainator.core.Edge;
 import nl.tudelft.dnainator.parser.exceptions.InvalidEdgeFormatException;
-import nl.tudelft.dnainator.util.Edge;
 
 import java.io.IOException;
 import java.util.NoSuchElementException;

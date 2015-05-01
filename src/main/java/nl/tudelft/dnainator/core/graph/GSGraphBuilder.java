@@ -1,7 +1,7 @@
 package nl.tudelft.dnainator.core.graph;
 
+import nl.tudelft.dnainator.core.Edge;
 import nl.tudelft.dnainator.core.SequenceNode;
-import nl.tudelft.dnainator.util.Edge;
 
 import org.graphstream.stream.Sink;
 import org.graphstream.stream.SourceBase;

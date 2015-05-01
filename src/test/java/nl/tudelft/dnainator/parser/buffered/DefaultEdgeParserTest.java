@@ -10,9 +10,9 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.NoSuchElementException;
 
+import nl.tudelft.dnainator.core.Edge;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.exceptions.InvalidEdgeFormatException;
-import nl.tudelft.dnainator.util.Edge;
 
 import org.junit.Test;
 

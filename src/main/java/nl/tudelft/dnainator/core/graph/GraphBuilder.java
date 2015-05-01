@@ -2,12 +2,12 @@ package nl.tudelft.dnainator.core.graph;
 
 import java.io.IOException;
 
+import nl.tudelft.dnainator.core.Edge;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.exceptions.InvalidEdgeFormatException;
 import nl.tudelft.dnainator.parser.exceptions.InvalidHeaderFormatException;
 import nl.tudelft.dnainator.parser.NodeParser;
-import nl.tudelft.dnainator.util.Edge;
 
 /**
  * Interface for constructing graphs.

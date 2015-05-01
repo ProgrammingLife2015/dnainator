@@ -1,6 +1,5 @@
-package nl.tudelft.dnainator.util;
+package nl.tudelft.dnainator.core;
 
-import nl.tudelft.dnainator.core.SequenceNode;
 
 /**
  * Class representing an edge, for containing
