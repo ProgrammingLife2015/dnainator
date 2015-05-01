@@ -7,7 +7,7 @@ import nl.tudelft.dnainator.parser.exceptions.InvalidHeaderFormatException;
 import org.junit.Test;
 
 /**
- * JUnit test suite for {@link HeaderParser.java}.
+ * JUnit test suite for HeaderParser.
  */
 public class HeaderParserTest {
 
