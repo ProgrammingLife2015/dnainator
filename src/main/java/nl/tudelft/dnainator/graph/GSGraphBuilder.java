@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.core.graph;
+package nl.tudelft.dnainator.graph;
 
 import nl.tudelft.dnainator.core.Edge;
 import nl.tudelft.dnainator.core.SequenceNode;

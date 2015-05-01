@@ -16,7 +16,7 @@ import org.mockito.runners.MockitoJUnitRunner;
  * This class will hold more tests later.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class DNAGraphTest {
+public class TreeGraphTest {
 	@Mock private RandomGenerator gen;
 	
 	/**
@@ -24,7 +24,7 @@ public class DNAGraphTest {
 	 */
 	@Test
 	public void testConstructor() {
-		DNAGraph g = new DNAGraph("Test", gen);
+		TreeGraph g = new TreeGraph("Test", gen);
 		assertEquals("Test", g.getId());
 	}
 	
@@ -33,7 +33,7 @@ public class DNAGraphTest {
 	 */
 	@Test
 	public void testDefaultConstructor() {
-		DNAGraph g = new DNAGraph();
+		TreeGraph g = new TreeGraph();
 		assertEquals("Tree", g.getId());
 	}
 	
@@ -43,7 +43,7 @@ public class DNAGraphTest {
 	 */
 	@Test
 	public void testGenBegin() {
-		new DNAGraph("Test", gen);
+		new TreeGraph("Test", gen);
 		Mockito.verify(gen, times(1)).begin();
 		Mockito.verify(gen, atLeastOnce()).nextEvents();
 		Mockito.verify(gen, times(1)).end();

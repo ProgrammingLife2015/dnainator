@@ -11,8 +11,8 @@ import org.graphstream.graph.Graph;
 import org.graphstream.graph.implementations.SingleGraph;
 
 import nl.tudelft.dnainator.core.DefaultSequenceFactory;
-import nl.tudelft.dnainator.core.graph.GSGraphBuilder;
-import nl.tudelft.dnainator.core.graph.GraphBuilder;
+import nl.tudelft.dnainator.graph.GSGraphBuilder;
+import nl.tudelft.dnainator.graph.GraphBuilder;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
 import nl.tudelft.dnainator.parser.buffered.JFASTANodeParser;

@@ -21,20 +21,20 @@ import org.mockito.runners.MockitoJUnitRunner;
  * Test the layout algorithm that will calculate our graphstream layout.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class DNALayoutTest {
+public class TreeLayoutTest {
 	@Mock private Graph g;
 	@Mock private SinkTime t;
 	@Mock private Sink sink;
 	@Mock private Node node;
 	
-	private DNALayout layout;
+	private TreeLayout layout;
 	
 	/**
 	 * Generic initialization.
 	 */
 	@Before
 	public void setup() {
-		layout = new DNALayout(g, t);
+		layout = new TreeLayout(g, t);
 	}
 
 	/**
@@ -42,7 +42,7 @@ public class DNALayoutTest {
 	 */
 	@Test
 	public void testConstructor_Layout() {
-		assertEquals("DNALayout", layout.getLayoutAlgorithmName());
+		assertEquals("TreeLayout", layout.getLayoutAlgorithmName());
 	}
 	
 	/**
