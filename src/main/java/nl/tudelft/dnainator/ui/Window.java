@@ -98,4 +98,23 @@ public class Window extends JFrame {
 
 		return (int) gd.getDefaultConfiguration().getBounds().getHeight();
 	}
+
+	/**
+	 * Spawns an error dialog on this window.
+	 * @param message The dialog's error message.
+	 * @param title The dialog's title.
+	 */
+	public void spawnErrorDialog(String message, String title) {
+		JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
+	}
+
+	/**
+	 * Set the view of this window to a specific graph view.
+	 * @param view The graph view.
+	 */
+	public void setView(ViewPanel view) {
+		getContentPane().removeAll();
+		getContentPane().add(view);
+		setVisible(true);
+	}
 }
