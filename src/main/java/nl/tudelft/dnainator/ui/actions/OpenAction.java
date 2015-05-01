@@ -1,6 +1,5 @@
 package nl.tudelft.dnainator.ui.actions;
 
-import java.awt.Component;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -11,22 +10,28 @@ import javax.swing.JFileChooser;
 import javax.swing.KeyStroke;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
+import nl.tudelft.dnainator.ui.DNAViewer;
+import nl.tudelft.dnainator.ui.Window;
+import nl.tudelft.dnainator.util.FileLoader;
+
 /**
  * A Swing Action to open the "Open File" dialog.
  */
 public class OpenAction extends AbstractAction {
 	private static final long serialVersionUID = -3074966646187196018L;
+	private static final int EXT_LENGTH = 11; // .node.graph
+	private static final String EDGE = ".edge.graph";
 	private static final String LABEL = "Open...";
 	private static final String TOOLTIP = "Open a new graph";
 	private static final char ACCELERATOR = 'O';
-	private Component parent;
+	private Window parent;
 	private String lastDirectory;
 
 	/**
 	 * Construct an OpenAction object.
-	 * @param parent The parent Component to map the Open File dialog on.
+	 * @param parent The parent {@link Window} to map the Open File dialog on.
 	 */
-	public OpenAction(Component parent) {
+	public OpenAction(Window parent) {
 		super(LABEL);
 		putValue(SHORT_DESCRIPTION, TOOLTIP);
 		putValue(MNEMONIC_KEY, Integer.valueOf(KeyEvent.VK_O));
@@ -38,13 +43,20 @@ public class OpenAction extends AbstractAction {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		final JFileChooser chooser = new JFileChooser(lastDirectory);
+		JFileChooser chooser = new JFileChooser(lastDirectory);
 		chooser.setFileFilter(new FileNameExtensionFilter("Graphs", "graph"));
 
 		if (chooser.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
-			File file = chooser.getSelectedFile();
-			lastDirectory = file.getParent();
-			System.out.println(file.getPath());
+			File nodeFile = chooser.getSelectedFile();
+			File edgeFile = openEdgeFile(nodeFile.getPath());
+			lastDirectory = nodeFile.getParent();
+
+			FileLoader loader = new FileLoader(parent, nodeFile, edgeFile);
+			parent.setView(new DNAViewer(loader.doInBackground()).addDefaultView(false));
 		}
+	}
+
+	private File openEdgeFile(String path) {
+		return new File(path.substring(0, path.length() - EXT_LENGTH).concat(EDGE));
 	}
 }
