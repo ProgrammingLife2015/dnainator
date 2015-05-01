@@ -30,18 +30,17 @@ public interface GraphBuilder {
 	 * Construct a graph using the supplied parsers as a source for nodes and edges.
 	 * @param np The {@link NodeParser} to supply the nodes.
 	 * @param ep The {@link EdgeParser} to supply the edges.
-	 * @param gb The {@link GraphBuilder} used to add the nodes and edges.
 	 * @throws IOException If something goes wrong with IO while parsing.
 	 * @throws InvalidHeaderFormatException If the header of a node is of an invalid format.
 	 * @throws InvalidEdgeFormatException If the edge file contains invalid lines.
 	 */
-	static void constructGraph(NodeParser np, EdgeParser ep, GraphBuilder gb)
+	default void constructGraph(NodeParser np, EdgeParser ep)
 			throws IOException, InvalidHeaderFormatException, InvalidEdgeFormatException {
 		while (np.hasNext()) {
-			gb.addNode(np.next());
+			addNode(np.next());
 		}
 		while (ep.hasNext()) {
-			gb.addEdge(ep.next());
+			addEdge(ep.next());
 		}
 	}
 }
