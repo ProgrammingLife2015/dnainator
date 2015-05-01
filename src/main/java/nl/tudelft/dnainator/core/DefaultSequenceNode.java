@@ -3,7 +3,7 @@ package nl.tudelft.dnainator.core;
 /**
  * Implements a default sequence conform the Sequence interface.
  */
-public class DefaultSequence implements SequenceNode {
+public class DefaultSequenceNode implements SequenceNode {
 	
 	private int id;
 	private String source;
@@ -19,7 +19,7 @@ public class DefaultSequence implements SequenceNode {
 	 * @param end The end position of the sequence.
 	 * @param sequence The sequence.
 	 */
-	public DefaultSequence(int id, String source, int start, int end, String sequence) {
+	public DefaultSequenceNode(int id, String source, int start, int end, String sequence) {
 		this.id = id;
 		this.source = source;
 		this.start = start;

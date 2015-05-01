@@ -9,14 +9,14 @@ import org.graphstream.stream.SourceBase;
 /**
  * This class realizes a graphfactory using GraphStream as it's backend.
  */
-public class GSGraphFactory extends SourceBase implements GraphBuilder {
+public class GSGraphBuilder extends SourceBase implements GraphBuilder {
 	private int edgecount;
 	
 	/**
 	 * This factory constructs a GraphStream graph with the given title.
 	 * @param g		the initial sink of the graphfactory
 	 */
-	public GSGraphFactory(Sink g) {
+	public GSGraphBuilder(Sink g) {
 		this.addSink(g);
 	}
 	
