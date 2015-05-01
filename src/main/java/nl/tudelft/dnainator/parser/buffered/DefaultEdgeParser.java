@@ -48,7 +48,7 @@ public class DefaultEdgeParser extends BufferedEdgeParser {
 		if (first == -1) {
 			return null;
 		}
-		return new Edge<>(parseSource((char) first), parseDest());
+		return new Edge<>(parseSource(first), parseDest());
 	}
 
 	/*
@@ -58,9 +58,9 @@ public class DefaultEdgeParser extends BufferedEdgeParser {
 	 * @return The source id, as an int.
 	 * @throws IOException Thrown when the reader fails.
 	 */
-	private String parseSource(char first) throws IOException, InvalidEdgeFormatException {
+	private String parseSource(int first) throws IOException, InvalidEdgeFormatException {
 		StringBuilder source = new StringBuilder(ID_LENGTH_GUESS);
-		char next = first;
+		char next = (char) eatSpaces(first);
 
 		do {
 			source.append(next);
@@ -68,6 +68,13 @@ public class DefaultEdgeParser extends BufferedEdgeParser {
 		} while (next != ' ');
 
 		return source.toString();
+	}
+
+	private int eatSpaces(int next) throws IOException {
+		while ((char) next == ' ') {
+			next = br.read();
+		}
+		return next;
 	}
 
 	/*
@@ -78,16 +85,21 @@ public class DefaultEdgeParser extends BufferedEdgeParser {
 	 */
 	private String parseDest() throws IOException, InvalidEdgeFormatException {
 		StringBuilder dest = new StringBuilder(ID_LENGTH_GUESS);
-		int point = br.read();
+		int point = eatSpaces(br.read());
 		char next;
 
 		while (point != -1) {
 			next = (char) point;
-			if (next == '\n' || next == '\r') {
+			switch (next) {
+			case '\n': case '\r':
 				return dest.toString();
+			case ' ':
+				point = eatSpaces(br.read());
+				break;
+			default:
+				dest.append(next);
+				point = br.read();
 			}
-			dest.append(next);
-			point = br.read();
 		}
 
 		return dest.toString();

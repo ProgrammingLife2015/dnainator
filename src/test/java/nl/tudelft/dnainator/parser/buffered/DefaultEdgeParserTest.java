@@ -79,4 +79,36 @@ public class DefaultEdgeParserTest {
 		}
 	}
 
+	/**
+	 * Tests parsing lines containing leading, middle and trailing
+	 * whitespace. The parser should ignore this.
+	 */
+	@Test
+	public void testParseEdgesLeadingMiddleAndTrailingSpaces() {
+		BufferedReader in = toBufferedReader(String.join("\n",
+				"  1 2",			// Leading spaces.
+				"3    4",			// Middle spaces.
+				"6 40   ",			// Trailing spaces.
+				"  123   456   "	// All of them at once.
+				));
+		EdgeParser ep = new DefaultEdgeParser(in);
+		try {
+			assertTrue(ep.hasNext());
+			Edge<String> next = ep.next();
+			assertEdgeEquals(new Edge<>("1", "2"), next);
+			assertTrue(ep.hasNext());
+			next = ep.next();
+			assertEdgeEquals(new Edge<>("3", "4"), next);
+			assertTrue(ep.hasNext());
+			next = ep.next();
+			assertEdgeEquals(new Edge<>("6", "40"), next);
+			assertTrue(ep.hasNext());
+			next = ep.next();
+			assertEdgeEquals(new Edge<>("123", "456"), next);
+			assertFalse(ep.hasNext());
+		} catch (IOException | InvalidEdgeFormatException e) {
+			fail("Shouldn't happen.");
+		}
+	}
+
 }
