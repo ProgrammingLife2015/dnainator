@@ -6,13 +6,13 @@ import org.graphstream.graph.implementations.SingleGraph;
 /**
  * The graph that contains our DNA samples.
  */
-public class DNAGraph extends SingleGraph {
+public class TreeGraph extends SingleGraph {
 	private static final int N_NODES = 100;
 
 	/**
 	 * Constructs a new graph.
 	 */
-	public DNAGraph() {
+	public TreeGraph() {
 		this("Tree", new TreeGenerator());
 	}
 	
@@ -21,7 +21,7 @@ public class DNAGraph extends SingleGraph {
 	 * @param name	name of the graph
 	 * @param gen	generator of this graph
 	 */
-	public DNAGraph(String name, Generator gen) {
+	public TreeGraph(String name, Generator gen) {
 		super(name);
 		
 		gen.addSink(this);

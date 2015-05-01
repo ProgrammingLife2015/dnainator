@@ -1,7 +1,7 @@
 package nl.tudelft.dnainator;
 
-import nl.tudelft.dnainator.graph.DNAGraphTest;
-import nl.tudelft.dnainator.graph.DNALayoutTest;
+import nl.tudelft.dnainator.graph.TreeGraphTest;
+import nl.tudelft.dnainator.graph.TreeLayoutTest;
 import nl.tudelft.dnainator.graph.TreeGeneratorTest;
 
 import org.junit.runner.RunWith;
@@ -14,8 +14,8 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-	DNAGraphTest.class,
-	DNALayoutTest.class,
+	TreeGraphTest.class,
+	TreeLayoutTest.class,
 	TreeGeneratorTest.class
 })
 public class AllTests {

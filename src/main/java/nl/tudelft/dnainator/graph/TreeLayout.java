@@ -11,8 +11,8 @@ import org.graphstream.ui.layout.Layout;
  * This class will (eventually) compute the layout for a graph of DNA Sequences.
  * For now this class calculates a tree layout based on node index.
  */
-public class DNALayout extends PipeBase implements Layout {
-	private static final String NAME = "DNALayout";
+public class TreeLayout extends PipeBase implements Layout {
+	private static final String NAME = "TreeLayout";
 
 	private SinkTime sinkTime;
 	private long lastStepTime;
@@ -21,19 +21,19 @@ public class DNALayout extends PipeBase implements Layout {
 	private static final int SCALE = 4;
 
 	/**
-	 * Creates a new DNALayout given a certain graph.
+	 * Creates a new TreeLayout given a certain graph.
 	 * @param g	the graph that needs a layout
 	 */
-	public DNALayout(Graph g) {
+	public TreeLayout(Graph g) {
 		this(g, new SinkTime());
 	}
 
 	/**
-	 * Creates a new DNALayout given a certain graph.
+	 * Creates a new TreeLayout given a certain graph.
 	 * @param g	the graph that needs a layout
 	 * @param t	the internal timer of this layout
 	 */
-	public DNALayout(Graph g, SinkTime t) {
+	public TreeLayout(Graph g, SinkTime t) {
 		sinkTime = t;
 		sourceTime.setSinkTime(sinkTime);
 		internalGraph = g;

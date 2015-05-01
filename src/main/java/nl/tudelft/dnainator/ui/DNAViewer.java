@@ -1,6 +1,6 @@
 package nl.tudelft.dnainator.ui;
 
-import nl.tudelft.dnainator.graph.DNAGraph;
+import nl.tudelft.dnainator.graph.TreeGraph;
 
 import org.graphstream.graph.Graph;
 import org.graphstream.ui.view.Viewer;
@@ -15,7 +15,7 @@ public class DNAViewer extends Viewer {
 	 * and ThreadingModel.GRAPH_IN_ANOTHER_THREAD.
 	 */
 	public DNAViewer() {
-		this(new DNAGraph(), ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+		this(new TreeGraph());
 	}
 
 	/**

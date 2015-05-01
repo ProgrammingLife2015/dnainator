@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.core.graph;
+package nl.tudelft.dnainator.graph;
 
 import java.io.IOException;
 
