@@ -1,18 +1,18 @@
 package nl.tudelft.dnainator.parser.buffered;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.NoSuchElementException;
 
 import nl.tudelft.dnainator.core.Edge;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.exceptions.InvalidEdgeFormatException;
+import static nl.tudelft.dnainator.parser.buffered.ParserTestUtils.toBufferedReader;
+import static nl.tudelft.dnainator.parser.buffered.ParserTestUtils.assertEdgeEquals;
 
 import org.junit.Test;
 
@@ -21,15 +21,6 @@ import org.junit.Test;
  * {@link EdgeParser}.
  */
 public class DefaultEdgeParserTest {
-
-	private static BufferedReader toBufferedReader(String s) {
-		return new BufferedReader(new StringReader(s));
-	}
-
-	private static void assertEdgeEquals(Edge<String> expected, Edge<String> actual) {
-		assertEquals(expected.getSource(), actual.getSource());
-		assertEquals(expected.getDest(), actual.getDest());
-	}
 
 	/**
 	 * Tests an empty input.
