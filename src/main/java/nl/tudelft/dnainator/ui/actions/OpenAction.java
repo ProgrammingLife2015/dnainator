@@ -20,6 +20,7 @@ public class OpenAction extends AbstractAction {
 	private static final String TOOLTIP = "Open a new graph";
 	private static final char ACCELERATOR = 'O';
 	private Component parent;
+	private String lastDirectory;
 
 	/**
 	 * Construct an OpenAction object.
@@ -32,15 +33,17 @@ public class OpenAction extends AbstractAction {
 		putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(ACCELERATOR,
 		          Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
 		this.parent = parent;
+		this.lastDirectory = null;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		final JFileChooser chooser = new JFileChooser();
+		final JFileChooser chooser = new JFileChooser(lastDirectory);
 		chooser.setFileFilter(new FileNameExtensionFilter("Graphs", "node.graph", "edge.graph"));
 
 		if (chooser.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
 			File file = chooser.getSelectedFile();
+			lastDirectory = file.getParent();
 			System.out.println(file.getPath());
 		}
 	}
