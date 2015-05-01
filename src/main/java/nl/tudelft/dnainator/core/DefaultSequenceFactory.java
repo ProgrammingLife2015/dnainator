@@ -7,7 +7,7 @@ public class DefaultSequenceFactory implements SequenceFactory {
 
 	@Override
 	public SequenceNode build(String id, String refs, int startPos, int endPos, String sequence) {
-		return new DefaultSequenceNode(Integer.parseInt(id), refs, startPos, endPos, sequence);
+		return new DefaultSequenceNode(id, refs, startPos, endPos, sequence);
 	}
 
 }

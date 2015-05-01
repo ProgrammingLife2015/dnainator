@@ -28,7 +28,7 @@ public class GSGraphBuilder extends SourceBase implements GraphBuilder {
 
 	@Override
 	public void addNode(SequenceNode s) {
-		String id = Integer.toString(s.getId());
+		String id = s.getId();
 		sendNodeAdded(this.sourceId, id);
 		sendNodeAttributeAdded(this.sourceId, id, "start", s.getStartRef());
 		sendNodeAttributeAdded(this.sourceId, id, "end", s.getEndRef());

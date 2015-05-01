@@ -8,7 +8,7 @@ public interface SequenceNode {
 	 * The id of this nucleotide sequence, for example it's node number.
 	 * @return	the id of this sequence
 	 */
-	int getId();
+	String getId();
 	
 	/**
 	 * The associated source.

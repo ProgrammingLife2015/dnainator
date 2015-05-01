@@ -5,7 +5,7 @@ package nl.tudelft.dnainator.core;
  */
 public class DefaultSequenceNode implements SequenceNode {
 	
-	private int id;
+	private String id;
 	private String source;
 	private int start;
 	private int end;
@@ -19,7 +19,7 @@ public class DefaultSequenceNode implements SequenceNode {
 	 * @param end The end position of the sequence.
 	 * @param sequence The sequence.
 	 */
-	public DefaultSequenceNode(int id, String source, int start, int end, String sequence) {
+	public DefaultSequenceNode(String id, String source, int start, int end, String sequence) {
 		this.id = id;
 		this.source = source;
 		this.start = start;
@@ -28,7 +28,7 @@ public class DefaultSequenceNode implements SequenceNode {
 	}
 	
 	@Override
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 
