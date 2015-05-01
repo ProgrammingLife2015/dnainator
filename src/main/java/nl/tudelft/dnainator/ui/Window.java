@@ -50,7 +50,7 @@ public class Window extends JFrame {
 
 		/* Populate the window. */
 		setJMenuBar(createMenuBar());
-		add(new DNAViewer().addDefaultView(false));
+		setView(new DNAViewer().addDefaultView(false));
 
 		/* Finally: show the window. */
 		setVisible(true);
@@ -115,6 +115,7 @@ public class Window extends JFrame {
 	public void setView(ViewPanel view) {
 		getContentPane().removeAll();
 		getContentPane().add(view);
+		view.addMouseListener(new DNAMouseListener(view.getCamera()));
 		setVisible(true);
 	}
 }
