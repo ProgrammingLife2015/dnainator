@@ -42,7 +42,7 @@ public class FileLoader extends SwingWorker<Graph, Void> {
 
 	@Override
 	public Graph doInBackground() {
-		Graph g = new SingleGraph("Tree");
+		Graph g = new SingleGraph("DNA");
 		GraphBuilder gb = new GSGraphBuilder(g);
 		try {
 			EdgeParser ep = new DefaultEdgeParser(new BufferedReader(new InputStreamReader(

@@ -13,10 +13,11 @@ import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
 
-import org.graphstream.ui.swingViewer.ViewPanel;
-
 import nl.tudelft.dnainator.ui.actions.FilterAction;
 import nl.tudelft.dnainator.ui.actions.OpenAction;
+
+import org.graphstream.ui.swingViewer.ViewPanel;
+import org.graphstream.ui.view.Viewer;
 
 /**
  * DNAinator's main window.
@@ -28,6 +29,7 @@ public class Window extends JFrame {
 	private static final int WIDTH = 600;
 	private static final int HEIGHT = 600;
 	private static final String[] FILTERS = { "Foo", "Bar", "Baz" };
+	private Viewer viewer;
 
 	/**
 	 * Creates a new main window.
@@ -50,7 +52,7 @@ public class Window extends JFrame {
 
 		/* Populate the window. */
 		setJMenuBar(createMenuBar());
-		setView(new DNAViewer().addDefaultView(false));
+		setViewer(new DNAViewer());
 
 		/* Finally: show the window. */
 		setVisible(true);
@@ -110,12 +112,18 @@ public class Window extends JFrame {
 
 	/**
 	 * Set the view of this window to a specific graph view.
-	 * @param view The graph view.
+	 * @param v	The graph viewer.
 	 */
-	public void setView(ViewPanel view) {
-		getContentPane().removeAll();
-		getContentPane().add(view);
-		view.addMouseListener(new DNAMouseListener(view.getCamera()));
+	public void setViewer(Viewer v) {
+		if (viewer != null) {
+			viewer.close();
+			getContentPane().removeAll();
+		}
+
+		viewer = v;
+		ViewPanel vp = viewer.addDefaultView(false);
+		getContentPane().add(vp);
+		vp.addMouseListener(new DNAMouseListener(vp.getCamera()));
 		setVisible(true);
 	}
 }
