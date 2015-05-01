@@ -10,7 +10,10 @@ import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
+
+import org.graphstream.ui.swingViewer.ViewPanel;
 
 import nl.tudelft.dnainator.ui.actions.FilterAction;
 import nl.tudelft.dnainator.ui.actions.OpenAction;
@@ -18,39 +21,39 @@ import nl.tudelft.dnainator.ui.actions.OpenAction;
 /**
  * DNAinator's main window.
  */
-public class Window {
+public class Window extends JFrame {
+	private static final long serialVersionUID = 6099336881439141487L;
 	private static final String DNAINATOR = "DNAinator";
 	private static final String ICON = "/ui/icons/dnainator.png";
 	private static final int WIDTH = 600;
 	private static final int HEIGHT = 600;
 	private static final String[] FILTERS = { "Foo", "Bar", "Baz" };
-	private JFrame window;
 
 	/**
 	 * Creates a new main window.
 	 */
 	public Window() {
-		window = new JFrame(DNAINATOR);
+		super(DNAINATOR);
 
 		/* Appearance. */
 		try {
-			window.setIconImage(ImageIO.read(new File(getClass().getResource(ICON).toURI())));
+			setIconImage(ImageIO.read(new File(getClass().getResource(ICON).toURI())));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		/* Size & placement. */
-		window.setMinimumSize(new Dimension(WIDTH, HEIGHT));
-		window.setBounds(getScreenWidth() / 2 - WIDTH / 2,
+		setMinimumSize(new Dimension(WIDTH, HEIGHT));
+		setBounds(getScreenWidth() / 2 - WIDTH / 2,
 				getScreenHeight() / 2 - HEIGHT / 2, WIDTH, HEIGHT);
-		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		/* Populate the window. */
-		window.setJMenuBar(createMenuBar());
-		window.add(new DNAViewer().addDefaultView(false));
+		setJMenuBar(createMenuBar());
+		add(new DNAViewer().addDefaultView(false));
 
 		/* Finally: show the window. */
-		window.setVisible(true);
+		setVisible(true);
 	}
 
 	/**
@@ -61,7 +64,7 @@ public class Window {
 
 		JMenu file = new JMenu("File");
 		file.setMnemonic('F');
-		file.add(new OpenAction(window));
+		file.add(new OpenAction(this));
 		menubar.add(file);
 
 		JMenu filter = new JMenu("Filter");
