@@ -52,7 +52,7 @@ public class OpenAction extends AbstractAction {
 			lastDirectory = nodeFile.getParent();
 
 			FileLoader loader = new FileLoader(parent, nodeFile, edgeFile);
-			parent.setView(new DNAViewer(loader.doInBackground()).addDefaultView(false));
+			parent.setViewer(new DNAViewer(loader.doInBackground()));
 		}
 	}
 
