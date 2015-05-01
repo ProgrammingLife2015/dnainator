@@ -13,10 +13,19 @@ import org.graphstream.ui.view.Viewer;
  */
 public class DNAViewer extends Viewer {
 	/**
-	 * Creates a new GraphViewer.
+	 * Creates a new GraphViewer, with a default graph
+	 * and ThreadingModel.GRAPH_IN_ANOTHER_THREAD.
 	 */
 	public DNAViewer() {
 		this(new DNAGraph(), ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+	}
+
+	/**
+	 * Creates a new GraphViewer, with ThreadingModel.GRAPH_IN_ANOTHER_THREAD.
+	 * @param graph The graph of strains.
+	 */
+	public DNAViewer(Graph graph) {
+		this(graph, ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
 	}
 
 	/**
