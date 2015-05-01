@@ -16,9 +16,9 @@ public interface GraphBuilder {
 
 	/**
 	 * Add an {@link Edge} to the graph.
-	 * @param e The edge containing the source and destination node.
+	 * @param edge The edge containing the source and destination node.
 	 */
-	void addEdge(Edge<Integer> e);
+	void addEdge(Edge<String> edge);
 
 	/**
 	 * Add a {@link SequenceNode} to the graph.

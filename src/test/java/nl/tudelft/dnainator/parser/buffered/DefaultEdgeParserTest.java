@@ -26,7 +26,7 @@ public class DefaultEdgeParserTest {
 		return new BufferedReader(new StringReader(s));
 	}
 
-	private static void assertEdgeEquals(Edge<Integer> expected, Edge<Integer> actual) {
+	private static void assertEdgeEquals(Edge<String> expected, Edge<String> actual) {
 		assertEquals(expected.getSource(), actual.getSource());
 		assertEquals(expected.getDest(), actual.getDest());
 	}
@@ -61,22 +61,19 @@ public class DefaultEdgeParserTest {
 				));
 		EdgeParser ep = new DefaultEdgeParser(in);
 		try {
-			// Turn of Magic number checking of checkstyle, these are just test numbers.
-			//CHECKSTYLE.OFF: MagicNumber
 			assertTrue(ep.hasNext());
-			Edge<Integer> next = ep.next();
-			assertEdgeEquals(new Edge<>(1, 2), next);
+			Edge<String> next = ep.next();
+			assertEdgeEquals(new Edge<>("1", "2"), next);
 			assertTrue(ep.hasNext());
 			next = ep.next();
-			assertEdgeEquals(new Edge<>(3, 4), next);
+			assertEdgeEquals(new Edge<>("3", "4"), next);
 			assertTrue(ep.hasNext());
 			next = ep.next();
-			assertEdgeEquals(new Edge<>(6, 40), next);
+			assertEdgeEquals(new Edge<>("6", "40"), next);
 			assertTrue(ep.hasNext());
 			next = ep.next();
-			assertEdgeEquals(new Edge<>(123, 456), next);
+			assertEdgeEquals(new Edge<>("123", "456"), next);
 			assertFalse(ep.hasNext());
-			//CHECKSTYLE.ON: MagicNumber
 		} catch (IOException | InvalidEdgeFormatException e) {
 			fail("Shouldn't happen.");
 		}

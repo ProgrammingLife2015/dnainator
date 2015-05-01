@@ -30,6 +30,6 @@ public interface EdgeParser {
 	 * can happen when, for example, the source or destination is not a number, or when the
 	 * destination is missing.
 	 */
-	Edge<Integer> next() throws IOException, InvalidEdgeFormatException;
+	Edge<String> next() throws IOException, InvalidEdgeFormatException;
 
 }

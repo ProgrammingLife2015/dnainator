@@ -21,9 +21,9 @@ public class GSGraphBuilder extends SourceBase implements GraphBuilder {
 	}
 	
 	@Override
-	public void addEdge(Edge<Integer> e) {
+	public void addEdge(Edge<String> e) {
 		sendEdgeAdded(this.sourceId, Integer.toString(edgecount++),
-					  Integer.toString(e.getSource()), Integer.toString(e.getDest()), false);
+				e.getSource(), e.getDest(), false);
 	}
 
 	@Override
