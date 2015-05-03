@@ -4,7 +4,7 @@ package nl.tudelft.dnainator.core;
  * Implements a default sequence conform the Sequence interface.
  */
 public class DefaultSequenceNode implements SequenceNode {
-	
+
 	private String id;
 	private String source;
 	private int start;
@@ -26,7 +26,7 @@ public class DefaultSequenceNode implements SequenceNode {
 		this.end = end;
 		this.sequence = sequence;
 	}
-	
+
 	@Override
 	public String getId() {
 		return id;
@@ -46,9 +46,15 @@ public class DefaultSequenceNode implements SequenceNode {
 	public int getEndRef() {
 		return end;
 	}
-	
+
 	@Override
 	public String getSequence() {
 		return sequence;
+	}
+
+	@Override
+	public String toString() {
+		return "SequenceNode<" + getId() + "," + getStartRef() + "," + getEndRef()
+				+ "," + getSource() + "," + getSequence() + ">";
 	}
 }

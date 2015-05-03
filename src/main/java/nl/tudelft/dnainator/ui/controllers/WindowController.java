@@ -31,7 +31,7 @@ public class WindowController {
 	 */
 	public WindowController() {
 		loadService = new FileLoadService();
-		loadService.setOnSucceeded(e -> System.out.println(loadService.getValue().toString()));
+//		loadService.setOnSucceeded(e -> System.out.println(loadService.getValue()));
 		loadService.setOnFailed(e ->
 			new ExceptionDialog(loadService.getException(), "Error loading file!"));
 	}
