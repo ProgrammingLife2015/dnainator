@@ -107,6 +107,7 @@ public class DefaultEdgeParser extends BufferedEdgeParser {
 	private String parseDest() throws IOException, InvalidEdgeFormatException {
 		StringBuilder dest = new StringBuilder(ID_LENGTH_GUESS);
 		int point = eatSpaces(br.read());
+		boolean destParsed = false;
 		char next;
 
 		parseLoop: while (point != -1) {
@@ -115,9 +116,13 @@ public class DefaultEdgeParser extends BufferedEdgeParser {
 			case '\n': case '\r':
 				break parseLoop;
 			case ' ':
+				destParsed = true;
 				point = eatSpaces(br.read());
 				break;
 			default:
+				if (destParsed) {
+					throw new InvalidEdgeFormatException("Found extra node");
+				}
 				dest.append(next);
 				point = br.read();
 			}

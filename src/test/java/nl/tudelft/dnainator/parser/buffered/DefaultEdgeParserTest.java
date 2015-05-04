@@ -118,11 +118,34 @@ public class DefaultEdgeParserTest {
 			assertTrue(ep.hasNext());
 			Edge<String> next = ep.next();
 			assertEdgeEquals(new Edge<>("1", "2"), next);
-			next = ep.next();
+			ep.next();
 		} catch (IOException e) {
 			fail("Shouldn't happen.");
 		}
 	}
+
+	/**
+	 * Tests exception throwing.
+	 * @throws InvalidEdgeFormatException on test success.
+	 */
+	@Test(expected = InvalidEdgeFormatException.class)
+	public void testParseEdgesExtraNode() throws InvalidEdgeFormatException {
+		BufferedReader in = toBufferedReader(String.join("\n",
+				"1 2",
+				"3 4 5",
+				"6 7"
+				));
+		EdgeParser ep = new DefaultEdgeParser(in);
+		try {
+			assertTrue(ep.hasNext());
+			Edge<String> next = ep.next();
+			assertEdgeEquals(new Edge<>("1", "2"), next);
+			ep.next();
+		} catch (IOException e) {
+			fail("Shouldn't happen.");
+		}
+	}
+
 
 	/**
 	 * Test for a empty line.
