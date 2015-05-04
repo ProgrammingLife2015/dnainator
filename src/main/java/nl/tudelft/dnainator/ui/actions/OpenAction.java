@@ -9,11 +9,11 @@ import java.util.concurrent.ExecutionException;
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 import javax.swing.KeyStroke;
-import javax.swing.filechooser.FileNameExtensionFilter;
 
 import nl.tudelft.dnainator.ui.DNAViewer;
 import nl.tudelft.dnainator.ui.Window;
 import nl.tudelft.dnainator.util.FileLoader;
+import nl.tudelft.dnainator.util.DoubleFileExtensionFilter;
 
 /**
  * A Swing Action to open the "Open File" dialog.
@@ -45,7 +45,7 @@ public class OpenAction extends AbstractAction {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		JFileChooser chooser = new JFileChooser(lastDirectory);
-		chooser.setFileFilter(new FileNameExtensionFilter("Graphs", "graph"));
+		chooser.setFileFilter(new DoubleFileExtensionFilter("Graphs", "node.graph"));
 
 		if (chooser.showOpenDialog(parent) == JFileChooser.APPROVE_OPTION) {
 			File nodeFile = chooser.getSelectedFile();
