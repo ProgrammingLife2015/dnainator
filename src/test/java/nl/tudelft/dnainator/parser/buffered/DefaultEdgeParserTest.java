@@ -39,6 +39,21 @@ public class DefaultEdgeParserTest {
 	}
 
 	/**
+	 * Tests an empty input.
+	 * @throws InvalidEdgeFormatException means that the test succeeded.
+	 */
+	@Test(expected = InvalidEdgeFormatException.class)
+	public void testParseOneCharacter() throws InvalidEdgeFormatException {
+		BufferedReader in = toBufferedReader("a");
+		EdgeParser ep = new DefaultEdgeParser(in);
+		try {
+			ep.next();
+		} catch (IOException e) {
+			fail("Shouldn't happen.");
+		}
+	}
+
+	/**
 	 * Tests a good weather situation, where the input is in
 	 * correct format.
 	 */
@@ -145,7 +160,6 @@ public class DefaultEdgeParserTest {
 			fail("Shouldn't happen.");
 		}
 	}
-
 
 	/**
 	 * Test for a empty line.

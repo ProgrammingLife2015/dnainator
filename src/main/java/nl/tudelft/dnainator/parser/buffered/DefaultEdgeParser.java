@@ -16,6 +16,7 @@ import java.util.Set;
 public class DefaultEdgeParser extends BufferedEdgeParser {
 	private Edge<String> current;
 	private boolean needParse = true; // Whether we have to parse a new line or not.
+	private int currentChar;
 	private static final int ID_LENGTH_GUESS = 8;
 	private static final Set<Character> WHITESPACE = new HashSet<>();
 
@@ -52,11 +53,12 @@ public class DefaultEdgeParser extends BufferedEdgeParser {
 	 * @throws IOException Thrown when the reader fails.
 	 */
 	private Edge<String> parse() throws IOException, InvalidEdgeFormatException {
-		int first = eatWhitespace(br.read());
-		if (first == -1) {
+		currentChar = br.read();
+		eatWhitespace();
+		if (currentChar == -1) {
 			return null;
 		}
-		return new Edge<>(parseSource(first), parseDest());
+		return new Edge<>(parseSource(), parseDest());
 	}
 
 	/*
@@ -66,14 +68,16 @@ public class DefaultEdgeParser extends BufferedEdgeParser {
 	 * @return The source id, as an int.
 	 * @throws IOException Thrown when the reader fails.
 	 */
-	private String parseSource(int first) throws IOException, InvalidEdgeFormatException {
+	private String parseSource() throws IOException, InvalidEdgeFormatException {
 		StringBuilder source = new StringBuilder(ID_LENGTH_GUESS);
-		char next = (char) eatSpaces(first);
+		char next = (char) currentChar;
 
 		do {
 			source.append(next);
-			next = (char) br.read();
-		} while (next != ' ');
+			currentChar = br.read();
+			next = (char) currentChar;
+		} while (currentChar != -1 && !WHITESPACE.contains(next));
+		eatSpaces();
 
 		return source.toString();
 	}
@@ -84,18 +88,16 @@ public class DefaultEdgeParser extends BufferedEdgeParser {
 	 * @return the non-space character (or -1 if end is reached).
 	 * @throws IOException if something went wrong I/O-wise.
 	 */
-	private int eatSpaces(int next) throws IOException {
-		while ((char) next == ' ') {
-			next = br.read();
+	private void eatSpaces() throws IOException {
+		while ((char) currentChar == ' ') {
+			currentChar = br.read();
 		}
-		return next;
 	}
 
-	private int eatWhitespace(int next) throws IOException {
-		while (WHITESPACE.contains((char) next)) {
-			next = br.read();
+	private void eatWhitespace() throws IOException {
+		while (WHITESPACE.contains((char) currentChar)) {
+			currentChar = br.read();
 		}
-		return next;
 	}
 
 	/*
@@ -106,25 +108,25 @@ public class DefaultEdgeParser extends BufferedEdgeParser {
 	 */
 	private String parseDest() throws IOException, InvalidEdgeFormatException {
 		StringBuilder dest = new StringBuilder(ID_LENGTH_GUESS);
-		int point = eatSpaces(br.read());
 		boolean destParsed = false;
 		char next;
 
-		parseLoop: while (point != -1) {
-			next = (char) point;
+		while (currentChar != -1) {
+			next = (char) currentChar;
 			switch (next) {
 			case '\n': case '\r':
-				break parseLoop;
+				currentChar = -1;
+				break;
 			case ' ':
 				destParsed = true;
-				point = eatSpaces(br.read());
+				eatSpaces();
 				break;
 			default:
 				if (destParsed) {
 					throw new InvalidEdgeFormatException("Found extra node");
 				}
 				dest.append(next);
-				point = br.read();
+				currentChar = br.read();
 			}
 		}
 
