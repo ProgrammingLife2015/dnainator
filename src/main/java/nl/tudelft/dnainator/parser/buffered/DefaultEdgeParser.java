@@ -5,7 +5,10 @@ import nl.tudelft.dnainator.parser.exceptions.InvalidEdgeFormatException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * An implementation for parsing an edge file input stream.
@@ -14,6 +17,11 @@ public class DefaultEdgeParser extends BufferedEdgeParser {
 	private Edge<String> current;
 	private boolean needParse = true; // Whether we have to parse a new line or not.
 	private static final int ID_LENGTH_GUESS = 8;
+	private static final Set<Character> WHITESPACE = new HashSet<>();
+
+	static {
+		Collections.addAll(WHITESPACE, '\n', '\r', '\t', ' ');
+	}
 
 	/**
 	 * Constructs a {@link DefaultEdgeParser}, which reads from
@@ -44,7 +52,7 @@ public class DefaultEdgeParser extends BufferedEdgeParser {
 	 * @throws IOException Thrown when the reader fails.
 	 */
 	private Edge<String> parse() throws IOException, InvalidEdgeFormatException {
-		int first = eatSpaces(br.read());
+		int first = eatWhitespace(br.read());
 		if (first == -1) {
 			return null;
 		}
@@ -78,6 +86,13 @@ public class DefaultEdgeParser extends BufferedEdgeParser {
 	 */
 	private int eatSpaces(int next) throws IOException {
 		while ((char) next == ' ') {
+			next = br.read();
+		}
+		return next;
+	}
+
+	private int eatWhitespace(int next) throws IOException {
+		while (WHITESPACE.contains((char) next)) {
 			next = br.read();
 		}
 		return next;
