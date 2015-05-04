@@ -1,40 +1,47 @@
 package nl.tudelft.dnainator;
 
-import javax.swing.SwingUtilities;
-import javax.swing.UIManager;
+import java.io.IOException;
 
-import nl.tudelft.dnainator.ui.Window;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.layout.BorderPane;
+import javafx.stage.Stage;
 
 /**
- * DNAinator's entry point. This class merely sets the UI's look and feel
- * and then creates a window.
+ * DNAinator's main window, from which all interaction will occur.
+ * <p>
+ * The {@link #start(Stage) start} method will automatically load
+ * the required fxml files, which in turn instantiates all controllers.
+ * </p>
  */
-public final class DNAinator {
+public class DNAinator extends Application {
+	private static final String DNAINATOR = "DNAinator";
+	private static final String FXML = "/ui/fxml/dnainator.fxml";
+	private static final String ICON = "/ui/icons/dnainator.png";
 
-	private DNAinator() {
-		super();
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+		primaryStage.setTitle(DNAINATOR);
+		primaryStage.getIcons().add(new Image(getClass().getResourceAsStream(ICON)));
+		primaryStage.setMaximized(true);
+		try {
+			BorderPane rootLayout = FXMLLoader.load(getClass().getResource(FXML));
+			Scene scene = new Scene(rootLayout);
+			primaryStage.setScene(scene);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		primaryStage.show();
 	}
 
 	/**
-	 * DNAinator entry point.
-	 * 
+	 * DNAinator's entry point. Fires up a new instance
+	 * of DNAinator with its own window.
 	 * @param args Command-line arguments, unused for now.
 	 */
 	public static void main(String[] args) {
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			if (System.getProperty("os.name").equals("Mac OS X")) {
-				System.setProperty("apple.laf.useScreenMenuBar", "true");
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		/* Be thread-safe. */
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				new Window();
-			}
-		});
+		launch(args);
 	}
 }

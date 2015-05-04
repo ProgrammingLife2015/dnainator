@@ -1,0 +1,7 @@
+.dialog-pane .label {
+	-fx-font-size: 16pt;
+	-fx-font-weight: bold;
+	-fx-text-fill: #333333;
+	-fx-alignment: center;
+	-fx-label-padding: 10 10 10 10;
+}
