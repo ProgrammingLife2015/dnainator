@@ -44,7 +44,7 @@ public class DefaultEdgeParser extends BufferedEdgeParser {
 	 * @throws IOException Thrown when the reader fails.
 	 */
 	private Edge<String> parse() throws IOException, InvalidEdgeFormatException {
-		int first = br.read();
+		int first = eatSpaces(br.read());
 		if (first == -1) {
 			return null;
 		}
@@ -70,6 +70,12 @@ public class DefaultEdgeParser extends BufferedEdgeParser {
 		return source.toString();
 	}
 
+	/**
+	 * Eats spaces until a non-space character is found.
+	 * @param next the next character to test for space.
+	 * @return the non-space character (or -1 if end is reached).
+	 * @throws IOException if something went wrong I/O-wise.
+	 */
 	private int eatSpaces(int next) throws IOException {
 		while ((char) next == ' ') {
 			next = br.read();
@@ -88,11 +94,11 @@ public class DefaultEdgeParser extends BufferedEdgeParser {
 		int point = eatSpaces(br.read());
 		char next;
 
-		while (point != -1) {
+		parseLoop: while (point != -1) {
 			next = (char) point;
 			switch (next) {
 			case '\n': case '\r':
-				return dest.toString();
+				break parseLoop;
 			case ' ':
 				point = eatSpaces(br.read());
 				break;
@@ -102,6 +108,9 @@ public class DefaultEdgeParser extends BufferedEdgeParser {
 			}
 		}
 
+		if (dest.length() == 0) {
+			throw new InvalidEdgeFormatException("Missing destination node");
+		}
 		return dest.toString();
 	}
 

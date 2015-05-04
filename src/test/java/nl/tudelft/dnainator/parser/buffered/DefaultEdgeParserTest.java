@@ -102,4 +102,65 @@ public class DefaultEdgeParserTest {
 		}
 	}
 
+	/**
+	 * Tests exception throwing.
+	 * @throws InvalidEdgeFormatException on test success.
+	 */
+	@Test(expected = InvalidEdgeFormatException.class)
+	public void testParseEdgesMissingDest() throws InvalidEdgeFormatException {
+		BufferedReader in = toBufferedReader(String.join("\n",
+				"1 2",
+				"3 ",
+				"4 5"
+				));
+		EdgeParser ep = new DefaultEdgeParser(in);
+		try {
+			assertTrue(ep.hasNext());
+			Edge<String> next = ep.next();
+			assertEdgeEquals(new Edge<>("1", "2"), next);
+			next = ep.next();
+		} catch (IOException e) {
+			fail("Shouldn't happen.");
+		}
+	}
+
+	/**
+	 * Test for a empty line.
+	 */
+	@Test
+	public void testParseEdgesEmptyLine() {
+		BufferedReader in = toBufferedReader(String.join("\n",
+				"1 2",
+				""
+				));
+		EdgeParser ep = new DefaultEdgeParser(in);
+		try {
+			assertTrue(ep.hasNext());
+			Edge<String> next = ep.next();
+			assertEdgeEquals(new Edge<>("1", "2"), next);
+			assertFalse(ep.hasNext());
+		} catch (IOException | InvalidEdgeFormatException e) {
+			fail("Shouldn't happen.");
+		}
+	}
+
+	/**
+	 * Test for a space-filled line.
+	 */
+	@Test
+	public void testParseEdgesBlankLine() {
+		BufferedReader in = toBufferedReader(String.join("\n",
+				"1 2",
+				"    "
+				));
+		EdgeParser ep = new DefaultEdgeParser(in);
+		try {
+			assertTrue(ep.hasNext());
+			Edge<String> next = ep.next();
+			assertEdgeEquals(new Edge<>("1", "2"), next);
+			assertFalse(ep.hasNext());
+		} catch (IOException | InvalidEdgeFormatException e) {
+			fail("Shouldn't happen.");
+		}
+	}
 }
