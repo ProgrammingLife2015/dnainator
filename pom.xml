@@ -21,6 +21,12 @@
       <version>4.12</version>
       <scope>test</scope>
     </dependency>
+    <!-- See: http://blog.buildpath.de/javafx-testrunner/ -->
+    <dependency>
+      <groupId>de.saxsys</groupId>
+      <artifactId>jfx-testrunner</artifactId>
+      <version>1.0</version>
+      </dependency>
     <dependency>
       <groupId>org.graphstream</groupId>
       <artifactId>gs-core</artifactId>
