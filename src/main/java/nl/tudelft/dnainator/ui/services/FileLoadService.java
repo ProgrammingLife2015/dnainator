@@ -1,24 +1,26 @@
 package nl.tudelft.dnainator.ui.services;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import nl.tudelft.dnainator.core.DefaultSequenceFactory;
 import nl.tudelft.dnainator.graph.Graph;
+import nl.tudelft.dnainator.graph.GraphBuilder;
 import nl.tudelft.dnainator.graph.Neo4jSingleton;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
 import nl.tudelft.dnainator.parser.buffered.DefaultEdgeParser;
 import nl.tudelft.dnainator.parser.buffered.JFASTANodeParser;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
-import org.neo4j.io.fs.FileUtils;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import org.neo4j.io.fs.FileUtils;
 
 /**
  * A JavaFX background service to load files into graphs.
@@ -108,12 +110,8 @@ public class FileLoadService extends Service<Graph> {
 				} else {
 					gb = Neo4jSingleton.getInstance().getDatabase(database.get());
 				}
-
-				EdgeParser ep = new DefaultEdgeParser(new BufferedReader(new InputStreamReader(
-						new FileInputStream(getEdgeFile()), "UTF-8")));
-				NodeParser np = new JFASTANodeParser(new DefaultSequenceFactory(),
-						new BufferedReader(new InputStreamReader(
-								new FileInputStream(getNodeFile()), "UTF-8")));
+				EdgeParser ep = new DefaultEdgeParser(getEdgeFile());
+				NodeParser np = new JFASTANodeParser(getNodeFile());
 				gb.constructGraph(np, ep);
 
 				return gb;
