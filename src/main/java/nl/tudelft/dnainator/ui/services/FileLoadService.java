@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.services;
+package nl.tudelft.dnainator.ui.services;
 
 import java.io.BufferedReader;
 import java.io.File;

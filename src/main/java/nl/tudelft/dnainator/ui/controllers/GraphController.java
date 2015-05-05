@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.controllers;
+package nl.tudelft.dnainator.ui.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.Group;

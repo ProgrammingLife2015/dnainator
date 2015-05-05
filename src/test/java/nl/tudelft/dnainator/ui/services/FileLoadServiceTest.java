@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.services;
+package nl.tudelft.dnainator.ui.services;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

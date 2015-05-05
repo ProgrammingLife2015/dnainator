@@ -1,9 +1,9 @@
-package nl.tudelft.dnainator.controllers;
+package nl.tudelft.dnainator.ui.controllers;
 
 import java.io.File;
 
-import nl.tudelft.dnainator.services.FileLoadService;
-import nl.tudelft.dnainator.widgets.ExceptionDialog;
+import nl.tudelft.dnainator.ui.services.FileLoadService;
+import nl.tudelft.dnainator.ui.widgets.ExceptionDialog;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.layout.BorderPane;
