@@ -146,10 +146,9 @@ public class FileLoadServiceTest {
 		// This call blocks the test thread until the completableFuture's complete() method is
 		// called. Calling get() retrieves the result (e.g., the Graph in this case). Set a
 		// timeout in case the result does not appear.
-		completableFuture.get(DELAY, TimeUnit.MILLISECONDS);
+		Graph graph = completableFuture.get(DELAY, TimeUnit.MILLISECONDS);
 
-//		assertNotNull(graph);
-//		assertEquals("Tree", graph.toString());
+		assertNotNull(graph);
 	}
 
 	/**

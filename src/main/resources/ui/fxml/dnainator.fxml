@@ -81,7 +81,7 @@
       </MenuBar>
    </top>
    <center>
-      <fx:include source="viewer.fxml" />
+      <fx:include fx:id="viewer" source="viewer.fxml" />
    </center>
    <right>
       <VBox fx:id="sidebar" styleClass="sidebar" BorderPane.alignment="CENTER">

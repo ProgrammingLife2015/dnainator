@@ -34,13 +34,33 @@ import org.neo4j.io.fs.FileUtils;
  * This class realizes a graphfactory using Neo4j as it's backend.
  */
 public final class Neo4jGraphDatabase implements Graph {
-	private static Neo4jGraphDatabase instance = null;
 	private static final String DB_PATH = "target/neo4j-hello-db";
+	private static GraphDatabaseService service = null;
 	private static final String GET_ROOT = "MATCH (s:Node) "
 			+ "WHERE NOT (s)<-[:NEXT]-(:Node)"
 			+ "RETURN s";
 
-	private GraphDatabaseService graphDb;
+	private static GraphDatabaseService createInstance(String path) throws IOException {
+		if (service != null) {
+			service.shutdown();
+		}
+		FileUtils.deleteRecursively(new File(path));
+		service = new GraphDatabaseFactory().newEmbeddedDatabase(path);
+
+		return service;
+	}
+
+	/**
+	 * Protected for junit, returns the unique instance of the db service.
+	 * @return	the unique instance of the db service
+	 */
+	protected static GraphDatabaseService getInstance() {
+		if (service == null) {
+			throw new NumberFormatException();
+		}
+		return service;
+	}
+
 	private Label nodeLabel;
 
 	/**
@@ -54,38 +74,36 @@ public final class Neo4jGraphDatabase implements Graph {
 	 * Constructs a Neo4j database on the default path.
 	 * @throws IOException	when the database could not be created
 	 */
-	private Neo4jGraphDatabase() throws IOException {
-		this(new File(DB_PATH));
+	public Neo4jGraphDatabase() throws IOException {
+		this(DB_PATH);
 	}
 
 	/**
 	 * Constructs a Neo4j database on the specified path.
-	 * @param file			specified path
+	 * WARNING: EVERYTIME YOU INSTANTIATE THIS CLASS, THE GRAPH INSTANCE IS REPLACED!
+	 * @param path			specified path
 	 * @throws IOException	when the database could not be created
 	 */
-	private Neo4jGraphDatabase(File file) throws IOException {
-		// FIXME: remove this sometime.
-		FileUtils.deleteRecursively(new File(DB_PATH));
-
+	public Neo4jGraphDatabase(String path) throws IOException {
 		// Create our database and register a shutdown hook
-		graphDb = new GraphDatabaseFactory().newEmbeddedDatabase(DB_PATH);
+		createInstance(path);
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
-				graphDb.shutdown();
+				getInstance().shutdown();
 			}
 		});
 
 		// Assign a label to our nodes
 		nodeLabel = DynamicLabel.label("Node");
-		try (Transaction tx = graphDb.beginTx()) {
+		try (Transaction tx = getInstance().beginTx()) {
 			// Generate a unique index on 'id'
-			graphDb.schema().constraintFor(nodeLabel)
+			getInstance().schema().constraintFor(nodeLabel)
 			.assertPropertyIsUnique("id")
 			.create();
 
 			// Generate an index on 'dist'
-			graphDb.schema().indexFor(nodeLabel)
+			getInstance().schema().indexFor(nodeLabel)
 			.on("dist")
 			.create();
 
@@ -93,24 +111,11 @@ public final class Neo4jGraphDatabase implements Graph {
 		}
 	}
 
-	/**
-	 * Returns the singleton instance of this database if it exists.
-	 * If the singleton does not exist yet, it will be created first.
-	 * @return		the singleton database instance
-	 * @throws IOException	when the database could not be initialized
-	 */
-	public static Neo4jGraphDatabase getInstance() throws IOException {
-		if (instance == null) {
-			instance = new Neo4jGraphDatabase();
-		}
-		return instance;
-	}
-
 	@Override
 	public void addEdge(Edge<String> edge) {
-		try (Transaction tx = graphDb.beginTx()) {
-			Node source = graphDb.findNode(nodeLabel, "id", edge.getSource());
-			Node dest   = graphDb.findNode(nodeLabel, "id", edge.getDest());
+		try (Transaction tx = getInstance().beginTx()) {
+			Node source = getInstance().findNode(nodeLabel, "id", edge.getSource());
+			Node dest   = getInstance().findNode(nodeLabel, "id", edge.getDest());
 			source.createRelationshipTo(dest, RelTypes.NEXT);
 
 			tx.success();
@@ -119,8 +124,8 @@ public final class Neo4jGraphDatabase implements Graph {
 
 	@Override
 	public void addNode(SequenceNode s) {
-		try (Transaction tx = graphDb.beginTx()) {
-			Node node = graphDb.createNode(nodeLabel);
+		try (Transaction tx = getInstance().beginTx()) {
+			Node node = getInstance().createNode(nodeLabel);
 			node.setProperty("id", s.getId());
 			node.setProperty("start", s.getStartRef());
 			node.setProperty("end", s.getEndRef());
@@ -135,7 +140,7 @@ public final class Neo4jGraphDatabase implements Graph {
 	@Override
 	public void constructGraph(NodeParser np, EdgeParser ep)
 			throws IOException, ParseException {
-		try (Transaction tx = graphDb.beginTx()) {
+		try (Transaction tx = getInstance().beginTx()) {
 			while (np.hasNext()) {
 				addNode(np.next());
 			}
@@ -148,11 +153,17 @@ public final class Neo4jGraphDatabase implements Graph {
 		}
 	}
 
+	/**
+	 * Retrieves a resource iterator over all roots.
+	 * The roots are all the nodes with no incoming edges.
+	 * @return	a resource iterator
+	 */
 	private ResourceIterator<Node> rootIterator() {
 		ResourceIterator<Node> roots;
-		try (Transaction tx = graphDb.beginTx()) {
-			Result res = graphDb.execute(GET_ROOT);
+		try (Transaction tx = getInstance().beginTx()) {
+			Result res = getInstance().execute(GET_ROOT);
 			roots = res.columnAs("s");
+
 			tx.success();
 		}
 		return roots;
@@ -169,7 +180,7 @@ public final class Neo4jGraphDatabase implements Graph {
 	 */
 	protected Iterable<Node> topologicalOrder() {
 		ResourceIterator<Node> roots = rootIterator();
-		return graphDb.traversalDescription()
+		return getInstance().traversalDescription()
 					.breadthFirst()
 					.expand(new IncludesNodesWithoutIncoming())
 					.traverse(loop(roots))
@@ -215,7 +226,7 @@ public final class Neo4jGraphDatabase implements Graph {
 	}
 
 	private void rankGraph() {
-		try (Transaction tx = graphDb.beginTx()) {
+		try (Transaction tx = getInstance().beginTx()) {
 			Iterable<Node> topoOrder = topologicalOrder();
 			for (Node n : topoOrder) {
 				int rankSource = (int) n.getProperty("dist");
@@ -236,7 +247,7 @@ public final class Neo4jGraphDatabase implements Graph {
 	public SequenceNode getRootNode() {
 		SequenceNode node = null;
 
-		try (Transaction tx = graphDb.beginTx()) {
+		try (Transaction tx = getInstance().beginTx()) {
 			Node root = getRoot();
 			node = createSequenceNode(root);
 
@@ -250,8 +261,8 @@ public final class Neo4jGraphDatabase implements Graph {
 	public SequenceNode getNode(String s) {
 		SequenceNode node = null;
 
-		try (Transaction tx = graphDb.beginTx()) {
-			node = createSequenceNode(graphDb.findNode(nodeLabel, "id", s));
+		try (Transaction tx = getInstance().beginTx()) {
+			node = createSequenceNode(getInstance().findNode(nodeLabel, "id", s));
 
 			tx.success();
 		}
@@ -263,8 +274,8 @@ public final class Neo4jGraphDatabase implements Graph {
 	public List<SequenceNode> getRank(int rank) {
 		List<SequenceNode> nodes = new LinkedList<SequenceNode>();
 
-		try (Transaction tx = graphDb.beginTx()) {
-			ResourceIterator<Node> res = graphDb.findNodes(nodeLabel, "dist", rank);
+		try (Transaction tx = getInstance().beginTx()) {
+			ResourceIterator<Node> res = getInstance().findNodes(nodeLabel, "dist", rank);
 
 			for (Node n : loop(res)) {
 				nodes.add(createSequenceNode(n));
@@ -284,12 +295,5 @@ public final class Neo4jGraphDatabase implements Graph {
 		String sequence = (String) node.getProperty("sequence");
 
 		return new DefaultSequenceNode(id, source, startref, endref, sequence);
-	}
-
-	/**
-	 * @return the {@link GraphDatabaseService} of this {@link Graph}
-	 */
-	protected GraphDatabaseService getDB() {
-		return graphDb;
 	}
 }

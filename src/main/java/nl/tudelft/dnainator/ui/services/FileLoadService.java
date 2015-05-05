@@ -26,7 +26,7 @@ import nl.tudelft.dnainator.parser.exceptions.ParseException;
  * set to <code>null</code>) upon instantiation.
  * </p>
  */
-public class FileLoadService extends Service<Void> {
+public class FileLoadService extends Service<Graph> {
 	private ObjectProperty<File> nodeFile = new SimpleObjectProperty<File>(this, "nodeFile");
 	private ObjectProperty<File> edgeFile = new SimpleObjectProperty<File>(this, "edgeFile");
 
@@ -73,11 +73,11 @@ public class FileLoadService extends Service<Void> {
 	}
 
 	@Override
-	protected Task<Void> createTask() {
-		return new Task<Void>() {
+	protected Task<Graph> createTask() {
+		return new Task<Graph>() {
 			@Override
-			protected Void call() throws IOException, ParseException {
-				Graph gb = Neo4jGraphDatabase.getInstance();
+			protected Graph call() throws IOException, ParseException {
+				Graph gb = new Neo4jGraphDatabase();
 				EdgeParser ep = new DefaultEdgeParser(new BufferedReader(new InputStreamReader(
 						new FileInputStream(getEdgeFile()), "UTF-8")));
 				NodeParser np = new JFASTANodeParser(new DefaultSequenceFactory(),
@@ -85,7 +85,7 @@ public class FileLoadService extends Service<Void> {
 								new FileInputStream(getNodeFile()), "UTF-8")));
 				gb.constructGraph(np, ep);
 
-				return null;
+				return gb;
 			}
 		};
 	}

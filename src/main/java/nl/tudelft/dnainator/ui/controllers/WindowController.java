@@ -2,14 +2,14 @@ package nl.tudelft.dnainator.ui.controllers;
 
 import java.io.File;
 
-import nl.tudelft.dnainator.ui.services.FileLoadService;
-import nl.tudelft.dnainator.ui.widgets.ExceptionDialog;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import nl.tudelft.dnainator.ui.services.FileLoadService;
+import nl.tudelft.dnainator.ui.widgets.ExceptionDialog;
 
 /**
  * The WindowController is a controller class for the main window.
@@ -23,15 +23,17 @@ public class WindowController {
 	private static final String EDGE = ".edge.graph";
 	@FXML private BorderPane root;
 	@FXML private VBox sidebar;
+	@FXML private GraphController viewerController;
 	private FileLoadService loadService;
 
 	/**
 	 * Constructs a WindowController object, creating
 	 * a {@link FileLoadService} to go with it.
 	 */
-	public WindowController() {
+	@FXML
+	private void initialize() {
 		loadService = new FileLoadService();
-//		loadService.setOnSucceeded(e -> System.out.println(loadService.getValue()));
+		loadService.setOnSucceeded(e -> viewerController.setGraph(loadService.getValue()));
 		loadService.setOnFailed(e ->
 			new ExceptionDialog(loadService.getException(), "Error loading file!"));
 	}

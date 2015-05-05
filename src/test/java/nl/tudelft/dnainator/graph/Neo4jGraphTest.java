@@ -1,8 +1,8 @@
 package nl.tudelft.dnainator.graph;
 
+import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
-import static org.hamcrest.Matchers.lessThan;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -39,7 +39,7 @@ public class Neo4jGraphTest {
 	@Before
 	public void setUp() {
 		try {
-			db = Neo4jGraphDatabase.getInstance();
+			db = new Neo4jGraphDatabase();
 			nodeFile = new File(getClass().getResource("/strains/topo.node.graph").toURI());
 			edgeFile = new File(getClass().getResource("/strains/topo.edge.graph").toURI());
 			//nodeFile = new File("10_strains_graph/simple_graph.node.graph");
@@ -65,7 +65,7 @@ public class Neo4jGraphTest {
 		LinkedList<Integer> order = new LinkedList<>();
 		try {
 			EdgeParser ep = new DefaultEdgeParser(new BufferedReader(new FileReader(edgeFile)));
-			try (Transaction tx = db.getDB().beginTx()) {
+			try (Transaction tx = Neo4jGraphDatabase.getInstance().beginTx()) {
 				for (Node n : db.topologicalOrder()) {
 					order.add(Integer.parseInt((String) n.getProperty("id")));
 				}
