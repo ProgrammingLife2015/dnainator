@@ -4,8 +4,6 @@ import static org.neo4j.helpers.collection.IteratorUtil.loop;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Comparator;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,21 +14,21 @@ import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
 
-import org.neo4j.graphalgo.impl.shortestpath.DijkstraPriorityQueue;
-import org.neo4j.graphalgo.impl.shortestpath.DijkstraPriorityQueueFibonacciImpl;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Path;
+import org.neo4j.graphdb.PathExpander;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.ResourceIterator;
 import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+import org.neo4j.graphdb.traversal.BranchState;
 import org.neo4j.io.fs.FileUtils;
-import org.neo4j.tooling.GlobalGraphOperations;
 
 /**
  * This class realizes a graphfactory using Neo4j as it's backend.
@@ -128,6 +126,7 @@ public final class Neo4jGraphDatabase implements Graph {
 			node.setProperty("end", s.getEndRef());
 			node.setProperty("sequence", s.getSequence());
 			node.setProperty("source", s.getSource());
+			node.setProperty("dist", 0);
 
 			tx.success();
 		}
@@ -149,69 +148,87 @@ public final class Neo4jGraphDatabase implements Graph {
 		}
 	}
 
-	/**
-	 * Retrieve a single root (ie. node with no incoming edges) of the graph database.
-	 * @return	a Node with no incoming edges
-	 */
-	private Node getRoot() {
-		Node root = null;
-
+	private ResourceIterator<Node> rootIterator() {
+		ResourceIterator<Node> roots;
 		try (Transaction tx = graphDb.beginTx()) {
 			Result res = graphDb.execute(GET_ROOT);
-			Iterator<Node> col = res.columnAs("s");
-			root = col.next();
-
+			roots = res.columnAs("s");
 			tx.success();
 		}
+		return roots;
+	}
 
-		return root;
+	private Node getRoot() {
+		return rootIterator().next();
 	}
 
 	/**
-	 * Assign dijkstra's shortest path as rank to all nodes in the graph.
+	 * Get a topological ordering of the graph.
+	 * @return an {@link Iterable}, containing the nodes in
+	 * topological order.
 	 */
+	protected Iterable<Node> topologicalOrder() {
+		ResourceIterator<Node> roots = rootIterator();
+		return graphDb.traversalDescription()
+					.breadthFirst()
+					.expand(new IncludesNodesWithoutIncoming())
+					.traverse(loop(roots))
+					.nodes();
+	}
+
+	/**
+	 * PathExpander for determining the topological ordering.
+	 */
+	static class IncludesNodesWithoutIncoming implements PathExpander<Object> {
+
+		private boolean hasUnprocessedIncoming(Node from, Node n) {
+			Iterable<Relationship> in = n.getRelationships(RelTypes.NEXT, Direction.INCOMING);
+			for (Relationship r : in) {
+				if (!(boolean) r.getProperty("processed", false)) {
+					return true;
+				}
+			}
+			// All incoming edges have been processed.
+			return false;
+		}
+
+		@Override
+		public Iterable<Relationship> expand(Path path,
+				BranchState<Object> state) {
+			Node from = path.endNode();
+			List<Relationship> expand = new LinkedList<Relationship>();
+			for (Relationship r : from.getRelationships(RelTypes.NEXT, Direction.OUTGOING)) {
+				r.setProperty("processed", true);
+				if (!hasUnprocessedIncoming(from, r.getEndNode())) {
+					// All of the dependencies of this node have been added to the result.
+					expand.add(r);
+				}
+			}
+			return expand;
+		}
+
+		@Override
+		public PathExpander<Object> reverse() {
+			throw new UnsupportedOperationException();
+		}
+
+	}
+
 	private void rankGraph() {
 		try (Transaction tx = graphDb.beginTx()) {
-			Node root = getRoot();
-
-			DijkstraPriorityQueue<Integer> prio = new DijkstraPriorityQueueFibonacciImpl<>(
-					new Comparator<Integer>() {
-						public int compare(Integer o1, Integer o2) {
-							return Integer.compare(o1, o2);
-						} });
-			for (Node n : GlobalGraphOperations.at(graphDb).getAllNodes()) {
-				prio.insertValue(n, Integer.MAX_VALUE);
-				n.setProperty("dist", Integer.MAX_VALUE);
+			Iterable<Node> topoOrder = topologicalOrder();
+			for (Node n : topoOrder) {
+				int rankSource = (int) n.getProperty("dist");
+				for (Relationship r : n.getRelationships(RelTypes.NEXT, Direction.OUTGOING)) {
+					r.removeProperty("processed"); // Clean up after topologicalOrder
+					Node dest = r.getEndNode();
+					int rankDest = (int) dest.getProperty("dist");
+					if (rankDest < rankSource + 1) {
+						dest.setProperty("dist", rankSource + 1);
+					}
+				}
 			}
-
-			prio.decreaseValue(root, 0);
-			root.setProperty("dist", 0);
-
-			while (!prio.isEmpty()) {
-				Node u = prio.extractMin();
-				relaxedges(u, prio);
-			}
-
 			tx.success();
-		}
-	}
-
-	/**
-	 * Part of dijkstra's algorithm. Relaxes all edges of a node.
-	 * @param u		the node
-	 * @param prio	the dijkstra min queue
-	 */
-	private void relaxedges(Node u, DijkstraPriorityQueue<Integer> prio) {
-		for (Relationship p : u.getRelationships(Direction.OUTGOING)) {
-			Node source = p.getStartNode();
-			Node sink   = p.getEndNode();
-
-			int dist  = (int) source.getProperty("dist") + 1;
-			int ndist = (int) sink.getProperty("dist");
-			if (dist < ndist) {
-				p.getEndNode().setProperty("dist", dist);
-				prio.decreaseValue(sink, dist);
-			}
 		}
 	}
 
@@ -267,5 +284,12 @@ public final class Neo4jGraphDatabase implements Graph {
 		String sequence = (String) node.getProperty("sequence");
 
 		return new DefaultSequenceNode(id, source, startref, endref, sequence);
+	}
+
+	/**
+	 * @return the {@link GraphDatabaseService} of this {@link Graph}
+	 */
+	protected GraphDatabaseService getDB() {
+		return graphDb;
 	}
 }
