@@ -227,14 +227,11 @@ public final class Neo4jGraphDatabase implements Graph {
 
 	private void rankGraph() {
 		try (Transaction tx = getInstance().beginTx()) {
-			Iterable<Node> topoOrder = topologicalOrder();
-			for (Node n : topoOrder) {
+			for (Node n : topologicalOrder()) {
 				int rankSource = (int) n.getProperty("dist");
 				for (Relationship r : n.getRelationships(RelTypes.NEXT, Direction.OUTGOING)) {
-					r.removeProperty("processed"); // Clean up after topologicalOrder
 					Node dest = r.getEndNode();
-					int rankDest = (int) dest.getProperty("dist");
-					if (rankDest < rankSource + 1) {
+					if ((int) dest.getProperty("dist") < rankSource + 1) {
 						dest.setProperty("dist", rankSource + 1);
 					}
 				}
