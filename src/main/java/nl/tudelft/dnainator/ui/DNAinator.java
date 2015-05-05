@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator;
+package nl.tudelft.dnainator.ui;
 
 import java.io.IOException;
 
@@ -34,14 +34,5 @@ public class DNAinator extends Application {
 			e.printStackTrace();
 		}
 		primaryStage.show();
-	}
-
-	/**
-	 * DNAinator's entry point. Fires up a new instance
-	 * of DNAinator with its own window.
-	 * @param args Command-line arguments, unused for now.
-	 */
-	public static void main(String[] args) {
-		launch(args);
 	}
 }
