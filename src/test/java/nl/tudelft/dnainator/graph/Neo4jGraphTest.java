@@ -26,6 +26,7 @@ import nl.tudelft.dnainator.parser.exceptions.ParseException;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
 
@@ -43,7 +44,7 @@ public class Neo4jGraphTest {
 	@BeforeClass
 	public static void setUp() {
 		try {
-			db = new Neo4jGraphDatabase();
+			db = Neo4jSingleton.getInstance().getDatabase();
 			nodeFile
 				= new File(Neo4jGraphTest.class.getResource("/strains/topo.node.graph").toURI());
 			edgeFile
@@ -71,6 +72,8 @@ public class Neo4jGraphTest {
 		LinkedList<Integer> order = new LinkedList<>();
 		try {
 			EdgeParser ep = new DefaultEdgeParser(new BufferedReader(new FileReader(edgeFile)));
+
+			// FIXME: Skip, can you take a look at this?
 			try (Transaction tx = Neo4jGraphDatabase.getInstance().beginTx()) {
 				for (Node n : db.topologicalOrder()) {
 					order.add(Integer.parseInt((String) n.getProperty("id")));

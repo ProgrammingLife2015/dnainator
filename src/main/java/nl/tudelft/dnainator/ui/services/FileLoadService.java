@@ -12,7 +12,7 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import nl.tudelft.dnainator.core.DefaultSequenceFactory;
 import nl.tudelft.dnainator.graph.Graph;
-import nl.tudelft.dnainator.graph.Neo4jGraphDatabase;
+import nl.tudelft.dnainator.graph.Neo4jSingleton;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
 import nl.tudelft.dnainator.parser.buffered.DefaultEdgeParser;
@@ -77,7 +77,7 @@ public class FileLoadService extends Service<Graph> {
 		return new Task<Graph>() {
 			@Override
 			protected Graph call() throws IOException, ParseException {
-				Graph gb = new Neo4jGraphDatabase();
+				Graph gb = Neo4jSingleton.getInstance().getDatabase();
 				EdgeParser ep = new DefaultEdgeParser(new BufferedReader(new InputStreamReader(
 						new FileInputStream(getEdgeFile()), "UTF-8")));
 				NodeParser np = new JFASTANodeParser(new DefaultSequenceFactory(),
