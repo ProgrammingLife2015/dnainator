@@ -5,6 +5,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.input.MouseEvent;
+import nl.tudelft.dnainator.core.DefaultSequenceNode;
 import nl.tudelft.dnainator.ui.models.GraphModel;
 
 /**
@@ -18,7 +19,11 @@ public class GraphController {
 	private void initialize() {
 		this.graphModel = new SimpleObjectProperty<GraphModel>(this, "graphModel");
 
-		setModel(new GraphModel());
+		GraphModel model = new GraphModel();
+		setModel(model);
+		// FIXME: have to read into javafx listeners concerning lazy evaluation.
+		model.nodesProperty().addListener((observable, oldValue, newValue) -> redraw());
+		model.edgesProperty().addListener((observable, oldValue, newValue) -> redraw());
 	}
 
 	/**
@@ -44,6 +49,13 @@ public class GraphController {
 
 	@FXML
 	private void onMouseClick(MouseEvent e) {
-		System.out.println(getModel().getNodes().get(0));
+		//System.out.println(getModel().getNodes().get(0));
+		// CHECKSTYLE.OFF: MagicNumber
+		getModel().getNodes().add(new DefaultSequenceNode("5", "Hooman", 42, 43, "ACTG"));
+		// CHECKSTYLE.ON: MagicNumber
+	}
+
+	private void redraw() {
+		System.out.println("Redrawing...");
 	}
 }
