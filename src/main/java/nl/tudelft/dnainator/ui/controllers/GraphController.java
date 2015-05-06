@@ -5,42 +5,45 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.shape.Circle;
-import nl.tudelft.dnainator.graph.Graph;
+import nl.tudelft.dnainator.ui.models.GraphModel;
 
 /**
  * Controller class for all graph interaction.
  */
 public class GraphController {
 	@FXML private Group graphRoot;
-	private ObjectProperty<Graph> graph = new SimpleObjectProperty<Graph>(this, "g");
+	private ObjectProperty<GraphModel> graphModel;
 
-	/**
-	 * @return	the graph property
-	 */
-	public final ObjectProperty<Graph> getGraphProperty() {
-		return graph;
+	@FXML
+	private void initialize() {
+		this.graphModel = new SimpleObjectProperty<GraphModel>(this, "graphModel");
+
+		setModel(new GraphModel());
 	}
 
 	/**
-	 * @return	the current graph
+	 * @return The current {@link GraphModel}.
 	 */
-	public final Graph getGraph() {
-		return graph.get();
+	public final GraphModel getModel() {
+		return graphModel.get();
 	}
 
 	/**
-	 * @param graph	the new graph
+	 * @param graphModel The new {@link GraphModel}.
 	 */
-	public void setGraph(Graph graph) {
-		this.graph.set(graph);
+	public final void setModel(GraphModel graphModel) {
+		this.graphModel.set(graphModel);
+	}
+
+	/**
+	 * @return The graph model property.
+	 */
+	public ObjectProperty<GraphModel> modelProperty() {
+		return graphModel;
 	}
 
 	@FXML
 	private void onMouseClick(MouseEvent e) {
-		// CHECKSTYLE.OFF: MagicNumber
-		graphRoot.getChildren().add(new Circle(10));
-		System.out.println(getGraph().getRank(0));
-		// CHECKSTYLE.ON: MagicNumber
+		System.out.println(getModel().getNodes().get(0));
 	}
 }
