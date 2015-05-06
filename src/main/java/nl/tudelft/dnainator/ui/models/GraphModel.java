@@ -6,8 +6,8 @@ import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import nl.tudelft.dnainator.core.Edge;
 import nl.tudelft.dnainator.core.SequenceNode;
+import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.graph.Neo4jSingleton;
 
 /**

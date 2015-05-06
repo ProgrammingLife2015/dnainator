@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.parser.buffered;
+package nl.tudelft.dnainator.parser.impl;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,13 +10,14 @@ import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import nl.tudelft.dnainator.core.Edge;
+import nl.tudelft.dnainator.core.impl.Edge;
+import nl.tudelft.dnainator.parser.BufferedEdgeParser;
 import nl.tudelft.dnainator.parser.exceptions.InvalidEdgeFormatException;
 
 /**
  * An implementation for parsing an edge file input stream.
  */
-public class DefaultEdgeParser extends BufferedEdgeParser {
+public class EdgeParserImpl extends BufferedEdgeParser {
 	private Edge<String> current;
 	private boolean needParse = true; // Whether we have to parse a new line or not.
 	private int currentChar;
@@ -28,12 +29,12 @@ public class DefaultEdgeParser extends BufferedEdgeParser {
 	}
 
 	/**
-	 * Constructs a {@link DefaultEdgeParser}, which reads from
+	 * Constructs a {@link EdgeParserImpl}, which reads from
 	 * the given {@link File}.
 	 * @param f	The {@link File} to read from.
 	 * @throws IOException	when file is not found or encoding is invalid
 	 */
-	public DefaultEdgeParser(File f) throws IOException {
+	public EdgeParserImpl(File f) throws IOException {
 		this(new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8")));
 	}
 
@@ -43,7 +44,7 @@ public class DefaultEdgeParser extends BufferedEdgeParser {
 	 *
 	 * @param br The {@link BufferedReader} to read from.
 	 */
-	public DefaultEdgeParser(BufferedReader br) {
+	public EdgeParserImpl(BufferedReader br) {
 		super(br);
 		current = null;
 	}

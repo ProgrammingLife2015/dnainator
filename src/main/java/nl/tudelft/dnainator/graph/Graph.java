@@ -2,8 +2,8 @@ package nl.tudelft.dnainator.graph;
 
 import java.util.List;
 
-import nl.tudelft.dnainator.core.Edge;
 import nl.tudelft.dnainator.core.SequenceNode;
+import nl.tudelft.dnainator.core.impl.Edge;
 
 /**
  * Interface for backend agnostic interaction with a graph.

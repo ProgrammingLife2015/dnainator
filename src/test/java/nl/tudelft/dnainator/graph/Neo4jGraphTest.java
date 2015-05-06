@@ -15,16 +15,16 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
-import nl.tudelft.dnainator.core.DefaultSequenceFactory;
-import nl.tudelft.dnainator.core.DefaultSequenceNode;
-import nl.tudelft.dnainator.core.Edge;
 import nl.tudelft.dnainator.core.SequenceNode;
+import nl.tudelft.dnainator.core.impl.Edge;
+import nl.tudelft.dnainator.core.impl.SequenceNodeFactoryImpl;
+import nl.tudelft.dnainator.core.impl.SequenceNodeImpl;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
-import nl.tudelft.dnainator.parser.buffered.DefaultEdgeParser;
-import nl.tudelft.dnainator.parser.buffered.JFASTANodeParser;
 import nl.tudelft.dnainator.parser.exceptions.InvalidEdgeFormatException;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
+import nl.tudelft.dnainator.parser.impl.EdgeParserImpl;
+import nl.tudelft.dnainator.parser.impl.NodeParserImpl;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -54,9 +54,9 @@ public class Neo4jGraphTest {
 				= new File(Neo4jGraphTest.class.getResource("/strains/topo.edge.graph").toURI());
 			//nodeFile = new File("10_strains_graph/simple_graph.node.graph");
 			//edgeFile = new File("10_strains_graph/simple_graph.edge.graph");
-			NodeParser np = new JFASTANodeParser(new DefaultSequenceFactory(),
+			NodeParser np = new NodeParserImpl(new SequenceNodeFactoryImpl(),
 					new BufferedReader(new FileReader(nodeFile)));
-			EdgeParser ep = new DefaultEdgeParser(new BufferedReader(new FileReader(edgeFile)));
+			EdgeParser ep = new EdgeParserImpl(new BufferedReader(new FileReader(edgeFile)));
 			db.constructGraph(np, ep);
 		} catch (IOException e) {
 			fail("Couldn't initialize DB");
@@ -73,9 +73,9 @@ public class Neo4jGraphTest {
 	@Test
 	public void testNodeLookup() {
 		// CHECKSTYLE.OFF: MagicNumber
-		SequenceNode node1 = new DefaultSequenceNode("2", "ASDF", 1, 5, "TATA");
-		SequenceNode node2 = new DefaultSequenceNode("3", "ASDF", 5, 9, "TATA");
-		SequenceNode node3 = new DefaultSequenceNode("5", "ASDF", 4, 8, "TATA");
+		SequenceNode node1 = new SequenceNodeImpl("2", "ASDF", 1, 5, "TATA");
+		SequenceNode node2 = new SequenceNodeImpl("3", "ASDF", 5, 9, "TATA");
+		SequenceNode node3 = new SequenceNodeImpl("5", "ASDF", 4, 8, "TATA");
 		assertEquals(node1, db.getNode("2"));
 		assertEquals(node2, db.getNode("3"));
 		assertEquals(node3, db.getNode("5"));
@@ -88,7 +88,7 @@ public class Neo4jGraphTest {
 	@Test
 	public void testRootLookup() {
 		// CHECKSTYLE.OFF: MagicNumber
-		SequenceNode root = new DefaultSequenceNode("5", "ASDF", 4, 8, "TATA");
+		SequenceNode root = new SequenceNodeImpl("5", "ASDF", 4, 8, "TATA");
 		assertEquals(root, db.getRootNode());
 		// CHECKSTYLE.ON: MagicNumber
 	}
@@ -100,7 +100,7 @@ public class Neo4jGraphTest {
 	public void testTopologicalOrder() {
 		LinkedList<Integer> order = new LinkedList<>();
 		try {
-			EdgeParser ep = new DefaultEdgeParser(new BufferedReader(new FileReader(edgeFile)));
+			EdgeParser ep = new EdgeParserImpl(new BufferedReader(new FileReader(edgeFile)));
 
 			try (Transaction tx = db.getService().beginTx()) {
 				for (Node n : db.topologicalOrder()) {

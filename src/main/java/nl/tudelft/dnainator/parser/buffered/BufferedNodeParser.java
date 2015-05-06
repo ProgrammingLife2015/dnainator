@@ -3,7 +3,7 @@ package nl.tudelft.dnainator.parser.buffered;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-import nl.tudelft.dnainator.core.SequenceFactory;
+import nl.tudelft.dnainator.core.SequenceNodeFactory;
 import nl.tudelft.dnainator.parser.NodeParser;
 
 /**
@@ -12,7 +12,7 @@ import nl.tudelft.dnainator.parser.NodeParser;
 public abstract class BufferedNodeParser implements NodeParser {
 
 	protected BufferedReader br;
-	protected SequenceFactory sf;
+	protected SequenceNodeFactory sf;
 
 	/**
 	 * Creates the parser with the provided {@link SequenceFactory}.
@@ -20,7 +20,7 @@ public abstract class BufferedNodeParser implements NodeParser {
 	 * @param sf The {@link SequenceFactory} to be used.
 	 * @param br The {@link BufferedReader} from which to read.
 	 */
-	public BufferedNodeParser(SequenceFactory sf, BufferedReader br) {
+	public BufferedNodeParser(SequenceNodeFactory sf, BufferedReader br) {
 		this.sf = sf;
 		this.br = br;
 	}

@@ -1,6 +1,4 @@
-package nl.tudelft.dnainator.parser.buffered;
-
-import nl.tudelft.dnainator.parser.EdgeParser;
+package nl.tudelft.dnainator.parser;
 
 import java.io.BufferedReader;
 import java.io.IOException;

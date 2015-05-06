@@ -2,8 +2,8 @@ package nl.tudelft.dnainator.graph;
 
 import java.io.IOException;
 
-import nl.tudelft.dnainator.core.Edge;
 import nl.tudelft.dnainator.core.SequenceNode;
+import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
