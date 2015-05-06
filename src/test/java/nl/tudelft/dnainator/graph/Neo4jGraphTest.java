@@ -29,12 +29,16 @@ import org.junit.Test;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
+import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+import org.neo4j.io.fs.FileUtils;
 
 /**
  * Test Neo4j graph implementation.
  */
 public class Neo4jGraphTest {
+	private static final String DB_PATH = "target/neo4j-junit";
 	private static Neo4jGraphDatabase db;
+	private static GraphDatabaseService service;
 	private static File nodeFile;
 	private static File edgeFile;
 
@@ -44,7 +48,9 @@ public class Neo4jGraphTest {
 	@BeforeClass
 	public static void setUp() {
 		try {
-			db = Neo4jSingleton.getInstance().getDatabase();
+			FileUtils.deleteRecursively(new File(DB_PATH));
+			service = new GraphDatabaseFactory().newEmbeddedDatabase(DB_PATH);
+			db = new Neo4jGraphDatabase(service);
 			nodeFile
 				= new File(Neo4jGraphTest.class.getResource("/strains/topo.node.graph").toURI());
 			edgeFile
@@ -73,8 +79,7 @@ public class Neo4jGraphTest {
 		try {
 			EdgeParser ep = new DefaultEdgeParser(new BufferedReader(new FileReader(edgeFile)));
 
-			// FIXME: Skip, can you take a look at this?
-			try (Transaction tx = Neo4jGraphDatabase.getInstance().beginTx()) {
+			try (Transaction tx = service.beginTx()) {
 				for (Node n : db.topologicalOrder()) {
 					order.add(Integer.parseInt((String) n.getProperty("id")));
 				}

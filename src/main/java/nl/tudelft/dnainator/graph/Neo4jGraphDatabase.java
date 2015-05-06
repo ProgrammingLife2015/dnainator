@@ -56,8 +56,18 @@ public final class Neo4jGraphDatabase implements Graph {
 	 * @throws IOException	when the database could not be created
 	 */
 	public Neo4jGraphDatabase(String path) {
+		this(new GraphDatabaseFactory().newEmbeddedDatabase(path));
+	}
+	
+	/**
+	 * Constructs a Neo4j database on the specified path.
+	 * This constructor is primarily intended to be used from JUnit.
+	 * @param service		specified path
+	 * @throws IOException	when the database could not be created
+	 */
+	protected Neo4jGraphDatabase(GraphDatabaseService service) {
 		// Create our database and register a shutdown hook
-		service = new GraphDatabaseFactory().newEmbeddedDatabase(path);
+		this.service = service;
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			@Override
 			public void run() {
