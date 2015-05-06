@@ -14,6 +14,8 @@ import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
 
+import org.neo4j.collection.primitive.Primitive;
+import org.neo4j.collection.primitive.PrimitiveLongSet;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -28,6 +30,10 @@ import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.graphdb.traversal.BranchState;
+import org.neo4j.graphdb.traversal.Uniqueness;
+
+import static org.neo4j.graphdb.traversal.InitialBranchState.State;
+
 import org.neo4j.io.fs.FileUtils;
 
 /**
@@ -160,12 +166,8 @@ public final class Neo4jGraphDatabase implements Graph {
 	 */
 	private ResourceIterator<Node> rootIterator() {
 		ResourceIterator<Node> roots;
-		try (Transaction tx = getInstance().beginTx()) {
-			Result res = getInstance().execute(GET_ROOT);
-			roots = res.columnAs("s");
-
-			tx.success();
-		}
+		Result res = getInstance().execute(GET_ROOT);
+		roots = res.columnAs("s");
 		return roots;
 	}
 
@@ -173,16 +175,24 @@ public final class Neo4jGraphDatabase implements Graph {
 		return rootIterator().next();
 	}
 
+	private static final int INIT_CAP = 4096;
 	/**
 	 * Get a topological ordering of the graph.
 	 * @return an {@link Iterable}, containing the nodes in
 	 * topological order.
 	 */
 	protected Iterable<Node> topologicalOrder() {
+		return topologicalOrder(Primitive.longSet(INIT_CAP));
+	}
+
+	private Iterable<Node> topologicalOrder(PrimitiveLongSet processed) {
 		ResourceIterator<Node> roots = rootIterator();
 		return getInstance().traversalDescription()
-					.breadthFirst()
-					.expand(new IncludesNodesWithoutIncoming())
+					.depthFirst()
+					.expand(new IncludesNodesWithoutIncoming()
+					, new State<PrimitiveLongSet>(processed, null))
+					// We manage uniqueness for ourselves.
+					.uniqueness(Uniqueness.NONE)
 					.traverse(loop(roots))
 					.nodes();
 	}
@@ -190,12 +200,12 @@ public final class Neo4jGraphDatabase implements Graph {
 	/**
 	 * PathExpander for determining the topological ordering.
 	 */
-	static class IncludesNodesWithoutIncoming implements PathExpander<Object> {
+	static class IncludesNodesWithoutIncoming implements PathExpander<PrimitiveLongSet> {
 
-		private boolean hasUnprocessedIncoming(Node from, Node n) {
+		private boolean hasUnprocessedIncoming(PrimitiveLongSet processed, Node n) {
 			Iterable<Relationship> in = n.getRelationships(RelTypes.NEXT, Direction.INCOMING);
 			for (Relationship r : in) {
-				if (!(boolean) r.getProperty("processed", false)) {
+				if (!processed.contains(r.getId())) {
 					return true;
 				}
 			}
@@ -205,12 +215,13 @@ public final class Neo4jGraphDatabase implements Graph {
 
 		@Override
 		public Iterable<Relationship> expand(Path path,
-				BranchState<Object> state) {
+				BranchState<PrimitiveLongSet> state) {
 			Node from = path.endNode();
 			List<Relationship> expand = new LinkedList<Relationship>();
 			for (Relationship r : from.getRelationships(RelTypes.NEXT, Direction.OUTGOING)) {
-				r.setProperty("processed", true);
-				if (!hasUnprocessedIncoming(from, r.getEndNode())) {
+				PrimitiveLongSet processed = state.getState();
+				processed.add(r.getId());
+				if (!hasUnprocessedIncoming(processed, r.getEndNode())) {
 					// All of the dependencies of this node have been added to the result.
 					expand.add(r);
 				}
@@ -219,15 +230,20 @@ public final class Neo4jGraphDatabase implements Graph {
 		}
 
 		@Override
-		public PathExpander<Object> reverse() {
+		public PathExpander<PrimitiveLongSet> reverse() {
 			throw new UnsupportedOperationException();
 		}
 
 	}
 
 	private void rankGraph() {
-		try (Transaction tx = getInstance().beginTx()) {
-			for (Node n : topologicalOrder()) {
+		try (
+			Transaction tx = getInstance().beginTx();
+			// Our set is located "off heap", i.e. not managed by the garbage collector.
+			// It is automatically closed after the try block, which frees the allocated memory.
+			PrimitiveLongSet processed = Primitive.offHeapLongSet(INIT_CAP)
+		) {
+			for (Node n : topologicalOrder(processed)) {
 				int rankSource = (int) n.getProperty("dist");
 				for (Relationship r : n.getRelationships(RelTypes.NEXT, Direction.OUTGOING)) {
 					Node dest = r.getEndNode();
