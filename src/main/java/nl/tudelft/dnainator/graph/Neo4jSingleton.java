@@ -53,4 +53,16 @@ public final class Neo4jSingleton {
 
 		return neodatabases.get(path);
 	}
+
+	/**
+	 * Stops the database associated with the specified path, if it exists.
+	 * @param path	the path to the database
+	 */
+	public void stopDatabase(String path) {
+		if (neodatabases.containsKey(path)) {
+			// Database will be killed by the garbage collector eventually
+			// Might consider implementing a possibility to force kill a database.
+			neodatabases.remove(path);
+		}
+	}
 }

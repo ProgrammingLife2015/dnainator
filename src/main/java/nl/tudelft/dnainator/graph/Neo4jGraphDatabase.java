@@ -52,7 +52,6 @@ public final class Neo4jGraphDatabase implements Graph {
 
 	/**
 	 * Constructs a Neo4j database on the specified path.
-	 * WARNING: EVERYTIME YOU INSTANTIATE THIS CLASS, THE GRAPH INSTANCE IS REPLACED!
 	 * @param path			specified path
 	 * @throws IOException	when the database could not be created
 	 */
