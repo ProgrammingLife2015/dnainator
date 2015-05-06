@@ -3,17 +3,26 @@ package nl.tudelft.dnainator.ui.controllers;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
-import javafx.scene.Group;
 import javafx.scene.input.MouseEvent;
-import nl.tudelft.dnainator.core.DefaultSequenceNode;
+import javafx.scene.layout.HBox;
 import nl.tudelft.dnainator.ui.models.GraphModel;
+import nl.tudelft.dnainator.ui.views.SequenceView;
+import nl.tudelft.dnainator.ui.views.View;
 
 /**
  * Controller class for all graph interaction.
  */
 public class GraphController {
-	@FXML private Group graphRoot;
+
+	/**
+	 * Defines the different types of {@link View}s.
+	 */
+	public enum ViewType { SEQUENCE, LAST };
+
+	@FXML private HBox hbox;
 	private ObjectProperty<GraphModel> graphModel;
+	// FIXME: Perhaps this should also be a property for the WindowController to bind to.
+	private View[] views;
 
 	@FXML
 	private void initialize() {
@@ -21,9 +30,27 @@ public class GraphController {
 
 		GraphModel model = new GraphModel();
 		setModel(model);
-		// FIXME: have to read into javafx listeners concerning lazy evaluation.
-		model.nodesProperty().addListener((observable, oldValue, newValue) -> redraw());
-		model.edgesProperty().addListener((observable, oldValue, newValue) -> redraw());
+
+		/*
+		 * Here the relevant listeners should be bound to their related properties
+		 * in the GraphModel. For now, there are only two properties: one with all
+		 * the nodes in the graph and one with all the edges in the graph. These are
+		 * just here as an example and as something to work against. Eventually, we
+		 * probably only want to contain those nodes that are visible + some cache
+		 * of off-screen nodes (on both sides). Other properties will probably also be
+		 * needed. FIXME: We should look into lazy evaluation or perhaps even lazy redraw.
+		 */
+		model.nodesProperty().addListener((observable, oldValue, newValue) ->
+				getActiveView().redraw());
+		model.edgesProperty().addListener((observable, oldValue, newValue) ->
+				getActiveView().redraw());
+
+		// Create and store all the views.
+		this.views = new View[ViewType.LAST.ordinal()];
+		this.views[0] = new SequenceView(hbox, model);
+
+		// Set the first view as default.
+		hbox.getChildren().add(this.views[0]);
 	}
 
 	/**
@@ -47,15 +74,25 @@ public class GraphController {
 		return graphModel;
 	}
 
-	@FXML
-	private void onMouseClick(MouseEvent e) {
-		//System.out.println(getModel().getNodes().get(0));
-		// CHECKSTYLE.OFF: MagicNumber
-		getModel().getNodes().add(new DefaultSequenceNode("5", "Hooman", 42, 43, "ACTG"));
-		// CHECKSTYLE.ON: MagicNumber
+	/**
+	 * Sets the currently active {@link View}.
+	 * @param v The {@link ViewType} corresponding to the required {@link View}.
+	 */
+	public void setView(ViewType v) {
+		hbox.getChildren().clear();
+		hbox.getChildren().add(this.views[v.ordinal()]);
 	}
 
-	private void redraw() {
-		System.out.println("Redrawing...");
+	/**
+	 * @return The currently active {@link View}.
+	 */
+	public View getActiveView() {
+		return (View) hbox.getChildren().get(0);
 	}
+
+	@FXML
+	private void onMouseClick(MouseEvent e) {
+		getActiveView().redraw();
+	}
+
 }
