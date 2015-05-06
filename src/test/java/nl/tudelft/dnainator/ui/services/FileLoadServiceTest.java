@@ -13,8 +13,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import javafx.concurrent.Service;
+import nl.tudelft.dnainator.graph.Graph;
 
-import org.graphstream.graph.Graph;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,7 +30,7 @@ import de.saxsys.javafx.test.JfxRunner;
  */
 @RunWith(JfxRunner.class)
 public class FileLoadServiceTest {
-	private static final int DELAY = 2000;
+	private static final int DELAY = 20000;
 	private FileLoadService loadService;
 	private File nodeFile;
 	private File edgeFile;
@@ -149,7 +149,6 @@ public class FileLoadServiceTest {
 		Graph graph = completableFuture.get(DELAY, TimeUnit.MILLISECONDS);
 
 		assertNotNull(graph);
-		assertEquals("Tree", graph.toString());
 	}
 
 	/**
