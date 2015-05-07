@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.neo4j.io.fs.FileUtils;
 
@@ -32,9 +33,8 @@ public final class Neo4jSingleton {
 	 * Retrieves the database associated with the default path, if it exists.
 	 * Otherwise instantiates a new database.
 	 * @return		a database instance
-	 * @throws IOException	when Neo4j could not be started
 	 */
-	public Neo4jGraphDatabase getDatabase() throws IOException {
+	public Neo4jGraphDatabase getDatabase() {
 		return getDatabase(DB_PATH);
 	}
 
@@ -43,11 +43,9 @@ public final class Neo4jSingleton {
 	 * Otherwise instantiates a new database.
 	 * @param path	the path to the database
 	 * @return		a database instance
-	 * @throws IOException	when Neo4j could not be started
 	 */
-	public Neo4jGraphDatabase getDatabase(String path) throws IOException {
+	public Neo4jGraphDatabase getDatabase(String path) {
 		if (!neodatabases.containsKey(path)) {
-			FileUtils.deleteRecursively(new File(path));
 			neodatabases.put(path, new Neo4jGraphDatabase(path));
 		}
 
@@ -55,14 +53,34 @@ public final class Neo4jSingleton {
 	}
 
 	/**
-	 * Stops the database associated with the specified path, if it exists.
-	 * @param path	the path to the database
+	 * Returns the database paths of all databases instantiated through this singleton.
+	 * @return		a set of all database paths
 	 */
-	public void stopDatabase(String path) {
+	public Set<String> getDatabasePaths() {
+		return neodatabases.keySet();	}
+
+	/**
+	 * Stops the database associated with the specified path, if it exists.
+	 * FIXME: {@link Neo4jGraph} does not handle persistence very well yet
+	 * @param path	the path to the database
+	 * @throws IOException	when the database could not be deleted 
+	 */
+	public void stopDatabase(String path) throws IOException {
 		if (neodatabases.containsKey(path)) {
-			// Database will be killed by the garbage collector eventually
-			// Might consider implementing a possibility to force kill a database.
+			neodatabases.get(path).getService().shutdown();
 			neodatabases.remove(path);
 		}
+		FileUtils.deleteRecursively(new File(path));
 	}
+
+	// FIXME: {@link Neo4jGraph} does not handle persistence very well yet
+	//	/**
+	//	 * Stops and deletes the database associated with the specified path, if it exists.
+	//	 * @param path	the path to the database
+	//	 * @throws IOException	when the database could not be deleted
+	//	 */
+	//	public void deleteDatabase(String path) throws IOException {
+	//		stopDatabase(path);
+	//		FileUtils.deleteRecursively(new File(path));
+	//	}
 }
