@@ -1,16 +1,18 @@
 package nl.tudelft.dnainator.ui.models;
 
+import java.util.List;
+
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import nl.tudelft.dnainator.core.DefaultSequenceNode;
 import nl.tudelft.dnainator.core.Edge;
 import nl.tudelft.dnainator.core.SequenceNode;
+import nl.tudelft.dnainator.graph.Neo4jSingleton;
 
 /**
- * The bridging class between an implementation of {@link Graph} and JavaFX.
- * As the name implies, the GraphModel defines the Model part of the MVC pattern.
+ * The bridging class between an implementation of {@link nl.tudelft.dnainator.graph.Graph}
+ * and JavaFX. As the name implies, the GraphModel defines the Model part of the MVC pattern.
  */
 public class GraphModel {
 	private ListProperty<SequenceNode> nodesProperty;
@@ -25,18 +27,14 @@ public class GraphModel {
 
 		nodesProperty.set(FXCollections.observableArrayList());
 		edgesProperty.set(FXCollections.observableArrayList());
+	}
 
-		// CHECKSTYLE.OFF: MagicNumber
-		getNodes().add(new DefaultSequenceNode("1", "Cat, Dog", 5, 7, "A"));
-		getNodes().add(new DefaultSequenceNode("2", "Dog", 8, 10, "C"));
-		getNodes().add(new DefaultSequenceNode("3", "Cat", 8, 9, "G"));
-		getNodes().add(new DefaultSequenceNode("4", "Cat, Dog", 10, 13, "T"));
-
-		getEdges().add(new Edge<Integer>(1, 2));
-		getEdges().add(new Edge<Integer>(1, 3));
-		getEdges().add(new Edge<Integer>(2, 4));
-		getEdges().add(new Edge<Integer>(3, 4));
-		// CHECKSTYLE.ON: MagicNumber
+	/**
+	 * @param n The rank whose {@link SequenceNode}s to return.
+	 * @return All {@link SequenceNode}s at rank <code>n</code>/
+	 */
+	public List<SequenceNode> getRank(int n) {
+		return Neo4jSingleton.getInstance().getDatabase().getRank(n);
 	}
 
 	/**
