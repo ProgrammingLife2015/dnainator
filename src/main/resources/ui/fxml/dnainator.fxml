@@ -83,11 +83,4 @@
    <center>
       <fx:include fx:id="viewer" source="viewer.fxml" />
    </center>
-   <right>
-      <VBox fx:id="sidebar" styleClass="sidebar" BorderPane.alignment="CENTER">
-         <children>
-            <DialogPane headerText="Properties" prefHeight="600.0" prefWidth="360.0" />
-         </children>
-      </VBox>
-   </right>
 </BorderPane>
