@@ -15,7 +15,8 @@ import net.sf.jfasta.impl.FASTAFileReaderImpl;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.SequenceNodeFactory;
 import nl.tudelft.dnainator.core.impl.SequenceNodeFactoryImpl;
-import nl.tudelft.dnainator.parser.buffered.BufferedNodeParser;
+import nl.tudelft.dnainator.parser.BufferedNodeParser;
+import nl.tudelft.dnainator.parser.HeaderParser;
 import nl.tudelft.dnainator.parser.exceptions.InvalidHeaderFormatException;
 
 /**
@@ -26,7 +27,7 @@ public class NodeParserImpl extends BufferedNodeParser {
 	private FASTAElementIterator it;
 
 	/**
-	 * Constructs a new JFASTAParser.
+	 * Constructs a new NodeParserImpl.
 	 *
 	 * @param f  The {@link File} from which to read.
 	 * @throws IOException If something goes wrong constructing.
@@ -36,10 +37,10 @@ public class NodeParserImpl extends BufferedNodeParser {
 	}
 
 	/**
-	 * Constructs a new JFASTAParser.
+	 * Constructs a new NodeParserImpl.
 	 *
 	 * @param f  The {@link File} from which to read.
-	 * @param sf The {@link SequenceFactory} used to created {@link SequenceNode}s.
+	 * @param sf The {@link SequenceNodeFactory} used to created {@link SequenceNode}s.
 	 * @throws IOException If something goes wrong constructing.
 	 */
 	public NodeParserImpl(SequenceNodeFactory sf, File f) throws IOException {

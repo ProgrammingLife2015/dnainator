@@ -39,7 +39,7 @@ public class EdgeParserImpl extends BufferedEdgeParser {
 	}
 
 	/**
-	 * Constructs a {@link DefaultEdgeParser}, which reads from
+	 * Constructs a {@link EdgeParserImpl}, which reads from
 	 * the given {@link BufferedReader}.
 	 *
 	 * @param br The {@link BufferedReader} to read from.

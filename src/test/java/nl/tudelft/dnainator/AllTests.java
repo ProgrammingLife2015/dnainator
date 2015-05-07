@@ -1,6 +1,6 @@
 package nl.tudelft.dnainator;
 
-import nl.tudelft.dnainator.graph.Neo4jGraphTest;
+import nl.tudelft.dnainator.graph.impl.Neo4jGraphTest;
 import nl.tudelft.dnainator.graph.impl.Neo4jSingletonTest;
 import nl.tudelft.dnainator.parser.HeaderParserTest;
 import nl.tudelft.dnainator.parser.buffered.EdgeParserTest;

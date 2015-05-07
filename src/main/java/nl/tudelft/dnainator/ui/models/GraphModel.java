@@ -8,7 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Edge;
-import nl.tudelft.dnainator.graph.Neo4jSingleton;
+import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
 
 /**
  * The bridging class between an implementation of {@link nl.tudelft.dnainator.graph.Graph}

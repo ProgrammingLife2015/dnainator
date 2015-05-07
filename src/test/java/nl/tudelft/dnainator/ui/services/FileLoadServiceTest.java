@@ -14,7 +14,7 @@ import java.util.concurrent.TimeoutException;
 
 import javafx.concurrent.Service;
 import nl.tudelft.dnainator.graph.Graph;
-import nl.tudelft.dnainator.graph.Neo4jSingleton;
+import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
 
 import org.junit.AfterClass;
 import org.junit.Before;

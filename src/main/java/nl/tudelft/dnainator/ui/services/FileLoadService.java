@@ -8,7 +8,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import nl.tudelft.dnainator.graph.Graph;
-import nl.tudelft.dnainator.graph.Neo4jSingleton;
+import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;

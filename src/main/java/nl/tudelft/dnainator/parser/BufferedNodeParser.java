@@ -1,10 +1,9 @@
-package nl.tudelft.dnainator.parser.buffered;
+package nl.tudelft.dnainator.parser;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 
 import nl.tudelft.dnainator.core.SequenceNodeFactory;
-import nl.tudelft.dnainator.parser.NodeParser;
 
 /**
  * A {@link NodeParser}, which uses a {@link BufferedReader} as its source.
@@ -15,9 +14,9 @@ public abstract class BufferedNodeParser implements NodeParser {
 	protected SequenceNodeFactory sf;
 
 	/**
-	 * Creates the parser with the provided {@link SequenceFactory}.
+	 * Creates the parser with the provided {@link SequenceNodeFactory}.
 	 *
-	 * @param sf The {@link SequenceFactory} to be used.
+	 * @param sf The {@link SequenceNodeFactory} to be used.
 	 * @param br The {@link BufferedReader} from which to read.
 	 */
 	public BufferedNodeParser(SequenceNodeFactory sf, BufferedReader br) {

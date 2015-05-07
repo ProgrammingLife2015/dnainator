@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.parser.impl;
+package nl.tudelft.dnainator.parser;
 
 import nl.tudelft.dnainator.parser.exceptions.InvalidHeaderFormatException;
 

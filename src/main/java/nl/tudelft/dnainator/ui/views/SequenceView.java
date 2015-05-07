@@ -7,7 +7,7 @@ import java.util.Map;
 import javafx.geometry.Point2D;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Edge;
-import nl.tudelft.dnainator.graph.Neo4jSingleton;
+import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
 import nl.tudelft.dnainator.ui.drawables.DrawableEdge;
 import nl.tudelft.dnainator.ui.drawables.DrawableNode;
 import nl.tudelft.dnainator.ui.layouts.TopoLayout;

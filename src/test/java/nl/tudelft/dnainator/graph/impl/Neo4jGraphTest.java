@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.graph;
+package nl.tudelft.dnainator.graph.impl;
 
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertEquals;
@@ -37,7 +37,7 @@ import org.neo4j.graphdb.Transaction;
  */
 public class Neo4jGraphTest {
 	private static final String DB_PATH = "target/neo4j-junit";
-	private static Neo4jGraphDatabase db;
+	private static Neo4jGraph db;
 	private static File nodeFile;
 	private static File edgeFile;
 
