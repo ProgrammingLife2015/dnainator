@@ -47,7 +47,7 @@ public class GraphController {
 
 		// Create and store all the views.
 		this.views = new View[ViewType.LAST.ordinal()];
-		this.views[0] = new SequenceView(hbox, model);
+		this.views[0] = new SequenceView(model);
 
 		// Set the first view as default.
 		hbox.getChildren().add(this.views[0]);
