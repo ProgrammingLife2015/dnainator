@@ -25,7 +25,7 @@ import org.neo4j.io.fs.FileUtils;
 import de.saxsys.javafx.test.JfxRunner;
 
 /**
- * Test class for the {@link FileLoadingService}.
+ * Test class for the {@link FileLoadService}.
  * <p>
  * See http://blog.buildpath.de/how-to-test-javafx-services/ for
  * an explanation on how to test JavaFX code.
@@ -148,7 +148,7 @@ public class FileLoadServiceTest {
 	public void doTest() throws InterruptedException, ExecutionException, TimeoutException {
 		// Create a completableFuture to test the background task of the service. This
 		// completableFuture blocks the test thread until its complete method was called.
-		CompletableFuture<Graph> completableFuture = new CompletableFuture<Graph>();
+		CompletableFuture<Graph> completableFuture = new CompletableFuture<>();
 
 		// Act on the loadService's interesting states.
 		registerListeners(loadService, completableFuture);
