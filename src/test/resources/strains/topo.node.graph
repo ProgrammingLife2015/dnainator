@@ -1,16 +1,16 @@
-> 2 | ASDF | 0 | 0
+> 2 | ASDF | 1 | 5
 TATA
-> 9 | ASDF | 0 | 0
+> 9 | ASDF | 2 | 6
 TATA
-> 10 | ASDF | 0 | 0
+> 10 | ASDF | 3 | 7
 TATA
-> 5 | ASDF | 0 | 0
+> 5 | ASDF | 4 | 8
 TATA
-> 3 | ASDF | 0 | 0
+> 3 | ASDF | 5 | 9
 TATA
-> 7 | ASDF | 0 | 0
+> 7 | ASDF | 6 | 10
 TATA
-> 11 | ASDF | 0 | 0
+> 11 | ASDF | 7 | 11
 TATA
-> 8 | ASDF | 0 | 0
+> 8 | ASDF | 8 | 12
 TATA
