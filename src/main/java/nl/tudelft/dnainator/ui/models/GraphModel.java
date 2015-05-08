@@ -38,6 +38,13 @@ public class GraphModel {
 	}
 
 	/**
+	 * @return A list of all the ranks, containing the nodes in them.
+	 */
+	public List<List<SequenceNode>> getRanks() {
+		return Neo4jSingleton.getInstance().getDatabase().getRanks();
+	}
+
+	/**
 	 * @return The {@link ObservableList} of nodes.
 	 */
 	public final ObservableList<SequenceNode> getNodes() {

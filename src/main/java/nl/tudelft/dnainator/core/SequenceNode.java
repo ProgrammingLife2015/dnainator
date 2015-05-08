@@ -9,28 +9,34 @@ public interface SequenceNode {
 	 * @return	the id of this sequence
 	 */
 	String getId();
-	
+
 	/**
 	 * The associated source.
 	 * @return	the source
 	 */
 	String getSource();
-	
+
 	/**
 	 * The associated start ref.
 	 * @return	the start reference
 	 */
 	int getStartRef();
-	
+
 	/**
 	 * The associated end ref.
 	 * @return	the end reference
 	 */
 	int getEndRef();
-	
+
 	/**
 	 * The assiocated nucleotide sequence.
 	 * @return	the base sequence
 	 */
 	String getSequence();
+
+	/**
+	 * The associated rank.
+	 * @return	the rank
+	 */
+	int getRank();
 }

@@ -34,16 +34,16 @@ public class SequenceView extends View {
 	}
 
 	private void drawNodes() {
-		// CHECKSTYLE.OFF: MagicNumber
-		for (int i = 0; i < 100; i++) {
-		// CHECKSTYLE.ON: MagicNumer
-			List<SequenceNode> nodes = model.getRank(i);
+		List<List<SequenceNode>> ranks = model.getRanks();
+		for (int i = 0; i < ranks.size(); i++) {
+			List<SequenceNode> nodes = ranks.get(i);
 			int size = nodes.size();
 			for (int j = 0; j < size; j++) {
 				Point2D coords = TopoLayout.transform(i, size, j);
 				SequenceNode n = nodes.get(j);
 
-				group.getChildren().add(new DrawableNode(n, coords.getX(), coords.getY()));
+				DrawableNode drawable = new DrawableNode(n, coords.getX(), coords.getY());
+				group.getChildren().add(drawable);
 			}
 		}
 	}
