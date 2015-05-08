@@ -69,9 +69,27 @@ public class DefaultSequenceNode implements SequenceNode {
 	}
 
 	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof DefaultSequenceNode)) {
+			return false;
+		}
+
+		DefaultSequenceNode other = (DefaultSequenceNode) obj;
+		return id.equals(other.id) && source.equals(other.source)
+				&& start == other.start && end == other.end
+				&& sequence.equals(other.sequence);
+	}
+
+	@Override
+	public int hashCode() {
+		return id.hashCode() + source.hashCode() + sequence.hashCode()
+				+ Integer.hashCode(start) + Integer.hashCode(end);
+	}
+
+	@Override
 	public String toString() {
-		return "SequenceNode<" + getId() + "," + getStartRef() + "," + getEndRef()
-				+ "," + getSource() + "," + getSequence() + ">";
+		return "SequenceNode<" + getId() + "," + getSource() + ","
+				+ getStartRef() + "," + getEndRef() + "," + getSequence() + ">";
 	}
 
 	@Override

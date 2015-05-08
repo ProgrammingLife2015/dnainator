@@ -1,8 +1,8 @@
 package nl.tudelft.dnainator.graph;
 
 import static org.hamcrest.Matchers.lessThan;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedReader;
@@ -16,7 +16,9 @@ import java.util.LinkedList;
 import java.util.Set;
 
 import nl.tudelft.dnainator.core.DefaultSequenceFactory;
+import nl.tudelft.dnainator.core.DefaultSequenceNode;
 import nl.tudelft.dnainator.core.Edge;
+import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
 import nl.tudelft.dnainator.parser.buffered.DefaultEdgeParser;
@@ -63,6 +65,32 @@ public class Neo4jGraphTest {
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * Test looking up a single node.
+	 */
+	@Test
+	public void testNodeLookup() {
+		// CHECKSTYLE.OFF: MagicNumber
+		SequenceNode node1 = new DefaultSequenceNode("2", "ASDF", 1, 5, "TATA");
+		SequenceNode node2 = new DefaultSequenceNode("3", "ASDF", 5, 9, "TATA");
+		SequenceNode node3 = new DefaultSequenceNode("5", "ASDF", 4, 8, "TATA");
+		assertEquals(node1, db.getNode("2"));
+		assertEquals(node2, db.getNode("3"));
+		assertEquals(node3, db.getNode("5"));
+		// CHECKSTYLE.ON: MagicNumber
+	}
+
+	/**
+	 * Test looking up one of the roots of the tree.
+	 */
+	@Test
+	public void testRootLookup() {
+		// CHECKSTYLE.OFF: MagicNumber
+		SequenceNode root = new DefaultSequenceNode("5", "ASDF", 4, 8, "TATA");
+		assertEquals(root, db.getRootNode());
+		// CHECKSTYLE.ON: MagicNumber
 	}
 
 	/**

@@ -39,4 +39,10 @@ public interface SequenceNode {
 	 * @return	the rank
 	 */
 	int getRank();
+	
+	@Override
+	boolean equals(Object other);
+	
+	@Override
+	int hashCode();
 }
