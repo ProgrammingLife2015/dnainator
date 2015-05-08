@@ -19,7 +19,6 @@ import static java.lang.Integer.parseInt;
  */
 public class JFASTANodeParser extends BufferedNodeParser {
 
-	private FASTAFileReader fr;
 	private FASTAElementIterator it;
 
 	/**
@@ -31,7 +30,7 @@ public class JFASTANodeParser extends BufferedNodeParser {
 	 */
 	public JFASTANodeParser(SequenceFactory sf, BufferedReader br) throws IOException {
 		super(sf, br);
-		fr = new FASTAFileReaderImpl(this.br);
+		FASTAFileReader fr = new FASTAFileReaderImpl(this.br);
 		it = fr.getIterator();
 	}
 
@@ -44,9 +43,8 @@ public class JFASTANodeParser extends BufferedNodeParser {
 	public SequenceNode next() throws IOException, InvalidHeaderFormatException {
 		FASTAElement next = it.next();
 		HeaderParser p = new HeaderParser(next.getHeader());
-		SequenceNode s = sf.build(p.next(), p.next(), parseInt(p.next()),
+		return sf.build(p.next(), p.next(), parseInt(p.next()),
 				parseInt(p.next()), next.getSequence());
-		return s;
 	}
 
 }

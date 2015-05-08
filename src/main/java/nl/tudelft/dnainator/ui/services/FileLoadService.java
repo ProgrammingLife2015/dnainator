@@ -29,9 +29,9 @@ import nl.tudelft.dnainator.parser.exceptions.ParseException;
  * </p>
  */
 public class FileLoadService extends Service<Graph> {
-	private ObjectProperty<File> nodeFile = new SimpleObjectProperty<File>(this, "nodeFile");
-	private ObjectProperty<File> edgeFile = new SimpleObjectProperty<File>(this, "edgeFile");
-	private ObjectProperty<String> database = new SimpleObjectProperty<String>(this, "database");
+	private ObjectProperty<File> nodeFile = new SimpleObjectProperty<>(this, "nodeFile");
+	private ObjectProperty<File> edgeFile = new SimpleObjectProperty<>(this, "edgeFile");
+	private ObjectProperty<String> database = new SimpleObjectProperty<>(this, "database");
 
 	/**
 	 * @param f The node file to load.

@@ -101,7 +101,7 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <ignore></ignore>
+                    <ignore/>
                   </action>
                 </pluginExecution>
                 <pluginExecution>
@@ -114,7 +114,7 @@
                     </goals>
                   </pluginExecutionFilter>
                   <action>
-                    <ignore></ignore>
+                    <ignore/>
                   </action>
                 </pluginExecution>
               </pluginExecutions>
@@ -176,9 +176,6 @@
 	  <execution>
 	    <id>verify-pmd</id>
 	    <phase>process-classes</phase>
-	    <configuration>
-		<printFailingErrors>false</printFailingErrors>
-	    </configuration>
 	    <goals>
 	      <goal>pmd</goal>
 	    </goals>
@@ -223,6 +220,7 @@
           <formats>
             <format>html</format>
           </formats>
+          <check/>
         </configuration>
       </plugin>
       <!-- Checkstyle -->

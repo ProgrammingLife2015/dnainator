@@ -18,7 +18,7 @@ public final class Neo4jSingleton {
 	private Map<String, Neo4jGraphDatabase> neodatabases;
 
 	private Neo4jSingleton() {
-		neodatabases = new HashMap<String, Neo4jGraphDatabase>();
+		neodatabases = new HashMap<>();
 	}
 
 	/**

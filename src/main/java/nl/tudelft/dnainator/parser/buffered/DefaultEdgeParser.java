@@ -68,7 +68,7 @@ public class DefaultEdgeParser extends BufferedEdgeParser {
 	 * @return The source id, as an int.
 	 * @throws IOException Thrown when the reader fails.
 	 */
-	private String parseSource() throws IOException, InvalidEdgeFormatException {
+	private String parseSource() throws IOException {
 		StringBuilder source = new StringBuilder(ID_LENGTH_GUESS);
 		char next = (char) currentChar;
 
@@ -84,8 +84,6 @@ public class DefaultEdgeParser extends BufferedEdgeParser {
 
 	/**
 	 * Eats spaces until a non-space character is found.
-	 * @param next the next character to test for space.
-	 * @return the non-space character (or -1 if end is reached).
 	 * @throws IOException if something went wrong I/O-wise.
 	 */
 	private void eatSpaces() throws IOException {
