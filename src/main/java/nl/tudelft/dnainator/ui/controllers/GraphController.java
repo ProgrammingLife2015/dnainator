@@ -16,7 +16,7 @@ public class GraphController {
 	/**
 	 * Defines the different types of {@link View}s.
 	 */
-	public enum ViewType { SEQUENCE, LAST };
+	public enum ViewType { SEQUENCE, LAST }
 
 	@FXML private ScrollPane scrollPane;
 	private ObjectProperty<GraphModel> graphModel;
@@ -25,7 +25,7 @@ public class GraphController {
 
 	@FXML
 	private void initialize() {
-		this.graphModel = new SimpleObjectProperty<GraphModel>(this, "graphModel");
+		this.graphModel = new SimpleObjectProperty<>(this, "graphModel");
 
 		GraphModel model = new GraphModel();
 		setModel(model);
