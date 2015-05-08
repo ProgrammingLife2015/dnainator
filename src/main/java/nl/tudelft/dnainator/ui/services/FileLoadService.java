@@ -29,6 +29,7 @@ import nl.tudelft.dnainator.parser.exceptions.ParseException;
 public class FileLoadService extends Service<Graph> {
 	private ObjectProperty<File> nodeFile = new SimpleObjectProperty<File>(this, "nodeFile");
 	private ObjectProperty<File> edgeFile = new SimpleObjectProperty<File>(this, "edgeFile");
+	private ObjectProperty<String> database = new SimpleObjectProperty<String>(this, "database");
 
 	/**
 	 * @param f The node file to load.
@@ -72,12 +73,39 @@ public class FileLoadService extends Service<Graph> {
 		return edgeFile;
 	}
 
+	/**
+	 * @param g	The database to use.
+	 */
+	public final void setDatabase(String g) {
+		database.set(g);
+	}
+
+	/**
+	 * @return The database to use, if any.
+	 */
+	public final String getDatabase() {
+		return database.get();
+	}
+
+	/**
+	 * @return The database property.
+	 */
+	public ObjectProperty<String> databaseProperty() {
+		return database;
+	}
+
 	@Override
 	protected Task<Graph> createTask() {
 		return new Task<Graph>() {
 			@Override
 			protected Graph call() throws IOException, ParseException {
-				Graph gb = Neo4jSingleton.getInstance().getDatabase();
+				Graph gb;
+				if (database.get() == null) {
+					gb = Neo4jSingleton.getInstance().getDatabase();
+				} else {
+					gb = Neo4jSingleton.getInstance().getDatabase(database.get());
+				}
+
 				EdgeParser ep = new DefaultEdgeParser(new BufferedReader(new InputStreamReader(
 						new FileInputStream(getEdgeFile()), "UTF-8")));
 				NodeParser np = new JFASTANodeParser(new DefaultSequenceFactory(),

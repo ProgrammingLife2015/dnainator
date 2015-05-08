@@ -10,6 +10,7 @@ import java.io.IOException;
 import nl.tudelft.dnainator.graph.Neo4jGraphDatabase;
 import nl.tudelft.dnainator.graph.Neo4jSingleton;
 
+import org.junit.AfterClass;
 import org.junit.Test;
 import org.neo4j.io.fs.FileUtils;
 
@@ -95,5 +96,15 @@ public class Neo4jSingletonTest {
 		assertEquals(2, Neo4jSingleton.getInstance().getDatabasePaths().size());
 		Neo4jSingleton.getInstance().stopDatabase("non-existent");
 		assertEquals(2, Neo4jSingleton.getInstance().getDatabasePaths().size());
+	}
+
+	/**
+	 * Clean up after ourselves.
+	 * @throws IOException	when the database could not be deleted
+	 */
+	@AfterClass
+	public static void cleanUp() throws IOException {
+		Neo4jSingleton.getInstance().stopDatabase(DB1);
+		Neo4jSingleton.getInstance().stopDatabase(DB2);
 	}
 }

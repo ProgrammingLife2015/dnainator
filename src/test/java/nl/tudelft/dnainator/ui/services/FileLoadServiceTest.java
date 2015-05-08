@@ -14,10 +14,13 @@ import java.util.concurrent.TimeoutException;
 
 import javafx.concurrent.Service;
 import nl.tudelft.dnainator.graph.Graph;
+import nl.tudelft.dnainator.graph.Neo4jSingleton;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.neo4j.io.fs.FileUtils;
 
 import de.saxsys.javafx.test.JfxRunner;
 
@@ -30,10 +33,19 @@ import de.saxsys.javafx.test.JfxRunner;
  */
 @RunWith(JfxRunner.class)
 public class FileLoadServiceTest {
+	private static final String DB_PATH = "target/neo4j-junit";
 	private static final int DELAY = 20000;
 	private FileLoadService loadService;
 	private File nodeFile;
 	private File edgeFile;
+
+	static {
+		try {
+			FileUtils.deleteRecursively(new File(DB_PATH));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * Creates test node and edge files.
@@ -141,6 +153,7 @@ public class FileLoadServiceTest {
 		// Act on the loadService's interesting states.
 		registerListeners(loadService, completableFuture);
 
+		loadService.setDatabase(DB_PATH);
 		loadService.start();
 
 		// This call blocks the test thread until the completableFuture's complete() method is
@@ -196,5 +209,14 @@ public class FileLoadServiceTest {
 		}
 
 		doTest();
+	}
+
+	/**
+	 * Clean up after ourselves.
+	 * @throws IOException when the database could not be deleted
+	 */
+	@AfterClass
+	public static void cleanUp() throws IOException {
+		Neo4jSingleton.getInstance().stopDatabase(DB_PATH);
 	}
 }

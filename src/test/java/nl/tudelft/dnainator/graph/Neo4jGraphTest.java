@@ -24,6 +24,7 @@ import nl.tudelft.dnainator.parser.buffered.JFASTANodeParser;
 import nl.tudelft.dnainator.parser.exceptions.InvalidEdgeFormatException;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.neo4j.graphdb.Node;
@@ -44,7 +45,7 @@ public class Neo4jGraphTest {
 	@BeforeClass
 	public static void setUp() {
 		try {
-			Neo4jGraphDatabase db = Neo4jSingleton.getInstance().getDatabase(DB_PATH);
+			db = Neo4jSingleton.getInstance().getDatabase(DB_PATH);
 			nodeFile
 				= new File(Neo4jGraphTest.class.getResource("/strains/topo.node.graph").toURI());
 			edgeFile
@@ -85,14 +86,14 @@ public class Neo4jGraphTest {
 				assertThat(order.indexOf(source), lessThan(order.indexOf(dest)));
 			}
 		} catch (NumberFormatException e) {
-				fail("Number format incorrect " + e.getMessage());
-				e.printStackTrace();
+			fail("Number format incorrect " + e.getMessage());
+			e.printStackTrace();
 		} catch (InvalidEdgeFormatException e) {
-				fail("Edge format incorrect " + e.getMessage());
-				e.printStackTrace();
+			fail("Edge format incorrect " + e.getMessage());
+			e.printStackTrace();
 		} catch (IOException e) {
-				fail("Error during I/O " + e.getMessage());
-				e.printStackTrace();
+			fail("Error during I/O " + e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
@@ -118,5 +119,14 @@ public class Neo4jGraphTest {
 		Set<String> rank2Actual = new HashSet<>();
 		db.getRank(2).forEach(e -> rank2Actual.add(e.getId()));
 		assertEquals(rank2Expect, rank2Actual);
+	}
+
+	/**
+	 * Clean up after ourselves.
+	 * @throws IOException when the database could not be deleted
+	 */
+	@AfterClass
+	public static void cleanUp() throws IOException {
+		Neo4jSingleton.getInstance().stopDatabase(DB_PATH);
 	}
 }
