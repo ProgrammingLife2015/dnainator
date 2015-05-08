@@ -4,12 +4,14 @@ import java.io.File;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.ProgressIndicator;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import nl.tudelft.dnainator.ui.services.FileLoadService;
 import nl.tudelft.dnainator.ui.widgets.ExceptionDialog;
+import nl.tudelft.dnainator.ui.widgets.ProgressDialog;
 
 /**
  * The WindowController is a controller class for the main window.
@@ -35,7 +37,8 @@ public class WindowController {
 		loadService = new FileLoadService();
 		loadService.setOnSucceeded(e -> viewerController.getActiveView().redraw());
 		loadService.setOnFailed(e ->
-			new ExceptionDialog(loadService.getException(), "Error loading file!"));
+				new ExceptionDialog(loadService.getException(), "Error loading file!"));
+		loadService.setOnRunning(e -> new ProgressDialog(loadService));
 	}
 
 	@FXML
@@ -48,6 +51,7 @@ public class WindowController {
 		if (nodeFile == null) {
 			return;
 		}
+
 		loadService.setNodeFile(nodeFile);
 		loadService.setEdgeFile(openEdgeFile(nodeFile.getPath()));
 		loadService.restart();
