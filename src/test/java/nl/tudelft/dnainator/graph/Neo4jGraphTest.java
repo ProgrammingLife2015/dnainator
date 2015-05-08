@@ -24,13 +24,11 @@ import nl.tudelft.dnainator.parser.buffered.JFASTANodeParser;
 import nl.tudelft.dnainator.parser.exceptions.InvalidEdgeFormatException;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
-import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-import org.neo4j.io.fs.FileUtils;
 
 /**
  * Test Neo4j graph implementation.
@@ -38,7 +36,6 @@ import org.neo4j.io.fs.FileUtils;
 public class Neo4jGraphTest {
 	private static final String DB_PATH = "target/neo4j-junit";
 	private static Neo4jGraphDatabase db;
-	private static GraphDatabaseService service;
 	private static File nodeFile;
 	private static File edgeFile;
 
@@ -48,9 +45,7 @@ public class Neo4jGraphTest {
 	@BeforeClass
 	public static void setUp() {
 		try {
-			FileUtils.deleteRecursively(new File(DB_PATH));
-			service = new GraphDatabaseFactory().newEmbeddedDatabase(DB_PATH);
-			db = new Neo4jGraphDatabase(service);
+			db = Neo4jSingleton.getInstance().getDatabase(DB_PATH);
 			nodeFile
 				= new File(Neo4jGraphTest.class.getResource("/strains/topo.node.graph").toURI());
 			edgeFile
@@ -79,7 +74,7 @@ public class Neo4jGraphTest {
 		try {
 			EdgeParser ep = new DefaultEdgeParser(new BufferedReader(new FileReader(edgeFile)));
 
-			try (Transaction tx = service.beginTx()) {
+			try (Transaction tx = db.getService().beginTx()) {
 				for (Node n : db.topologicalOrder()) {
 					order.add(Integer.parseInt((String) n.getProperty("id")));
 				}
@@ -91,14 +86,14 @@ public class Neo4jGraphTest {
 				assertThat(order.indexOf(source), lessThan(order.indexOf(dest)));
 			}
 		} catch (NumberFormatException e) {
-				fail("Number format incorrect " + e.getMessage());
-				e.printStackTrace();
+			fail("Number format incorrect " + e.getMessage());
+			e.printStackTrace();
 		} catch (InvalidEdgeFormatException e) {
-				fail("Edge format incorrect " + e.getMessage());
-				e.printStackTrace();
+			fail("Edge format incorrect " + e.getMessage());
+			e.printStackTrace();
 		} catch (IOException e) {
-				fail("Error during I/O " + e.getMessage());
-				e.printStackTrace();
+			fail("Error during I/O " + e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
@@ -124,5 +119,14 @@ public class Neo4jGraphTest {
 		Set<String> rank2Actual = new HashSet<>();
 		db.getRank(2).forEach(e -> rank2Actual.add(e.getId()));
 		assertEquals(rank2Expect, rank2Actual);
+	}
+
+	/**
+	 * Clean up after ourselves.
+	 * @throws IOException when the database could not be deleted
+	 */
+	@AfterClass
+	public static void cleanUp() throws IOException {
+		Neo4jSingleton.getInstance().stopDatabase(DB_PATH);
 	}
 }
