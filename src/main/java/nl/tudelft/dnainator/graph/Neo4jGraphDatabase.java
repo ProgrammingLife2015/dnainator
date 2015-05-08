@@ -48,7 +48,7 @@ public final class Neo4jGraphDatabase implements Graph {
 	/**
 	 * Edge relationship types.
 	 */
-	private static enum RelTypes implements RelationshipType {
+	private enum RelTypes implements RelationshipType {
 		NEXT
 	}
 
@@ -164,7 +164,7 @@ public final class Neo4jGraphDatabase implements Graph {
 		return service.traversalDescription()
 					.depthFirst()
 					.expand(new IncludesNodesWithoutIncoming()
-					, new State<PrimitiveLongSet>(processed, null))
+					, new State<>(processed, null))
 					// We manage uniqueness for ourselves.
 					.uniqueness(Uniqueness.NONE)
 					.traverse(loop(roots))
@@ -191,7 +191,7 @@ public final class Neo4jGraphDatabase implements Graph {
 		public Iterable<Relationship> expand(Path path,
 				BranchState<PrimitiveLongSet> state) {
 			Node from = path.endNode();
-			List<Relationship> expand = new LinkedList<Relationship>();
+			List<Relationship> expand = new LinkedList<>();
 			for (Relationship r : from.getRelationships(RelTypes.NEXT, Direction.OUTGOING)) {
 				PrimitiveLongSet processed = state.getState();
 				processed.add(r.getId());
@@ -233,7 +233,7 @@ public final class Neo4jGraphDatabase implements Graph {
 
 	@Override
 	public SequenceNode getRootNode() {
-		SequenceNode node = null;
+		SequenceNode node;
 
 		try (Transaction tx = service.beginTx()) {
 			Node root = getRoot();
@@ -247,7 +247,7 @@ public final class Neo4jGraphDatabase implements Graph {
 
 	@Override
 	public SequenceNode getNode(String s) {
-		SequenceNode node = null;
+		SequenceNode node;
 
 		try (Transaction tx = service.beginTx()) {
 			node = createSequenceNode(service.findNode(nodeLabel, "id", s));
@@ -260,7 +260,7 @@ public final class Neo4jGraphDatabase implements Graph {
 
 	@Override
 	public List<SequenceNode> getRank(int rank) {
-		List<SequenceNode> nodes = new LinkedList<SequenceNode>();
+		List<SequenceNode> nodes = new LinkedList<>();
 
 		try (Transaction tx = service.beginTx()) {
 			ResourceIterator<Node> res = service.findNodes(nodeLabel, "dist", rank);
