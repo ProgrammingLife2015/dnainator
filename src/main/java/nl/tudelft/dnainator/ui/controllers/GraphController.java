@@ -4,7 +4,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.input.MouseEvent;
 import nl.tudelft.dnainator.ui.models.GraphModel;
 import nl.tudelft.dnainator.ui.views.SequenceView;
 import nl.tudelft.dnainator.ui.views.View;
@@ -88,10 +87,4 @@ public class GraphController {
 	public View getActiveView() {
 		return (View) scrollPane.getContent();
 	}
-
-	@FXML
-	private void onMouseClick(MouseEvent e) {
-		getActiveView().redraw();
-	}
-
 }
