@@ -2,6 +2,7 @@ package nl.tudelft.dnainator.graph;
 
 import java.util.List;
 
+import nl.tudelft.dnainator.core.Edge;
 import nl.tudelft.dnainator.core.SequenceNode;
 
 /**
@@ -21,6 +22,18 @@ public interface Graph extends GraphBuilder {
 	 * @return	a SequenceNode
 	 */
 	SequenceNode getNode(String n);
+
+	/**
+	 * Get a list of all nodes from this graph.
+	 * @return	a list of all nodes, per rank
+	 */
+	List<List<SequenceNode>> getRanks();
+
+	/**
+	 * Get a list of all edges from this graph.
+	 * @return	a list of all edges
+	 */
+	List<Edge<String>> getEdges();
 
 	/**
 	 * Get all the nodes with a specific rank from this graph.

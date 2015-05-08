@@ -31,6 +31,7 @@ import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.graphdb.traversal.BranchState;
 import org.neo4j.graphdb.traversal.InitialBranchState.State;
 import org.neo4j.graphdb.traversal.Uniqueness;
+import org.neo4j.tooling.GlobalGraphOperations;
 
 /**
  * This class realizes a graphfactory using Neo4j as it's backend.
@@ -42,6 +43,7 @@ public final class Neo4jGraphDatabase implements Graph {
 
 	private GraphDatabaseService service;
 	private Label nodeLabel;
+	private int maxRank;
 
 	/**
 	 * Edge relationship types.
@@ -221,6 +223,7 @@ public final class Neo4jGraphDatabase implements Graph {
 					Node dest = r.getEndNode();
 					if ((int) dest.getProperty("dist") < rankSource + 1) {
 						dest.setProperty("dist", rankSource + 1);
+						maxRank = rankSource + 1;
 					}
 				}
 			}
@@ -278,7 +281,37 @@ public final class Neo4jGraphDatabase implements Graph {
 		int startref    = (int) node.getProperty("start");
 		int endref      = (int) node.getProperty("end");
 		String sequence = (String) node.getProperty("sequence");
+		int rank		= (int) node.getProperty("dist");
 
-		return new DefaultSequenceNode(id, source, startref, endref, sequence);
+		return new DefaultSequenceNode(id, source, startref, endref, sequence, rank);
+	}
+
+	@Override
+	public List<Edge<String>> getEdges() {
+		List<Edge<String>> edges = new LinkedList<Edge<String>>();
+		try (Transaction tx = service.beginTx()) {
+			GlobalGraphOperations.at(service).getAllRelationships().forEach(e ->
+				edges.add(new Edge<String>((String) e.getStartNode().getProperty("id"),
+						(String) e.getEndNode().getProperty("id")))
+			);
+
+			tx.success();
+		}
+
+		return edges;
+	}
+
+	@Override
+	public List<List<SequenceNode>> getRanks() {
+		List<List<SequenceNode>> nodes = new LinkedList<>();
+		try (Transaction tx = service.beginTx()) {
+			for (int i = 0; i < maxRank; i++) {
+				nodes.add(getRank(i));
+			}
+
+			tx.success();
+		}
+
+		return nodes;
 	}
 }

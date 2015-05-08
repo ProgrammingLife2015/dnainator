@@ -33,7 +33,7 @@ public class WindowController {
 	@FXML
 	private void initialize() {
 		loadService = new FileLoadService();
-		loadService.setOnSucceeded(e -> viewerController.setGraph(loadService.getValue()));
+		loadService.setOnSucceeded(e -> viewerController.getActiveView().redraw());
 		loadService.setOnFailed(e ->
 			new ExceptionDialog(loadService.getException(), "Error loading file!"));
 	}
