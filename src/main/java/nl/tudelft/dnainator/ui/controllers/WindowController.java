@@ -1,6 +1,7 @@
 package nl.tudelft.dnainator.ui.controllers;
 
 import java.io.File;
+import java.io.IOException;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -8,8 +9,10 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import nl.tudelft.dnainator.graph.Neo4jSingleton;
 import nl.tudelft.dnainator.ui.services.FileLoadService;
 import nl.tudelft.dnainator.ui.widgets.ExceptionDialog;
+import nl.tudelft.dnainator.ui.widgets.ProgressDialog;
 
 /**
  * The WindowController is a controller class for the main window.
@@ -33,9 +36,22 @@ public class WindowController {
 	@FXML
 	private void initialize() {
 		loadService = new FileLoadService();
-		loadService.setOnSucceeded(e -> viewerController.getActiveView().redraw());
+		ProgressDialog progressDialog = new ProgressDialog(loadService);
+
 		loadService.setOnFailed(e ->
-			new ExceptionDialog(loadService.getException(), "Error loading file!"));
+				new ExceptionDialog(loadService.getException(), "Error loading file!"));
+		loadService.setOnRunning(e -> progressDialog.show());
+		loadService.setOnSucceeded(e -> {
+			viewerController.getActiveView().redraw();
+			progressDialog.close();
+		});
+		loadService.setOnCancelled(e -> {
+			try {
+				Neo4jSingleton.getInstance().stopDatabase(Neo4jSingleton.DB_PATH);
+			} catch (IOException ioe) {
+				new ExceptionDialog(ioe, "Error cancelling database!");
+			}
+		});
 	}
 
 	@FXML
@@ -48,6 +64,7 @@ public class WindowController {
 		if (nodeFile == null) {
 			return;
 		}
+
 		loadService.setNodeFile(nodeFile);
 		loadService.setEdgeFile(openEdgeFile(nodeFile.getPath()));
 		loadService.restart();

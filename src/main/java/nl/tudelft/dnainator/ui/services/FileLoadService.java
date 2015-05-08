@@ -1,13 +1,5 @@
 package nl.tudelft.dnainator.ui.services;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-
-import org.neo4j.io.fs.FileUtils;
-
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Service;
@@ -20,6 +12,13 @@ import nl.tudelft.dnainator.parser.NodeParser;
 import nl.tudelft.dnainator.parser.buffered.DefaultEdgeParser;
 import nl.tudelft.dnainator.parser.buffered.JFASTANodeParser;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
+import org.neo4j.io.fs.FileUtils;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
  * A JavaFX background service to load files into graphs.
