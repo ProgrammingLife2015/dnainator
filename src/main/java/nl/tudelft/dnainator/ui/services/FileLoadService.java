@@ -6,6 +6,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import org.neo4j.io.fs.FileUtils;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Service;
@@ -101,6 +103,8 @@ public class FileLoadService extends Service<Graph> {
 			protected Graph call() throws IOException, ParseException {
 				Graph gb;
 				if (database.get() == null) {
+					// FIXME: this is necessary because neo4j does not yet handle persistence
+					FileUtils.deleteRecursively(new File(Neo4jSingleton.DB_PATH));
 					gb = Neo4jSingleton.getInstance().getDatabase();
 				} else {
 					gb = Neo4jSingleton.getInstance().getDatabase(database.get());

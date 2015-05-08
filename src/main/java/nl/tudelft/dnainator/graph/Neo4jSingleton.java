@@ -13,7 +13,7 @@ import org.neo4j.io.fs.FileUtils;
  */
 public final class Neo4jSingleton {
 	private static final Neo4jSingleton INSTANCE = new Neo4jSingleton();
-	private static final String DB_PATH = "target/neo4j-hello-db";
+	public static final String DB_PATH = "target/neo4j-hello-db";
 
 	private Map<String, Neo4jGraphDatabase> neodatabases;
 
@@ -57,7 +57,8 @@ public final class Neo4jSingleton {
 	 * @return		a set of all database paths
 	 */
 	public Set<String> getDatabasePaths() {
-		return neodatabases.keySet();	}
+		return neodatabases.keySet();
+	}
 
 	/**
 	 * Stops the database associated with the specified path, if it exists.
