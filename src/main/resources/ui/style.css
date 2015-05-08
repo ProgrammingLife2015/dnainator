@@ -5,3 +5,19 @@
 	-fx-alignment: center;
 	-fx-label-padding: 10 10 10 10;
 }
+
+.view {
+	-fx-background-color: #FFFFFF;
+}
+
+.sequence-view {
+	-fx-background-color: #FFFFFF;
+}
+
+.drawable-node {
+	-fx-fill: #4C4C4C;
+}
+
+.drawable-edge {
+	-fx-fill: #666666;
+}

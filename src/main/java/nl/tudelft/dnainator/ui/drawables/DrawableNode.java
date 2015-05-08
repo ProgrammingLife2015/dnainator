@@ -45,6 +45,8 @@ public class DrawableNode extends Circle {
 	public DrawableNode(SequenceNode node, double x, double y, double radius, Paint fill) {
 		super(x, y, radius, fill);
 		this.node = node;
+
+		getStyleClass().add("drawable-node");
 	}
 
 	/**

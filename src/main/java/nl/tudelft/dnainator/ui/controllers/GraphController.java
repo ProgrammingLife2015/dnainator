@@ -3,8 +3,8 @@ package nl.tudelft.dnainator.ui.controllers;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import nl.tudelft.dnainator.ui.models.GraphModel;
 import nl.tudelft.dnainator.ui.views.SequenceView;
 import nl.tudelft.dnainator.ui.views.View;
@@ -19,7 +19,7 @@ public class GraphController {
 	 */
 	public enum ViewType { SEQUENCE, LAST };
 
-	@FXML private HBox hbox;
+	@FXML private ScrollPane scrollPane;
 	private ObjectProperty<GraphModel> graphModel;
 	// FIXME: Perhaps this should also be a property for the WindowController to bind to.
 	private View[] views;
@@ -50,7 +50,7 @@ public class GraphController {
 		this.views[0] = new SequenceView(model);
 
 		// Set the first view as default.
-		hbox.getChildren().add(this.views[0]);
+		scrollPane.setContent(this.views[0]);
 	}
 
 	/**
@@ -79,15 +79,14 @@ public class GraphController {
 	 * @param v The {@link ViewType} corresponding to the required {@link View}.
 	 */
 	public void setView(ViewType v) {
-		hbox.getChildren().clear();
-		hbox.getChildren().add(this.views[v.ordinal()]);
+		scrollPane.setContent(this.views[v.ordinal()]);
 	}
 
 	/**
 	 * @return The currently active {@link View}.
 	 */
 	public View getActiveView() {
-		return (View) hbox.getChildren().get(0);
+		return (View) scrollPane.getContent();
 	}
 
 	@FXML

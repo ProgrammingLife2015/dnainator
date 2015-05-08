@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.chart.*?>
 <?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<ScrollPane fitToHeight="true" fitToWidth="true" onMouseClicked="#onMouseClick" pannable="true" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.dnainator.ui.controllers.GraphController">
-   <content>
-      <HBox fx:id="hbox" alignment="CENTER" />
-   </content>
+<ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" onMouseClicked="#onMouseClick" pannable="true" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.dnainator.ui.controllers.GraphController">
 </ScrollPane>

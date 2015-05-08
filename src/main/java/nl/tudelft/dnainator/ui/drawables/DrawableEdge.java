@@ -15,6 +15,8 @@ public class DrawableEdge extends Line {
 	 */
 	public DrawableEdge(DrawableNode src, DrawableNode dest) {
 		super(src.getCenterX(), src.getCenterY(), dest.getCenterX(), dest.getCenterY());
+
+		getStyleClass().add("drawable-edge");
 	}
 
 }

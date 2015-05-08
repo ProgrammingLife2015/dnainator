@@ -20,6 +20,8 @@ public class SequenceView extends View {
 	 */
 	public SequenceView(GraphModel model) {
 		super(model);
+
+		getStyleClass().add("sequence-view");
 	}
 
 	@Override
@@ -39,8 +41,9 @@ public class SequenceView extends View {
 			int size = nodes.size();
 			for (int j = 0; j < size; j++) {
 				Point2D coords = TopoLayout.transform(i, size, j);
+				SequenceNode n = nodes.get(j);
 
-				getChildren().add(new DrawableNode(nodes.get(j), coords.getX(), coords.getY()));
+				group.getChildren().add(new DrawableNode(n, coords.getX(), coords.getY()));
 			}
 		}
 	}
