@@ -108,6 +108,9 @@ public class FileLoadService extends Service<Graph> {
 				NodeParser np = new JFASTANodeParser(getNodeFile());
 				gb.constructGraph(np, ep);
 
+				ep.close();
+				np.close();
+
 				return gb;
 			}
 		};
