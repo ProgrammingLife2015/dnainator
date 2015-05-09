@@ -1,7 +1,9 @@
 package nl.tudelft.dnainator.parser.buffered;
 
-import java.io.BufferedReader;
 import nl.tudelft.dnainator.parser.EdgeParser;
+
+import java.io.BufferedReader;
+import java.io.IOException;
 
 /**
  * An {@link EdgeParser} which uses a {@link BufferedReader} as its source.
@@ -15,6 +17,11 @@ public abstract class BufferedEdgeParser implements EdgeParser {
 	 */
 	public BufferedEdgeParser(BufferedReader br) {
 		this.br = br;
+	}
+
+	@Override
+	public void close() throws IOException {
+		br.close();
 	}
 
 }

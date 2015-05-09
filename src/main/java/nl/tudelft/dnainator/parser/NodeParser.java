@@ -25,4 +25,9 @@ public interface NodeParser {
 	 */
 	SequenceNode next() throws IOException, InvalidHeaderFormatException;
 
+	/**
+	 * Tries to close the {@link java.io.BufferedReader}.
+	 * @throws IOException when the reader fails to close.
+	 */
+	void close() throws IOException;
 }

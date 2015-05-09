@@ -1,6 +1,7 @@
 package nl.tudelft.dnainator.parser.buffered;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 
 import nl.tudelft.dnainator.core.SequenceFactory;
 import nl.tudelft.dnainator.parser.NodeParser;
@@ -22,6 +23,11 @@ public abstract class BufferedNodeParser implements NodeParser {
 	public BufferedNodeParser(SequenceFactory sf, BufferedReader br) {
 		this.sf = sf;
 		this.br = br;
+	}
+
+	@Override
+	public void close() throws IOException {
+		br.close();
 	}
 
 }
