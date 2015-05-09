@@ -123,6 +123,9 @@ public final class Neo4jGraphDatabase implements Graph {
 
 			tx.success();
 		}
+
+		ep.close();
+		np.close();
 	}
 
 	/**

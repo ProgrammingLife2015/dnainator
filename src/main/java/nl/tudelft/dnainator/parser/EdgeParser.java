@@ -32,4 +32,10 @@ public interface EdgeParser {
 	 */
 	Edge<String> next() throws IOException, InvalidEdgeFormatException;
 
+	/**
+	 * Tries to close the {@link java.io.BufferedReader}.
+	 * @throws IOException when the reader fails to close.
+	 */
+	void close() throws IOException;
+
 }
