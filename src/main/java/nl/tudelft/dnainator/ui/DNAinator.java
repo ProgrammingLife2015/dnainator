@@ -21,8 +21,13 @@ public class DNAinator extends Application {
 	private static final String FXML = "/ui/fxml/dnainator.fxml";
 	private static final String ICON = "/ui/icons/dnainator.png";
 
+	private static final int MIN_WIDTH = 300;
+	private static final int MIN_HEIGHT = 150;
+
 	@Override
 	public void start(Stage primaryStage) throws Exception {
+		primaryStage.setMinHeight(MIN_HEIGHT);
+		primaryStage.setMinWidth(MIN_WIDTH);
 		primaryStage.setTitle(DNAINATOR);
 		primaryStage.getIcons().add(new Image(getClass().getResourceAsStream(ICON)));
 		primaryStage.setMaximized(true);
