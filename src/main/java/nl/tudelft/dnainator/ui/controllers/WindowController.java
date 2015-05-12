@@ -41,10 +41,10 @@ public class WindowController {
 		loadService.setOnFailed(e ->
 				new ExceptionDialog(loadService.getException(), "Error loading file!"));
 		loadService.setOnRunning(e -> progressDialog.show());
-		loadService.setOnSucceeded(e -> {
-			viewerController.getActiveView().redraw();
-			progressDialog.close();
-		});
+//		loadService.setOnSucceeded(e -> {
+//			viewerController.getActiveView().redraw();
+//			progressDialog.close();
+//		});
 		loadService.setOnCancelled(e -> {
 			try {
 				Neo4jSingleton.getInstance().stopDatabase(Neo4jSingleton.DB_PATH);

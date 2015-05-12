@@ -39,10 +39,10 @@ public class GraphController {
 		 * of off-screen nodes (on both sides). Other properties will probably also be
 		 * needed. FIXME: We should look into lazy evaluation or perhaps even lazy redraw.
 		 */
-		model.nodesProperty().addListener((observable, oldValue, newValue) ->
-				getActiveView().redraw());
-		model.edgesProperty().addListener((observable, oldValue, newValue) ->
-				getActiveView().redraw());
+//		model.nodesProperty().addListener((observable, oldValue, newValue) ->
+//				getActiveView().redraw());
+//		model.edgesProperty().addListener((observable, oldValue, newValue) ->
+//				getActiveView().redraw());
 
 		// Create and store all the views.
 		this.views = new View[ViewType.LAST.ordinal()];
