@@ -7,9 +7,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.io.IOException;
 
-import nl.tudelft.dnainator.graph.Neo4jGraphDatabase;
-import nl.tudelft.dnainator.graph.Neo4jSingleton;
-
 import org.junit.AfterClass;
 import org.junit.Test;
 import org.neo4j.io.fs.FileUtils;
@@ -47,8 +44,8 @@ public class Neo4jSingletonTest {
 	 */
 	@Test
 	public void testUniqueCreation() {
-		Neo4jGraphDatabase g1 = Neo4jSingleton.getInstance().getDatabase(DB1);
-		Neo4jGraphDatabase g2 = Neo4jSingleton.getInstance().getDatabase(DB1);
+		Neo4jGraph g1 = Neo4jSingleton.getInstance().getDatabase(DB1);
+		Neo4jGraph g2 = Neo4jSingleton.getInstance().getDatabase(DB1);
 		assertTrue(g1 == g2);
 		assertEquals(2, Neo4jSingleton.getInstance().getDatabasePaths().size());
 	}
@@ -59,13 +56,13 @@ public class Neo4jSingletonTest {
 	 */
 	@Test
 	public void testUniqueCreationMultiple() {
-		Neo4jGraphDatabase g1 = Neo4jSingleton.getInstance().getDatabase(DB1);
-		Neo4jGraphDatabase g2 = Neo4jSingleton.getInstance().getDatabase(DB2);
+		Neo4jGraph g1 = Neo4jSingleton.getInstance().getDatabase(DB1);
+		Neo4jGraph g2 = Neo4jSingleton.getInstance().getDatabase(DB2);
 		assertFalse(g1 == g2);
 		assertEquals(2, Neo4jSingleton.getInstance().getDatabasePaths().size());
 
-		Neo4jGraphDatabase g3 = Neo4jSingleton.getInstance().getDatabase(DB1);
-		Neo4jGraphDatabase g4 = Neo4jSingleton.getInstance().getDatabase(DB2);
+		Neo4jGraph g3 = Neo4jSingleton.getInstance().getDatabase(DB1);
+		Neo4jGraph g4 = Neo4jSingleton.getInstance().getDatabase(DB2);
 		assertTrue(g1 == g3);
 		assertTrue(g2 == g4);
 		assertFalse(g3 == g4);
@@ -80,9 +77,9 @@ public class Neo4jSingletonTest {
 	 */
 	@Test
 	public void testStop() throws IOException {
-		Neo4jGraphDatabase g1 = Neo4jSingleton.getInstance().getDatabase(DB1);
+		Neo4jGraph g1 = Neo4jSingleton.getInstance().getDatabase(DB1);
 		Neo4jSingleton.getInstance().stopDatabase(DB1);
-		Neo4jGraphDatabase g2 = Neo4jSingleton.getInstance().getDatabase(DB1);
+		Neo4jGraph g2 = Neo4jSingleton.getInstance().getDatabase(DB1);
 		assertFalse(g1 == g2);
 	}
 

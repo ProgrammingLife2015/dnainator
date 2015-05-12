@@ -3,7 +3,7 @@ package nl.tudelft.dnainator.core;
 /**
  * An abstract factory for generating sequences.
  */
-public interface SequenceFactory {
+public interface SequenceNodeFactory {
 
 	/**
 	 * Creates a new Sequence with specified references, start- and end positions.

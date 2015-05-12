@@ -8,19 +8,20 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 
-import nl.tudelft.dnainator.core.Edge;
+import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.exceptions.InvalidEdgeFormatException;
+import nl.tudelft.dnainator.parser.impl.EdgeParserImpl;
 import static nl.tudelft.dnainator.parser.buffered.ParserTestUtils.toBufferedReader;
 import static nl.tudelft.dnainator.parser.buffered.ParserTestUtils.assertEdgeEquals;
 
 import org.junit.Test;
 
 /**
- * Test the {@link DefaultEdgeParser} implementation of an
+ * Test the {@link EdgeParserImpl} implementation of an
  * {@link EdgeParser}.
  */
-public class DefaultEdgeParserTest {
+public class EdgeParserTest {
 
 	/**
 	 * Tests an empty input.
@@ -28,7 +29,7 @@ public class DefaultEdgeParserTest {
 	@Test(expected = NoSuchElementException.class)
 	public void testParseEmpty() {
 		BufferedReader in = toBufferedReader("");
-		EdgeParser ep = new DefaultEdgeParser(in);
+		EdgeParser ep = new EdgeParserImpl(in);
 		try {
 			assertFalse(ep.hasNext());
 			ep.next();
@@ -45,7 +46,7 @@ public class DefaultEdgeParserTest {
 	@Test(expected = InvalidEdgeFormatException.class)
 	public void testParseOneCharacter() throws InvalidEdgeFormatException {
 		BufferedReader in = toBufferedReader("a");
-		EdgeParser ep = new DefaultEdgeParser(in);
+		EdgeParser ep = new EdgeParserImpl(in);
 		try {
 			ep.next();
 		} catch (IOException e) {
@@ -65,7 +66,7 @@ public class DefaultEdgeParserTest {
 				"6 40",
 				"123 456"
 				));
-		EdgeParser ep = new DefaultEdgeParser(in);
+		EdgeParser ep = new EdgeParserImpl(in);
 		try {
 			assertTrue(ep.hasNext());
 			Edge<String> next = ep.next();
@@ -97,7 +98,7 @@ public class DefaultEdgeParserTest {
 				"6 40   ",			// Trailing spaces.
 				"  123   456   "	// All of them at once.
 				));
-		EdgeParser ep = new DefaultEdgeParser(in);
+		EdgeParser ep = new EdgeParserImpl(in);
 		try {
 			assertTrue(ep.hasNext());
 			Edge<String> next = ep.next();
@@ -128,7 +129,7 @@ public class DefaultEdgeParserTest {
 				"3 ",
 				"4 5"
 				));
-		EdgeParser ep = new DefaultEdgeParser(in);
+		EdgeParser ep = new EdgeParserImpl(in);
 		try {
 			assertTrue(ep.hasNext());
 			Edge<String> next = ep.next();
@@ -150,7 +151,7 @@ public class DefaultEdgeParserTest {
 				"3 4 5",
 				"6 7"
 				));
-		EdgeParser ep = new DefaultEdgeParser(in);
+		EdgeParser ep = new EdgeParserImpl(in);
 		try {
 			assertTrue(ep.hasNext());
 			Edge<String> next = ep.next();
@@ -170,7 +171,7 @@ public class DefaultEdgeParserTest {
 				"1 2",
 				""
 				));
-		EdgeParser ep = new DefaultEdgeParser(in);
+		EdgeParser ep = new EdgeParserImpl(in);
 		try {
 			assertTrue(ep.hasNext());
 			Edge<String> next = ep.next();
@@ -190,7 +191,7 @@ public class DefaultEdgeParserTest {
 				"1 2",
 				"    "
 				));
-		EdgeParser ep = new DefaultEdgeParser(in);
+		EdgeParser ep = new EdgeParserImpl(in);
 		try {
 			assertTrue(ep.hasNext());
 			Edge<String> next = ep.next();
@@ -211,7 +212,7 @@ public class DefaultEdgeParserTest {
 				"    ",
 				"3 4"
 				));
-		EdgeParser ep = new DefaultEdgeParser(in);
+		EdgeParser ep = new EdgeParserImpl(in);
 		try {
 			assertTrue(ep.hasNext());
 			Edge<String> next = ep.next();
@@ -234,7 +235,7 @@ public class DefaultEdgeParserTest {
 				"",
 				"3 4"
 				));
-		EdgeParser ep = new DefaultEdgeParser(in);
+		EdgeParser ep = new EdgeParserImpl(in);
 		try {
 			assertTrue(ep.hasNext());
 			Edge<String> next = ep.next();

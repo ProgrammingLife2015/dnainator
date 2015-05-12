@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.graph;
+package nl.tudelft.dnainator.graph.impl;
 
 import java.io.File;
 import java.io.IOException;
@@ -15,7 +15,7 @@ public final class Neo4jSingleton {
 	private static final Neo4jSingleton INSTANCE = new Neo4jSingleton();
 	public static final String DB_PATH = "target/neo4j-hello-db";
 
-	private Map<String, Neo4jGraphDatabase> neodatabases;
+	private Map<String, Neo4jGraph> neodatabases;
 
 	private Neo4jSingleton() {
 		neodatabases = new HashMap<>();
@@ -34,7 +34,7 @@ public final class Neo4jSingleton {
 	 * Otherwise instantiates a new database.
 	 * @return		a database instance
 	 */
-	public Neo4jGraphDatabase getDatabase() {
+	public Neo4jGraph getDatabase() {
 		return getDatabase(DB_PATH);
 	}
 
@@ -44,9 +44,9 @@ public final class Neo4jSingleton {
 	 * @param path	the path to the database
 	 * @return		a database instance
 	 */
-	public Neo4jGraphDatabase getDatabase(String path) {
+	public Neo4jGraph getDatabase(String path) {
 		if (!neodatabases.containsKey(path)) {
-			neodatabases.put(path, new Neo4jGraphDatabase(path));
+			neodatabases.put(path, new Neo4jGraph(path));
 		}
 
 		return neodatabases.get(path);

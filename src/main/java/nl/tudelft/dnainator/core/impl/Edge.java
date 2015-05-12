@@ -1,4 +1,6 @@
-package nl.tudelft.dnainator.core;
+package nl.tudelft.dnainator.core.impl;
+
+import nl.tudelft.dnainator.core.SequenceNode;
 
 
 /**

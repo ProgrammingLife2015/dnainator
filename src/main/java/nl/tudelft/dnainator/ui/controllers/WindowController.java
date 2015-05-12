@@ -9,7 +9,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
-import nl.tudelft.dnainator.graph.Neo4jSingleton;
+import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
 import nl.tudelft.dnainator.ui.services.FileLoadService;
 import nl.tudelft.dnainator.ui.widgets.ExceptionDialog;
 import nl.tudelft.dnainator.ui.widgets.ProgressDialog;

@@ -1,10 +1,11 @@
-package nl.tudelft.dnainator.core;
+package nl.tudelft.dnainator.core.impl;
+
+import nl.tudelft.dnainator.core.SequenceNode;
 
 /**
  * Implements a default sequence conform the Sequence interface.
  */
-public class DefaultSequenceNode implements SequenceNode {
-
+public class SequenceNodeImpl implements SequenceNode {
 	private String id;
 	private String source;
 	private int start;
@@ -20,7 +21,7 @@ public class DefaultSequenceNode implements SequenceNode {
 	 * @param end The end position of the sequence.
 	 * @param sequence The sequence.
 	 */
-	public DefaultSequenceNode(String id, String source, int start, int end, String sequence) {
+	public SequenceNodeImpl(String id, String source, int start, int end, String sequence) {
 		this(id, source, start, end, sequence, 0);
 	}
 
@@ -33,7 +34,7 @@ public class DefaultSequenceNode implements SequenceNode {
 	 * @param sequence The sequence.
 	 * @param rank The rank.
 	 */
-	public DefaultSequenceNode(String id, String source,
+	public SequenceNodeImpl(String id, String source,
 			int start, int end, String sequence, int rank) {
 		this.id = id;
 		this.source = source;
@@ -70,14 +71,14 @@ public class DefaultSequenceNode implements SequenceNode {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof DefaultSequenceNode)) {
+		if (!(obj instanceof SequenceNode)) {
 			return false;
 		}
 
-		DefaultSequenceNode other = (DefaultSequenceNode) obj;
-		return id.equals(other.id) && source.equals(other.source)
-				&& start == other.start && end == other.end
-				&& sequence.equals(other.sequence);
+		SequenceNode other = (SequenceNode) obj;
+		return id.equals(other.getId()) && source.equals(other.getSource())
+				&& start == other.getStartRef() && end == other.getEndRef()
+				&& sequence.equals(other.getSequence());
 	}
 
 	@Override

@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.BufferedReader;
 import java.io.StringReader;
 
-import nl.tudelft.dnainator.core.Edge;
+import nl.tudelft.dnainator.core.impl.Edge;
 
 /**
  * Utility functions for parser tests.

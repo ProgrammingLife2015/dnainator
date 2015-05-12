@@ -2,8 +2,8 @@ package nl.tudelft.dnainator.parser.buffered;
 
 import static nl.tudelft.dnainator.parser.buffered.ParserTestUtils.toBufferedReader;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -11,18 +11,19 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 
-import nl.tudelft.dnainator.core.DefaultSequenceFactory;
-import nl.tudelft.dnainator.core.DefaultSequenceNode;
 import nl.tudelft.dnainator.core.SequenceNode;
+import nl.tudelft.dnainator.core.impl.SequenceNodeFactoryImpl;
+import nl.tudelft.dnainator.core.impl.SequenceNodeImpl;
 import nl.tudelft.dnainator.parser.NodeParser;
 import nl.tudelft.dnainator.parser.exceptions.InvalidHeaderFormatException;
+import nl.tudelft.dnainator.parser.impl.NodeParserImpl;
 
 import org.junit.Test;
 
 /**
  * Tests the JFASTA implementation of the NodeParser interface.
  */
-public class JFASTANodeParserTest {
+public class NodeParserTest {
 
 	/**
 	 * Tests empty input.
@@ -31,7 +32,7 @@ public class JFASTANodeParserTest {
 	public void testParseNodesEmpty() {
 		BufferedReader in = toBufferedReader("");
 		try {
-			NodeParser np = new JFASTANodeParser(new DefaultSequenceFactory(), in);
+			NodeParser np = new NodeParserImpl(new SequenceNodeFactoryImpl(), in);
 			assertFalse(np.hasNext());
 			np.next();
 		} catch (IOException | InvalidHeaderFormatException e) {
@@ -44,8 +45,8 @@ public class JFASTANodeParserTest {
 	 */
 	@Test
 	public void testNodeIdNotEquals() {
-		SequenceNode a = new DefaultSequenceNode("a", "test", 1, 2, "ACTG");
-		SequenceNode b = new DefaultSequenceNode("b", "test", 1, 2, "ACTG");
+		SequenceNode a = new SequenceNodeImpl("a", "test", 1, 2, "ACTG");
+		SequenceNode b = new SequenceNodeImpl("b", "test", 1, 2, "ACTG");
 
 		assertNotEquals(a, b);
 		assertNotEquals(a.hashCode(), b.hashCode());
@@ -56,8 +57,8 @@ public class JFASTANodeParserTest {
 	 */
 	@Test
 	public void testNodeSourceNotEquals() {
-		SequenceNode a = new DefaultSequenceNode("a", "test", 1, 2, "ACTG");
-		SequenceNode b = new DefaultSequenceNode("a", "tesd", 1, 2, "ACTG");
+		SequenceNode a = new SequenceNodeImpl("a", "test", 1, 2, "ACTG");
+		SequenceNode b = new SequenceNodeImpl("a", "tesd", 1, 2, "ACTG");
 
 		assertNotEquals(a, b);
 		assertNotEquals(a.hashCode(), b.hashCode());
@@ -69,8 +70,8 @@ public class JFASTANodeParserTest {
 	 */
 	@Test
 	public void testNodeStartNotEquals() {
-		SequenceNode a = new DefaultSequenceNode("a", "test", 1, 2, "ACTG");
-		SequenceNode b = new DefaultSequenceNode("a", "test", 2, 2, "ACTG");
+		SequenceNode a = new SequenceNodeImpl("a", "test", 1, 2, "ACTG");
+		SequenceNode b = new SequenceNodeImpl("a", "test", 2, 2, "ACTG");
 
 		assertNotEquals(a, b);
 		assertNotEquals(a.hashCode(), b.hashCode());
@@ -81,8 +82,8 @@ public class JFASTANodeParserTest {
 	 */
 	@Test
 	public void testNodeEndNotEquals() {
-		SequenceNode a = new DefaultSequenceNode("a", "test", 1, 2, "ACTG");
-		SequenceNode b = new DefaultSequenceNode("a", "test", 1, 1, "ACTG");
+		SequenceNode a = new SequenceNodeImpl("a", "test", 1, 2, "ACTG");
+		SequenceNode b = new SequenceNodeImpl("a", "test", 1, 1, "ACTG");
 
 		assertNotEquals(a, b);
 		assertNotEquals(a.hashCode(), b.hashCode());
@@ -93,8 +94,8 @@ public class JFASTANodeParserTest {
 	 */
 	@Test
 	public void testNodeSequenceNotEquals() {
-		SequenceNode a = new DefaultSequenceNode("a", "test", 1, 1, "ACTG");
-		SequenceNode b = new DefaultSequenceNode("a", "test", 1, 2, "BCTG");
+		SequenceNode a = new SequenceNodeImpl("a", "test", 1, 1, "ACTG");
+		SequenceNode b = new SequenceNodeImpl("a", "test", 1, 2, "BCTG");
 
 		assertNotEquals(a, b);
 		assertNotEquals(a.hashCode(), b.hashCode());
@@ -105,12 +106,12 @@ public class JFASTANodeParserTest {
 	 */
 	@Test
 	public void testNodeEquals() {
-		SequenceNode a = new DefaultSequenceNode("a", "test", 1, 2, "ACTG");
+		SequenceNode a = new SequenceNodeImpl("a", "test", 1, 2, "ACTG");
 
 		assertEquals(a, a);
 		assertEquals(a.hashCode(), a.hashCode());
-		assertEquals(a, new DefaultSequenceNode("a", "test", 1, 2, "ACTG"));
-		assertEquals(a.hashCode(), new DefaultSequenceNode("a", "test", 1, 2, "ACTG").hashCode());
+		assertEquals(a, new SequenceNodeImpl("a", "test", 1, 2, "ACTG"));
+		assertEquals(a.hashCode(), new SequenceNodeImpl("a", "test", 1, 2, "ACTG").hashCode());
 	}
 
 	/**
@@ -118,7 +119,7 @@ public class JFASTANodeParserTest {
 	 */
 	@Test
 	public void testToString() {
-		SequenceNode a = new DefaultSequenceNode("a", "test", 1, 2, "ACTG");
+		SequenceNode a = new SequenceNodeImpl("a", "test", 1, 2, "ACTG");
 
 		assertEquals("SequenceNode<a,test,1,2,ACTG>", a.toString());
 	}
@@ -135,12 +136,12 @@ public class JFASTANodeParserTest {
 				"ATATATATATATA"
 				));
 		try {
-			NodeParser np = new JFASTANodeParser(new DefaultSequenceFactory(), in);
+			NodeParser np = new NodeParserImpl(new SequenceNodeFactoryImpl(), in);
 			//CHECKSTYLE.OFF: MagicNumber
 			assertTrue(np.hasNext());
-			assertEquals(new DefaultSequenceNode("4", "ASDF", 0, 42, "ACTGTGTGTATAT"), np.next());
+			assertEquals(new SequenceNodeImpl("4", "ASDF", 0, 42, "ACTGTGTGTATAT"), np.next());
 			assertTrue(np.hasNext());
-			assertEquals(new DefaultSequenceNode("5", "FDSA", 42, 84, "ATATATATATATA"), np.next());
+			assertEquals(new SequenceNodeImpl("5", "FDSA", 42, 84, "ATATATATATATA"), np.next());
 			assertFalse(np.hasNext());
 			//CHECKSTYLE.ON: MagicNumber
 		} catch (IOException | InvalidHeaderFormatException e) {
@@ -160,12 +161,12 @@ public class JFASTANodeParserTest {
 				" A T A T A T A T A T A T A"
 				));
 		try {
-			NodeParser np = new JFASTANodeParser(new DefaultSequenceFactory(), in);
+			NodeParser np = new NodeParserImpl(new SequenceNodeFactoryImpl(), in);
 			//CHECKSTYLE.OFF: MagicNumber
 			assertTrue(np.hasNext());
-			assertEquals(new DefaultSequenceNode("4", "ASDF", 0, 42, "ACTGTGTGTATATAT"), np.next());
+			assertEquals(new SequenceNodeImpl("4", "ASDF", 0, 42, "ACTGTGTGTATATAT"), np.next());
 			assertTrue(np.hasNext());
-			assertEquals(new DefaultSequenceNode("5", "FDSA", 42, 84, "ATATATATATATA"), np.next());
+			assertEquals(new SequenceNodeImpl("5", "FDSA", 42, 84, "ATATATATATATA"), np.next());
 			assertFalse(np.hasNext());
 			//CHECKSTYLE.ON: MagicNumber
 		} catch (IOException | InvalidHeaderFormatException e) {

@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.graph;
+package nl.tudelft.dnainator.graph.impl;
 
 import static org.neo4j.helpers.collection.IteratorUtil.loop;
 
@@ -6,9 +6,10 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
-import nl.tudelft.dnainator.core.DefaultSequenceNode;
-import nl.tudelft.dnainator.core.Edge;
 import nl.tudelft.dnainator.core.SequenceNode;
+import nl.tudelft.dnainator.core.impl.Edge;
+import nl.tudelft.dnainator.core.impl.SequenceNodeImpl;
+import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
@@ -36,7 +37,7 @@ import org.neo4j.tooling.GlobalGraphOperations;
 /**
  * This class realizes a graphfactory using Neo4j as it's backend.
  */
-public final class Neo4jGraphDatabase implements Graph {
+public final class Neo4jGraph implements Graph {
 	private static final String GET_ROOT = "MATCH (s:Node) "
 			+ "WHERE NOT (s)<-[:NEXT]-(:Node)"
 			+ "RETURN s";
@@ -56,7 +57,7 @@ public final class Neo4jGraphDatabase implements Graph {
 	 * Constructs a Neo4j database on the specified path.
 	 * @param path			specified path
 	 */
-	public Neo4jGraphDatabase(String path) {
+	public Neo4jGraph(String path) {
 		// Create our database and register a shutdown hook
 		service = new GraphDatabaseFactory().newEmbeddedDatabase(path);
 		Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -283,7 +284,7 @@ public final class Neo4jGraphDatabase implements Graph {
 		String sequence = (String) node.getProperty("sequence");
 		int rank		= (int) node.getProperty("dist");
 
-		return new DefaultSequenceNode(id, source, startref, endref, sequence, rank);
+		return new SequenceNodeImpl(id, source, startref, endref, sequence, rank);
 	}
 
 	@Override
