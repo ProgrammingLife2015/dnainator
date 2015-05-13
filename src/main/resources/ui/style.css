@@ -21,3 +21,8 @@
 .drawable-edge {
 	-fx-fill: #666666;
 }
+
+#about > .label {
+	-fx-graphic: url("/ui/icons/dnainator16x16.png");
+	-fx-padding: 0 10 0 10;
+}
