@@ -4,6 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
+<?import nl.tudelft.dnainator.ui.views.*?>
 
 <BorderPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.dnainator.ui.controllers.WindowController">
    <top>
@@ -81,6 +82,8 @@
       </MenuBar>
    </top>
    <center>
-      <fx:include fx:id="viewer" source="viewer.fxml" />
+      <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1">
+          <View fx:id="view" />
+      </ScrollPane>
    </center>
 </BorderPane>
