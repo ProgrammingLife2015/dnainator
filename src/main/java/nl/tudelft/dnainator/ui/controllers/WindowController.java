@@ -3,6 +3,7 @@ package nl.tudelft.dnainator.ui.controllers;
 import java.io.File;
 import java.io.IOException;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.layout.BorderPane;
@@ -79,5 +80,10 @@ public class WindowController {
 	private void aboutUsAction(ActionEvent e) {
 		AboutDialog about = new AboutDialog();
 		about.show();
+	}
+	
+	@FXML
+	private void exitAction(ActionEvent e) {
+		Platform.exit();
 	}
 }
