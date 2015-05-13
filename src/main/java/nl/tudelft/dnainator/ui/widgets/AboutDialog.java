@@ -13,9 +13,9 @@ import javafx.stage.Stage;
  */
 public class AboutDialog {
 	private Dialog<String> dialog;
-	private static final String ICON = "/ui/icons/dnainator.png";
-	
-	
+	private static final String ICON = "/ui/icons/dnainator128x128.png";
+	private static final String STYLE = "/ui/style.css";
+
 	/**
 	 * Instantiates a new AboutDialog.
 	 * It will set up all the necessities for displaying 
@@ -28,30 +28,29 @@ public class AboutDialog {
 	private void setupDialog() {
 		dialog = new Dialog<String>();
 		dialog.setTitle("About DNAinator");
+		dialog.getDialogPane().getStylesheets().add(getClass().getResource(STYLE).toString());
 		Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
 		Image icon = new Image(this.getClass().getResourceAsStream(ICON));
 		stage.getIcons().add(icon);
 		
 		ImageView img = new ImageView();
 		img.setImage(icon);
-		
-		// temp resizing of the logo
-		// CHECKSTYLE.OFF: MagicNumber
-		img.setFitHeight(100);
-		img.setFitWidth(100);
-		// CHECKSTYLE.ON: MagicNumber
-		img.setPreserveRatio(true);
-		img.setSmooth(true);
 		dialog.setGraphic(img);
 		
-		dialog.setHeaderText(null);
-		dialog.setContentText("Hello!");
+		dialog.setHeaderText("DNAinator\nDNA network visualization tool");
+		dialog.setContentText(contentText());
 		
 		ButtonType close = new ButtonType("Close", ButtonData.CANCEL_CLOSE);
 		dialog.getDialogPane().getButtonTypes().add(close);
-
-		
 	}
+
+	private String contentText() {
+		StringBuilder contents = new StringBuilder();
+		contents.append("Jente Hidskes, Gerlof Fokkema, Owen Huang, "
+				+ "Skip Lentz, Piet van Agtmaal");
+		return contents.toString();
+	}
+	
 
 	/**
 	 * Shows the {@link dialog} if it is not null.
@@ -62,14 +61,4 @@ public class AboutDialog {
 			dialog.showAndWait();
 		}
 	}
-	
-	/**
-	 * Closes the {@link dialog} if it is not null.
-	 */
-	public void close() {
-		if (dialog != null) {
-			dialog.close();
-		}
-	}
-
 }
