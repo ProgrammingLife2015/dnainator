@@ -4,12 +4,15 @@ import javafx.concurrent.Service;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.image.Image;
+import javafx.stage.Stage;
 
 /**
  * Creates an {@link Alert} while a file is loading.
  */
 public class ProgressDialog {
 	private static final int PROGRESSBAR_WIDTH = 300;
+	private static final String ICON = "/ui/icons/dnainator16x16.png";
 	private Alert alert;
 	private ProgressBar progressBar;
 	private Service service;
@@ -33,8 +36,11 @@ public class ProgressDialog {
 		alert.setTitle(" ");
 		alert.setHeaderText("Loading...");
 		alert.getButtonTypes().add(ButtonType.CANCEL);
-
+		
 		alert.getDialogPane().setContent(progressBar);
+		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+		Image icon = new Image(this.getClass().getResourceAsStream(ICON));
+		stage.getIcons().add(icon);
 	}
 
 	private void setupProgressBar() {

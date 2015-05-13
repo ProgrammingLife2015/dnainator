@@ -6,8 +6,10 @@ import java.io.StringWriter;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.stage.Stage;
 
 /**
  * Provides a dialog to inform the user that an exception has occurred.
@@ -17,6 +19,8 @@ import javafx.scene.layout.Priority;
  */
 public class ExceptionDialog {
 
+	private static final String ICON = "/ui/icons/dnainator16x16.png";
+	
 	/**
 	 * Instantiates a new ExceptionDialog.
 	 * @param throwable Throwable for which this dialog is created.
@@ -37,6 +41,10 @@ public class ExceptionDialog {
 		content.add(textArea, 0, 1);
 
 		alert.getDialogPane().setExpandableContent(content);
+		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
+		Image icon = new Image(this.getClass().getResourceAsStream(ICON));
+		stage.getIcons().add(icon);
+		
 		alert.showAndWait();
 	}
 
