@@ -11,6 +11,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
 import nl.tudelft.dnainator.ui.services.FileLoadService;
+import nl.tudelft.dnainator.ui.widgets.AboutDialog;
 import nl.tudelft.dnainator.ui.widgets.ExceptionDialog;
 import nl.tudelft.dnainator.ui.widgets.ProgressDialog;
 
@@ -72,5 +73,11 @@ public class WindowController {
 
 	private File openEdgeFile(String path) {
 		return new File(path.substring(0, path.length() - EXT_LENGTH).concat(EDGE));
+	}
+	
+	@FXML
+	private void aboutUsAction(ActionEvent e) {
+		AboutDialog about = new AboutDialog();
+		about.show();
 	}
 }
