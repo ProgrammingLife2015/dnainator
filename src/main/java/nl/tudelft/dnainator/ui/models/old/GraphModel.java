@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.ui.models;
+package nl.tudelft.dnainator.ui.models.old;
 
 import java.util.List;
 

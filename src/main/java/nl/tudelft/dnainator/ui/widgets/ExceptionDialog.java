@@ -34,6 +34,7 @@ public class ExceptionDialog {
 
 		GridPane content = new GridPane();
 		content.setMaxWidth(Double.MAX_VALUE);
+		content.setMaxHeight(Double.MAX_VALUE);
 		content.add(textArea, 0, 1);
 
 		alert.getDialogPane().setExpandableContent(content);
@@ -50,7 +51,7 @@ public class ExceptionDialog {
 		textArea.setEditable(false);
 		textArea.setWrapText(true);
 		textArea.setMaxWidth(Double.MAX_VALUE);
-		textArea.setMaxHeight(Double.MAX_VALUE);
+//		textArea.setMaxHeight(Double.MAX_VALUE);
 		return textArea;
 	}
 }
