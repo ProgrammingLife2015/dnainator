@@ -1,88 +1,146 @@
 package nl.tudelft.dnainator.ui.models;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javafx.beans.binding.BooleanBinding;
+import javafx.beans.binding.ObjectBinding;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.layout.Pane;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Transform;
 import nl.tudelft.dnainator.graph.Graph;
-import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
 
+/**
+ * The abstract {@link ModelItem} represents a single object in the viewable model.
+ * This class follows the composite design pattern,
+ * together with the {@link CompositeItem} and the leaf class, {@link RankItem}.
+ *
+ * Every {@link ModelItem} can hold JavaFX content that can be drawn to the screen.
+ * What content is drawn will change dynamically based on the scale of the viewport.
+ *
+ * In order to determine the positioning of the JavaFX content,
+ * every modelitem holds a rootToItem transform property, which should be bound to
+ * the concatenation of all parent rootToItem properties when instantiating a
+ * concrete subclass.
+ */
 public abstract class ModelItem extends Pane {
+	public static final int GRAPH_WIDTH = 1000;
+	public static final int CLUSTER_WIDTH = 100;
+	public static final int RANK_WIDTH = 10;
+
+	public static final int CLUSTER_SIZE = 20;
+	public static final int RANK_SIZE = 3;
+
 	private Graph graph;
 	private Group content;
-	private List<ModelItem> children;
-	private Group childRoot;
+	private ObjectProperty<Transform> localToRoot;
 
-	public ModelItem() {
-		this(Neo4jSingleton.getInstance().getDatabase());
-	}
-
-	public ModelItem(String DB_PATH) {
-		this(Neo4jSingleton.getInstance().getDatabase(DB_PATH));
-	}
-
+	/**
+	 * Base constructor for a {@link ModelItem}.
+	 * Every {@link ModelItem} needs a reference to its graph. 
+	 * @param graph	a {@link Graph}
+	 */
 	public ModelItem(Graph graph) {
 		this.graph = graph;
-		this.children = new ArrayList<>();
 		this.content = new Group();
-		this.childRoot = new Group();
+		this.localToRoot = new SimpleObjectProperty<>();
 
 		getChildren().add(content);
-		getChildren().add(childRoot);
 	}
 
+	/**
+	 * This method binds localToRoot to the concatenated transforms of the parent and child.
+	 * Every subclass, except the root, should bind its parent for correct positioning.
+	 * @param parent	the parent transform
+	 */
+	public void bindLocalToRoot(ObjectProperty<Transform> parent) {
+		ObjectBinding<Transform> transform = new ObjectBinding<Transform>() {
+			{
+				super.bind(parent);
+				super.bind(localToParentTransformProperty());
+			}
+			@Override
+			protected Transform computeValue() {
+				return parent.get().createConcatenation(getLocalToParentTransform());
+			}
+		};
+		localToRootProperty().bind(transform);
+	}
+
+	/**
+	 * Return the content of this {@link ModelItem}.
+	 * @return	the content
+	 */
 	public Group getContent() {
 		return content;
 	}
 
+	/**
+	 * Set the content of this {@link ModelItem}.
+	 * @param node	the new content
+	 */
 	public void setContent(Node node) {
 		content.getChildren().clear();
 		content.getChildren().add(node);
 	}
 
-	public Group getChildRoot() {
-		return childRoot;
+	/**
+	 * Return the underlying graph of this {@link ModelItem}.
+	 * @return	the underlying graph
+	 */
+	public Graph getGraph() {
+		return graph;
 	}
 
-	public void setChildRoot(Group childroot) {
-		this.childRoot = childroot;
+	/**
+	 * Return the concatenation of transforms from the root to this item.
+	 * @return	a concatenation of transforms
+	 */
+	public Transform getLocalToRoot() {
+		return localToRoot.get();
 	}
 
-	public List<ModelItem> getChildItems() {
-		return children;
+	/**
+	 * Set the concatenation of transforms from the root to this item.
+	 * @param t	a concatenation of transforms
+	 */
+	public void setLocalToRoot(Transform t) {
+		localToRoot.set(t);
 	}
 
-	public abstract Transform getRootToItem();
-	
+	/**
+	 * Return the property containing the concatenation of transforms from the root to this item.
+	 * @return	a concatenation of transforms
+	 */
+	public ObjectProperty<Transform> localToRootProperty() {
+		return localToRoot;
+	}
+
+	/**
+	 * Transform a given bounding box b from local coordinates to root coordinates.
+	 * @param b	the bounds to transform
+	 * @return	the transformed bounds
+	 */
 	public Bounds localToRoot(Bounds b) {
-		return getRootToItem().transform(b);
+		return getLocalToRoot().transform(b);
 	}
 
-	public void setChildItems(List<ModelItem> childItems) {
-		this.children = childItems;
+	/**
+	 * Check whether this object intersects with the given viewport bounds.
+	 * @param b	the given viewport bounds
+	 * @return	true when (partially) in viewport, false otherwise
+	 */
+	public boolean isInViewport(Bounds b) {
+		return b.intersects(localToRoot(getContent().getBoundsInLocal()));
 	}
 
-	public void update() {
-		update(150);
-	}
-	
-	public void update(double threshold) {
-		if (localToRoot(new Rectangle(100, 1).getBoundsInLocal()).getWidth() < threshold) {
-			getContent().setVisible(true);
-			getChildRoot().getChildren().clear();
-		} else {
-			getContent().setVisible(false);
-			getChildRoot().getChildren().clear(); // FIXME
-			getChildRoot().getChildren().addAll(getChildItems());
-			for (ModelItem m : children) {
-				m.update();
-			}
-		}
-	}
+	/**
+	 * Update method that should be called after scaling.
+	 * This method checks how zoomed in we are by transforming bounds to root coordinates,
+	 * and then dynamically adds and deletes items in the JavaFX scene graph.
+	 *
+	 * TODO: check whether something is visible in the viewport!
+	 * @param b	the bounds of the viewport to update
+	 */
+	public abstract void update(Bounds b);
 }
