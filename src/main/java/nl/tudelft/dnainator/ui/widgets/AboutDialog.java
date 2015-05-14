@@ -4,21 +4,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.stage.Stage;
 
 /**
- * Creates a {@link Dialog} displaying information about the
+ * Creates a {@link Alert} displaying information about the
  * application.
  */
 public class AboutDialog {
-	private Dialog<String> dialog;
+	private Alert alert;
+	private Node parent;
 	private Properties prop;
-	private static final String ICON = "/ui/icons/dnainator128x128.png";
+	private static final String LOGO = "/ui/icons/dnainator128x128.png";
 	private static final String STYLE = "/ui/style.css";
 	private static final String PROPERTIES = "config.properties";
 	
@@ -26,29 +27,30 @@ public class AboutDialog {
 	 * Instantiates a new AboutDialog.
 	 * It will set up all the necessities for displaying 
 	 * information of the application.
+	 * @param parent The parent {@link Node} of this dialog.
 	 */
-	public AboutDialog() {
+	public AboutDialog(Node parent) {
+		this.parent = parent;
 		setupDialog();
 	}
 
 	private void setupDialog() {
-		dialog = new Dialog<String>();
-		dialog.setTitle("About DNAinator");
-		dialog.getDialogPane().getStylesheets().add(getClass().getResource(STYLE).toString());
-		Stage stage = (Stage) dialog.getDialogPane().getScene().getWindow();
-		Image icon = new Image(this.getClass().getResourceAsStream(ICON));
-		stage.getIcons().add(icon);
+		alert = new Alert(Alert.AlertType.NONE);
+		alert.setTitle("About DNAinator");
+		alert.setResizable(true);
+		alert.getDialogPane().getStylesheets().add(getClass().getResource(STYLE).toString());
+		alert.initOwner(parent.getScene().getWindow());
 		
 		ImageView img = new ImageView();
-		img.setImage(icon);
-		dialog.setGraphic(img);
+		img.setImage(new Image(getClass().getResourceAsStream(LOGO)));
+		alert.setGraphic(img);
 		readProperties();
 		
-		dialog.setHeaderText("DNAinator\nDNA network visualization tool");
-		dialog.setContentText(contentText());
+		alert.setHeaderText("DNAinator\nDNA network visualization tool");
+		alert.setContentText(contentText());
 		
 		ButtonType close = new ButtonType("Close", ButtonData.CANCEL_CLOSE);
-		dialog.getDialogPane().getButtonTypes().add(close);
+		alert.getDialogPane().getButtonTypes().add(close);
 	}
 
 	private String contentText() {
@@ -61,23 +63,20 @@ public class AboutDialog {
 	
 	private void readProperties() {
 		prop = new Properties();
-		InputStream inputStream = getClass().getClassLoader().getResourceAsStream(PROPERTIES);
-		if (inputStream != null) {
-			try {
-				prop.load(inputStream);
-			} catch (IOException e) {
-				new ExceptionDialog(e, "Error reading properties");
-			}
+		try (InputStream in = getClass().getClassLoader().getResourceAsStream(PROPERTIES)) {
+			prop.load(in);
+		} catch (IOException e) {
+			new ExceptionDialog(parent, e, "Error reading properties.");
 		}
 	}
 
 	/**
-	 * Shows the {@link dialog} if it is not null.
-	 * The {@link dialog} will block until user input is received. 
+	 * Shows the {@link Alert} if it is not null.
+	 * The {@link Alert} will block until user input is received. 
 	 */
 	public void show() {
-		if (dialog != null) {
-			dialog.showAndWait();
+		if (alert != null) {
+			alert.showAndWait();
 		}
 	}
 }

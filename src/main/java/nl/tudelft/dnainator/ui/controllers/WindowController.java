@@ -30,6 +30,7 @@ public class WindowController {
 	@FXML private VBox sidebar;
 	@FXML private GraphController viewerController;
 	private FileLoadService loadService;
+	private ProgressDialog progressDialog;
 
 	/**
 	 * Constructs a WindowController object, creating
@@ -38,10 +39,9 @@ public class WindowController {
 	@FXML
 	private void initialize() {
 		loadService = new FileLoadService();
-		ProgressDialog progressDialog = new ProgressDialog(loadService);
 
 		loadService.setOnFailed(e ->
-				new ExceptionDialog(loadService.getException(), "Error loading file!"));
+				new ExceptionDialog(root, loadService.getException(), "Error loading file!"));
 		loadService.setOnRunning(e -> progressDialog.show());
 		loadService.setOnSucceeded(e -> {
 			viewerController.getActiveView().redraw();
@@ -51,13 +51,14 @@ public class WindowController {
 			try {
 				Neo4jSingleton.getInstance().stopDatabase(Neo4jSingleton.DB_PATH);
 			} catch (IOException ioe) {
-				new ExceptionDialog(ioe, "Error cancelling database!");
+				new ExceptionDialog(root, ioe, "Error cancelling database!");
 			}
 		});
 	}
 
 	@FXML
 	private void openButtonAction(ActionEvent e) {
+		progressDialog = new ProgressDialog(root, loadService);
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("Open node file");
 		chooser.getExtensionFilters().add(
@@ -78,7 +79,7 @@ public class WindowController {
 	
 	@FXML
 	private void aboutUsAction(ActionEvent e) {
-		AboutDialog about = new AboutDialog();
+		AboutDialog about = new AboutDialog(root);
 		about.show();
 	}
 	

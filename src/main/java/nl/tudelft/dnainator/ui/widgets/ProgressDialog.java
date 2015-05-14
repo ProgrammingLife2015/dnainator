@@ -1,29 +1,29 @@
 package nl.tudelft.dnainator.ui.widgets;
 
 import javafx.concurrent.Service;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.image.Image;
-import javafx.stage.Stage;
 
 /**
  * Creates an {@link Alert} while a file is loading.
  */
 public class ProgressDialog {
 	private static final int PROGRESSBAR_WIDTH = 300;
-	private static final String ICON = "/ui/icons/dnainator16x16.png";
+	private Node parent;
 	private Alert alert;
 	private ProgressBar progressBar;
-	private Service service;
+	private Service<?> service;
 
 	/**
 	 * Sets up the {@link Alert}, using the {@link Service} provided.
 	 * When the service has succeeded, the alert is closed.
-	 *
+	 * @param parent The parent Node of this dialog.
 	 * @param service The service to be monitored.
 	 */
-	public ProgressDialog(Service service) {
+	public ProgressDialog(Node parent, Service<?> service) {
+		this.parent = parent;
 		this.service = service;
 		setupProgressBar();
 		setupAlert();
@@ -33,14 +33,12 @@ public class ProgressDialog {
 
 	private void setupAlert() {
 		alert = new Alert(Alert.AlertType.NONE);
-		alert.setTitle(" ");
+		alert.setTitle("DNAinator");
 		alert.setHeaderText("Loading...");
 		alert.getButtonTypes().add(ButtonType.CANCEL);
-		
+		System.out.println(parent.getScene() == null);
+		alert.initOwner(parent.getScene().getWindow());
 		alert.getDialogPane().setContent(progressBar);
-		Stage stage = (Stage) alert.getDialogPane().getScene().getWindow();
-		Image icon = new Image(this.getClass().getResourceAsStream(ICON));
-		stage.getIcons().add(icon);
 	}
 
 	private void setupProgressBar() {
