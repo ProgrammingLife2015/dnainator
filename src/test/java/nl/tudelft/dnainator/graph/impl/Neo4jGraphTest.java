@@ -14,11 +14,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.core.impl.SequenceNodeFactoryImpl;
 import nl.tudelft.dnainator.core.impl.SequenceNodeImpl;
+import nl.tudelft.dnainator.graph.GraphQueryDescription;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
 import nl.tudelft.dnainator.parser.exceptions.InvalidEdgeFormatException;
@@ -147,6 +149,88 @@ public class Neo4jGraphTest {
 		Set<String> rank2Actual = new HashSet<>();
 		db.getRank(2).forEach(e -> rank2Actual.add(e.getId()));
 		assertEquals(rank2Expect, rank2Actual);
+	}
+
+	/**
+	 * Test querying of ranks.
+	 */
+	@Test
+	public void testQueryRanks() {
+		// Query for ranks from 0 up to but not including rank 2.
+		GraphQueryDescription qd = new GraphQueryDescription()
+			.fromRank(0)
+			.toRank(2);
+		Set<String> expect = new HashSet<>();
+		Collections.addAll(expect, "7", "5", "3", "11", "8");
+		Set<String> actual = new HashSet<>();
+		db.queryNodes(qd).forEach(e -> actual.add(e.getId()));
+		assertEquals(expect, actual);
+	}
+
+	/**
+	 * Test querying of IDs.
+	 */
+	@Test
+	public void testQueryIds() {
+		GraphQueryDescription qd = new GraphQueryDescription()
+			.hasId("2");
+		Set<String> expect = new HashSet<>();
+		Collections.addAll(expect, "2");
+		Set<String> actual = db.queryNodes(qd).stream()
+				.map(sn -> sn.getId())
+				.collect(Collectors.toSet());
+		assertEquals(expect, actual);
+
+		// Also test for multiple ids (reusing the old one)
+		qd = qd.hasId("3");
+		expect = new HashSet<>();
+		Collections.addAll(expect, "2", "3");
+		actual = db.queryNodes(qd).stream()
+				.map(sn -> sn.getId())
+				.collect(Collectors.toSet());
+		assertEquals(expect, actual);
+	}
+
+	/**
+	 * Test the filtering functionality.
+	 */
+	@Test
+	public void testQueryFilter() {
+		// CHECKSTYLE.OFF: MagicNumber
+		GraphQueryDescription qd = new GraphQueryDescription()
+			.filter((sn) -> Integer.parseInt(sn.getId()) > 8);
+		// CHECKSTYLE.ON: MagicNumber
+		Set<String> expect = new HashSet<>();
+		Collections.addAll(expect, "9", "10", "11");
+		Set<String> actual = db.queryNodes(qd).stream()
+				.map(sn -> sn.getId())
+				.collect(Collectors.toSet());
+		assertEquals(expect, actual);
+	}
+
+	/**
+	 * Test querying the source string.
+	 */
+	@Test
+	public void testQuerySources() {
+		GraphQueryDescription qd = new GraphQueryDescription()
+			.containsSource("ASDF");
+		Set<String> expect = new HashSet<>();
+		Collections.addAll(expect, "2", "9", "10", "5", "3", "7", "11", "8");
+		Set<String> actual = db.queryNodes(qd).stream()
+				.map(sn -> sn.getId())
+				.collect(Collectors.toSet());
+		assertEquals(expect, actual);
+
+		// Search non-existing source.
+		qd = new GraphQueryDescription()
+			.containsSource("FDSA");
+		// Expect an empty result
+		expect = new HashSet<>();
+		actual = db.queryNodes(qd).stream()
+				.map(sn -> sn.getId())
+				.collect(Collectors.toSet());
+		assertEquals(expect, actual);
 	}
 
 	/**

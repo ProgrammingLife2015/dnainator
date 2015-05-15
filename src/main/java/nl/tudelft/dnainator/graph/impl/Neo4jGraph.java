@@ -10,6 +10,7 @@ import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.core.impl.SequenceNodeImpl;
 import nl.tudelft.dnainator.graph.Graph;
+import nl.tudelft.dnainator.graph.GraphQueryDescription;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
@@ -276,7 +277,13 @@ public final class Neo4jGraph implements Graph {
 		return nodes;
 	}
 
-	private SequenceNode createSequenceNode(Node node) {
+	/**
+	 * Create a {@link SequenceNode} from the information in the given
+	 * Neo4j {@link Node}.
+	 * @param node from the database.
+	 * @return a {@link SequenceNode} with the information of the given {@link Node}.
+	 */
+	protected static SequenceNode createSequenceNode(Node node) {
 		String id       = (String) node.getProperty("id");
 		String source   = (String) node.getProperty("source");
 		int startref    = (int) node.getProperty("start");
@@ -314,5 +321,10 @@ public final class Neo4jGraph implements Graph {
 		}
 
 		return nodes;
+	}
+
+	@Override
+	public List<SequenceNode> queryNodes(GraphQueryDescription q) {
+		return new Neo4jQuery(q).execute(service);
 	}
 }
