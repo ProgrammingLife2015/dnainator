@@ -15,6 +15,7 @@ import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
 import nl.tudelft.dnainator.ui.models.GraphItem;
 import nl.tudelft.dnainator.ui.models.ModelItem;
 import nl.tudelft.dnainator.ui.widgets.ExceptionDialog;
+import nl.tudelft.dnainator.ui.widgets.ViewContext;
 
 import org.neo4j.io.fs.FileUtils;
 
@@ -41,6 +42,10 @@ public class View extends Pane {
 
 		loadFXML();
 		getStyleClass().add("view");
+		setOnContextMenuRequested(e -> {
+			ViewContext.getInstance().show(View.this, e.getScreenX(), e.getScreenY());
+			e.consume();
+		});
 
 		toCenter = new Translate();
 		widthProperty().addListener((o, v1, v2) -> toCenter.setX(v2.intValue() / 2));
@@ -51,8 +56,6 @@ public class View extends Pane {
 
 		scale = new Scale();
 		scale.setOnTransformChanged(e -> worldToCamera = worldToCamera());
-
-		worldToCamera = worldToCamera();
 
 		mi = new GraphItem();
 		mi.getTransforms().add(toCenter);

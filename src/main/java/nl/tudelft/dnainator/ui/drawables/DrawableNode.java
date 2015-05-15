@@ -1,6 +1,7 @@
 package nl.tudelft.dnainator.ui.drawables;
 
 import nl.tudelft.dnainator.core.SequenceNode;
+import nl.tudelft.dnainator.ui.widgets.NodeContext;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -41,6 +42,10 @@ public class DrawableNode extends Circle {
 		this.node = node;
 
 		getStyleClass().add("drawable-node");
+		setOnContextMenuRequested(e -> {
+			NodeContext.getInstance().show(DrawableNode.this, e.getScreenX(), e.getScreenY());
+			e.consume();
+		});
 	}
 
 	/**
