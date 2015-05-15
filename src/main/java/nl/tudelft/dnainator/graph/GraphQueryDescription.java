@@ -1,5 +1,6 @@
 package nl.tudelft.dnainator.graph;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Predicate;
@@ -7,7 +8,7 @@ import java.util.function.Predicate;
 import nl.tudelft.dnainator.core.SequenceNode;
 
 public class GraphQueryDescription {
-	private Collection<Integer> idIntegers;
+	private Collection<String> idStrings;
 	private Collection<String> sourceStrings;
 	private Predicate<SequenceNode> filter;
 	private boolean queryFrom = false;
@@ -15,21 +16,25 @@ public class GraphQueryDescription {
 	private boolean queryTo = false;
 	private int to = Integer.MAX_VALUE;
 
-	public GraphQueryDescription hasId(int id) {
+	public GraphQueryDescription hasId(String id) {
 		return haveIds(Collections.singletonList(id));
 	}
 
-	public GraphQueryDescription haveIds(Collection<Integer> ids) {
-		idIntegers.addAll(ids);
+	public GraphQueryDescription haveIds(Collection<String> ids) {
+		if (idStrings == null) {
+			idStrings = new ArrayList<>(ids);
+			return this;
+		}
+		idStrings.addAll(ids);
 		return this;
 	}
 
 	public boolean shouldQueryIds() {
-		return idIntegers != null;
+		return idStrings != null;
 	}
 
-	public Collection<Integer> getIds() {
-		return idIntegers;
+	public Collection<String> getIds() {
+		return idStrings;
 	}
 
 	public GraphQueryDescription containsSource(String source) {
@@ -37,6 +42,10 @@ public class GraphQueryDescription {
 	}
 
 	public GraphQueryDescription containsSources(Collection<String> sources) {
+		if (sourceStrings == null) {
+			sourceStrings = new ArrayList<>(sources);
+			return this;
+		}
 		sourceStrings.addAll(sources);
 		return this;
 	}
