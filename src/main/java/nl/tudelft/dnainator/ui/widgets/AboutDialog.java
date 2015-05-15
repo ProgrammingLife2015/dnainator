@@ -15,8 +15,7 @@ import javafx.scene.image.ImageView;
  * Creates a {@link Alert} displaying information about the
  * application.
  */
-public class AboutDialog {
-	private Alert alert;
+public class AboutDialog extends Alert {
 	private Node parent;
 	private Properties prop;
 	private static final String LOGO = "/ui/icons/dnainator128x128.png";
@@ -30,27 +29,27 @@ public class AboutDialog {
 	 * @param parent The parent {@link Node} of this dialog.
 	 */
 	public AboutDialog(Node parent) {
+		super(Alert.AlertType.NONE);
 		this.parent = parent;
 		setupDialog();
 	}
 
 	private void setupDialog() {
-		alert = new Alert(Alert.AlertType.NONE);
-		alert.setTitle("About DNAinator");
-		alert.setResizable(true);
-		alert.getDialogPane().getStylesheets().add(getClass().getResource(STYLE).toString());
-		alert.initOwner(parent.getScene().getWindow());
+		this.setTitle("About DNAinator");
+		this.setResizable(true);
+		this.getDialogPane().getStylesheets().add(getClass().getResource(STYLE).toString());
+		this.initOwner(parent.getScene().getWindow());
 		
 		ImageView img = new ImageView();
 		img.setImage(new Image(getClass().getResourceAsStream(LOGO)));
-		alert.setGraphic(img);
+		this.setGraphic(img);
 		readProperties();
 		
-		alert.setHeaderText("DNAinator\nDNA network visualization tool");
-		alert.setContentText(contentText());
+		this.setHeaderText("DNAinator\nDNA network visualization tool");
+		this.setContentText(contentText());
 		
 		ButtonType close = new ButtonType("Close", ButtonData.CANCEL_CLOSE);
-		alert.getDialogPane().getButtonTypes().add(close);
+		this.getDialogPane().getButtonTypes().add(close);
 	}
 
 	private String contentText() {
@@ -67,16 +66,6 @@ public class AboutDialog {
 			prop.load(in);
 		} catch (IOException e) {
 			new ExceptionDialog(parent, e, "Error reading properties.");
-		}
-	}
-
-	/**
-	 * Shows the {@link Alert} if it is not null.
-	 * The {@link Alert} will block until user input is received. 
-	 */
-	public void show() {
-		if (alert != null) {
-			alert.showAndWait();
 		}
 	}
 }

@@ -5,7 +5,6 @@ import java.io.StringWriter;
 
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
@@ -16,7 +15,7 @@ import javafx.scene.layout.Priority;
  * Based on code from a tutorial found here: http://code.makery.ch/blog/javafx-dialogs-official/
  * </p>
  */
-public class ExceptionDialog {
+public class ExceptionDialog extends Alert {
 	
 	/**
 	 * Instantiates a new ExceptionDialog.
@@ -25,10 +24,10 @@ public class ExceptionDialog {
 	 * @param title Title of this dialog.
 	 */
 	public ExceptionDialog(Node parent, Throwable throwable, String title) {
-		Alert alert = new Alert(AlertType.ERROR);
-		alert.setTitle(title);
-		alert.setHeaderText(throwable.getMessage());
-		alert.setContentText("The exception stacktrace was:");
+		super(AlertType.ERROR);
+		this.setTitle(title);
+		this.setHeaderText(throwable.getMessage());
+		this.setContentText("The exception stacktrace was:");
 
 		TextArea textArea = initTextArea(throwable);
 		GridPane.setVgrow(textArea, Priority.ALWAYS);
@@ -38,9 +37,9 @@ public class ExceptionDialog {
 		content.setMaxWidth(Double.MAX_VALUE);
 		content.add(textArea, 0, 1);
 
-		alert.getDialogPane().setExpandableContent(content);
-		alert.initOwner(parent.getScene().getWindow());
-		alert.showAndWait();
+		this.getDialogPane().setExpandableContent(content);
+		this.initOwner(parent.getScene().getWindow());
+		this.showAndWait();
 	}
 
 	private TextArea initTextArea(Throwable t) {

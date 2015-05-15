@@ -9,10 +9,9 @@ import javafx.scene.control.ProgressBar;
 /**
  * Creates an {@link Alert} while a file is loading.
  */
-public class ProgressDialog {
+public class ProgressDialog extends Alert {
 	private static final int PROGRESSBAR_WIDTH = 300;
 	private Node parent;
-	private Alert alert;
 	private ProgressBar progressBar;
 	private Service<?> service;
 
@@ -23,22 +22,20 @@ public class ProgressDialog {
 	 * @param service The service to be monitored.
 	 */
 	public ProgressDialog(Node parent, Service<?> service) {
+		super(AlertType.NONE);
 		this.parent = parent;
 		this.service = service;
 		setupProgressBar();
 		setupAlert();
-
-		this.service.setOnSucceeded(e -> alert.close());
 	}
 
 	private void setupAlert() {
-		alert = new Alert(Alert.AlertType.NONE);
-		alert.setTitle("DNAinator");
-		alert.setHeaderText("Loading...");
-		alert.getButtonTypes().add(ButtonType.CANCEL);
-		System.out.println(parent.getScene() == null);
-		alert.initOwner(parent.getScene().getWindow());
-		alert.getDialogPane().setContent(progressBar);
+		this.setTitle("DNAinator");
+		this.setHeaderText("Loading...");
+		this.getButtonTypes().add(ButtonType.CANCEL);
+
+		this.initOwner(parent.getScene().getWindow());
+		this.getDialogPane().setContent(progressBar);
 	}
 
 	private void setupProgressBar() {
@@ -47,23 +44,12 @@ public class ProgressDialog {
 	}
 
 	/**
-	 * Closes the {@link Alert} if it is not null.
-	 */
-	public void close() {
-		if (alert != null) {
-			alert.close();
-		}
-	}
-
-	/**
 	 * Shows the {@link Alert} if it is not null. If the cancel button is pressed,
 	 * the database is safely closed.
 	 * FIXME: ugly public path
 	 */
-	public void show() {
-		if (alert != null) {
-			alert.showAndWait().filter(response -> response == ButtonType.CANCEL)
-					.ifPresent(response -> service.cancel());
-		}
+	public void showDialog() {
+		this.showAndWait().filter(response -> response == ButtonType.CANCEL)
+				.ifPresent(response -> service.cancel());
 	}
 }

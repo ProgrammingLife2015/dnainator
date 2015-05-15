@@ -42,7 +42,7 @@ public class WindowController {
 
 		loadService.setOnFailed(e ->
 				new ExceptionDialog(root, loadService.getException(), "Error loading file!"));
-		loadService.setOnRunning(e -> progressDialog.show());
+		loadService.setOnRunning(e -> progressDialog.showDialog());
 		loadService.setOnSucceeded(e -> {
 			viewerController.getActiveView().redraw();
 			progressDialog.close();
@@ -80,7 +80,7 @@ public class WindowController {
 	@FXML
 	private void aboutUsAction(ActionEvent e) {
 		AboutDialog about = new AboutDialog(root);
-		about.show();
+		about.showAndWait();
 	}
 	
 	@FXML
