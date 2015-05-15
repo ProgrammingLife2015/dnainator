@@ -23,6 +23,7 @@ import nl.tudelft.dnainator.graph.GraphQueryDescription;
  */
 public class Neo4jQuery {
 	private String cypherQuery;
+	private boolean multipleConditions = false;
 	private Map<String, Object> parameters;
 	private GraphQueryDescription description;
 
@@ -35,34 +36,39 @@ public class Neo4jQuery {
 		buildQuery();
 	}
 
-	private void addCondition(boolean conditionBefore, StringBuilder sb, String c) {
-		if (conditionBefore) {
+	private void addCondition(StringBuilder sb, String c) {
+		if (multipleConditions) {
 			sb.append("AND ");
+		} else {
+			sb.append("WHERE ");
+			// All next conditions are AND-ed
+			multipleConditions = true;
 		}
 		sb.append(c);
 	}
 
 	private void buildQuery() {
 		parameters = new HashMap<>();
-		StringBuilder query = new StringBuilder("MATCH n\nWHERE ");
-		boolean conditionBefore = false;
+		StringBuilder query = new StringBuilder("MATCH n\n");
 		if (description.shouldQueryIds()) {
-			addCondition(conditionBefore, query, "n.id IN {ids}\n");
+			addCondition(query, "n.id IN {ids}\n");
 			parameters.put("ids", description.getIds());
-			conditionBefore = true;
 		}
 		if (description.shouldQuerySources()) {
-			addCondition(conditionBefore, query, "n.source IN {sources}\n");
+			addCondition(query, "n.source IN {sources}\n");
 			parameters.put("sources", description.getSources());
 		}
 		if (description.shouldQueryFrom()) {
-			addCondition(conditionBefore, query, "dist > {from}");
+			addCondition(query, "n.dist >= {from}\n");
 			parameters.put("from", description.getFrom());
 		}
 		if (description.shouldQueryTo()) {
-			addCondition(conditionBefore, query, "dist < {to}");
+			addCondition(query, "n.dist < {to}\n");
 			parameters.put("to", description.getTo());
 		}
+		query.append("RETURN n");
+		System.out.println("Compiled query: \n" + query.toString().replaceAll("(?m)^", "  "));
+		System.out.println("Parameters: " + parameters);
 		cypherQuery = query.toString();
 	}
 
