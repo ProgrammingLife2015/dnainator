@@ -7,11 +7,11 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
 import nl.tudelft.dnainator.ui.services.FileLoadService;
+import nl.tudelft.dnainator.ui.views.View;
 import nl.tudelft.dnainator.ui.widgets.AboutDialog;
 import nl.tudelft.dnainator.ui.widgets.ExceptionDialog;
 import nl.tudelft.dnainator.ui.widgets.ProgressDialog;
@@ -27,8 +27,7 @@ public class WindowController {
 	private static final int EXT_LENGTH = 11; // .node.graph
 	private static final String EDGE = ".edge.graph";
 	@FXML private BorderPane root;
-	@FXML private VBox sidebar;
-	@FXML private GraphController viewerController;
+	@FXML private View view;
 	private FileLoadService loadService;
 	private ProgressDialog progressDialog;
 
@@ -44,7 +43,6 @@ public class WindowController {
 				new ExceptionDialog(root, loadService.getException(), "Error loading file!"));
 		loadService.setOnRunning(e -> progressDialog.showDialog());
 		loadService.setOnSucceeded(e -> {
-			viewerController.getActiveView().redraw();
 			progressDialog.close();
 		});
 		loadService.setOnCancelled(e -> {

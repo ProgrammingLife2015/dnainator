@@ -1,38 +1,130 @@
 package nl.tudelft.dnainator.ui.views;
 
-import nl.tudelft.dnainator.ui.models.GraphModel;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Group;
-import javafx.scene.layout.HBox;
+import java.io.File;
+import java.io.IOException;
+
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.transform.NonInvertibleTransformException;
+import javafx.scene.transform.Scale;
+import javafx.scene.transform.Transform;
+import javafx.scene.transform.Translate;
+import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
+import nl.tudelft.dnainator.ui.models.GraphItem;
+import nl.tudelft.dnainator.ui.models.ModelItem;
+import nl.tudelft.dnainator.ui.widgets.ExceptionDialog;
+import nl.tudelft.dnainator.ui.widgets.ViewContext;
+
+import org.neo4j.io.fs.FileUtils;
 
 /**
- * This abstract class is the View part of the MVC pattern.
- * <p>
- * Each extending class defines its own view on the data.
- * </p>
+ * This class is the View part of the MVC pattern.
  */
-public abstract class View extends HBox {
-	private static final int L_PADDING = 20;
-	protected GraphModel model;
-	protected Group group;
+public class View extends Pane {
+	@FXML
+	private BorderPane root;
+
+	private Scale scale;
+	private Translate toCenter;
+	private Translate translate;
+	private Transform worldToCamera;
+
+	private ModelItem mi;
 
 	/**
 	 * Creates a new view instance.
-	 * @param model The {@link GraphModel} whose data to display.
 	 */
-	public View(GraphModel model) {
-		this.model = model;
-		this.group = new Group();
+	public View() {
+		try {
+			FileUtils.deleteRecursively(new File(Neo4jSingleton.DB_PATH));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 
-		getChildren().add(this.group);
-		setPadding(new Insets(0, 0, 0, L_PADDING));
-		setAlignment(Pos.CENTER);
+		loadFXML();
 		getStyleClass().add("view");
+		setOnContextMenuRequested(e -> {
+			ViewContext.getInstance().show(View.this, e.getScreenX(), e.getScreenY());
+			e.consume();
+		});
+
+		toCenter = new Translate();
+		widthProperty().addListener((o, v1, v2) -> toCenter.setX(v2.intValue() / 2));
+		heightProperty().addListener((o, v1, v2) -> toCenter.setY(v2.intValue() / 2));
+
+		translate = new Translate();
+		translate.setOnTransformChanged(e -> worldToCamera = worldToCamera());
+
+		scale = new Scale();
+		scale.setOnTransformChanged(e -> worldToCamera = worldToCamera());
+
+		mi = new GraphItem();
+		mi.getTransforms().add(toCenter);
+		mi.getTransforms().add(scale);
+		mi.getTransforms().add(translate);
+		getChildren().add(mi);
+	}
+
+	private void loadFXML() {
+		FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/ui/fxml/view.fxml"));
+		fxmlLoader.setRoot(this);
+
+		try {
+			fxmlLoader.load();
+		} catch (IOException e) {
+			new ExceptionDialog(root, e, "Can not load the View!");
+		}
 	}
 
 	/**
-	 * Redraws this view's contents.
+	 * Returns the concatenated transform from world coordinates to camera coordinates.
+	 * @return	the concatenated transform
 	 */
-	public abstract void redraw();
+	private Transform worldToCamera() {
+		return toCenter.createConcatenation(scale).createConcatenation(translate);
+	}
+
+	/**
+	 * Transforms a given bounding box from camera coordinates to world coordinates.
+	 * @param b	the given bounding box
+	 * @return	the transformed bounding box
+	 */
+	public Bounds cameraToWorld(Bounds b) {
+		Bounds world = null;
+		try {
+			world = worldToCamera.inverseTransform(b);
+		} catch (NonInvertibleTransformException e) {
+			e.printStackTrace();
+		}
+		return world;
+	}
+
+	/**
+	 * Pan the camera by the amount given by the delta vector.
+	 * FIXME: sensitivity depends on zoom level.
+	 * @param delta	the delta vector
+	 */
+	public void pan(Point2D delta) {
+		try {
+			translate.setX(translate.getX() + scale.inverseTransform(delta).getX());
+			translate.setY(translate.getY() + scale.inverseTransform(delta).getY());
+		} catch (NonInvertibleTransformException e) {
+			e.printStackTrace();
+		}
+		mi.update(cameraToWorld(getLayoutBounds()));
+	}
+
+	/**
+	 * Zoom the camera by the amount given by zoom.
+	 * @param zoom	the amount to zoom in
+	 */
+	public void zoom(Double zoom) {
+		scale.setX(scale.getX() + (scale.getX() * zoom));
+		scale.setY(scale.getY() + (scale.getY() * zoom));
+		mi.update(cameraToWorld(getLayoutBounds()));
+	}
 }
