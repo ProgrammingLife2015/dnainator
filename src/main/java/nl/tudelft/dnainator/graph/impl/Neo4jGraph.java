@@ -277,7 +277,13 @@ public final class Neo4jGraph implements Graph {
 		return nodes;
 	}
 
-	private SequenceNode createSequenceNode(Node node) {
+	/**
+	 * Create a {@link SequenceNode} from the information in the given
+	 * Neo4j {@link Node}.
+	 * @param node from the database.
+	 * @return a {@link SequenceNode} with the information of the given {@link Node}.
+	 */
+	protected static SequenceNode createSequenceNode(Node node) {
 		String id       = (String) node.getProperty("id");
 		String source   = (String) node.getProperty("source");
 		int startref    = (int) node.getProperty("start");

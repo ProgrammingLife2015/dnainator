@@ -15,7 +15,6 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.helpers.collection.IteratorUtil;
 
 import nl.tudelft.dnainator.core.SequenceNode;
-import nl.tudelft.dnainator.core.impl.Neo4jSequenceNodeFactory;
 import nl.tudelft.dnainator.graph.GraphQueryDescription;
 
 /**
@@ -68,8 +67,6 @@ public class Neo4jQuery {
 			parameters.put("to", description.getTo());
 		}
 		query.append("RETURN n");
-		System.out.println("Compiled query: \n" + query.toString().replaceAll("(?m)^", "  "));
-		System.out.println("Parameters: " + parameters);
 		cypherQuery = query.toString();
 	}
 
@@ -86,12 +83,11 @@ public class Neo4jQuery {
 		} else {
 			p = (sn) -> true;
 		}
-		Neo4jSequenceNodeFactory nf = new Neo4jSequenceNodeFactory();
 		try (Transaction tx = db.beginTx()) {
 			Result r = db.execute(cypherQuery, parameters);
 			ResourceIterator<Node> it = r.columnAs("n");
 			result = IteratorUtil.asCollection(it).stream()
-				.map(nf::build)
+				.map(Neo4jGraph::createSequenceNode)
 				.filter(p)
 				.collect(Collectors.toList());
 			tx.success();
