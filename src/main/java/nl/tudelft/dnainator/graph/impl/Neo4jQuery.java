@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
@@ -89,12 +90,11 @@ public class Neo4jQuery {
 		try (Transaction tx = db.beginTx()) {
 			Result r = db.execute(cypherQuery, parameters);
 			ResourceIterator<Node> it = r.columnAs("n");
-			for (Node n : IteratorUtil.loop(it)) {
-				SequenceNode sn = nf.build(n);
-				if (p.test(sn)) {
-					result.add(sn);
-				}
-			}
+			result = IteratorUtil.asCollection(it).stream()
+				.map(nf::build)
+				.filter(p)
+				.collect(Collectors.toList());
+			tx.success();
 		}
 		return result;
 	}
