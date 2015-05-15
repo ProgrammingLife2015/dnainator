@@ -1,6 +1,7 @@
 package nl.tudelft.dnainator.ui.controllers;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -25,6 +26,7 @@ import nl.tudelft.dnainator.ui.widgets.dialogs.ProgressDialog;
 public class WindowController {
 	private static final int EXT_LENGTH = 11; // .node.graph
 	private static final String EDGE = ".edge.graph";
+	private static final String TREE = ".nwk";
 	@FXML private BorderPane root;
 	@FXML private View view;
 	private FileLoadService loadService;
@@ -63,6 +65,7 @@ public class WindowController {
 
 		loadService.setNodeFile(nodeFile);
 		loadService.setEdgeFile(openEdgeFile(nodeFile.getPath()));
+		loadService.setTreeFile(openTreeFile(nodeFile.getParent()));
 		loadService.restart();
 	}
 
@@ -79,5 +82,22 @@ public class WindowController {
 	@FXML
 	private void exitAction(ActionEvent e) {
 		Platform.exit();
+	}
+
+	private File openTreeFile(String parent) {
+		File[] res = new File(parent).listFiles((dir, name) -> name.endsWith(TREE));
+		if (res.length == 1) {
+			return res[0];
+		} else if (res.length > 1) {
+			String msg = "Please make sure at most one .nwk file exists\n"
+					+ "in the same directory as the node file";
+			new ExceptionDialog(root, new IllegalStateException(msg),
+					"Tree file could not be loaded");
+		} else {
+			String msg = "Please make sure a .nwk file exists in the same\n"
+					+ "directory as the node file";
+			new ExceptionDialog(root, new FileNotFoundException(msg), "Tree file not found!");
+		}
+		return null;
 	}
 }
