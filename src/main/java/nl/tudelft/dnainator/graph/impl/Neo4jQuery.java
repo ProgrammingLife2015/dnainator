@@ -1,6 +1,5 @@
 package nl.tudelft.dnainator.graph.impl;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +75,7 @@ public class Neo4jQuery {
 	 * @return the query result.
 	 */
 	public List<SequenceNode> execute(GraphDatabaseService db) {
-		List<SequenceNode> result = new ArrayList<>();
+		List<SequenceNode> result;
 		Predicate<SequenceNode> p;
 		if (description.shouldFilter()) {
 			p = description.getFilter();
