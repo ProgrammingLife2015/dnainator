@@ -13,8 +13,6 @@ import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
  * that can hold both content and children.
  */
 public class ClusterItem extends CompositeItem {
-	private static final int NO_RANKS = 10;
-
 	/**
 	 * Construct a new mid level {@link ClusterItem} using the default graph.
 	 * Since a {@link ClusterItem} is not at the root of the model,

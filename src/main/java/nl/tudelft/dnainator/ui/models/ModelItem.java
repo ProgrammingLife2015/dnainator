@@ -24,12 +24,12 @@ import nl.tudelft.dnainator.graph.Graph;
  * concrete subclass.
  */
 public abstract class ModelItem extends Pane {
-	public static final int GRAPH_WIDTH = 1000;
-	public static final int CLUSTER_WIDTH = 100;
-	public static final int RANK_WIDTH = 10;
-
 	public static final int CLUSTER_SIZE = 20;
 	public static final int RANK_SIZE = 3;
+	public static final int RANK_WIDTH = 10;
+
+	static final int NO_CLUSTERS = 330;
+	static final int NO_RANKS = 10;
 
 	private Graph graph;
 	private Group content;
