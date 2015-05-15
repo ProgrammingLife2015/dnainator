@@ -1,10 +1,10 @@
 package nl.tudelft.dnainator.ui.drawables;
 
-import nl.tudelft.dnainator.core.SequenceNode;
-import nl.tudelft.dnainator.ui.widgets.NodeContext;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import nl.tudelft.dnainator.core.SequenceNode;
+import nl.tudelft.dnainator.ui.widgets.NodeContext;
 
 /**
  * The drawable node is the JavaFX counterpart of {@link SequenceNode}.

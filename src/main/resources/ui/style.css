@@ -1,9 +1,15 @@
+.dialog-pane .button-bar {
+	-fx-border-color: #D4D4D4 #FFFFFF #FFFFFF #FFFFFF;
+}
+
 .dialog-pane .label {
-	-fx-font-size: 16pt;
+	-fx-font-size: 14px;
+}
+
+.dialog-pane .header-panel .label {
+	-fx-alignment: top-left;
+	-fx-font-size: 38px;
 	-fx-font-weight: bold;
-	-fx-text-fill: #333333;
-	-fx-alignment: center;
-	-fx-label-padding: 10 10 10 10;
 }
 
 .view {
@@ -16,4 +22,9 @@
 
 .drawable-edge {
 	-fx-fill: #666666;
+}
+
+#about > .label {
+	-fx-graphic: url("/ui/icons/dnainator16x16.png");
+	-fx-padding: 0 10 0 5;
 }

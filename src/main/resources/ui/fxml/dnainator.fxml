@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.input.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import nl.tudelft.dnainator.ui.views.*?>
 
-<BorderPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.dnainator.ui.controllers.WindowController">
+<BorderPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.dnainator.ui.controllers.WindowController">
    <top>
       <MenuBar useSystemMenuBar="true" BorderPane.alignment="CENTER">
         <menus>
@@ -35,6 +37,8 @@
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="L" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                      </accelerator></MenuItem>
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem mnemonicParsing="false" onAction="#exitAction" text="Exit" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="View">
@@ -78,6 +82,11 @@
                   <RadioMenuItem mnemonicParsing="false" text="Baz" />
                </items>
           </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+              <items>
+                <MenuItem id="about" mnemonicParsing="false" onAction="#aboutUsAction" text="About DNAinator" />
+              </items>
+            </Menu>
         </menus>
       </MenuBar>
    </top>

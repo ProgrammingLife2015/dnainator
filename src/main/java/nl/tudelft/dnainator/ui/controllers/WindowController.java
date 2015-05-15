@@ -3,6 +3,7 @@ package nl.tudelft.dnainator.ui.controllers;
 import java.io.File;
 import java.io.IOException;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.layout.BorderPane;
@@ -11,6 +12,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
 import nl.tudelft.dnainator.ui.services.FileLoadService;
 import nl.tudelft.dnainator.ui.views.View;
+import nl.tudelft.dnainator.ui.widgets.AboutDialog;
 import nl.tudelft.dnainator.ui.widgets.ExceptionDialog;
 import nl.tudelft.dnainator.ui.widgets.ProgressDialog;
 
@@ -27,6 +29,7 @@ public class WindowController {
 	@FXML private BorderPane root;
 	@FXML private View view;
 	private FileLoadService loadService;
+	private ProgressDialog progressDialog;
 
 	/**
 	 * Constructs a WindowController object, creating
@@ -35,23 +38,25 @@ public class WindowController {
 	@FXML
 	private void initialize() {
 		loadService = new FileLoadService();
-		ProgressDialog progressDialog = new ProgressDialog(loadService);
 
 		loadService.setOnFailed(e ->
-				new ExceptionDialog(loadService.getException(), "Error loading file!"));
-		loadService.setOnRunning(e -> progressDialog.show());
-		loadService.setOnSucceeded(e -> progressDialog.close());
+				new ExceptionDialog(root, loadService.getException(), "Error loading file!"));
+		loadService.setOnRunning(e -> progressDialog.showDialog());
+		loadService.setOnSucceeded(e -> {
+			progressDialog.close();
+		});
 		loadService.setOnCancelled(e -> {
 			try {
 				Neo4jSingleton.getInstance().stopDatabase(Neo4jSingleton.DB_PATH);
 			} catch (IOException ioe) {
-				new ExceptionDialog(ioe, "Error cancelling database!");
+				new ExceptionDialog(root, ioe, "Error cancelling database!");
 			}
 		});
 	}
 
 	@FXML
 	private void openButtonAction(ActionEvent e) {
+		progressDialog = new ProgressDialog(root, loadService);
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("Open node file");
 		chooser.getExtensionFilters().add(
@@ -68,5 +73,16 @@ public class WindowController {
 
 	private File openEdgeFile(String path) {
 		return new File(path.substring(0, path.length() - EXT_LENGTH).concat(EDGE));
+	}
+	
+	@FXML
+	private void aboutUsAction(ActionEvent e) {
+		AboutDialog about = new AboutDialog(root);
+		about.showAndWait();
+	}
+	
+	@FXML
+	private void exitAction(ActionEvent e) {
+		Platform.exit();
 	}
 }
