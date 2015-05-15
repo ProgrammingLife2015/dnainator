@@ -24,6 +24,13 @@ public interface Graph extends GraphBuilder {
 	SequenceNode getNode(String n);
 
 	/**
+	 * Find the nodes satisfying the given query.
+	 * @param q the query for finding the nodes.
+	 * @return the result of the query.
+	 */
+	List<SequenceNode> queryNodes(GraphQueryDescription q);
+
+	/**
 	 * Get a list of all nodes from this graph.
 	 * @return	a list of all nodes, per rank
 	 */
