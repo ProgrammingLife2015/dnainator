@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -134,21 +135,15 @@ public class Neo4jGraphTest {
 	public void testRanks() {
 		Set<String> rank0Expect = new HashSet<>();
 		Collections.addAll(rank0Expect, "7", "5", "3");
-		Set<String> rank0Actual = new HashSet<>();
-		db.getRank(0).forEach(e -> rank0Actual.add(e.getId()));
-		assertEquals(rank0Expect, rank0Actual);
+		assertUnorderedIDEquals(rank0Expect, db.getRank(0));
 
 		Set<String> rank1Expect = new HashSet<>();
 		Collections.addAll(rank1Expect, "11", "8");
-		Set<String> rank1Actual = new HashSet<>();
-		db.getRank(1).forEach(e -> rank1Actual.add(e.getId()));
-		assertEquals(rank1Expect, rank1Actual);
+		assertUnorderedIDEquals(rank1Expect, db.getRank(1));
 
 		Set<String> rank2Expect = new HashSet<>();
 		Collections.addAll(rank2Expect, "2", "9", "10");
-		Set<String> rank2Actual = new HashSet<>();
-		db.getRank(2).forEach(e -> rank2Actual.add(e.getId()));
-		assertEquals(rank2Expect, rank2Actual);
+		assertUnorderedIDEquals(rank2Expect, db.getRank(2));
 	}
 
 	/**
@@ -162,9 +157,7 @@ public class Neo4jGraphTest {
 			.toRank(2);
 		Set<String> expect = new HashSet<>();
 		Collections.addAll(expect, "7", "5", "3", "11", "8");
-		Set<String> actual = new HashSet<>();
-		db.queryNodes(qd).forEach(e -> actual.add(e.getId()));
-		assertEquals(expect, actual);
+		assertUnorderedIDEquals(expect, db.queryNodes(qd));
 	}
 
 	/**
@@ -176,27 +169,18 @@ public class Neo4jGraphTest {
 			.hasId("2");
 		Set<String> expect = new HashSet<>();
 		Collections.addAll(expect, "2");
-		Set<String> actual = db.queryNodes(qd).stream()
-				.map(sn -> sn.getId())
-				.collect(Collectors.toSet());
-		assertEquals(expect, actual);
+		assertUnorderedIDEquals(expect, db.queryNodes(qd));
 
 		// Also test for multiple ids (reusing the old one)
 		qd = qd.hasId("3");
 		Collections.addAll(expect, "3");
-		actual = db.queryNodes(qd).stream()
-				.map(sn -> sn.getId())
-				.collect(Collectors.toSet());
-		assertEquals(expect, actual);
+		assertUnorderedIDEquals(expect, db.queryNodes(qd));
 
 		// Search for non-existent id.
 		qd = new GraphQueryDescription()
 			.hasId("42");
 		expect = new HashSet<>(); // Empty result.
-		actual = db.queryNodes(qd).stream()
-				.map(sn -> sn.getId())
-				.collect(Collectors.toSet());
-		assertEquals(expect, actual);
+		assertUnorderedIDEquals(expect, db.queryNodes(qd));
 	}
 
 	/**
@@ -210,10 +194,7 @@ public class Neo4jGraphTest {
 		// CHECKSTYLE.ON: MagicNumber
 		Set<String> expect = new HashSet<>();
 		Collections.addAll(expect, "9", "10", "11");
-		Set<String> actual = db.queryNodes(qd).stream()
-				.map(sn -> sn.getId())
-				.collect(Collectors.toSet());
-		assertEquals(expect, actual);
+		assertUnorderedIDEquals(expect, db.queryNodes(qd));
 	}
 
 	/**
@@ -225,30 +206,26 @@ public class Neo4jGraphTest {
 			.containsSource("ASDF");
 		Set<String> expect = new HashSet<>();
 		Collections.addAll(expect, "2", "5", "3", "7", "8");
-		Set<String> actual = db.queryNodes(qd).stream()
-				.map(sn -> sn.getId())
-				.collect(Collectors.toSet());
-		assertEquals(expect, actual);
+		assertUnorderedIDEquals(expect, db.queryNodes(qd));
 
 		// Also test for multiple sources (reusing the old one)
 		qd = qd.containsSource("ASD");
 		Collections.addAll(expect, "9", "10", "11");
-		actual = db.queryNodes(qd).stream()
-				.map(sn -> sn.getId())
-				.collect(Collectors.toSet());
-		assertEquals(expect, actual);
+		assertUnorderedIDEquals(expect, db.queryNodes(qd));
 
 		// Search non-existing source.
 		qd = new GraphQueryDescription()
 			.containsSource("FDSA");
 		// Expect an empty result
 		expect = new HashSet<>();
-		actual = db.queryNodes(qd).stream()
-				.map(sn -> sn.getId())
-				.collect(Collectors.toSet());
-		assertEquals(expect, actual);
+		assertUnorderedIDEquals(expect, db.queryNodes(qd));
 	}
 
+	private static void assertUnorderedIDEquals(Collection<String> expected,
+			Collection<SequenceNode> actual) {
+		assertEquals(expected.stream().collect(Collectors.toSet()),
+				actual.stream().map(sn -> sn.getId()).collect(Collectors.toSet()));
+	}
 	/**
 	 * Clean up after ourselves.
 	 * @throws IOException when the database could not be deleted
