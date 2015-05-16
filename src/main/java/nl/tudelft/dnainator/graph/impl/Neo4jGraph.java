@@ -324,7 +324,7 @@ public final class Neo4jGraph implements Graph {
 	}
 
 	@Override
-	public List<SequenceNode> queryNodes(GraphQueryDescription q) {
-		return new Neo4jQuery(q).execute(service);
+	public List<SequenceNode> queryNodes(GraphQueryDescription qd) {
+		return Neo4jQuery.of(qd).execute(service);
 	}
 }

@@ -27,18 +27,13 @@ import nl.tudelft.dnainator.graph.query.SourcesFilter;
  * A useful class for creating and executing a query on a Neo4j
  * database using a {@link GraphQueryDescription}.
  */
-public class Neo4jQuery implements GraphQuery {
+public final class Neo4jQuery implements GraphQuery {
 	private boolean multipleConditions;
 	private Map<String, Object> parameters;
 	private StringBuilder sb;
 	private Predicate<SequenceNode> p;
 
-	/**
-	 * Create a new query suitable for Neo4j from the given description.
-	 * @param qd the query description to use for constructing the query.
-	 */
-	public Neo4jQuery(GraphQueryDescription qd) {
-		compile(qd);
+	private Neo4jQuery() {
 	}
 
 	private void addCondition(String c) {
@@ -116,5 +111,17 @@ public class Neo4jQuery implements GraphQuery {
 	public void compile(RankEnd end) {
 		addCondition("n.dist < {to}\n");
 		parameters.put("to", end.getEnd());
+	}
+
+	/**
+	 * Construct a {@link Neo4jQuery} based on the given
+	 * {@link GraphQueryDescription}.
+	 * @param qd the description of the query.
+	 * @return the compiled query.
+	 */
+	public static Neo4jQuery of(GraphQueryDescription qd) {
+		Neo4jQuery q = new Neo4jQuery();
+		q.compile(qd);
+		return q;
 	}
 }
