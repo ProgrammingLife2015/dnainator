@@ -34,6 +34,7 @@ public final class Neo4jQuery implements GraphQuery {
 	private Predicate<SequenceNode> p;
 
 	private Neo4jQuery() {
+		this.sb = new StringBuilder("MATCH n\n");
 	}
 
 	private void addCondition(String c) {
@@ -53,6 +54,7 @@ public final class Neo4jQuery implements GraphQuery {
 	 * @return the query result.
 	 */
 	public List<SequenceNode> execute(GraphDatabaseService db) {
+		sb.append("RETURN n");
 		List<SequenceNode> result;
 		try (Transaction tx = db.beginTx()) {
 			Result r = db.execute(sb.toString(), parameters);
@@ -71,28 +73,32 @@ public final class Neo4jQuery implements GraphQuery {
 		this.multipleConditions = false;
 		this.parameters = new HashMap<>();
 		this.p = (sn) -> true;
-		this.sb = new StringBuilder("MATCH n\n");
 		qd.accept(this);
-		sb.append("RETURN n");
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public void compile(IDsFilter ids) {
-		addCondition("n.id IN {ids}\n");
-		parameters.merge("ids", ids.getIds(), (left, right) -> {
-			((Collection<String>) left).addAll((Collection<String>) right);
-			return left;
+		parameters.compute("ids", (k, v) -> {
+			if (v == null) {
+				addCondition("n.id IN {ids}\n");
+				return ids.getIds();
+			}
+			((Collection<String>) v).addAll(ids.getIds());
+			return v;
 		});
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public void compile(SourcesFilter sources) {
-		addCondition("n.source IN {sources}\n");
-		parameters.merge("sources", sources.getSources(), (left, right) -> {
-			((Collection<String>) left).addAll((Collection<String>) right);
-			return left;
+		parameters.compute("sources", (k, v) -> {
+			if (v == null) {
+				addCondition("n.source IN {sources}\n");
+				return sources.getSources();
+			}
+			((Collection<String>) v).addAll(sources.getSources());
+			return v;
 		});
 	}
 
