@@ -20,7 +20,7 @@ import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.core.impl.SequenceNodeFactoryImpl;
 import nl.tudelft.dnainator.core.impl.SequenceNodeImpl;
-import nl.tudelft.dnainator.graph.GraphQueryDescription;
+import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
 import nl.tudelft.dnainator.parser.exceptions.InvalidEdgeFormatException;

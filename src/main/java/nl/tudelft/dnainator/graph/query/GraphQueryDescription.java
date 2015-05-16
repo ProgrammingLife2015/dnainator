@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.graph;
+package nl.tudelft.dnainator.graph.query;
 
 import java.util.ArrayList;
 import java.util.Collection;

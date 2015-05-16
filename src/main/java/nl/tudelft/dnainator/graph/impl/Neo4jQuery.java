@@ -14,7 +14,7 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.helpers.collection.IteratorUtil;
 
 import nl.tudelft.dnainator.core.SequenceNode;
-import nl.tudelft.dnainator.graph.GraphQueryDescription;
+import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 
 /**
  * A useful class for creating and executing a query on a Neo4j
