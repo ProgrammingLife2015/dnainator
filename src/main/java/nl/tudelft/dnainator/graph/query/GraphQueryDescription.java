@@ -81,6 +81,11 @@ public class GraphQueryDescription {
 		return this;
 	}
 
+	/**
+	 * Accepts the {@link GraphQuery} as a visitor, to compile the
+	 * query.
+	 * @param q The query to compile according to this query description.
+	 */
 	public void accept(GraphQuery q) {
 		for (QueryElement e : elems) {
 			e.accept(q);
