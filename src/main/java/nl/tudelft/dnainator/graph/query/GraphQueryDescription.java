@@ -19,7 +19,7 @@ public class GraphQueryDescription {
 	 * @return this
 	 */
 	public GraphQueryDescription hasId(String id) {
-		return haveIds(Collections.singletonList(id));
+		return haveIds(new ArrayList<>(Collections.singletonList(id)));
 	}
 
 	/**
@@ -38,7 +38,7 @@ public class GraphQueryDescription {
 	 * @return this
 	 */
 	public GraphQueryDescription containsSource(String source) {
-		return containsSources(Collections.singletonList(source));
+		return containsSources(new ArrayList<>(Collections.singletonList(source)));
 	}
 
 	/**

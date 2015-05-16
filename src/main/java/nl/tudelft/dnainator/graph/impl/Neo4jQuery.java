@@ -1,5 +1,6 @@
 package nl.tudelft.dnainator.graph.impl;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,16 +80,24 @@ public class Neo4jQuery implements GraphQuery {
 		qd.accept(this);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void compile(IDsFilter ids) {
 		addCondition("n.id IN {ids}\n");
-		parameters.put("ids", ids.getIds());
+		parameters.merge("ids", ids.getIds(), (left, right) -> {
+			((Collection<String>) left).addAll((Collection<String>) right);
+			return left;
+		});
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void compile(SourcesFilter sources) {
 		addCondition("n.source IN {sources}\n");
-		parameters.put("sources", sources.getSources());
+		parameters.merge("sources", sources.getSources(), (left, right) -> {
+			((Collection<String>) left).addAll((Collection<String>) right);
+			return left;
+		});
 	}
 
 	@Override

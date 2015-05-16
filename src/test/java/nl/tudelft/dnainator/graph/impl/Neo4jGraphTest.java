@@ -183,8 +183,16 @@ public class Neo4jGraphTest {
 
 		// Also test for multiple ids (reusing the old one)
 		qd = qd.hasId("3");
-		expect = new HashSet<>();
-		Collections.addAll(expect, "2", "3");
+		Collections.addAll(expect, "3");
+		actual = db.queryNodes(qd).stream()
+				.map(sn -> sn.getId())
+				.collect(Collectors.toSet());
+		assertEquals(expect, actual);
+
+		// Search for non-existent id.
+		qd = new GraphQueryDescription()
+			.hasId("42");
+		expect = new HashSet<>(); // Empty result.
 		actual = db.queryNodes(qd).stream()
 				.map(sn -> sn.getId())
 				.collect(Collectors.toSet());
@@ -216,8 +224,16 @@ public class Neo4jGraphTest {
 		GraphQueryDescription qd = new GraphQueryDescription()
 			.containsSource("ASDF");
 		Set<String> expect = new HashSet<>();
-		Collections.addAll(expect, "2", "9", "10", "5", "3", "7", "11", "8");
+		Collections.addAll(expect, "2", "5", "3", "7", "8");
 		Set<String> actual = db.queryNodes(qd).stream()
+				.map(sn -> sn.getId())
+				.collect(Collectors.toSet());
+		assertEquals(expect, actual);
+
+		// Also test for multiple sources (reusing the old one)
+		qd = qd.containsSource("ASD");
+		Collections.addAll(expect, "9", "10", "11");
+		actual = db.queryNodes(qd).stream()
 				.map(sn -> sn.getId())
 				.collect(Collectors.toSet());
 		assertEquals(expect, actual);
