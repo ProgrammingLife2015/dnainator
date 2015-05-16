@@ -11,13 +11,7 @@ import nl.tudelft.dnainator.core.SequenceNode;
  * A description of a query and its parameters.
  */
 public class GraphQueryDescription {
-	private Collection<String> idStrings;
-	private Collection<String> sourceStrings;
-	private Predicate<SequenceNode> filter;
-	private boolean queryFrom = false;
-	private int from = 0;
-	private boolean queryTo = false;
-	private int to = Integer.MAX_VALUE;
+	private Collection<QueryElement> elems = new ArrayList<>();
 
 	/**
 	 * Query for the given id.
@@ -34,26 +28,8 @@ public class GraphQueryDescription {
 	 * @return this
 	 */
 	public GraphQueryDescription haveIds(Collection<String> ids) {
-		if (idStrings == null) {
-			idStrings = new ArrayList<>(ids);
-			return this;
-		}
-		idStrings.addAll(ids);
+		elems.add(new IDsFilter(ids));
 		return this;
-	}
-
-	/**
-	 * @return Whether the query should query for ids.
-	 */
-	public boolean shouldQueryIds() {
-		return idStrings != null;
-	}
-
-	/**
-	 * @return The ids to query for.
-	 */
-	public Collection<String> getIds() {
-		return idStrings;
 	}
 
 	/**
@@ -71,26 +47,8 @@ public class GraphQueryDescription {
 	 * @return this
 	 */
 	public GraphQueryDescription containsSources(Collection<String> sources) {
-		if (sourceStrings == null) {
-			sourceStrings = new ArrayList<>(sources);
-			return this;
-		}
-		sourceStrings.addAll(sources);
+		elems.add(new SourcesFilter(sources));
 		return this;
-	}
-
-	/**
-	 * @return Whether the query should query for sources.
-	 */
-	public boolean shouldQuerySources() {
-		return sourceStrings != null;
-	}
-
-	/**
-	 * @return The source parameters.
-	 */
-	public Collection<String> getSources() {
-		return sourceStrings;
 	}
 
 	/**
@@ -99,22 +57,8 @@ public class GraphQueryDescription {
 	 * @return this
 	 */
 	public GraphQueryDescription filter(Predicate<SequenceNode> p) {
-		filter = p;
+		elems.add(new PredicateFilter(p));
 		return this;
-	}
-
-	/**
-	 * @return Whether the result should be filtered.
-	 */
-	public boolean shouldFilter() {
-		return filter != null;
-	}
-
-	/**
-	 * @return The filter predicate.
-	 */
-	public Predicate<SequenceNode> getFilter() {
-		return filter;
 	}
 
 	/**
@@ -123,23 +67,8 @@ public class GraphQueryDescription {
 	 * @return this
 	 */
 	public GraphQueryDescription fromRank(int start) {
-		from = start;
-		queryFrom = true;
+		elems.add(new RankStart(start));
 		return this;
-	}
-
-	/**
-	 * @return Whether the query should search from a rank.
-	 */
-	public boolean shouldQueryFrom() {
-		return queryFrom;
-	}
-
-	/**
-	 * @return The rank to search from (inclusive).
-	 */
-	public int getFrom() {
-		return from;
 	}
 
 	/**
@@ -148,22 +77,13 @@ public class GraphQueryDescription {
 	 * @return this
 	 */
 	public GraphQueryDescription toRank(int end) {
-		to = end;
-		queryTo = true;
+		elems.add(new RankEnd(end));
 		return this;
 	}
 
-	/**
-	 * @return Whether the query should search towards a rank.
-	 */
-	public boolean shouldQueryTo() {
-		return queryTo;
-	}
-
-	/**
-	 * @return The rank to search towards (exclusive).
-	 */
-	public int getTo() {
-		return to;
+	public void accept(GraphQuery q) {
+		for (QueryElement e : elems) {
+			e.accept(q);
+		}
 	}
 }
