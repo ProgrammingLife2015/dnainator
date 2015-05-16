@@ -28,7 +28,7 @@ import nl.tudelft.dnainator.graph.query.SourcesFilter;
  * database using a {@link GraphQueryDescription}.
  */
 public class Neo4jQuery implements GraphQuery {
-	private boolean multipleConditions = false;
+	private boolean multipleConditions;
 	private Map<String, Object> parameters;
 	private StringBuilder sb;
 	private Predicate<SequenceNode> p;
@@ -38,9 +38,6 @@ public class Neo4jQuery implements GraphQuery {
 	 * @param qd the query description to use for constructing the query.
 	 */
 	public Neo4jQuery(GraphQueryDescription qd) {
-		this.sb = new StringBuilder("MATCH n\n");
-		this.parameters = new HashMap<>();
-		this.p = (sn) -> true;
 		compile(qd);
 	}
 
@@ -61,7 +58,6 @@ public class Neo4jQuery implements GraphQuery {
 	 * @return the query result.
 	 */
 	public List<SequenceNode> execute(GraphDatabaseService db) {
-		sb.append("RETURN n");
 		List<SequenceNode> result;
 		try (Transaction tx = db.beginTx()) {
 			Result r = db.execute(sb.toString(), parameters);
@@ -77,7 +73,12 @@ public class Neo4jQuery implements GraphQuery {
 
 	@Override
 	public void compile(GraphQueryDescription qd) {
+		this.multipleConditions = false;
+		this.parameters = new HashMap<>();
+		this.p = (sn) -> true;
+		this.sb = new StringBuilder("MATCH n\n");
 		qd.accept(this);
+		sb.append("RETURN n");
 	}
 
 	@SuppressWarnings("unchecked")
