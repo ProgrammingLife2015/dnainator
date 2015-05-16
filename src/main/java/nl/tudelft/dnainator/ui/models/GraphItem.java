@@ -5,6 +5,7 @@ import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Translate;
+import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
 
 /**
@@ -13,11 +14,20 @@ import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
  */
 public class GraphItem extends CompositeItem {
 	private static final int FOUR = 4;
+
 	/**
 	 * Construct a new top level {@link GraphItem} using the default graph.
 	 */
 	public GraphItem() {
-		super(Neo4jSingleton.getInstance().getDatabase());
+		this(Neo4jSingleton.getInstance().getDatabase());
+	}
+
+	/**
+	 * Construct a new top level {@link GraphItem} using the specified graph.
+	 * @param graph	the specified graph
+	 */
+	public GraphItem(Graph graph) {
+		super(graph);
 
 		localToRootProperty().set(new Translate());
 
@@ -28,35 +38,18 @@ public class GraphItem extends CompositeItem {
 			r.setTranslateX(i * width);
 			g.getChildren().add(r);
 		}
-		setContent(g);
+		getContent().getChildren().add(g);
 
+		// FIXME: These should be lazily instantiated!
 		for (int i = 0; i < NO_CLUSTERS; i++) {
-			ClusterItem ci = new ClusterItem(localToRootProperty());
+			ClusterItem ci = new ClusterItem(getGraph(), localToRootProperty());
 			ci.setTranslateX(i * NO_RANKS * RANK_WIDTH);
 			getChildItems().add(ci);
 		}
 	}
 
-	/**
-	 * Update visibility for this node and children.
-	 */
 	@Override
 	public void update(Bounds b) {
-		if (b.getWidth() > Thresholds.GRAPH.get()) {
-			System.out.println("showing graph");
-			if (!getContent().isVisible()) {
-				getContent().setVisible(true);
-				getChildRoot().getChildren().clear();
-			}
-		} else {
-			if (getContent().isVisible()) {
-				getContent().setVisible(false);
-				getChildRoot().getChildren().addAll(getChildItems());
-			}
-
-			for (ModelItem m : getChildItems()) {
-				m.update(b);
-			}
-		}
+		update(b, Thresholds.GRAPH);
 	}
 }

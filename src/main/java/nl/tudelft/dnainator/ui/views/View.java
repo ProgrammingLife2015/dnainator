@@ -25,6 +25,8 @@ import org.neo4j.io.fs.FileUtils;
  * This class is the View part of the MVC pattern.
  */
 public class View extends Pane {
+	private static final double SCALE = .1;
+
 	@FXML
 	private BorderPane root;
 
@@ -59,7 +61,7 @@ public class View extends Pane {
 		translate = new Translate();
 		translate.setOnTransformChanged(e -> worldToCamera = worldToCamera());
 
-		scale = new Scale();
+		scale = new Scale(SCALE, SCALE);
 		scale.setOnTransformChanged(e -> worldToCamera = worldToCamera());
 
 		mi = new GraphItem();
@@ -105,7 +107,6 @@ public class View extends Pane {
 
 	/**
 	 * Pan the camera by the amount given by the delta vector.
-	 * FIXME: sensitivity depends on zoom level.
 	 * @param delta	the delta vector
 	 */
 	public void pan(Point2D delta) {

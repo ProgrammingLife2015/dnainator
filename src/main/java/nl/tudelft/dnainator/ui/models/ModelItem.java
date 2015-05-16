@@ -4,8 +4,8 @@ import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Bounds;
+import javafx.geometry.Point2D;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.layout.Pane;
 import javafx.scene.transform.Transform;
 import nl.tudelft.dnainator.graph.Graph;
@@ -76,15 +76,6 @@ public abstract class ModelItem extends Pane {
 	}
 
 	/**
-	 * Set the content of this {@link ModelItem}.
-	 * @param node	the new content
-	 */
-	public void setContent(Node node) {
-		content.getChildren().clear();
-		content.getChildren().add(node);
-	}
-
-	/**
 	 * Return the underlying graph of this {@link ModelItem}.
 	 * @return	the underlying graph
 	 */
@@ -123,6 +114,15 @@ public abstract class ModelItem extends Pane {
 	 */
 	public Bounds localToRoot(Bounds b) {
 		return getLocalToRoot().transform(b);
+	}
+
+	/**
+	 * Transform a given point p from local coordinates to root coordinates.
+	 * @param p	the point to transform
+	 * @return	the transformed point
+	 */
+	public Point2D localToRoot(Point2D p) {
+		return getLocalToRoot().transform(p);
 	}
 
 	/**
