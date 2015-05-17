@@ -12,9 +12,9 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
 import nl.tudelft.dnainator.ui.services.FileLoadService;
 import nl.tudelft.dnainator.ui.views.View;
-import nl.tudelft.dnainator.ui.widgets.AboutDialog;
-import nl.tudelft.dnainator.ui.widgets.ExceptionDialog;
-import nl.tudelft.dnainator.ui.widgets.ProgressDialog;
+import nl.tudelft.dnainator.ui.widgets.dialogs.AboutDialog;
+import nl.tudelft.dnainator.ui.widgets.dialogs.ExceptionDialog;
+import nl.tudelft.dnainator.ui.widgets.dialogs.ProgressDialog;
 
 /**
  * The WindowController is a controller class for the main window.

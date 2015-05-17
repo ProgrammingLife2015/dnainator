@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.ui.widgets;
+package nl.tudelft.dnainator.ui.widgets.dialogs;
 
 import java.io.IOException;
 import java.io.InputStream;

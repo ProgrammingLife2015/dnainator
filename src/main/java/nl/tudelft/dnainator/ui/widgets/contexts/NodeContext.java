@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.ui.widgets;
+package nl.tudelft.dnainator.ui.widgets.contexts;
 
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
