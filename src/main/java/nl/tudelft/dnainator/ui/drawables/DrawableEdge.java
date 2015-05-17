@@ -1,6 +1,6 @@
 package nl.tudelft.dnainator.ui.drawables;
 
-import nl.tudelft.dnainator.ui.widgets.EdgeContext;
+import nl.tudelft.dnainator.ui.widgets.contexts.EdgeContext;
 import javafx.scene.shape.Line;
 
 /**

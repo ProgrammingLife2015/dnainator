@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.ui.widgets;
+package nl.tudelft.dnainator.ui.widgets.dialogs;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

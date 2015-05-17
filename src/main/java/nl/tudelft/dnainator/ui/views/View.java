@@ -13,8 +13,8 @@ import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
 import nl.tudelft.dnainator.ui.models.GraphItem;
 import nl.tudelft.dnainator.ui.models.ModelItem;
-import nl.tudelft.dnainator.ui.widgets.ExceptionDialog;
-import nl.tudelft.dnainator.ui.widgets.ViewContext;
+import nl.tudelft.dnainator.ui.widgets.contexts.ViewContext;
+import nl.tudelft.dnainator.ui.widgets.dialogs.ExceptionDialog;
 
 /**
  * This class is the View part of the MVC pattern.
