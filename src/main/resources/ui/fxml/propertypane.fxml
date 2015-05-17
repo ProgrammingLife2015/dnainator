@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<fx:root fx:id="propertypane" type="javafx.scene.layout.VBox" alignment="TOP_CENTER" spacing="25.0" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1">
+   <padding>
+      <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+   </padding>
+   <children>
+      <Label fx:id="label" layoutX="249.0" layoutY="33.0" textAlignment="CENTER" />
+      <VBox fx:id="vbox" alignment="TOP_CENTER" spacing="10.0" layoutX="250.0" layoutY="100.0" prefHeight="200.0" prefWidth="100.0" />
+   </children>
+</fx:root>

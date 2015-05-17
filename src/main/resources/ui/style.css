@@ -12,6 +12,17 @@
 	-fx-font-weight: bold;
 }
 
+#properties-label {
+	-fx-font-size: 20px;
+	-fx-alignment: center;
+	-fx-font-weight: bold;
+}
+
+.property-header {
+	-fx-font-weight: bold;
+	-fx-alignment: center;
+}
+
 .view {
 	-fx-background-color: #FFFFFF;
 }
