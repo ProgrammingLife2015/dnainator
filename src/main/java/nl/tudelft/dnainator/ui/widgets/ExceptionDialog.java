@@ -19,7 +19,8 @@ public class ExceptionDialog extends Alert {
 	
 	/**
 	 * Instantiates a new ExceptionDialog.
-	 * @param parent The parent {@link Node} of this dialog.
+	 * @param parent The parent {link Node} of this dialog, to have it behave as a modal
+	 * dialog. In case of null, the dialog is not modal.
 	 * @param throwable Throwable for which this dialog is created.
 	 * @param title Title of this dialog.
 	 */
@@ -39,7 +40,9 @@ public class ExceptionDialog extends Alert {
 		content.add(textArea, 0, 1);
 
 		this.getDialogPane().setExpandableContent(content);
-		this.initOwner(parent.getScene().getWindow());
+		if (parent != null) {
+			this.initOwner(parent.getScene().getWindow());
+		}
 		this.showAndWait();
 	}
 

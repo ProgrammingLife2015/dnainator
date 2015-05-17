@@ -3,11 +3,9 @@ package nl.tudelft.dnainator.ui.views;
 import java.io.File;
 import java.io.IOException;
 
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
@@ -27,10 +25,6 @@ import org.neo4j.io.fs.FileUtils;
  */
 public class View extends Pane {
 	private static final double SCALE = .1;
-
-	@FXML
-	private BorderPane root;
-
 	private Affine scale;
 	private Translate toCenter;
 	private Translate translate;
@@ -75,7 +69,7 @@ public class View extends Pane {
 		try {
 			fxmlLoader.load();
 		} catch (IOException e) {
-			new ExceptionDialog(root, e, "Can not load the View!");
+			new ExceptionDialog(null, e, "Can not load the View!");
 		}
 	}
 
