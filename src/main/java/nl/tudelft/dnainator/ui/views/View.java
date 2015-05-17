@@ -9,6 +9,7 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Transform;
@@ -30,7 +31,7 @@ public class View extends Pane {
 	@FXML
 	private BorderPane root;
 
-	private Scale scale;
+	private Affine scale;
 	private Translate toCenter;
 	private Translate translate;
 	private Transform worldToCamera;
@@ -61,13 +62,13 @@ public class View extends Pane {
 		translate = new Translate();
 		translate.setOnTransformChanged(e -> worldToCamera = worldToCamera());
 
-		scale = new Scale(SCALE, SCALE);
+		scale = new Affine(new Scale(SCALE, SCALE));
 		scale.setOnTransformChanged(e -> worldToCamera = worldToCamera());
 
 		mi = new GraphItem();
 		mi.getTransforms().add(toCenter);
-		mi.getTransforms().add(scale);
 		mi.getTransforms().add(translate);
+		mi.getTransforms().add(scale);
 		getChildren().add(mi);
 	}
 
@@ -98,7 +99,7 @@ public class View extends Pane {
 	public Bounds cameraToWorld(Bounds b) {
 		Bounds world = null;
 		try {
-			world = worldToCamera.inverseTransform(b);
+			world = worldToCamera().inverseTransform(b);
 		} catch (NonInvertibleTransformException e) {
 			e.printStackTrace();
 		}
@@ -110,22 +111,27 @@ public class View extends Pane {
 	 * @param delta	the delta vector
 	 */
 	public void pan(Point2D delta) {
-		try {
-			translate.setX(translate.getX() + scale.inverseTransform(delta).getX());
-			translate.setY(translate.getY() + scale.inverseTransform(delta).getY());
-		} catch (NonInvertibleTransformException e) {
-			e.printStackTrace();
-		}
+		translate.setX(translate.getX() + delta.getX());
+		translate.setY(translate.getY() + delta.getY());
 		mi.update(cameraToWorld(getLayoutBounds()));
 	}
 
 	/**
 	 * Zoom the camera by the amount given by zoom.
-	 * @param zoom	the amount to zoom in
+	 * @param zoom		the amount to zoom in
+	 * @param center	the center of the zoom, in camera space
 	 */
-	public void zoom(Double zoom) {
-		scale.setX(scale.getX() + (scale.getX() * zoom));
-		scale.setY(scale.getY() + (scale.getY() * zoom));
+	public void zoom(Double zoom, Point2D center) {
+		try {
+			center = new Point2D(center.getX() - toCenter.getX(),
+						center.getY() - toCenter.getY());
+			center = new Point2D(center.getX() - translate.getX(),
+						center.getY() - translate.getTy());
+			center = scale.inverseTransform(center);
+			scale.append(new Scale(1 + zoom, 1 + zoom, center.getX(), center.getY()));
+		} catch (NonInvertibleTransformException e) {
+			e.printStackTrace();
+		}
 		mi.update(cameraToWorld(getLayoutBounds()));
 	}
 }

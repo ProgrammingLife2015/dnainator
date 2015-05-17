@@ -39,6 +39,6 @@ public class ViewController {
 
 	@FXML
 	private void onScroll(ScrollEvent e) {
-		view.zoom(e.getDeltaY() * ZOOM_FACTOR);
+		view.zoom(e.getDeltaY() * ZOOM_FACTOR, new Point2D(e.getX(), e.getY()));
 	}
 }
