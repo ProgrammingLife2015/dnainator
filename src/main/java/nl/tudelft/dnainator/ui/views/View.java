@@ -34,7 +34,6 @@ public class View extends Pane {
 	private Affine scale;
 	private Translate toCenter;
 	private Translate translate;
-	private Transform worldToCamera;
 
 	private ModelItem mi;
 
@@ -60,10 +59,7 @@ public class View extends Pane {
 		heightProperty().addListener((o, v1, v2) -> toCenter.setY(v2.intValue() / 2));
 
 		translate = new Translate();
-		translate.setOnTransformChanged(e -> worldToCamera = worldToCamera());
-
 		scale = new Affine(new Scale(SCALE, SCALE));
-		scale.setOnTransformChanged(e -> worldToCamera = worldToCamera());
 
 		mi = new GraphItem();
 		mi.getTransforms().add(toCenter);
@@ -88,7 +84,7 @@ public class View extends Pane {
 	 * @return	the concatenated transform
 	 */
 	private Transform worldToCamera() {
-		return toCenter.createConcatenation(scale).createConcatenation(translate);
+		return toCenter.createConcatenation(translate).createConcatenation(scale);
 	}
 
 	/**
@@ -123,11 +119,8 @@ public class View extends Pane {
 	 */
 	public void zoom(Double zoom, Point2D center) {
 		try {
-			center = new Point2D(center.getX() - toCenter.getX(),
-						center.getY() - toCenter.getY());
-			center = new Point2D(center.getX() - translate.getX(),
-						center.getY() - translate.getTy());
-			center = scale.inverseTransform(center);
+			center = scale.inverseTransform(center.getX() - toCenter.getX() - translate.getX(),
+							center.getY() - toCenter.getY() - translate.getY());
 			scale.append(new Scale(1 + zoom, 1 + zoom, center.getX(), center.getY()));
 		} catch (NonInvertibleTransformException e) {
 			e.printStackTrace();
