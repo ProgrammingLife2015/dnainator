@@ -1,5 +1,7 @@
 package nl.tudelft.dnainator.ui.models;
 
+import java.util.List;
+
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -13,6 +15,7 @@ import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
  * It is a {@link CompositeItem}, that can hold both content and children.
  */
 public class GraphItem extends CompositeItem {
+	private static final String TYPE = "Graph";
 	private static final int FOUR = 4;
 
 	/**
@@ -51,5 +54,15 @@ public class GraphItem extends CompositeItem {
 	@Override
 	public void update(Bounds b) {
 		update(b, Thresholds.GRAPH);
+	}
+
+	@Override
+	public String getType() {
+		return TYPE;
+	}
+
+	@Override
+	public List<String> getSources() {
+		return null;
 	}
 }
