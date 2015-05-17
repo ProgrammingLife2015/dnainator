@@ -58,4 +58,18 @@ public class Edge extends Group {
 	public Line getEdge() {
 		return edge;
 	}
+
+//	@Override
+//	public String getType() {
+//		return TYPE;
+//	}
+
+//	@Override
+//	public List<String> getSources() {
+////		ArrayList<String> res = new ArrayList<>();
+////		res.add(src.getSequenceNode().getSource());
+////		res.add(dst.getSequenceNode().getSource());
+////		return res;
+//		return null;
+//	}
 }

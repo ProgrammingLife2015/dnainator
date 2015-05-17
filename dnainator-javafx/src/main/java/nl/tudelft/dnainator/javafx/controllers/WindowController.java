@@ -9,6 +9,7 @@ import javafx.scene.layout.BorderPane;
 import nl.tudelft.dnainator.javafx.ColorServer;
 import nl.tudelft.dnainator.javafx.views.PhylogeneticView;
 import nl.tudelft.dnainator.javafx.views.StrainView;
+import nl.tudelft.dnainator.javafx.widgets.PropertyPane;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.AboutDialog;
 
 /**
@@ -28,6 +29,12 @@ public class WindowController {
 	private StrainView strainView;
 	private PhylogeneticView phyloView;
 
+	@FXML private PropertyPane propertyPane;
+
+	/**
+	 * Constructs a WindowController object, binding <code>rootProperty</code> of the
+	 * {@link PhylogeneticView} the <code>treeProperty</code> of the {@link FileOpenController}.
+	 */
 	@SuppressWarnings("unused") @FXML
 	private void initialize() {
 		ColorServer colorServer = new ColorServer();

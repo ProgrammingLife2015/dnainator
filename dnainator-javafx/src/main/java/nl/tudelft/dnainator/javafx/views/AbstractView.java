@@ -1,5 +1,9 @@
 package nl.tudelft.dnainator.javafx.views;
 
+import java.io.IOException;
+
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -10,9 +14,8 @@ import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
+import nl.tudelft.dnainator.javafx.widgets.Propertyable;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.ExceptionDialog;
-
-import java.io.IOException;
 
 /**
  * An abstract class for common functionality needed by all the views.
@@ -29,6 +32,8 @@ public abstract class AbstractView extends Pane {
 	protected Translate toCenter;
 	protected Translate translate;
 
+	private ObjectProperty<Propertyable> lastClicked;
+
 	/**
 	 * Constructs a new {@link AbstractView}. Sets up the necessary transforms and
 	 * translations for the panning and zooming.
@@ -36,6 +41,7 @@ public abstract class AbstractView extends Pane {
 	public AbstractView() {
 		loadFXML();
 		getStyleClass().add("view");
+		lastClicked = new SimpleObjectProperty<>(this, "lastClicked");
 		toCenter = new Translate();
 		widthProperty().addListener((o, v1, v2) -> toCenter.setX(v2.intValue() / 2));
 		heightProperty().addListener((o, v1, v2) -> toCenter.setY(v2.intValue() / 2));
@@ -181,5 +187,26 @@ public abstract class AbstractView extends Pane {
 	 */
 	public final Point2D getCenter() {
 		return new Point2D(getWidth() / 2, getHeight() / 2);
+	}
+
+	/**
+	 * @param p The last clicked {@link Propertyable}.
+	 */
+	public final void setLastClicked(Propertyable p) {
+		lastClicked.set(p);
+	}
+
+	/**
+	 * @return The last clicked {@link Propertyable}, if any.
+	 */
+	public final Propertyable getLastClicked() {
+		return lastClicked.get();
+	}
+
+	/**
+	 * @return The last clicked property.
+	 */
+	public ObjectProperty<Propertyable> lastClickedProperty() {
+		return lastClicked;
 	}
 }
