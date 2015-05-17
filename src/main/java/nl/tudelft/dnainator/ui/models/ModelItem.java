@@ -13,6 +13,7 @@ import javafx.scene.Group;
 import javafx.scene.layout.Pane;
 import javafx.scene.transform.Transform;
 import nl.tudelft.dnainator.graph.Graph;
+import nl.tudelft.dnainator.ui.widgets.Propertyable;
 
 /**
  * The abstract {@link ModelItem} represents a single object in the viewable model.
@@ -23,11 +24,11 @@ import nl.tudelft.dnainator.graph.Graph;
  * What content is drawn will change dynamically based on the scale of the viewport.
  *
  * In order to determine the positioning of the JavaFX content,
- * every modelitem holds a rootToItem transform property, which should be bound to
+ * every {@link ModelItem} holds a rootToItem transform property, which should be bound to
  * the concatenation of all parent rootToItem properties when instantiating a
  * concrete subclass.
  */
-public abstract class ModelItem extends Pane {
+public abstract class ModelItem extends Pane implements Propertyable {
 	public static final int CLUSTER_SIZE = 20;
 	public static final int RANK_WIDTH = 10;
 

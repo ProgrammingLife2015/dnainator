@@ -11,6 +11,8 @@ import nl.tudelft.dnainator.core.SequenceNode;
  * It can hold only content and no children, and is therefore a leaf in the composite pattern.
  */
 public class RankItem extends CompositeItem {
+	private static final String TYPE = "Rank";
+
 	/**
 	 * Construct a new bottom level {@link RankItem} using the default graph.
 	 * Every {@link RankItem} needs a reference to its parent.
@@ -48,5 +50,15 @@ public class RankItem extends CompositeItem {
 
 		load();
 		update(b, Thresholds.CLUSTER);
+	}
+
+	@Override
+	public String getType() {
+		return TYPE;
+	}
+
+	@Override
+	public List<String> getSources() {
+		return null;
 	}
 }

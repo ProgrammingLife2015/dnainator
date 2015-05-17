@@ -2,6 +2,8 @@ package nl.tudelft.dnainator.ui.views;
 
 import java.io.IOException;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
@@ -13,6 +15,7 @@ import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
 import nl.tudelft.dnainator.ui.models.GraphItem;
 import nl.tudelft.dnainator.ui.models.ModelItem;
+import nl.tudelft.dnainator.ui.widgets.Propertyable;
 import nl.tudelft.dnainator.ui.widgets.contexts.ViewContext;
 import nl.tudelft.dnainator.ui.widgets.dialogs.ExceptionDialog;
 
@@ -21,10 +24,10 @@ import nl.tudelft.dnainator.ui.widgets.dialogs.ExceptionDialog;
  */
 public class View extends Pane {
 	private static final double SCALE = .1;
+	private ObjectProperty<Propertyable> lastClicked;
 	private Affine scale;
 	private Translate toCenter;
 	private Translate translate;
-
 	private ModelItem mi;
 
 	/**
@@ -37,6 +40,8 @@ public class View extends Pane {
 			ViewContext.getInstance().show(View.this, e.getScreenX(), e.getScreenY());
 			e.consume();
 		});
+
+		lastClicked = new SimpleObjectProperty<>(this, "lastClicked");
 
 		toCenter = new Translate();
 		widthProperty().addListener((o, v1, v2) -> toCenter.setX(v2.intValue() / 2));
@@ -110,5 +115,26 @@ public class View extends Pane {
 			e.printStackTrace();
 		}
 		mi.update(cameraToWorld(getLayoutBounds()));
+	}
+
+	/**
+	 * @param p The last clicked {@link Propertyable}.
+	 */
+	public final void setLastClicked(Propertyable p) {
+		lastClicked.set(p);
+	}
+
+	/**
+	 * @return The last clicked {@link Propertyable}, if any.
+	 */
+	public final Propertyable getLastClicked() {
+		return lastClicked.get();
+	}
+
+	/**
+	 * @return The last clicked property.
+	 */
+	public ObjectProperty<Propertyable> lastClickedProperty() {
+		return lastClicked;
 	}
 }
