@@ -16,6 +16,8 @@ import nl.tudelft.dnainator.ui.drawables.DrawableNode;
  * It can hold only content and no children, and is therefore a leaf in the composite pattern.
  */
 public class RankItem extends ModelItem {
+	private static final String TYPE = "Rank";
+
 	/**
 	 * Construct a new bottom level {@link RankItem} using the default graph.
 	 * Since a {@link RankItem} is not at the root of the model,
@@ -63,5 +65,15 @@ public class RankItem extends ModelItem {
 		}
 
 		load();
+	}
+
+	@Override
+	public String getType() {
+		return TYPE;
+	}
+
+	@Override
+	public List<String> getSources() {
+		return null;
 	}
 }

@@ -1,5 +1,7 @@
 package nl.tudelft.dnainator.ui.models;
 
+import java.util.List;
+
 import javafx.beans.property.ObjectProperty;
 import javafx.geometry.Bounds;
 import javafx.scene.paint.Color;
@@ -14,6 +16,8 @@ import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
  * that can hold both content and children.
  */
 public class ClusterItem extends CompositeItem {
+	private static final String TYPE = "Cluster";
+
 	/**
 	 * Construct a new mid level {@link ClusterItem} using the default graph.
 	 * Since a {@link ClusterItem} is not at the root of the model,
@@ -55,4 +59,13 @@ public class ClusterItem extends CompositeItem {
 		update(b, Thresholds.CLUSTER);
 	}
 
+	@Override
+	public String getType() {
+		return TYPE;
+	}
+
+	@Override
+	public List<String> getSources() {
+		return null;
+	}
 }
