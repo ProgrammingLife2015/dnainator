@@ -3,6 +3,7 @@ package nl.tudelft.dnainator.ui.models;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import nl.tudelft.dnainator.graph.Graph;
 
@@ -13,7 +14,7 @@ import nl.tudelft.dnainator.graph.Graph;
  * The list of children can be dynamically changed, based on the zoom level.
  */
 public abstract class CompositeItem extends ModelItem {
-	private Group childRoot;
+	private Group childContent;
 	private List<ModelItem> children;
 
 	/**
@@ -24,25 +25,17 @@ public abstract class CompositeItem extends ModelItem {
 	public CompositeItem(Graph graph) {
 		super(graph);
 
-		childRoot = new Group();
+		childContent = new Group();
 		children = new ArrayList<>();
-		getChildren().add(childRoot);
+		getChildren().add(childContent);
 	}
 
 	/**
 	 * Return the root of the children of this {@link CompositeItem}.
 	 * @return	the root of the children
 	 */
-	public Group getChildRoot() {
-		return childRoot;
-	}
-
-	/**
-	 * Set the root of the children of this {@link CompositeItem}.
-	 * @param childroot	the new root of the children
-	 */
-	public void setChildRoot(Group childroot) {
-		this.childRoot = childroot;
+	public Group getChildContent() {
+		return childContent;
 	}
 
 	/**
@@ -54,10 +47,34 @@ public abstract class CompositeItem extends ModelItem {
 	}
 
 	/**
-	 * Set the list of childitems this {@link CompositeItem} has.
-	 * @param childItems	the new list of child items
+	 * Toggle between displaying own content or children.
+	 * @param visible	true for visible
 	 */
-	public void setChildItems(List<ModelItem> childItems) {
-		this.children = childItems;
+	public void toggle(boolean visible) {
+		if (visible && !getContent().isVisible()) {
+			getChildContent().getChildren().clear();
+			getContent().setVisible(true);
+		}
+		if (!visible && getContent().isVisible()) {
+			getContent().setVisible(false);
+			getChildContent().getChildren().addAll(getChildItems());
+		}
+	}
+
+	/**
+	 * Update visibility for this node and children.
+	 * @param b	the bounds of the viewport
+	 * @param t	the threshold for viewing
+	 */
+	public void update(Bounds b, Thresholds t) {
+		if (b.getWidth() > t.get()) {
+			toggle(true);
+		} else {
+			toggle(false);
+
+			for (ModelItem m : getChildItems()) {
+				m.update(b);
+			}
+		}
 	}
 }

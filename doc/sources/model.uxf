@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="13.2">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>490</x>
+      <y>520</y>
+      <w>270</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>/CompositeItem/
+--
+-childContent: Group
+-children: List&lt;ModelItem&gt;
+--
++getChildContent(): Group
++getChildItems(): List&lt;ModelItem&gt;
++toggle(visible: bool)
++update(b: Bounds, t: Threshold)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>130</x>
+      <y>790</y>
+      <w>310</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>GraphItem
+--
++GraphItem()
++GraphItem(g: Graph)
++update(b: Bounds)
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>280</x>
+      <y>650</y>
+      <w>360</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>340.0;10.0;340.0;70.0;10.0;70.0;10.0;140.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>610</x>
+      <y>650</y>
+      <w>30</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;140.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>470</x>
+      <y>790</y>
+      <w>310</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>ClusterItem
+--
++ClusterItem(parent: Transform)
++ClusterItem(g: Graph, parent: Transform)
++update(b: Bounds)
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>810</x>
+      <y>790</y>
+      <w>300</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>RankItem
+--
++RankItem(parent: Transform)
++RankItem(g: Graph, parent: Transform)
++update(b: Bounds)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>610</x>
+      <y>400</y>
+      <w>200</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>180.0;10.0;180.0;50.0;10.0;50.0;10.0;120.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>780</x>
+      <y>400</y>
+      <w>200</w>
+      <h>410</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;50.0;180.0;50.0;180.0;390.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>620</x>
+      <y>180</y>
+      <w>340</w>
+      <h>230</h>
+    </coordinates>
+    <panel_attributes>/ModelItem/
+--
+-graph: Graph
+-content: Group
+-localToRoot: Property&lt;Transform&gt;
+--
++getGraph(): Graph
++getContent(): Group
+
++bindLocalToRoot(parent: Transform)
++getLocalToRoot(): Transform
++setLocalToRoot(t: Transform)
++localToRootProperty(): Property&lt;Transform&gt;
++isInViewport(b: Bounds)
+/+update(b: Bounds)/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>620</x>
+      <y>110</y>
+      <w>340</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>Pane</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>770</x>
+      <y>130</y>
+      <w>30</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>550</x>
+      <y>250</y>
+      <w>90</w>
+      <h>290</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=0..*</panel_attributes>
+    <additional_attributes>70.0;10.0;10.0;10.0;10.0;270.0</additional_attributes>
+  </element>
+</diagram>

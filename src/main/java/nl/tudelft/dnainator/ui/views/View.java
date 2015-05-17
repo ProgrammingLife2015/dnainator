@@ -9,6 +9,7 @@ import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.transform.Affine;
 import javafx.scene.transform.NonInvertibleTransformException;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Transform;
@@ -25,13 +26,14 @@ import org.neo4j.io.fs.FileUtils;
  * This class is the View part of the MVC pattern.
  */
 public class View extends Pane {
+	private static final double SCALE = .1;
+
 	@FXML
 	private BorderPane root;
 
-	private Scale scale;
+	private Affine scale;
 	private Translate toCenter;
 	private Translate translate;
-	private Transform worldToCamera;
 
 	private ModelItem mi;
 
@@ -57,15 +59,12 @@ public class View extends Pane {
 		heightProperty().addListener((o, v1, v2) -> toCenter.setY(v2.intValue() / 2));
 
 		translate = new Translate();
-		translate.setOnTransformChanged(e -> worldToCamera = worldToCamera());
-
-		scale = new Scale();
-		scale.setOnTransformChanged(e -> worldToCamera = worldToCamera());
+		scale = new Affine(new Scale(SCALE, SCALE));
 
 		mi = new GraphItem();
 		mi.getTransforms().add(toCenter);
-		mi.getTransforms().add(scale);
 		mi.getTransforms().add(translate);
+		mi.getTransforms().add(scale);
 		getChildren().add(mi);
 	}
 
@@ -85,7 +84,7 @@ public class View extends Pane {
 	 * @return	the concatenated transform
 	 */
 	private Transform worldToCamera() {
-		return toCenter.createConcatenation(scale).createConcatenation(translate);
+		return toCenter.createConcatenation(translate).createConcatenation(scale);
 	}
 
 	/**
@@ -96,7 +95,7 @@ public class View extends Pane {
 	public Bounds cameraToWorld(Bounds b) {
 		Bounds world = null;
 		try {
-			world = worldToCamera.inverseTransform(b);
+			world = worldToCamera().inverseTransform(b);
 		} catch (NonInvertibleTransformException e) {
 			e.printStackTrace();
 		}
@@ -105,26 +104,27 @@ public class View extends Pane {
 
 	/**
 	 * Pan the camera by the amount given by the delta vector.
-	 * FIXME: sensitivity depends on zoom level.
 	 * @param delta	the delta vector
 	 */
 	public void pan(Point2D delta) {
-		try {
-			translate.setX(translate.getX() + scale.inverseTransform(delta).getX());
-			translate.setY(translate.getY() + scale.inverseTransform(delta).getY());
-		} catch (NonInvertibleTransformException e) {
-			e.printStackTrace();
-		}
+		translate.setX(translate.getX() + delta.getX());
+		translate.setY(translate.getY() + delta.getY());
 		mi.update(cameraToWorld(getLayoutBounds()));
 	}
 
 	/**
 	 * Zoom the camera by the amount given by zoom.
-	 * @param zoom	the amount to zoom in
+	 * @param zoom		the amount to zoom in
+	 * @param center	the center of the zoom, in camera space
 	 */
-	public void zoom(Double zoom) {
-		scale.setX(scale.getX() + (scale.getX() * zoom));
-		scale.setY(scale.getY() + (scale.getY() * zoom));
+	public void zoom(Double zoom, Point2D center) {
+		try {
+			center = scale.inverseTransform(center.getX() - toCenter.getX() - translate.getX(),
+							center.getY() - toCenter.getY() - translate.getY());
+			scale.append(new Scale(1 + zoom, 1 + zoom, center.getX(), center.getY()));
+		} catch (NonInvertibleTransformException e) {
+			e.printStackTrace();
+		}
 		mi.update(cameraToWorld(getLayoutBounds()));
 	}
 }
