@@ -1,5 +1,6 @@
 package nl.tudelft.dnainator.graph.impl;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,28 +15,29 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.helpers.collection.IteratorUtil;
 
 import nl.tudelft.dnainator.core.SequenceNode;
-import nl.tudelft.dnainator.graph.GraphQueryDescription;
+import nl.tudelft.dnainator.graph.query.GraphQuery;
+import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
+import nl.tudelft.dnainator.graph.query.IDsFilter;
+import nl.tudelft.dnainator.graph.query.PredicateFilter;
+import nl.tudelft.dnainator.graph.query.RankEnd;
+import nl.tudelft.dnainator.graph.query.RankStart;
+import nl.tudelft.dnainator.graph.query.SourcesFilter;
 
 /**
  * A useful class for creating and executing a query on a Neo4j
  * database using a {@link GraphQueryDescription}.
  */
-public class Neo4jQuery {
-	private String cypherQuery;
-	private boolean multipleConditions = false;
+public final class Neo4jQuery implements GraphQuery {
+	private boolean multipleConditions;
 	private Map<String, Object> parameters;
-	private GraphQueryDescription description;
+	private StringBuilder sb;
+	private Predicate<SequenceNode> p;
 
-	/**
-	 * Create a new query suitable for Neo4j from the given description.
-	 * @param qd the query description to use for constructing the query.
-	 */
-	public Neo4jQuery(GraphQueryDescription qd) {
-		this.description = qd;
-		buildQuery();
+	private Neo4jQuery() {
+		this.sb = new StringBuilder("MATCH n\n");
 	}
 
-	private void addCondition(StringBuilder sb, String c) {
+	private void addCondition(String c) {
 		if (multipleConditions) {
 			sb.append("AND ");
 		} else {
@@ -46,44 +48,16 @@ public class Neo4jQuery {
 		sb.append(c);
 	}
 
-	private void buildQuery() {
-		parameters = new HashMap<>();
-		StringBuilder query = new StringBuilder("MATCH n\n");
-		if (description.shouldQueryIds()) {
-			addCondition(query, "n.id IN {ids}\n");
-			parameters.put("ids", description.getIds());
-		}
-		if (description.shouldQuerySources()) {
-			addCondition(query, "n.source IN {sources}\n");
-			parameters.put("sources", description.getSources());
-		}
-		if (description.shouldQueryFrom()) {
-			addCondition(query, "n.dist >= {from}\n");
-			parameters.put("from", description.getFrom());
-		}
-		if (description.shouldQueryTo()) {
-			addCondition(query, "n.dist < {to}\n");
-			parameters.put("to", description.getTo());
-		}
-		query.append("RETURN n");
-		cypherQuery = query.toString();
-	}
-
 	/**
 	 * Execute the query on the given database.
 	 * @param db the database to execute the query on.
 	 * @return the query result.
 	 */
 	public List<SequenceNode> execute(GraphDatabaseService db) {
+		sb.append("RETURN n");
 		List<SequenceNode> result;
-		Predicate<SequenceNode> p;
-		if (description.shouldFilter()) {
-			p = description.getFilter();
-		} else {
-			p = (sn) -> true;
-		}
 		try (Transaction tx = db.beginTx()) {
-			Result r = db.execute(cypherQuery, parameters);
+			Result r = db.execute(sb.toString(), parameters);
 			ResourceIterator<Node> it = r.columnAs("n");
 			result = IteratorUtil.asCollection(it).stream()
 				.map(Neo4jGraph::createSequenceNode)
@@ -92,5 +66,68 @@ public class Neo4jQuery {
 			tx.success();
 		}
 		return result;
+	}
+
+	@Override
+	public void compile(GraphQueryDescription qd) {
+		this.multipleConditions = false;
+		this.parameters = new HashMap<>();
+		this.p = (sn) -> true;
+		qd.accept(this);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void compile(IDsFilter ids) {
+		parameters.compute("ids", (k, v) -> {
+			if (v == null) {
+				addCondition("n.id IN {ids}\n");
+				return ids.getIds();
+			}
+			((Collection<String>) v).addAll(ids.getIds());
+			return v;
+		});
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void compile(SourcesFilter sources) {
+		parameters.compute("sources", (k, v) -> {
+			if (v == null) {
+				addCondition("n.source IN {sources}\n");
+				return sources.getSources();
+			}
+			((Collection<String>) v).addAll(sources.getSources());
+			return v;
+		});
+	}
+
+	@Override
+	public void compile(PredicateFilter predicate) {
+		this.p = predicate.getFilter();
+	}
+
+	@Override
+	public void compile(RankStart start) {
+		addCondition("n.dist >= {from}\n");
+		parameters.put("from", start.getStart());
+	}
+
+	@Override
+	public void compile(RankEnd end) {
+		addCondition("n.dist < {to}\n");
+		parameters.put("to", end.getEnd());
+	}
+
+	/**
+	 * Construct a {@link Neo4jQuery} based on the given
+	 * {@link GraphQueryDescription}.
+	 * @param qd the description of the query.
+	 * @return the compiled query.
+	 */
+	public static Neo4jQuery of(GraphQueryDescription qd) {
+		Neo4jQuery q = new Neo4jQuery();
+		q.compile(qd);
+		return q;
 	}
 }

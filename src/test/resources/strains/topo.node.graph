@@ -1,8 +1,8 @@
 > 2 | ASDF | 1 | 5
 TATA
-> 9 | ASDF | 2 | 6
+> 9 | ASD | 2 | 6
 TATA
-> 10 | ASDF | 3 | 7
+> 10 | ASD | 3 | 7
 TATA
 > 5 | ASDF | 4 | 8
 TATA
@@ -10,7 +10,7 @@ TATA
 TATA
 > 7 | ASDF | 6 | 10
 TATA
-> 11 | ASDF | 7 | 11
+> 11 | ASD | 7 | 11
 TATA
 > 8 | ASDF | 8 | 12
 TATA

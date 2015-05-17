@@ -4,6 +4,7 @@ import java.util.List;
 
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Edge;
+import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 
 /**
  * Interface for backend agnostic interaction with a graph.
