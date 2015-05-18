@@ -90,7 +90,7 @@ public class GraphItemTest {
 	@Test
 	public void testSetContent() {
 		assertEquals(1, gi.getContent().getChildren().size());
-		gi.getContent().getChildren().add(new ClusterItem(graph, gi.localToRootProperty()));
+		gi.getContent().getChildren().add(new GraphItem(graph));
 		assertEquals(2, gi.getContent().getChildren().size());
 	}
 
