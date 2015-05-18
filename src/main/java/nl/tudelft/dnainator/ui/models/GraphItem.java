@@ -1,6 +1,8 @@
 package nl.tudelft.dnainator.ui.models;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
@@ -9,6 +11,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Translate;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
+import nl.tudelft.dnainator.ui.drawables.DrawableNode;
 
 /**
  * The {@link GraphItem} class represents the top level object in the viewable model.
@@ -19,6 +22,7 @@ public class GraphItem extends CompositeItem {
 	private static final int FOUR = 4;
 
 	private Graph graph;
+	private Map<String, DrawableNode> nodes;
 
 	/**
 	 * Construct a new top level {@link GraphItem} using the default graph.
@@ -34,6 +38,7 @@ public class GraphItem extends CompositeItem {
 	public GraphItem(Graph graph) {
 		super(null);
 		this.graph = graph;
+		this.nodes = new HashMap<>();
 
 		localToRootProperty().set(new Translate());
 
@@ -57,6 +62,11 @@ public class GraphItem extends CompositeItem {
 	@Override
 	public Graph getGraph() {
 		return graph;
+	}
+
+	@Override
+	public Map<String, DrawableNode> getNodes() {
+		return nodes;
 	}
 
 	@Override

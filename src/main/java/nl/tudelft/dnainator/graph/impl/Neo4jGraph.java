@@ -3,6 +3,7 @@ package nl.tudelft.dnainator.graph.impl;
 import static org.neo4j.helpers.collection.IteratorUtil.loop;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -310,7 +311,12 @@ public final class Neo4jGraph implements Graph {
 		String sequence = (String) node.getProperty("sequence");
 		int rank		= (int) node.getProperty("dist");
 
-		return new SequenceNodeImpl(id, source, startref, endref, sequence, rank);
+		List<String> incoming	= new ArrayList<>();
+		for (Relationship e : loop(node.getRelationships(Direction.INCOMING).iterator())) {
+			incoming.add((String) e.getStartNode().getProperty("id"));
+		}
+
+		return new SequenceNodeImpl(id, source, startref, endref, sequence, rank, incoming);
 	}
 
 	@Override

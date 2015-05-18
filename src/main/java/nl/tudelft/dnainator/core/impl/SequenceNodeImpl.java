@@ -1,5 +1,8 @@
 package nl.tudelft.dnainator.core.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import nl.tudelft.dnainator.core.SequenceNode;
 
 /**
@@ -12,6 +15,7 @@ public class SequenceNodeImpl implements SequenceNode {
 	private int end;
 	private String sequence;
 	private int rank;
+	private List<String> incoming;
 
 	/**
 	 * Constructs a default sequence with all parameters specified.
@@ -22,7 +26,7 @@ public class SequenceNodeImpl implements SequenceNode {
 	 * @param sequence The sequence.
 	 */
 	public SequenceNodeImpl(String id, String source, int start, int end, String sequence) {
-		this(id, source, start, end, sequence, 0);
+		this(id, source, start, end, sequence, 0, new ArrayList<>());
 	}
 
 	/**
@@ -33,15 +37,17 @@ public class SequenceNodeImpl implements SequenceNode {
 	 * @param end The end position of the sequence.
 	 * @param sequence The sequence.
 	 * @param rank The rank.
+	 * @param incoming The neighbours
 	 */
 	public SequenceNodeImpl(String id, String source,
-			int start, int end, String sequence, int rank) {
+			int start, int end, String sequence, int rank, List<String> incoming) {
 		this.id = id;
 		this.source = source;
 		this.start = start;
 		this.end = end;
 		this.sequence = sequence;
 		this.rank = rank;
+		this.incoming = incoming;
 	}
 
 	@Override
@@ -96,5 +102,10 @@ public class SequenceNodeImpl implements SequenceNode {
 	@Override
 	public int getRank() {
 		return rank;
+	}
+
+	@Override
+	public List<String> getIncoming() {
+		return incoming;
 	}
 }

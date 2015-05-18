@@ -22,7 +22,7 @@ public class DrawableEdge extends Line implements Propertyable {
 	 * @param dest This edge's destination node.
 	 */
 	public DrawableEdge(DrawableNode src, DrawableNode dest) {
-		super(src.getCenterX(), src.getCenterY(), dest.getCenterX(), dest.getCenterY());
+//		super(src.getCenterX(), src.getCenterY(), dest.getCenterX(), dest.getCenterY());
 
 		this.src = src;
 		this.dst = dest;
