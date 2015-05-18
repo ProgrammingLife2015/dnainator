@@ -322,7 +322,12 @@ public final class Neo4jGraph implements Graph {
 		String sequence	= (String) node.getProperty(SEQUENCE);
 		int rank	= (int)    node.getProperty(RANK);
 
-		return new SequenceNodeImpl(id, source, startref, endref, sequence, rank);
+		List<String> incoming	= new ArrayList<>();
+		for (Relationship e : loop(node.getRelationships(Direction.INCOMING).iterator())) {
+			incoming.add((String) e.getStartNode().getProperty("id"));
+		}
+
+		return new SequenceNodeImpl(id, source, startref, endref, sequence, rank, incoming);
 	}
 
 	@Override

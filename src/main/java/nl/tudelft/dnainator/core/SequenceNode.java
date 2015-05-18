@@ -1,5 +1,7 @@
 package nl.tudelft.dnainator.core;
 
+import java.util.List;
+
 /**
  * Interface that all sequences should implement.
  */
@@ -39,10 +41,16 @@ public interface SequenceNode {
 	 * @return	the rank
 	 */
 	int getRank();
-	
+
+	/**
+	 * The associated incoming neighbours.
+	 * @return	a list of neighbour id's
+	 */
+	List<String> getIncoming();
+
 	@Override
 	boolean equals(Object other);
-	
+
 	@Override
 	int hashCode();
 }
