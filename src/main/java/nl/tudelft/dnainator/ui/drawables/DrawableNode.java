@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.geometry.Bounds;
+import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -19,6 +20,8 @@ public class DrawableNode extends ModelItem {
 	private static final double RADIUS = 3;
 	private static final Paint FILL = Color.rgb(242, 173, 12);
 	private SequenceNode node;
+	// Should be moved to ModelItem
+	private Group edges;
 
 	/**
 	 * Instantiate a new DrawableNode with default radius and default fill.
@@ -49,11 +52,13 @@ public class DrawableNode extends ModelItem {
 	public DrawableNode(ModelItem parent, SequenceNode node, double radius, Paint fill) {
 		super(parent);
 		this.node = node;
+		this.edges = new Group();
 
 		bindLocalToRoot(parent.localToRootProperty());
 
-		getContent().getChildren().add(new Circle(radius, fill));
 		getStyleClass().add("drawable-node");
+		getContent().getChildren().add(edges);
+		getContent().getChildren().add(new Circle(radius, fill));
 		setOnContextMenuRequested(e -> {
 			NodeContext.getInstance().show(DrawableNode.this, e.getScreenX(), e.getScreenY());
 			e.consume();
@@ -68,6 +73,17 @@ public class DrawableNode extends ModelItem {
 	}
 
 	@Override
+	public void update(Bounds b) {
+		if (edges.getChildren().size() < getSequenceNode().getIncoming().size()) {
+			for (String e : node.getIncoming()) {
+				DrawableNode o = getNodes().get(e);
+				if (o != null) {
+					edges.getChildren().add(new DrawableEdge(this, o));
+				}
+			}
+		}
+	}
+	
 	public String getType() {
 		return TYPE;
 	}
@@ -77,15 +93,5 @@ public class DrawableNode extends ModelItem {
 		ArrayList<String> res = new ArrayList<>();
 		res.add(node.getSource());
 		return res;
-	}
-
-	@Override
-	public void update(Bounds b) {
-		for (String e : node.getIncoming()) {
-			DrawableNode o = getNodes().get(e);
-			if (o != null) {
-				getContent().getChildren().add(new DrawableEdge(this, o));
-			}
-		}
 	}
 }
