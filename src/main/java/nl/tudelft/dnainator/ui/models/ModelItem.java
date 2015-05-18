@@ -31,17 +31,17 @@ public abstract class ModelItem extends Pane {
 	static final int NO_CLUSTERS = 330;
 	static final int NO_RANKS = 10;
 
-	private Graph graph;
+	private ModelItem parent;
 	private Group content;
 	private ObjectProperty<Transform> localToRoot;
 
 	/**
 	 * Base constructor for a {@link ModelItem}.
-	 * Every {@link ModelItem} needs a reference to its graph. 
-	 * @param graph	a {@link Graph}
+	 * Every {@link ModelItem} needs a reference to its parent.
+	 * @param parent	the parent of this {@link ModelItem}
 	 */
-	public ModelItem(Graph graph) {
-		this.graph = graph;
+	public ModelItem(ModelItem parent) {
+		this.parent = parent;
 		this.content = new Group();
 		this.localToRoot = new SimpleObjectProperty<>();
 
@@ -80,7 +80,15 @@ public abstract class ModelItem extends Pane {
 	 * @return	the underlying graph
 	 */
 	public Graph getGraph() {
-		return graph;
+		return getRoot().getGraph();
+	}
+
+	/**
+	 * Return the root of this {@link ModelItem}.
+	 * @return	the root {@link ModelItem}
+	 */
+	public ModelItem getRoot() {
+		return parent.getRoot();
 	}
 
 	/**

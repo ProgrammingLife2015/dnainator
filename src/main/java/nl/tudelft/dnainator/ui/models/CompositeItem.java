@@ -5,7 +5,6 @@ import java.util.List;
 
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
-import nl.tudelft.dnainator.graph.Graph;
 
 /**
  * The abstract {@link CompositeItem} represents an object in the viewable model,
@@ -19,11 +18,11 @@ public abstract class CompositeItem extends ModelItem {
 
 	/**
 	 * Base constructor for a {@link CompositeItem}.
-	 * Every {@link CompositeItem} needs a reference to its graph.
-	 * @param graph	a {@link Graph}
+	 * Every {@link CompositeItem} needs a reference to its parent.
+	 * @param parent	the parent of this {@link CompositeItem}
 	 */
-	public CompositeItem(Graph graph) {
-		super(graph);
+	public CompositeItem(ModelItem parent) {
+		super(parent);
 
 		childContent = new Group();
 		children = new ArrayList<>();
