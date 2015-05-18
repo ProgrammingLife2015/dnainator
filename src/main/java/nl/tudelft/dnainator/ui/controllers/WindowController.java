@@ -78,7 +78,12 @@ public class WindowController {
 	private File openEdgeFile(String path) {
 		return new File(path.substring(0, path.length() - EXT_LENGTH).concat(EDGE));
 	}
-	
+
+	@FXML
+	private void toggleProperties(ActionEvent e) {
+		propertyPane.toggle();
+	}
+
 	@FXML
 	private void aboutUsAction(ActionEvent e) {
 		AboutDialog about = new AboutDialog(root);
