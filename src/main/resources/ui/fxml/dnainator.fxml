@@ -64,7 +64,7 @@
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="M" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                      </accelerator></CheckMenuItem>
-                  <CheckMenuItem mnemonicParsing="false" text="Show properties">
+                  <CheckMenuItem mnemonicParsing="false" selected="true" onAction="#toggleProperties" text="Show properties">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="P" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                      </accelerator></CheckMenuItem>

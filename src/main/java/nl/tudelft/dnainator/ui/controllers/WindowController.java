@@ -85,6 +85,11 @@ public class WindowController {
 	}
 
 	@FXML
+	private void toggleProperties(ActionEvent e) {
+		propertyPane.toggle();
+	}
+
+	@FXML
 	private void aboutUsAction(ActionEvent e) {
 		AboutDialog about = new AboutDialog(root);
 		about.showAndWait();
