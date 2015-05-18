@@ -18,6 +18,8 @@ public class GraphItem extends CompositeItem {
 	private static final String TYPE = "Graph";
 	private static final int FOUR = 4;
 
+	private Graph graph;
+
 	/**
 	 * Construct a new top level {@link GraphItem} using the default graph.
 	 */
@@ -30,7 +32,8 @@ public class GraphItem extends CompositeItem {
 	 * @param graph	the specified graph
 	 */
 	public GraphItem(Graph graph) {
-		super(graph);
+		super(null);
+		this.graph = graph;
 
 		localToRootProperty().set(new Translate());
 
@@ -45,10 +48,20 @@ public class GraphItem extends CompositeItem {
 
 		// FIXME: These should be lazily instantiated!
 		for (int i = 0; i < NO_CLUSTERS; i++) {
-			ClusterItem ci = new ClusterItem(getGraph(), localToRootProperty());
+			ClusterItem ci = new ClusterItem(this);
 			ci.setTranslateX(i * NO_RANKS * RANK_WIDTH);
 			getChildItems().add(ci);
 		}
+	}
+
+	@Override
+	public Graph getGraph() {
+		return graph;
+	}
+
+	@Override
+	public ModelItem getRoot() {
+		return this;
 	}
 
 	@Override

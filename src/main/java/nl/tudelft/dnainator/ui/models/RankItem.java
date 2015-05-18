@@ -2,13 +2,9 @@ package nl.tudelft.dnainator.ui.models;
 
 import java.util.List;
 
-import javafx.beans.property.ObjectProperty;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
-import javafx.scene.transform.Transform;
 import nl.tudelft.dnainator.core.SequenceNode;
-import nl.tudelft.dnainator.graph.Graph;
-import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
 import nl.tudelft.dnainator.ui.drawables.DrawableNode;
 
 /**
@@ -20,25 +16,13 @@ public class RankItem extends ModelItem {
 
 	/**
 	 * Construct a new bottom level {@link RankItem} using the default graph.
-	 * Since a {@link RankItem} is not at the root of the model,
-	 * it should bind its parent for correct positioning.
-	 * @param parent	the concatenated transfrom from root to parent
+	 * Every {@link RankItem} needs a reference to its parent.
+	 * @param parent	the parent of this {@link RankItem}
 	 */
-	public RankItem(ObjectProperty<Transform> parent) {
-		this(Neo4jSingleton.getInstance().getDatabase(), parent);
-	}
+	public RankItem(ModelItem parent) {
+		super(parent);
 
-	/**
-	 * Construct a new bottom level {@link RankItem} using the default graph.
-	 * Since a {@link RankItem} is not at the root of the model,
-	 * it should bind its parent for correct positioning.
-	 * @param graph		the specified graph
-	 * @param parent	the concatenated transfrom from root to parent
-	 */
-	public RankItem(Graph graph, ObjectProperty<Transform> parent) {
-		super(graph);
-
-		bindLocalToRoot(parent);
+		bindLocalToRoot(parent.localToRootProperty());
 	}
 
 	private void load() {
