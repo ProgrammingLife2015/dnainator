@@ -32,7 +32,7 @@ public class RankItem extends CompositeItem {
 			List<SequenceNode> nodes = getGraph().getRank(rank);
 			for (int i = 0; i < nodes.size(); i++) {
 				DrawableNode drawable = new DrawableNode(this, nodes.get(i));
-				drawable.setTranslateY(i * RANK_WIDTH); // - nodes.size() * RANK_WIDTH / 2);
+				drawable.setTranslateY(i * RANK_WIDTH - nodes.size() * RANK_WIDTH / 2);
 
 				getChildItems().add(drawable);
 				getNodes().put(nodes.get(i).getId(), drawable);

@@ -3,10 +3,12 @@ package nl.tudelft.dnainator.ui.drawables;
 import java.util.ArrayList;
 import java.util.List;
 
+import javafx.beans.binding.DoubleBinding;
 import javafx.geometry.Bounds;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.ui.models.ModelItem;
 import nl.tudelft.dnainator.ui.widgets.contexts.NodeContext;
@@ -51,9 +53,6 @@ public class DrawableNode extends ModelItem {
 		this.node = node;
 
 		bindLocalToRoot(parent.localToRootProperty());
-		localToRootProperty().addListener(e -> {
-			System.out.println(getSequenceNode().getRank() + " changed! " + e);
-		});
 
 		getContent().getChildren().add(new Circle(radius, fill));
 		getStyleClass().add("drawable-node");
@@ -61,6 +60,38 @@ public class DrawableNode extends ModelItem {
 			NodeContext.getInstance().show(DrawableNode.this, e.getScreenX(), e.getScreenY());
 			e.consume();
 		});
+
+		for (String e : node.getIncoming()) {
+			DrawableNode o = getNodes().get(e);
+			if (o != null) {
+				Line l = new Line();
+				l.startXProperty().bind(layoutXProperty());
+				l.startYProperty().bind(layoutYProperty());
+				l.endXProperty().bind(new DoubleBinding() {
+					{
+						super.bind(o.localToRootProperty());
+						super.bind(localToRootProperty());
+					}
+					@Override
+					protected double computeValue() {
+						return (o.getLocalToRoot().getTx() + o.getLayoutX())
+							- (getLocalToRoot().getTx() + getLayoutX());
+					}
+				});
+				l.endYProperty().bind(new DoubleBinding() {
+					{
+						super.bind(o.localToRootProperty());
+						super.bind(localToRootProperty());
+					}
+					@Override
+					protected double computeValue() {
+						return (o.getLocalToRoot().getTy() + o.getLayoutY())
+							- (getLocalToRoot().getTy() + getLayoutY());
+					}
+				});
+				getContent().getChildren().add(l);
+			}
+		}
 	}
 
 	/**
