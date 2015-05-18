@@ -21,7 +21,8 @@
 }
 
 .drawable-edge {
-	-fx-fill: #666666;
+	-fx-stroke: #000000;
+	-fx-stroke-width: .4;
 }
 
 #about > .label {

@@ -1,5 +1,9 @@
 package nl.tudelft.dnainator.ui.models;
 
+
+
+import java.util.Map;
+
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -25,7 +29,6 @@ import nl.tudelft.dnainator.graph.Graph;
  */
 public abstract class ModelItem extends Pane {
 	public static final int CLUSTER_SIZE = 20;
-	public static final int RANK_SIZE = 3;
 	public static final int RANK_WIDTH = 10;
 
 	static final int NO_CLUSTERS = 330;
@@ -58,6 +61,7 @@ public abstract class ModelItem extends Pane {
 			{
 				super.bind(parent);
 				super.bind(localToParentTransformProperty());
+				localToRootProperty().set(computeValue());
 			}
 			@Override
 			protected Transform computeValue() {
@@ -81,6 +85,15 @@ public abstract class ModelItem extends Pane {
 	 */
 	public Graph getGraph() {
 		return getRoot().getGraph();
+	}
+
+	/**
+	 * Return the underlying map of DrawableNodes.
+	 * Should be changed to ModelItems, so we can have edges to clusters.
+	 * @return	a map from id to drawable / modelitem
+	 */
+	public Map<String, NodeItem> getNodes() {
+		return getRoot().getNodes();
 	}
 
 	/**

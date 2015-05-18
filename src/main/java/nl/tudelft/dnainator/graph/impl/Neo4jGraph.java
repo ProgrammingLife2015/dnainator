@@ -322,7 +322,12 @@ public final class Neo4jGraph implements Graph {
 		String sequence	= (String) node.getProperty(SEQUENCE);
 		int rank	= (int)    node.getProperty(RANK);
 
-		return new SequenceNodeImpl(id, source, startref, endref, sequence, rank);
+		List<String> incoming	= new ArrayList<>();
+		for (Relationship e : loop(node.getRelationships(Direction.INCOMING).iterator())) {
+			incoming.add((String) e.getStartNode().getProperty("id"));
+		}
+
+		return new SequenceNodeImpl(id, source, startref, endref, sequence, rank, incoming);
 	}
 
 	@Override
@@ -376,12 +381,7 @@ public final class Neo4jGraph implements Graph {
 		}
 	}
 
-	/**
-	 * Return a list of nodes that belong to the same cluster as the given startId.
-	 * @param startId	the start node
-	 * @param threshold	the clustering threshold
-	 * @return		a list representing the cluster
-	 */
+	@Override
 	public List<SequenceNode> getCluster(String startId, int threshold) {
 		TraversalDescription cluster = service.traversalDescription()
 						.depthFirst()

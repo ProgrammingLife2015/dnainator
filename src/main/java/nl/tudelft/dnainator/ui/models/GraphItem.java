@@ -1,5 +1,8 @@
 package nl.tudelft.dnainator.ui.models;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -16,6 +19,7 @@ public class GraphItem extends CompositeItem {
 	private static final int FOUR = 4;
 
 	private Graph graph;
+	private Map<String, NodeItem> nodes;
 
 	/**
 	 * Construct a new top level {@link GraphItem} using the default graph.
@@ -31,6 +35,7 @@ public class GraphItem extends CompositeItem {
 	public GraphItem(Graph graph) {
 		super(null);
 		this.graph = graph;
+		this.nodes = new HashMap<>();
 
 		localToRootProperty().set(new Translate());
 
@@ -54,6 +59,11 @@ public class GraphItem extends CompositeItem {
 	@Override
 	public Graph getGraph() {
 		return graph;
+	}
+
+	@Override
+	public Map<String, NodeItem> getNodes() {
+		return nodes;
 	}
 
 	@Override
