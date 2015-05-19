@@ -11,7 +11,6 @@ import javafx.scene.Group;
 import javafx.scene.layout.Pane;
 import javafx.scene.transform.Transform;
 import nl.tudelft.dnainator.graph.Graph;
-import nl.tudelft.dnainator.ui.drawables.DrawableNode;
 import nl.tudelft.dnainator.ui.widgets.Propertyable;
 
 /**
@@ -92,7 +91,7 @@ public abstract class ModelItem extends Pane implements Propertyable {
 	 * Should be changed to ModelItems, so we can have edges to clusters.
 	 * @return	a map from id to drawable / modelitem
 	 */
-	public Map<String, DrawableNode> getNodes() {
+	public Map<String, NodeItem> getNodes() {
 		return getRoot().getNodes();
 	}
 
@@ -164,4 +163,9 @@ public abstract class ModelItem extends Pane implements Propertyable {
 	 * @param b	the bounds of the viewport to update
 	 */
 	public abstract void update(Bounds b);
+
+	@Override
+	public String getNodeId() {
+		return "placeholder";
+	}
 }

@@ -49,4 +49,12 @@ public interface Graph extends GraphBuilder {
 	 * @return		a list of sequence nodes
 	 */
 	List<SequenceNode> getRank(int rank);
+
+	/**
+	 * Return a list of nodes that belong to the same cluster as the given startId.
+	 * @param startId	the start node
+	 * @param threshold	the clustering threshold
+	 * @return		a list representing the cluster
+	 */
+	List<SequenceNode> getCluster(String startId, int threshold);
 }

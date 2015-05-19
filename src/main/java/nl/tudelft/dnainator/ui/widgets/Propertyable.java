@@ -13,6 +13,11 @@ public interface Propertyable {
 	String getType();
 
 	/**
+	 * 
+	 */
+	String getNodeId();
+
+	/**
 	 * @return This {@link ModelItem}'s resources.
 	 */
 	List<String> getSources();
