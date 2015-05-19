@@ -381,12 +381,7 @@ public final class Neo4jGraph implements Graph {
 		}
 	}
 
-	/**
-	 * Return a list of nodes that belong to the same cluster as the given startId.
-	 * @param startId	the start node
-	 * @param threshold	the clustering threshold
-	 * @return		a list representing the cluster
-	 */
+	@Override
 	public List<SequenceNode> getCluster(String startId, int threshold) {
 		TraversalDescription cluster = service.traversalDescription()
 						.depthFirst()

@@ -5,7 +5,6 @@ import java.util.List;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import nl.tudelft.dnainator.core.SequenceNode;
-import nl.tudelft.dnainator.ui.drawables.DrawableNode;
 
 /**
  * The {@link RankItem} class represents the bottom level object in the viewable model.
@@ -31,7 +30,7 @@ public class RankItem extends CompositeItem {
 
 			List<SequenceNode> nodes = getGraph().getRank(rank);
 			for (int i = 0; i < nodes.size(); i++) {
-				DrawableNode drawable = new DrawableNode(this, nodes.get(i));
+				NodeItem drawable = new NodeItem(this, nodes.get(i));
 				drawable.setTranslateY(i * RANK_WIDTH - nodes.size() * RANK_WIDTH / 2);
 
 				getChildItems().add(drawable);

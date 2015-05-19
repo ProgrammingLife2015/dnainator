@@ -124,9 +124,10 @@ public class PropertyPane extends VBox {
 			return;
 		}
 
-		Label id = new Label("Sources");
-		id.getStyleClass().add("property-header");
-		vbox.getChildren().add(id);
+		Label sources = new Label("Sources");
+		sources.getStyleClass().add("property-header");
+		vbox.getChildren().add(sources);
+		vbox.getChildren().add(new Label("Id: " + p.getNodeId()));
 
 		for (String s : list) {
 			vbox.getChildren().add(new Label(s));

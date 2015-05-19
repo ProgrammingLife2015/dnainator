@@ -57,5 +57,4 @@ public interface Graph extends GraphBuilder {
 	 * @return		a list representing the cluster
 	 */
 	List<SequenceNode> getCluster(String startId, int threshold);
-
 }
