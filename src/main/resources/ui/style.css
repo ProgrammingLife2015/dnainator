@@ -32,7 +32,7 @@
 }
 
 .drawable-edge {
-	-fx-stroke: #FFFFFF;
+	-fx-stroke: #000000;
 	-fx-stroke-width: .4;
 }
 
