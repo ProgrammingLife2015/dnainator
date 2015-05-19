@@ -35,7 +35,9 @@ import org.neo4j.graphdb.traversal.BranchState;
 import org.neo4j.graphdb.traversal.Evaluation;
 import org.neo4j.graphdb.traversal.Evaluator;
 import org.neo4j.graphdb.traversal.InitialBranchState.State;
+import org.neo4j.graphdb.traversal.TraversalDescription;
 import org.neo4j.graphdb.traversal.Uniqueness;
+import org.neo4j.helpers.collection.IteratorUtil;
 import org.neo4j.tooling.GlobalGraphOperations;
 
 /**
@@ -354,20 +356,20 @@ public final class Neo4jGraph implements Graph {
 	 * @param threshold	the clustering threshold
 	 * @return		a list representing the cluster
 	 */
-	public List<String> getCluster(String startId, int threshold) {
-		List<String> cluster = new ArrayList<>();
+	public List<SequenceNode> getCluster(String startId, int threshold) {
+		TraversalDescription cluster = service.traversalDescription()
+						.depthFirst()
+						.relationships(RelTypes.NEXT, Direction.OUTGOING)
+						.evaluator(new ClusterEvaluator(threshold));
+
+		List<SequenceNode> list = new ArrayList<>();
 		try (Transaction tx = service.beginTx()) {
 			Node root = service.findNode(nodeLabel, "id", startId);
-			for (Node p : service.traversalDescription()
-					.depthFirst()
-					.relationships(RelTypes.NEXT, Direction.OUTGOING)
-					.evaluator(new ClusterEvaluator(threshold))
-					.traverse(root)
-					.nodes()) {
-				cluster.add((String) p.getProperty("id"));
+			for (Path p : cluster.traverse(root)) {
+				list.add(createSequenceNode(p.endNode()));
 			}
 		}
-		return cluster;
+		return list;
 	}
 
 	@Override
