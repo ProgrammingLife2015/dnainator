@@ -25,6 +25,6 @@
 }
 
 #about > .label {
-	-fx-graphic: url("/ui/icons/dnainator16x16.png");
+	-fx-graphic: url("/ui/dnainator.iconset/icon_16x16.png");
 	-fx-padding: 0 10 0 5;
 }

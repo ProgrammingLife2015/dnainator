@@ -19,7 +19,7 @@ import javafx.stage.Stage;
 public class DNAinator extends Application {
 	private static final String DNAINATOR = "DNAinator";
 	private static final String FXML = "/ui/fxml/dnainator.fxml";
-	private static final String ICON = "/ui/icons/dnainator.png";
+	private static final String ICON = "/ui/dnainator.iconset/icon_512x512.png";
 
 	private static final int MIN_WIDTH = 300;
 	private static final int MIN_HEIGHT = 150;
