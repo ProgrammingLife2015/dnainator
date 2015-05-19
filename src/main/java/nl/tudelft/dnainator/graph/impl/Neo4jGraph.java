@@ -3,6 +3,7 @@ package nl.tudelft.dnainator.graph.impl;
 import static org.neo4j.helpers.collection.IteratorUtil.loop;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,6 +32,8 @@ import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.graphdb.traversal.BranchState;
+import org.neo4j.graphdb.traversal.Evaluation;
+import org.neo4j.graphdb.traversal.Evaluator;
 import org.neo4j.graphdb.traversal.InitialBranchState.State;
 import org.neo4j.graphdb.traversal.Uniqueness;
 import org.neo4j.tooling.GlobalGraphOperations;
@@ -321,6 +324,50 @@ public final class Neo4jGraph implements Graph {
 		}
 
 		return nodes;
+	}
+
+	/**
+	 * Evaluates whether a node is part of a cluster based on the given threshold.
+	 */
+	private class ClusterEvaluator implements Evaluator {
+		private int threshold;
+
+		public ClusterEvaluator(int threshold) {
+			this.threshold = threshold;
+		}
+		@Override
+		public Evaluation evaluate(Path path) {
+			Node end = path.endNode();
+			String sequence = (String) end.getProperty("sequence");
+
+			if (path.startNode().getId() == path.endNode().getId()
+					|| sequence.length() < threshold) {
+				return Evaluation.INCLUDE_AND_CONTINUE;
+			}
+			return Evaluation.EXCLUDE_AND_PRUNE;
+		}
+	}
+
+	/**
+	 * Return a list of nodes that belong to the same cluster as the given startId.
+	 * @param startId	the start node
+	 * @param threshold	the clustering threshold
+	 * @return		a list representing the cluster
+	 */
+	public List<String> getCluster(String startId, int threshold) {
+		List<String> cluster = new ArrayList<>();
+		try (Transaction tx = service.beginTx()) {
+			Node root = service.findNode(nodeLabel, "id", startId);
+			for (Node p : service.traversalDescription()
+					.depthFirst()
+					.relationships(RelTypes.NEXT, Direction.OUTGOING)
+					.evaluator(new ClusterEvaluator(threshold))
+					.traverse(root)
+					.nodes()) {
+				cluster.add((String) p.getProperty("id"));
+			}
+		}
+		return cluster;
 	}
 
 	@Override
