@@ -3,6 +3,7 @@ package nl.tudelft.dnainator.graph.impl;
 import static org.neo4j.helpers.collection.IteratorUtil.loop;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,7 +32,10 @@ import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 import org.neo4j.graphdb.traversal.BranchState;
+import org.neo4j.graphdb.traversal.Evaluation;
+import org.neo4j.graphdb.traversal.Evaluator;
 import org.neo4j.graphdb.traversal.InitialBranchState.State;
+import org.neo4j.graphdb.traversal.TraversalDescription;
 import org.neo4j.graphdb.traversal.Uniqueness;
 import org.neo4j.tooling.GlobalGraphOperations;
 
@@ -39,13 +43,13 @@ import org.neo4j.tooling.GlobalGraphOperations;
  * This class realizes a graphfactory using Neo4j as it's backend.
  */
 public final class Neo4jGraph implements Graph {
-	static final String NODELABEL = "Node";
-	static final String ID        = "id";
-	static final String SOURCE    = "source";
-	static final String STARTREF  = "start";
-	static final String ENDREF    = "end";
-	static final String SEQUENCE  = "sequence";
-	static final String RANK      = "rank";
+	public static final String NODELABEL = "Node";
+	public static final String ID        = "id";
+	public static final String SOURCE    = "source";
+	public static final String STARTREF  = "start";
+	public static final String ENDREF    = "end";
+	public static final String SEQUENCE  = "sequence";
+	public static final String RANK      = "rank";
 
 	private static final String GET_ROOT = "MATCH (s:" + NODELABEL + ") "
 			+ "WHERE NOT (s)<-[:NEXT]-(:" + NODELABEL + ") "
@@ -348,6 +352,50 @@ public final class Neo4jGraph implements Graph {
 		}
 
 		return nodes;
+	}
+
+	/**
+	 * Evaluates whether a node is part of a cluster based on the given threshold.
+	 */
+	private static class ClusterEvaluator implements Evaluator {
+		private int threshold;
+
+		public ClusterEvaluator(int threshold) {
+			this.threshold = threshold;
+		}
+		@Override
+		public Evaluation evaluate(Path path) {
+			Node end = path.endNode();
+			String sequence = (String) end.getProperty("sequence");
+
+			if (path.startNode().getId() == path.endNode().getId()
+					|| sequence.length() < threshold) {
+				return Evaluation.INCLUDE_AND_CONTINUE;
+			}
+			return Evaluation.EXCLUDE_AND_PRUNE;
+		}
+	}
+
+	/**
+	 * Return a list of nodes that belong to the same cluster as the given startId.
+	 * @param startId	the start node
+	 * @param threshold	the clustering threshold
+	 * @return		a list representing the cluster
+	 */
+	public List<SequenceNode> getCluster(String startId, int threshold) {
+		TraversalDescription cluster = service.traversalDescription()
+						.depthFirst()
+						.relationships(RelTypes.NEXT, Direction.OUTGOING)
+						.evaluator(new ClusterEvaluator(threshold));
+
+		List<SequenceNode> list = new ArrayList<>();
+		try (Transaction tx = service.beginTx()) {
+			Node root = service.findNode(nodeLabel, "id", startId);
+			for (Path p : cluster.traverse(root)) {
+				list.add(createSequenceNode(p.endNode()));
+			}
+		}
+		return list;
 	}
 
 	@Override

@@ -1,15 +1,14 @@
 package nl.tudelft.dnainator.ui;
 
+import java.io.IOException;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-
-import java.io.IOException;
 
 /**
  * DNAinator's main window, from which all interaction will occur.
