@@ -9,8 +9,8 @@ import javafx.fxml.FXML;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
-import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
-import nl.tudelft.dnainator.ui.services.FileLoadService;
+import nl.tudelft.dnainator.ui.services.GraphLoadService;
+import nl.tudelft.dnainator.ui.services.NewickLoadService;
 import nl.tudelft.dnainator.ui.views.View;
 import nl.tudelft.dnainator.ui.widgets.dialogs.AboutDialog;
 import nl.tudelft.dnainator.ui.widgets.dialogs.ExceptionDialog;
@@ -29,31 +29,33 @@ public class WindowController {
 	private static final String TREE = ".nwk";
 	@FXML private BorderPane root;
 	@FXML private View view;
-	private FileLoadService loadService;
+	private GraphLoadService graphLoadService;
+	private NewickLoadService newickLoadService;
 	private ProgressDialog progressDialog;
 
 	/**
 	 * Constructs a WindowController object, creating
-	 * a {@link FileLoadService} to go with it.
+	 * a {@link GraphLoadService} to go with it.
 	 */
 	@FXML
 	private void initialize() {
-		loadService = new FileLoadService();
+		graphLoadService = new GraphLoadService();
+		newickLoadService = new NewickLoadService();
 
-		loadService.setOnFailed(e ->
-				new ExceptionDialog(root, loadService.getException(), "Error loading file!"));
-		loadService.setOnRunning(e -> progressDialog.showDialog());
-		loadService.setOnSucceeded(e -> {
-			progressDialog.close();
-		});
-		loadService.setOnCancelled(e -> {
-			Neo4jSingleton.getInstance().deleteDatabase();
-		});
+		graphLoadService.setOnFailed(e ->
+				new ExceptionDialog(root, graphLoadService.getException(), "Error loading file!"));
+		graphLoadService.setOnRunning(e -> progressDialog.show());
+		graphLoadService.setOnSucceeded(e -> progressDialog.close());
+
+		newickLoadService = new NewickLoadService();
+		newickLoadService.setOnFailed(e ->
+				new ExceptionDialog(root, newickLoadService.getException(),
+						"Error loading newick file!"));
 	}
 
 	@FXML
 	private void openButtonAction(ActionEvent e) {
-		progressDialog = new ProgressDialog(root, loadService);
+		progressDialog = new ProgressDialog(root, graphLoadService);
 		FileChooser chooser = new FileChooser();
 		chooser.setTitle("Open node file");
 		chooser.getExtensionFilters().add(
@@ -63,10 +65,11 @@ public class WindowController {
 			return;
 		}
 
-		loadService.setNodeFile(nodeFile);
-		loadService.setEdgeFile(openEdgeFile(nodeFile.getPath()));
-		loadService.setTreeFile(openTreeFile(nodeFile.getParent()));
-		loadService.restart();
+		graphLoadService.setNodeFile(nodeFile);
+		graphLoadService.setEdgeFile(openEdgeFile(nodeFile.getPath()));
+		newickLoadService.setNewickFile(openTreeFile(nodeFile.getParent()));
+		newickLoadService.restart();
+		graphLoadService.restart();
 	}
 
 	private File openEdgeFile(String path) {

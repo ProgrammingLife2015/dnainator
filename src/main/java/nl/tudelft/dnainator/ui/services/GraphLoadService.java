@@ -11,7 +11,6 @@ import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
-import nl.tudelft.dnainator.parser.TreeParser;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
 import nl.tudelft.dnainator.parser.impl.EdgeParserImpl;
 import nl.tudelft.dnainator.parser.impl.NodeParserImpl;
@@ -23,10 +22,9 @@ import nl.tudelft.dnainator.parser.impl.NodeParserImpl;
  * set to <code>null</code>) upon instantiation.
  * </p>
  */
-public class FileLoadService extends Service<Graph> {
+public class GraphLoadService extends Service<Graph> {
 	private ObjectProperty<File> nodeFile = new SimpleObjectProperty<>(this, "nodeFile");
 	private ObjectProperty<File> edgeFile = new SimpleObjectProperty<>(this, "edgeFile");
-	private ObjectProperty<File> treeFile = new SimpleObjectProperty<>(this, "treeFile");
 	private ObjectProperty<String> database = new SimpleObjectProperty<>(this, "database");
 
 	/**
@@ -72,27 +70,6 @@ public class FileLoadService extends Service<Graph> {
 	}
 
 	/**
-	 * @param f The tree file to load.
-	 */
-	public final void setTreeFile(File f) {
-		treeFile.set(f);
-	}
-
-	/**
-	 * @return The tree file to load, if any.
-	 */
-	public final File getTreeFile() {
-		return treeFile.get();
-	}
-
-	/**
-	 * @return The tree file property.
-	 */
-	public ObjectProperty<File> treeFileProperty() {
-		return treeFile;
-	}
-
-	/**
 	 * @param g	The database to use.
 	 */
 	public final void setDatabase(String g) {
@@ -127,10 +104,8 @@ public class FileLoadService extends Service<Graph> {
 				}
 				EdgeParser ep = new EdgeParserImpl(getEdgeFile());
 				NodeParser np = new NodeParserImpl(getNodeFile());
-				TreeParser tp = new TreeParser(getTreeFile());
 
 				gb.constructGraph(np, ep);
-				tp.parse().toString();
 
 				ep.close();
 				np.close();

@@ -25,17 +25,17 @@ import org.neo4j.io.fs.FileUtils;
 import de.saxsys.javafx.test.JfxRunner;
 
 /**
- * Test class for the {@link FileLoadService}.
+ * Test class for the {@link GraphLoadService}.
  * <p>
  * See http://blog.buildpath.de/how-to-test-javafx-services/ for
  * an explanation on how to test JavaFX code.
  * </p>
  */
 @RunWith(JfxRunner.class)
-public class FileLoadServiceTest {
+public class GraphLoadServiceTest {
 	private static final String DB_PATH = "target/neo4j-junit";
 	private static final int DELAY = 20000;
-	private FileLoadService loadService;
+	private GraphLoadService loadService;
 	private File nodeFile;
 	private File edgeFile;
 
@@ -52,7 +52,7 @@ public class FileLoadServiceTest {
 	 */
 	@Before
 	public void setup() {
-		loadService = new FileLoadService();
+		loadService = new GraphLoadService();
 		try {
 			nodeFile = new File(getClass().getResource("/strains/test.node.graph").toURI());
 			edgeFile = new File(getClass().getResource("/strains/test.edge.graph").toURI());
