@@ -3,7 +3,6 @@ package nl.tudelft.dnainator.graph;
 import java.util.List;
 
 import nl.tudelft.dnainator.core.SequenceNode;
-import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 
 /**
@@ -38,15 +37,17 @@ public interface Graph extends GraphBuilder {
 	List<List<SequenceNode>> getRanks();
 
 	/**
-	 * Get a list of all edges from this graph.
-	 * @return	a list of all edges
-	 */
-	List<Edge<String>> getEdges();
-
-	/**
 	 * Get all the nodes with a specific rank from this graph.
 	 * @param rank	the rank
 	 * @return		a list of sequence nodes
 	 */
 	List<SequenceNode> getRank(int rank);
+
+	/**
+	 * Return a list of nodes that belong to the same cluster as the given startId.
+	 * @param startId	the start node
+	 * @param threshold	the clustering threshold
+	 * @return		a list representing the cluster
+	 */
+	List<SequenceNode> getCluster(String startId, int threshold);
 }
