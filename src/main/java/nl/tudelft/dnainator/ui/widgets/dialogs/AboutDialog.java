@@ -18,7 +18,7 @@ import javafx.scene.image.ImageView;
 public class AboutDialog extends Alert {
 	private Node parent;
 	private Properties prop;
-	private static final String LOGO = "/ui/icons/dnainator128x128.png";
+	private static final String LOGO = "/ui/dnainator.iconset/icon_128x128.png";
 	private static final String STYLE = "/ui/style.css";
 	private static final String PROPERTIES = "config.properties";
 	
