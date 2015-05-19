@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.ui.widgets;
+package nl.tudelft.dnainator.ui.widgets.dialogs;
 
 import javafx.concurrent.Service;
 import javafx.scene.Node;
