@@ -2,12 +2,11 @@ package nl.tudelft.dnainator.ui.models;
 
 import java.util.List;
 
-import nl.tudelft.dnainator.core.SequenceNode;
-import nl.tudelft.dnainator.ui.widgets.Propertyable;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import nl.tudelft.dnainator.core.SequenceNode;
 
 /**
  * The {@link ClusterItem} class represents the mid level object in the viewable model.

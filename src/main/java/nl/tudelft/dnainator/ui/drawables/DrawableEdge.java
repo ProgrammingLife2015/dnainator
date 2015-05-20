@@ -5,7 +5,7 @@ import java.util.List;
 
 import javafx.beans.binding.DoubleBinding;
 import javafx.scene.shape.Line;
-import nl.tudelft.dnainator.ui.models.DrawableNode.NodeItem;
+import nl.tudelft.dnainator.ui.models.NodeItem;
 import nl.tudelft.dnainator.ui.widgets.Propertyable;
 import nl.tudelft.dnainator.ui.widgets.contexts.EdgeContext;
 
@@ -25,7 +25,7 @@ public class DrawableEdge extends Line implements Propertyable {
 	 */
 	public DrawableEdge(NodeItem src, NodeItem dest) {
 		this.src = src;
-		this.dst = dst;
+		this.dst = dest;
 		
 		getStyleClass().add("drawable-edge");
 		setOnContextMenuRequested(e -> {
