@@ -9,30 +9,20 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import nl.tudelft.dnainator.core.SequenceNode;
-<<<<<<< HEAD:src/main/java/nl/tudelft/dnainator/ui/drawables/DrawableNode.java
-import nl.tudelft.dnainator.ui.models.ModelItem;
-=======
 import nl.tudelft.dnainator.ui.drawables.DrawableEdge;
-import nl.tudelft.dnainator.ui.widgets.Propertyable;
->>>>>>> Add some basic cluster visualization, rename DrawableNode to NodeItem.:src/main/java/nl/tudelft/dnainator/ui/models/NodeItem.java
 import nl.tudelft.dnainator.ui.widgets.contexts.NodeContext;
 
 /**
  * The drawable node is the JavaFX counterpart of {@link SequenceNode}.
  */
-<<<<<<< HEAD:src/main/java/nl/tudelft/dnainator/ui/drawables/DrawableNode.java
-public class DrawableNode extends ModelItem {
-=======
-public class NodeItem extends ModelItem implements Propertyable {
-	private static final double RADIUS = 3;
->>>>>>> Add some basic cluster visualization, rename DrawableNode to NodeItem.:src/main/java/nl/tudelft/dnainator/ui/models/NodeItem.java
+public class NodeItem extends ModelItem {
 	private static final String TYPE = "Node";
 	private static final double RADIUS = 3;
 	private static final Paint FILL = Color.rgb(242, 173, 12);
 	private SequenceNode node;
 	// Should be moved to ModelItem
 	private Group edges;
-
+	
 	/**
 	 * Instantiate a new NodeItem with default radius and default fill.
 	 * @param parent	the parent of this {@link NodeItem}
@@ -60,11 +50,9 @@ public class NodeItem extends ModelItem implements Propertyable {
 	 * @param fill This NodeItem's interior color.
 	 */
 	public NodeItem(ModelItem parent, SequenceNode node, double radius, Paint fill) {
-		super(parent);
+		super(parent, node.getRank());
 		this.node = node;
 		this.edges = new Group();
-
-		bindLocalToRoot(parent.localToRootProperty());
 
 		getStyleClass().add("drawable-node");
 		getContent().getChildren().add(edges);
@@ -74,7 +62,7 @@ public class NodeItem extends ModelItem implements Propertyable {
 			e.consume();
 		});
 	}
-
+	
 	/**
 	 * @return This NodeItem's {@link SequenceNode}.
 	 */
@@ -93,7 +81,8 @@ public class NodeItem extends ModelItem implements Propertyable {
 			}
 		}
 	}
-	
+
+	@Override
 	public String getType() {
 		return TYPE;
 	}

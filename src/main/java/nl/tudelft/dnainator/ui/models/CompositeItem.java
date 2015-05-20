@@ -20,9 +20,10 @@ public abstract class CompositeItem extends ModelItem {
 	 * Base constructor for a {@link CompositeItem}.
 	 * Every {@link CompositeItem} needs a reference to its parent.
 	 * @param parent	the parent of this {@link CompositeItem}
+	 * @param rank		the rank of this {@link ClusterItem}
 	 */
-	public CompositeItem(ModelItem parent) {
-		super(parent);
+	public CompositeItem(ModelItem parent, int rank) {
+		super(parent, rank);
 
 		childContent = new Group();
 		children = new ArrayList<>();

@@ -13,7 +13,7 @@ public interface Propertyable {
 	String getType();
 
 	/**
-	 * 
+	 * @return The id of this node.
 	 */
 	String getNodeId();
 

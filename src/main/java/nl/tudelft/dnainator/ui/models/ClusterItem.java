@@ -2,10 +2,7 @@ package nl.tudelft.dnainator.ui.models;
 
 import java.util.List;
 
-import nl.tudelft.dnainator.core.SequenceNode;
-import nl.tudelft.dnainator.ui.widgets.Propertyable;
 import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
@@ -16,40 +13,29 @@ import javafx.scene.shape.Circle;
  */
 public class ClusterItem extends CompositeItem {
 	private static final String TYPE = "Cluster";
+	private static final int CLUSTER_SIZE = 20;
 
 	/**
 	 * Construct a new mid level {@link ClusterItem} using the default graph.
 	 * Every {@link ClusterItem} needs a reference to its parent.
 	 * @param parent	the parent of this {@link ClusterItem}
+	 * @param rank		the rank of this {@link ClusterItem}
 	 */
-	public ClusterItem(ModelItem parent) {
-		super(parent);
+	public ClusterItem(ModelItem parent, int rank) {
+		super(parent, rank);
 
-		bindLocalToRoot(parent.localToRootProperty());
-
+		getContent().setTranslateX(rank * RANK_WIDTH);
 		getContent().getChildren().add(new Circle(CLUSTER_SIZE, Color.BLUE));
-
-		// FIXME: These should be lazily instantiated!
-		for (int i = 0; i < NO_RANKS; i++) {
-			RankItem si = new RankItem(this);
-			si.setTranslateX(i * RANK_WIDTH);
-			getChildItems().add(si);
-		}
 	}
 
 	private void load() {
-		if (getContent().getChildren().size() == 1) {
-			int rank = (int) localToRoot(new Point2D(0, 0)).getX() / RANK_WIDTH;
+		if (getChildItems().size() != 0) {
+			return;
+		}
 
-			List<SequenceNode> start = getGraph().getRank(rank);
-			List<SequenceNode> nodes = getGraph().getCluster(start.get(0).getId(), 2000);
-			for (int i = 0; i < nodes.size(); i++) {
-				NodeItem drawable = new NodeItem(this, nodes.get(i));
-				drawable.setTranslateY(i * RANK_WIDTH - nodes.size() * RANK_WIDTH / 2);
-
-				getContent().getChildren().add(drawable);
-			}
-			System.out.println("loaded " + rank);
+		for (int i = getRank(); i < getRank() + RANK_WIDTH; i++) {
+			RankItem si = new RankItem(this, i);
+			getChildItems().add(si);
 		}
 	}
 

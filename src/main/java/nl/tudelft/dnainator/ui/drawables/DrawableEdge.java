@@ -3,9 +3,8 @@ package nl.tudelft.dnainator.ui.drawables;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.beans.binding.DoubleBinding;
 import javafx.scene.shape.Line;
-import nl.tudelft.dnainator.ui.models.DrawableNode.NodeItem;
+import nl.tudelft.dnainator.ui.models.NodeItem;
 import nl.tudelft.dnainator.ui.widgets.Propertyable;
 import nl.tudelft.dnainator.ui.widgets.contexts.EdgeContext;
 
@@ -25,37 +24,16 @@ public class DrawableEdge extends Line implements Propertyable {
 	 */
 	public DrawableEdge(NodeItem src, NodeItem dest) {
 		this.src = src;
-		this.dst = dst;
+		this.dst = dest;
 		
 		getStyleClass().add("drawable-edge");
 		setOnContextMenuRequested(e -> {
 			EdgeContext.getInstance().show(DrawableEdge.this, e.getScreenX(), e.getScreenY());
 			e.consume();
 		});
-		startXProperty().bind(src.layoutXProperty());
-		startYProperty().bind(src.layoutYProperty());
-		endXProperty().bind(new DoubleBinding() {
-			{
-				super.bind(src.localToRootProperty());
-				super.bind(dest.localToRootProperty());
-			}
-			@Override
-			protected double computeValue() {
-				return (dest.getLocalToRoot().getTx() + dest.getLayoutX())
-					- (src.getLocalToRoot().getTx() + src.getLayoutX());
-			}
-		});
-		endYProperty().bind(new DoubleBinding() {
-			{
-				super.bind(src.localToRootProperty());
-				super.bind(dest.localToRootProperty());
-			}
-			@Override
-			protected double computeValue() {
-				return (dest.getLocalToRoot().getTy() + dest.getLayoutY())
-					- (src.getLocalToRoot().getTy() + src.getLayoutY());
-			}
-		});
+		
+		startXProperty().bind(dest.translateXProperty().subtract(src.translateXProperty()));
+		startYProperty().bind(dest.translateYProperty().subtract(src.translateYProperty()));
 	}
 
 	@Override
