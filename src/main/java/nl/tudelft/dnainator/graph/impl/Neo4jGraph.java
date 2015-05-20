@@ -39,6 +39,14 @@ import org.neo4j.tooling.GlobalGraphOperations;
  * This class realizes a graphfactory using Neo4j as it's backend.
  */
 public final class Neo4jGraph implements Graph {
+	private static final String NODELABEL = "Node";
+	private static final String ID        = "id";
+	private static final String SOURCE    = "source";
+	private static final String STARTREF  = "start";
+	private static final String ENDREF    = "end";
+	private static final String SEQUENCE  = "sequence";
+	private static final String RANK      = "rank";
+
 	private static final String GET_ROOT = "MATCH (s:Node) "
 			+ "WHERE NOT (s)<-[:NEXT]-(:Node)"
 			+ "RETURN s";
@@ -69,19 +77,19 @@ public final class Neo4jGraph implements Graph {
 		});
 
 		// Assign a label to our nodes
-		nodeLabel = DynamicLabel.label("Node");
+		nodeLabel = DynamicLabel.label(NODELABEL);
 		// Recreate our indices
 		try (Transaction tx = service.beginTx()) {
 			service.schema().getConstraints().forEach(e -> e.drop());
 			service.schema().getIndexes().forEach(e -> e.drop());
 
 			service.schema().constraintFor(nodeLabel)
-			.assertPropertyIsUnique("id")
+			.assertPropertyIsUnique(ID)
 			.create();
 
 			// Generate an index on 'dist'
 			service.schema().indexFor(nodeLabel)
-			.on("rank")
+			.on(RANK)
 			.create();
 
 			tx.success();
@@ -107,8 +115,8 @@ public final class Neo4jGraph implements Graph {
 	@Override
 	public void addEdge(Edge<String> edge) {
 		try (Transaction tx = service.beginTx()) {
-			Node source = service.findNode(nodeLabel, "id", edge.getSource());
-			Node dest   = service.findNode(nodeLabel, "id", edge.getDest());
+			Node source = service.findNode(nodeLabel, ID, edge.getSource());
+			Node dest   = service.findNode(nodeLabel, ID, edge.getDest());
 			source.createRelationshipTo(dest, RelTypes.NEXT);
 
 			tx.success();
@@ -119,12 +127,12 @@ public final class Neo4jGraph implements Graph {
 	public void addNode(SequenceNode s) {
 		try (Transaction tx = service.beginTx()) {
 			Node node = service.createNode(nodeLabel);
-			node.setProperty("id", s.getId());
-			node.setProperty("start", s.getStartRef());
-			node.setProperty("end", s.getEndRef());
-			node.setProperty("sequence", s.getSequence());
-			node.setProperty("source", s.getSource());
-			node.setProperty("dist", 0);
+			node.setProperty(ID, s.getId());
+			node.setProperty(STARTREF, s.getStartRef());
+			node.setProperty(ENDREF, s.getEndRef());
+			node.setProperty(SEQUENCE, s.getSequence());
+			node.setProperty(SOURCE, s.getSource());
+			node.setProperty(RANK, 0);
 
 			tx.success();
 		}
@@ -239,11 +247,11 @@ public final class Neo4jGraph implements Graph {
 			PrimitiveLongSet processed = Primitive.offHeapLongSet(INIT_CAP)
 		) {
 			for (Node n : topologicalOrder(processed)) {
-				int rankSource = (int) n.getProperty("dist");
+				int rankSource = (int) n.getProperty(RANK);
 				for (Relationship r : n.getRelationships(RelTypes.NEXT, Direction.OUTGOING)) {
 					Node dest = r.getEndNode();
-					if ((int) dest.getProperty("dist") < rankSource + 1) {
-						dest.setProperty("dist", rankSource + 1);
+					if ((int) dest.getProperty(RANK) < rankSource + 1) {
+						dest.setProperty(RANK, rankSource + 1);
 						maxRank = rankSource + 1;
 					}
 				}
@@ -271,7 +279,7 @@ public final class Neo4jGraph implements Graph {
 		SequenceNode node;
 
 		try (Transaction tx = service.beginTx()) {
-			node = createSequenceNode(service.findNode(nodeLabel, "id", s));
+			node = createSequenceNode(service.findNode(nodeLabel, ID, s));
 
 			tx.success();
 		}
@@ -284,7 +292,7 @@ public final class Neo4jGraph implements Graph {
 		List<SequenceNode> nodes = new LinkedList<>();
 
 		try (Transaction tx = service.beginTx()) {
-			ResourceIterator<Node> res = service.findNodes(nodeLabel, "dist", rank);
+			ResourceIterator<Node> res = service.findNodes(nodeLabel, RANK, rank);
 
 			for (Node n : loop(res)) {
 				nodes.add(createSequenceNode(n));
@@ -303,12 +311,12 @@ public final class Neo4jGraph implements Graph {
 	 * @return a {@link SequenceNode} with the information of the given {@link Node}.
 	 */
 	protected static SequenceNode createSequenceNode(Node node) {
-		String id       = (String) node.getProperty("id");
-		String source   = (String) node.getProperty("source");
-		int startref    = (int) node.getProperty("start");
-		int endref      = (int) node.getProperty("end");
-		String sequence = (String) node.getProperty("sequence");
-		int rank		= (int) node.getProperty("dist");
+		String id	= (String) node.getProperty(ID);
+		String source	= (String) node.getProperty(SOURCE);
+		int startref	= (int)    node.getProperty(STARTREF);
+		int endref	= (int)    node.getProperty(ENDREF);
+		String sequence	= (String) node.getProperty(SEQUENCE);
+		int rank	= (int)    node.getProperty(RANK);
 
 		return new SequenceNodeImpl(id, source, startref, endref, sequence, rank);
 	}
@@ -318,8 +326,8 @@ public final class Neo4jGraph implements Graph {
 		List<Edge<String>> edges = new LinkedList<Edge<String>>();
 		try (Transaction tx = service.beginTx()) {
 			GlobalGraphOperations.at(service).getAllRelationships().forEach(e ->
-				edges.add(new Edge<String>((String) e.getStartNode().getProperty("id"),
-						(String) e.getEndNode().getProperty("id")))
+				edges.add(new Edge<String>((String) e.getStartNode().getProperty(ID),
+						(String) e.getEndNode().getProperty(ID)))
 			);
 
 			tx.success();
