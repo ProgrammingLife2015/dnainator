@@ -16,7 +16,6 @@ import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
 
 import java.io.IOException;
-import java.util.Set;
 
 /**
  * DNAinator's main window, from which all interaction will occur.
@@ -74,15 +73,6 @@ public class DNAinator extends Application {
 				}
 			});
 		});
-	}
-
-	@Override
-	public void stop() throws Exception {
-		Set<String> paths = Neo4jSingleton.getInstance().getDatabasePaths();
-		for (String path : paths) {
-			Neo4jSingleton.getInstance().deleteDatabase(path);
-		}
-		super.stop();
 	}
 
 	private double getScreenWidth() {
