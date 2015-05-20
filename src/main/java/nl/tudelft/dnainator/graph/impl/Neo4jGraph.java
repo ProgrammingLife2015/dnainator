@@ -70,18 +70,19 @@ public final class Neo4jGraph implements Graph {
 
 		// Assign a label to our nodes
 		nodeLabel = DynamicLabel.label("Node");
+		// Recreate our indices
 		try (Transaction tx = service.beginTx()) {
-			// Generate a unique index on 'id'
-			if (service.schema().getIndexes(nodeLabel) == null) {
-				service.schema().constraintFor(nodeLabel)
-				.assertPropertyIsUnique("id")
-				.create();
+			service.schema().getConstraints().forEach(e -> e.drop());
+			service.schema().getIndexes().forEach(e -> e.drop());
 
-				// Generate an index on 'dist'
-				service.schema().indexFor(nodeLabel)
-				.on("dist")
-				.create();
-			}
+			service.schema().constraintFor(nodeLabel)
+			.assertPropertyIsUnique("id")
+			.create();
+
+			// Generate an index on 'dist'
+			service.schema().indexFor(nodeLabel)
+			.on("rank")
+			.create();
 
 			tx.success();
 		}
