@@ -39,16 +39,16 @@ import org.neo4j.tooling.GlobalGraphOperations;
  * This class realizes a graphfactory using Neo4j as it's backend.
  */
 public final class Neo4jGraph implements Graph {
-	private static final String NODELABEL = "Node";
-	private static final String ID        = "id";
-	private static final String SOURCE    = "source";
-	private static final String STARTREF  = "start";
-	private static final String ENDREF    = "end";
-	private static final String SEQUENCE  = "sequence";
-	private static final String RANK      = "rank";
+	static final String NODELABEL = "Node";
+	static final String ID        = "id";
+	static final String SOURCE    = "source";
+	static final String STARTREF  = "start";
+	static final String ENDREF    = "end";
+	static final String SEQUENCE  = "sequence";
+	static final String RANK      = "rank";
 
-	private static final String GET_ROOT = "MATCH (s:Node) "
-			+ "WHERE NOT (s)<-[:NEXT]-(:Node)"
+	private static final String GET_ROOT = "MATCH (s:" + NODELABEL + ") "
+			+ "WHERE NOT (s)<-[:NEXT]-(:" + NODELABEL + ") "
 			+ "RETURN s";
 
 	private GraphDatabaseService service;
