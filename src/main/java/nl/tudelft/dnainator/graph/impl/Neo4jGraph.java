@@ -72,14 +72,32 @@ public final class Neo4jGraph implements Graph {
 		nodeLabel = DynamicLabel.label("Node");
 		try (Transaction tx = service.beginTx()) {
 			// Generate a unique index on 'id'
-			service.schema().constraintFor(nodeLabel)
-			.assertPropertyIsUnique("id")
-			.create();
+			if (service.schema().getIndexes(nodeLabel) == null) {
+				service.schema().constraintFor(nodeLabel)
+				.assertPropertyIsUnique("id")
+				.create();
 
-			// Generate an index on 'dist'
-			service.schema().indexFor(nodeLabel)
-			.on("dist")
-			.create();
+				// Generate an index on 'dist'
+				service.schema().indexFor(nodeLabel)
+				.on("dist")
+				.create();
+			}
+
+			tx.success();
+		}
+	}
+
+	/**
+	 * Delete all nodes and relationships from this graph.
+	 */
+	public void clear() {
+		try (Transaction tx = service.beginTx()) {
+			for (Relationship r : GlobalGraphOperations.at(service).getAllRelationships()) {
+				r.delete();
+			}
+			for (Node n : GlobalGraphOperations.at(service).getAllNodes()) {
+				n.delete();
+			}
 
 			tx.success();
 		}
