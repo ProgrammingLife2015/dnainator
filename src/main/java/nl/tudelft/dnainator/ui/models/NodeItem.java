@@ -18,7 +18,7 @@ public class NodeItem extends ModelItem {
 	private SequenceNode node;
 	// Should be moved to ModelItem
 	private Group edges;
-
+	
 	/**
 	 * Instantiate a new NodeItem with default radius and default fill.
 	 * @param parent	the parent of this {@link NodeItem}
@@ -46,11 +46,9 @@ public class NodeItem extends ModelItem {
 	 * @param fill		This NodeItem's interior color.
 	 */
 	public NodeItem(ModelItem parent, SequenceNode node, double radius, Paint fill) {
-		super(parent);
+		super(parent, node.getRank());
 		this.node = node;
 		this.edges = new Group();
-
-		bindLocalToRoot(parent.localToRootProperty());
 
 		getStyleClass().add("drawable-node");
 		getContent().getChildren().add(edges);
@@ -60,7 +58,7 @@ public class NodeItem extends ModelItem {
 			e.consume();
 		});
 	}
-
+	
 	/**
 	 * @return This NodeItem's {@link SequenceNode}.
 	 */

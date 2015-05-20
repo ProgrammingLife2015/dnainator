@@ -3,7 +3,6 @@ package nl.tudelft.dnainator.ui.models;
 import java.util.List;
 
 import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
 import nl.tudelft.dnainator.core.SequenceNode;
 
 /**
@@ -15,28 +14,26 @@ public class RankItem extends CompositeItem {
 	 * Construct a new bottom level {@link RankItem} using the default graph.
 	 * Every {@link RankItem} needs a reference to its parent.
 	 * @param parent	the parent of this {@link RankItem}
+	 * @param rank		the rank of this {@link RankItem}
 	 */
-	public RankItem(ModelItem parent) {
-		super(parent);
-
-		bindLocalToRoot(parent.localToRootProperty());
+	public RankItem(ModelItem parent, int rank) {
+		super(parent, rank);
+		
+		getContent().setTranslateX(rank * RANK_WIDTH);
 	}
 
 	private void load() {
+		System.out.println("loading: " + getRank());
 		if (getChildItems().size() == 0) {
-			int rank = (int) localToRoot(new Point2D(0, 0)).getX() / RANK_WIDTH;
-
-			List<SequenceNode> nodes = getGraph().getRank(rank);
+			List<SequenceNode> nodes = getGraph().getRank(getRank());
 			for (int i = 0; i < nodes.size(); i++) {
 				NodeItem drawable = new NodeItem(this, nodes.get(i));
+				drawable.setTranslateX(getRank() * RANK_WIDTH);
 				drawable.setTranslateY(i * RANK_WIDTH - nodes.size() * RANK_WIDTH / 2);
 
 				getChildItems().add(drawable);
 				getNodes().put(nodes.get(i).getId(), drawable);
 			}
-
-			System.out.println("size: " + getNodes().size());
-			System.out.println("sequence children " + rank + ": " + getChildItems().size());
 		}
 	}
 

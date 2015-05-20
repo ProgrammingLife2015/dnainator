@@ -10,22 +10,28 @@ import javafx.scene.shape.Circle;
  * that can hold both content and children.
  */
 public class ClusterItem extends CompositeItem {
+	private static final int CLUSTER_SIZE = 20;
+
 	/**
 	 * Construct a new mid level {@link ClusterItem} using the default graph.
 	 * Every {@link ClusterItem} needs a reference to its parent.
 	 * @param parent	the parent of this {@link ClusterItem}
+	 * @param rank		the rank of this {@link ClusterItem}
 	 */
-	public ClusterItem(ModelItem parent) {
-		super(parent);
+	public ClusterItem(ModelItem parent, int rank) {
+		super(parent, rank);
 
-		bindLocalToRoot(parent.localToRootProperty());
-
+		getContent().setTranslateX(rank * RANK_WIDTH);
 		getContent().getChildren().add(new Circle(CLUSTER_SIZE, Color.BLUE));
+	}
 
-		// FIXME: These should be lazily instantiated!
-		for (int i = 0; i < NO_RANKS; i++) {
-			RankItem si = new RankItem(this);
-			si.setTranslateX(i * RANK_WIDTH);
+	private void load() {
+		if (getChildItems().size() != 0) {
+			return;
+		}
+
+		for (int i = getRank(); i < getRank() + RANK_WIDTH; i++) {
+			RankItem si = new RankItem(this, i);
 			getChildItems().add(si);
 		}
 	}
@@ -36,6 +42,7 @@ public class ClusterItem extends CompositeItem {
 			return;
 		}
 
+		load();
 		update(b, Thresholds.CLUSTER);
 	}
 
