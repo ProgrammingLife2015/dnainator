@@ -30,11 +30,10 @@ public class DNAinator extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		primaryStage.setTitle(DNAINATOR);
 		primaryStage.getIcons().add(new Image(getClass().getResourceAsStream(ICON)));
-		setDimensions(primaryStage);
 
 		try {
 			BorderPane rootLayout = FXMLLoader.load(getClass().getResource(FXML));
-			Scene scene = new Scene(rootLayout);
+			Scene scene = new Scene(rootLayout, getScreenWidth(), getScreenHeight());
 			primaryStage.setScene(scene);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -42,14 +41,12 @@ public class DNAinator extends Application {
 		primaryStage.show();
 	}
 
-	private void setDimensions(Stage stage) {
-		Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
-
-		stage.setMinHeight(MIN_HEIGHT);
-		stage.setMinWidth(MIN_WIDTH);
-		stage.setWidth(bounds.getWidth());
-		stage.setHeight(bounds.getHeight());
-		/* Add this for better Windows LAF. */
-		stage.setMaximized(true);
+	private double getScreenWidth() {
+		return Screen.getPrimary().getVisualBounds().getWidth();
 	}
+
+	private double getScreenHeight() {
+		return Screen.getPrimary().getVisualBounds().getHeight();
+	}
+
 }
