@@ -1,12 +1,10 @@
 package nl.tudelft.dnainator.ui.models;
 
-import javafx.beans.property.ObjectProperty;
+import java.util.List;
+
 import javafx.geometry.Bounds;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.transform.Transform;
-import nl.tudelft.dnainator.graph.Graph;
-import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
 
 /**
  * The {@link ClusterItem} class represents the mid level object in the viewable model.
@@ -14,34 +12,29 @@ import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
  * that can hold both content and children.
  */
 public class ClusterItem extends CompositeItem {
+	private static final String TYPE = "Cluster";
+	private static final int CLUSTER_SIZE = 20;
+
 	/**
 	 * Construct a new mid level {@link ClusterItem} using the default graph.
-	 * Since a {@link ClusterItem} is not at the root of the model,
-	 * it should bind its parent for correct positioning.
-	 * @param parent	the concatenated transfrom from root to parent
+	 * Every {@link ClusterItem} needs a reference to its parent.
+	 * @param parent	the parent of this {@link ClusterItem}
+	 * @param rank		the rank of this {@link ClusterItem}
 	 */
-	public ClusterItem(ObjectProperty<Transform> parent) {
-		this(Neo4jSingleton.getInstance().getDatabase(), parent);
+	public ClusterItem(ModelItem parent, int rank) {
+		super(parent, rank);
+
+		getContent().setTranslateX(rank * RANK_WIDTH);
+		getContent().getChildren().add(new Circle(CLUSTER_SIZE, Color.BLUE));
 	}
 
-	/**
-	 * Construct a new mid level {@link ClusterItem} using the default graph.
-	 * Since a {@link ClusterItem} is not at the root of the model,
-	 * it should bind its parent for correct positioning.
-	 * @param graph		the specified graph
-	 * @param parent	the concatenated transfrom from root to parent
-	 */
-	public ClusterItem(Graph graph, ObjectProperty<Transform> parent) {
-		super(graph);
+	private void load() {
+		if (getChildItems().size() != 0) {
+			return;
+		}
 
-		bindLocalToRoot(parent);
-
-		getContent().getChildren().add(new Circle(CLUSTER_SIZE, Color.BLUE));
-
-		// FIXME: These should be lazily instantiated!
-		for (int i = 0; i < NO_RANKS; i++) {
-			RankItem si = new RankItem(getGraph(), localToRootProperty());
-			si.setTranslateX(i * RANK_WIDTH);
+		for (int i = getRank(); i < getRank() + RANK_WIDTH; i++) {
+			RankItem si = new RankItem(this, i);
 			getChildItems().add(si);
 		}
 	}
@@ -52,7 +45,17 @@ public class ClusterItem extends CompositeItem {
 			return;
 		}
 
+		load();
 		update(b, Thresholds.CLUSTER);
 	}
 
+	@Override
+	public String getType() {
+		return TYPE;
+	}
+
+	@Override
+	public List<String> getSources() {
+		return null;
+	}
 }
