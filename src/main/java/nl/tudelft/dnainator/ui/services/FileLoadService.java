@@ -15,8 +15,6 @@ import nl.tudelft.dnainator.parser.exceptions.ParseException;
 import nl.tudelft.dnainator.parser.impl.EdgeParserImpl;
 import nl.tudelft.dnainator.parser.impl.NodeParserImpl;
 
-import org.neo4j.io.fs.FileUtils;
-
 /**
  * A JavaFX background service to load files into graphs.
  * <p>
@@ -99,8 +97,7 @@ public class FileLoadService extends Service<Graph> {
 			protected Graph call() throws IOException, ParseException {
 				Graph gb;
 				if (database.get() == null) {
-					// FIXME: this is necessary because neo4j does not yet handle persistence
-					FileUtils.deleteRecursively(new File(Neo4jSingleton.DB_PATH));
+					Neo4jSingleton.getInstance().deleteDatabase();
 					gb = Neo4jSingleton.getInstance().getDatabase();
 				} else {
 					gb = Neo4jSingleton.getInstance().getDatabase(database.get());

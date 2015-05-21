@@ -13,7 +13,7 @@ import org.neo4j.io.fs.FileUtils;
  */
 public final class Neo4jSingleton {
 	private static final Neo4jSingleton INSTANCE = new Neo4jSingleton();
-	public static final String DB_PATH = "target/neo4j-hello-db";
+	private static final String DB_PATH = "target/dna-graph-db";
 
 	private Map<String, Neo4jGraph> neodatabases;
 
@@ -61,27 +61,38 @@ public final class Neo4jSingleton {
 	}
 
 	/**
-	 * Stops the database associated with the specified path, if it exists.
-	 * FIXME: {@link Neo4jGraph} does not handle persistence very well yet
-	 * @param path	the path to the database
+	 * Deletes the contents of the database associated with the default path, if it exists.
+	 * FIXME: {@link Neo4jGraph} seems to be unable to restart on a previously shut down path.
 	 * @throws IOException	when the database could not be deleted 
+	 */
+	public void deleteDatabase() {
+		deleteDatabase(DB_PATH);
+	}
+
+	/**
+	 * Deletes the contents of the database associated with the specified path, if it exists.
+	 * @param path	the path to the database
+	 * @throws IOException	when the database could not be deleted
+	 */
+	public void deleteDatabase(String path) {
+		if (neodatabases.containsKey(path)) {
+			neodatabases.get(path).clear();
+		}
+	}
+
+	/**
+	 * Stops and deletes the the database associated with the specified path, if it exists.
+	 * FIXME: {@link Neo4jGraph} seems to be unable to restart on a previously shut down path.
+	 *        DO NOT USE THIS METHOD!
+	 * @param path	the path to the database
+	 * @throws IOException	when the database could not be deleted
 	 */
 	public void stopDatabase(String path) throws IOException {
 		if (neodatabases.containsKey(path)) {
 			neodatabases.get(path).getService().shutdown();
 			neodatabases.remove(path);
 		}
+
 		FileUtils.deleteRecursively(new File(path));
 	}
-
-	// FIXME: {@link Neo4jGraph} does not handle persistence very well yet
-	//	/**
-	//	 * Stops and deletes the database associated with the specified path, if it exists.
-	//	 * @param path	the path to the database
-	//	 * @throws IOException	when the database could not be deleted
-	//	 */
-	//	public void deleteDatabase(String path) throws IOException {
-	//		stopDatabase(path);
-	//		FileUtils.deleteRecursively(new File(path));
-	//	}
 }

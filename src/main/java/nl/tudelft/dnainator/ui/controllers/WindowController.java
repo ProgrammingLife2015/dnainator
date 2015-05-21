@@ -1,7 +1,6 @@
 package nl.tudelft.dnainator.ui.controllers;
 
 import java.io.File;
-import java.io.IOException;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -46,11 +45,7 @@ public class WindowController {
 			progressDialog.close();
 		});
 		loadService.setOnCancelled(e -> {
-			try {
-				Neo4jSingleton.getInstance().stopDatabase(Neo4jSingleton.DB_PATH);
-			} catch (IOException ioe) {
-				new ExceptionDialog(root, ioe, "Error cancelling database!");
-			}
+			Neo4jSingleton.getInstance().deleteDatabase();
 		});
 	}
 
