@@ -1,13 +1,15 @@
 package nl.tudelft.dnainator.ui;
 
-import java.io.IOException;
-
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
+
+import java.io.IOException;
 
 /**
  * DNAinator's main window, from which all interaction will occur.
@@ -26,11 +28,10 @@ public class DNAinator extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		primaryStage.setMinHeight(MIN_HEIGHT);
-		primaryStage.setMinWidth(MIN_WIDTH);
 		primaryStage.setTitle(DNAINATOR);
 		primaryStage.getIcons().add(new Image(getClass().getResourceAsStream(ICON)));
-		primaryStage.setMaximized(true);
+		setDimensions(primaryStage);
+
 		try {
 			BorderPane rootLayout = FXMLLoader.load(getClass().getResource(FXML));
 			Scene scene = new Scene(rootLayout);
@@ -39,5 +40,16 @@ public class DNAinator extends Application {
 			e.printStackTrace();
 		}
 		primaryStage.show();
+	}
+
+	private void setDimensions(Stage stage) {
+		Rectangle2D bounds = Screen.getPrimary().getVisualBounds();
+
+		stage.setMinHeight(MIN_HEIGHT);
+		stage.setMinWidth(MIN_WIDTH);
+		stage.setWidth(bounds.getWidth());
+		stage.setHeight(bounds.getHeight());
+		/* Add this for better Windows LAF. */
+		stage.setMaximized(true);
 	}
 }
