@@ -21,4 +21,8 @@ public class Cluster {
 		return rankStart;
 	}
 
+	@Override
+	public String toString() {
+		return "<Cluster " + nodes.toString() + ">";
+	}
 }

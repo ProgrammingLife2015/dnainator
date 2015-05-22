@@ -61,17 +61,8 @@ public class Neo4jClusterTest {
 		Set<String> expected;
 
 		// CHECKSTYLE.OFF: MagicNumber
-		expected = Sets.newSet("1", "2", "3");
-		assertEquals(expected, db.getCluster("1", 10).stream().map(sn -> sn.getId())
-								.collect(Collectors.toSet()));
-		expected = Sets.newSet("4", "5", "6", "7");
-		assertEquals(expected, db.getCluster("4", 10).stream().map(sn -> sn.getId())
-								.collect(Collectors.toSet()));
-		expected = Sets.newSet("4", "5", "6", "7", "8");
-		assertEquals(expected, db.getCluster("4", 12).stream().map(sn -> sn.getId())
-								.collect(Collectors.toSet()));
-		expected = Sets.newSet("1", "2", "3", "4", "5", "6", "7", "8");
-		assertEquals(expected, db.getCluster("1", 12).stream().map(sn -> sn.getId())
+		expected = Sets.newSet("6", "7");
+		assertEquals(expected, db.getCluster("6", 9).stream().map(sn -> sn.getId())
 								.collect(Collectors.toSet()));
 		// CHECKSTYLE.ON: MagicNumber
 	}

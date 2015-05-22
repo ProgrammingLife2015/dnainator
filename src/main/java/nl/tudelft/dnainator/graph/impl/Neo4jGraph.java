@@ -329,7 +329,7 @@ public final class Neo4jGraph implements Graph {
 
 		List<String> outgoing = new ArrayList<>();
 		for (Relationship e : loop(node.getRelationships(Direction.OUTGOING).iterator())) {
-			outgoing.add((String) e.getStartNode().getProperty(ID));
+			outgoing.add((String) e.getEndNode().getProperty(ID));
 		}
 
 		return new SequenceNodeImpl(id, source, startref, endref, sequence, rank, outgoing);
@@ -389,6 +389,12 @@ public final class Neo4jGraph implements Graph {
 		}
 	}
 
+	protected List<SequenceNode> getCluster(String id, int threshold) {
+		try (Transaction tx = service.beginTx()) {
+			return getCluster(new HashSet<String>(), id, threshold).getNodes();
+		}
+	}
+
 	private Cluster getCluster(Set<String> visited, String id, int threshold) {
 		TraversalDescription cluster = service.traversalDescription()
 						.depthFirst()
@@ -398,7 +404,7 @@ public final class Neo4jGraph implements Graph {
 		List<SequenceNode> list = new ArrayList<>();
 		Node start = service.findNode(nodeLabel, ID, id);
 		int rankStart = (int) start.getProperty(RANK);
-		for (Path p : cluster.traverse()) {
+		for (Path p : cluster.traverse(start)) {
 			SequenceNode end = createSequenceNode(p.endNode());
 			if (end.getRank() < rankStart) {
 				rankStart = end.getRank();
