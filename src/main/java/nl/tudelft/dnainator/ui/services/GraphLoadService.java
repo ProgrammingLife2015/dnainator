@@ -22,7 +22,7 @@ import nl.tudelft.dnainator.parser.impl.NodeParserImpl;
  * set to <code>null</code>) upon instantiation.
  * </p>
  */
-public class FileLoadService extends Service<Graph> {
+public class GraphLoadService extends Service<Graph> {
 	private ObjectProperty<File> nodeFile = new SimpleObjectProperty<>(this, "nodeFile");
 	private ObjectProperty<File> edgeFile = new SimpleObjectProperty<>(this, "edgeFile");
 	private ObjectProperty<String> database = new SimpleObjectProperty<>(this, "database");
@@ -104,6 +104,7 @@ public class FileLoadService extends Service<Graph> {
 				}
 				EdgeParser ep = new EdgeParserImpl(getEdgeFile());
 				NodeParser np = new NodeParserImpl(getNodeFile());
+
 				gb.constructGraph(np, ep);
 
 				ep.close();
