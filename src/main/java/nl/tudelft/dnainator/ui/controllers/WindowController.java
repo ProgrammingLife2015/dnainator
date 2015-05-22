@@ -9,6 +9,7 @@ import javafx.scene.layout.BorderPane;
 import nl.tudelft.dnainator.ui.services.GraphLoadService;
 import nl.tudelft.dnainator.ui.services.NewickLoadService;
 import nl.tudelft.dnainator.ui.views.View;
+import nl.tudelft.dnainator.ui.widgets.PropertyPane;
 import nl.tudelft.dnainator.ui.widgets.dialogs.AboutDialog;
 import nl.tudelft.dnainator.ui.widgets.dialogs.ExceptionDialog;
 import nl.tudelft.dnainator.ui.widgets.dialogs.OpenDialog;
@@ -26,6 +27,7 @@ import java.util.Optional;
 public class WindowController {
 	@FXML private BorderPane root;
 	@FXML private View view;
+	@FXML private PropertyPane propertyPane;
 	private GraphLoadService graphLoadService;
 	private NewickLoadService newickLoadService;
 	private ProgressDialog progressDialog;
@@ -48,6 +50,8 @@ public class WindowController {
 		newickLoadService.setOnFailed(e ->
 				new ExceptionDialog(root, newickLoadService.getException(),
 						"Error loading newick file!"));
+
+		view.lastClickedProperty().addListener((ob, ov, nv) -> propertyPane.update(nv));
 	}
 
 	@FXML
@@ -78,6 +82,11 @@ public class WindowController {
 		graphLoadService.setNodeFile(null);
 		graphLoadService.setEdgeFile(null);
 		newickLoadService.setNewickFile(null);
+	}
+
+	@FXML
+	private void toggleProperties(ActionEvent e) {
+		propertyPane.toggle();
 	}
 
 	@FXML

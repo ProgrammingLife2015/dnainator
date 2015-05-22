@@ -1,5 +1,8 @@
 package nl.tudelft.dnainator.ui.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -13,6 +16,7 @@ import nl.tudelft.dnainator.ui.widgets.contexts.NodeContext;
  * The drawable node is the JavaFX counterpart of {@link SequenceNode}.
  */
 public class NodeItem extends ModelItem {
+	private static final String TYPE = "Node";
 	private static final double RADIUS = 3;
 	private static final Paint FILL = Color.rgb(242, 173, 12);
 	private SequenceNode node;
@@ -78,5 +82,17 @@ public class NodeItem extends ModelItem {
 				}
 			}
 		}
+	}
+
+	@Override
+	public String getType() {
+		return TYPE;
+	}
+
+	@Override
+	public List<String> getSources() {
+		ArrayList<String> res = new ArrayList<>();
+		res.add(getSequenceNode().getSource());
+		return res;
 	}
 }
