@@ -3,7 +3,9 @@ package nl.tudelft.dnainator.ui.models;
 import java.util.List;
 
 import nl.tudelft.dnainator.core.SequenceNode;
+import nl.tudelft.dnainator.ui.drawables.DrawableEdge;
 import javafx.geometry.Bounds;
+import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
@@ -15,6 +17,7 @@ import javafx.scene.shape.Circle;
 public class ClusterItem extends CompositeItem {
 	private static final int CLUSTER_SIZE = 20;
 	private List<SequenceNode> clustered;
+	private Group edges;
 
 	/**
 	 * Construct a new mid level {@link ClusterItem} using the default graph.
@@ -26,8 +29,11 @@ public class ClusterItem extends CompositeItem {
 	public ClusterItem(ModelItem parent, int rank, List<SequenceNode> clustered) {
 		super(parent, rank);
 		this.clustered = clustered;
-
+		this.edges = new Group();
+		// Point for each node the cluster it is in.
+		clustered.forEach(node -> getClusters().put(node.getId(), this));
 		getContent().setTranslateX(rank * RANK_WIDTH);
+		getContent().getChildren().add(edges);
 		getContent().getChildren().add(new Circle(CLUSTER_SIZE, Color.BLUE));
 	}
 
@@ -35,10 +41,16 @@ public class ClusterItem extends CompositeItem {
 		if (getChildItems().size() != 0) {
 			return;
 		}
-
-		for (int i = getRank(); i < getRank() + RANK_WIDTH; i++) {
-			RankItem si = new RankItem(this, i);
-			getChildItems().add(si);
+		for (SequenceNode sn : clustered) {
+			for (String out : sn.getOutgoing()) {
+				ClusterItem cluster = getClusters().get(out);
+				if (cluster == this) {
+					continue;
+				}
+				if (cluster != null) {
+					edges.getChildren().add(new DrawableEdge(this, cluster));
+				}
+			}
 		}
 	}
 

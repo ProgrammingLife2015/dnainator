@@ -23,7 +23,8 @@ import nl.tudelft.dnainator.graph.Graph;
  */
 public abstract class ModelItem extends Group {
 	public static final int RANK_WIDTH = 10;
-	public static final int NO_CLUSTERS = 330;
+	public static final int NO_CLUSTERS = 3300;
+	public static final int NO_RANKS = 10;
 
 	private ModelItem parent;
 	private Group content;
@@ -64,8 +65,8 @@ public abstract class ModelItem extends Group {
 	 * Should be changed to ModelItems, so we can have edges to clusters.
 	 * @return	a map from id to drawable / modelitem
 	 */
-	public Map<String, NodeItem> getNodes() {
-		return getRoot().getNodes();
+	public Map<String, ClusterItem> getClusters() {
+		return getRoot().getClusters();
 	}
 
 	/**

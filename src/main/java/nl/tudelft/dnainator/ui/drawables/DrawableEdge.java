@@ -1,7 +1,7 @@
 package nl.tudelft.dnainator.ui.drawables;
 
 import javafx.scene.shape.Line;
-import nl.tudelft.dnainator.ui.models.NodeItem;
+import nl.tudelft.dnainator.ui.models.ClusterItem;
 import nl.tudelft.dnainator.ui.widgets.contexts.EdgeContext;
 
 /**
@@ -14,7 +14,7 @@ public class DrawableEdge extends Line {
 	 * @param src This edge's source node.
 	 * @param dest This edge's destination node.
 	 */
-	public DrawableEdge(NodeItem src, NodeItem dest) {
+	public DrawableEdge(ClusterItem src, ClusterItem dest) {
 		getStyleClass().add("drawable-edge");
 		setOnContextMenuRequested(e -> {
 			EdgeContext.getInstance().show(DrawableEdge.this, e.getScreenX(), e.getScreenY());
