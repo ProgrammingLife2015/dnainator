@@ -379,10 +379,12 @@ public final class Neo4jGraph implements Graph {
 		@Override
 		public Evaluation evaluate(Path path) {
 			Node end = path.endNode();
-			visited.add((String) end.getProperty(ID));
 			String sequence = (String) end.getProperty(SEQUENCE);
+			String id = (String) end.getProperty(ID);
 
-			if (sequence.length() < threshold) {
+			if (!visited.contains(id) &&
+					sequence.length() < threshold) {
+				visited.add(id);
 				return Evaluation.INCLUDE_AND_CONTINUE;
 			}
 			return Evaluation.EXCLUDE_AND_PRUNE;
@@ -435,7 +437,7 @@ public final class Neo4jGraph implements Graph {
 						if (visited.contains(out)) {
 							continue;
 						}
-						Cluster disjoint = getCluster(visited, out, threshold);
+						Cluster disjoint = getCluster(visited, out, Integer.MAX_VALUE);
 						result.putIfAbsent(disjoint.getStartRank(), new ArrayList<>());
 						result.get(disjoint.getStartRank()).add(disjoint);
 					}
