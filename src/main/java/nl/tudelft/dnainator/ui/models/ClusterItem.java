@@ -1,12 +1,8 @@
 package nl.tudelft.dnainator.ui.models;
 
-import javafx.beans.property.ObjectProperty;
 import javafx.geometry.Bounds;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.transform.Transform;
-import nl.tudelft.dnainator.graph.Graph;
-import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
 
 /**
  * The {@link ClusterItem} class represents the mid level object in the viewable model.
@@ -16,31 +12,19 @@ import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
 public class ClusterItem extends CompositeItem {
 	/**
 	 * Construct a new mid level {@link ClusterItem} using the default graph.
-	 * Since a {@link ClusterItem} is not at the root of the model,
-	 * it should bind its parent for correct positioning.
-	 * @param parent	the concatenated transfrom from root to parent
+	 * Every {@link ClusterItem} needs a reference to its parent.
+	 * @param parent	the parent of this {@link ClusterItem}
 	 */
-	public ClusterItem(ObjectProperty<Transform> parent) {
-		this(Neo4jSingleton.getInstance().getDatabase(), parent);
-	}
+	public ClusterItem(ModelItem parent) {
+		super(parent);
 
-	/**
-	 * Construct a new mid level {@link ClusterItem} using the default graph.
-	 * Since a {@link ClusterItem} is not at the root of the model,
-	 * it should bind its parent for correct positioning.
-	 * @param graph		the specified graph
-	 * @param parent	the concatenated transfrom from root to parent
-	 */
-	public ClusterItem(Graph graph, ObjectProperty<Transform> parent) {
-		super(graph);
-
-		bindLocalToRoot(parent);
+		bindLocalToRoot(parent.localToRootProperty());
 
 		getContent().getChildren().add(new Circle(CLUSTER_SIZE, Color.BLUE));
 
 		// FIXME: These should be lazily instantiated!
 		for (int i = 0; i < NO_RANKS; i++) {
-			RankItem si = new RankItem(getGraph(), localToRootProperty());
+			RankItem si = new RankItem(this);
 			si.setTranslateX(i * RANK_WIDTH);
 			getChildItems().add(si);
 		}

@@ -1,5 +1,8 @@
 package nl.tudelft.dnainator.ui.models;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
@@ -15,6 +18,9 @@ import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
 public class GraphItem extends CompositeItem {
 	private static final int FOUR = 4;
 
+	private Graph graph;
+	private Map<String, NodeItem> nodes;
+
 	/**
 	 * Construct a new top level {@link GraphItem} using the default graph.
 	 */
@@ -27,7 +33,9 @@ public class GraphItem extends CompositeItem {
 	 * @param graph	the specified graph
 	 */
 	public GraphItem(Graph graph) {
-		super(graph);
+		super(null);
+		this.graph = graph;
+		this.nodes = new HashMap<>();
 
 		localToRootProperty().set(new Translate());
 
@@ -42,10 +50,25 @@ public class GraphItem extends CompositeItem {
 
 		// FIXME: These should be lazily instantiated!
 		for (int i = 0; i < NO_CLUSTERS; i++) {
-			ClusterItem ci = new ClusterItem(getGraph(), localToRootProperty());
+			ClusterItem ci = new ClusterItem(this);
 			ci.setTranslateX(i * NO_RANKS * RANK_WIDTH);
 			getChildItems().add(ci);
 		}
+	}
+
+	@Override
+	public Graph getGraph() {
+		return graph;
+	}
+
+	@Override
+	public Map<String, NodeItem> getNodes() {
+		return nodes;
+	}
+
+	@Override
+	public ModelItem getRoot() {
+		return this;
 	}
 
 	@Override

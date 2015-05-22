@@ -1,5 +1,9 @@
 package nl.tudelft.dnainator.ui.models;
 
+
+
+import java.util.Map;
+
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -25,23 +29,22 @@ import nl.tudelft.dnainator.graph.Graph;
  */
 public abstract class ModelItem extends Pane {
 	public static final int CLUSTER_SIZE = 20;
-	public static final int RANK_SIZE = 3;
 	public static final int RANK_WIDTH = 10;
 
 	static final int NO_CLUSTERS = 330;
 	static final int NO_RANKS = 10;
 
-	private Graph graph;
+	private ModelItem parent;
 	private Group content;
 	private ObjectProperty<Transform> localToRoot;
 
 	/**
 	 * Base constructor for a {@link ModelItem}.
-	 * Every {@link ModelItem} needs a reference to its graph. 
-	 * @param graph	a {@link Graph}
+	 * Every {@link ModelItem} needs a reference to its parent.
+	 * @param parent	the parent of this {@link ModelItem}
 	 */
-	public ModelItem(Graph graph) {
-		this.graph = graph;
+	public ModelItem(ModelItem parent) {
+		this.parent = parent;
 		this.content = new Group();
 		this.localToRoot = new SimpleObjectProperty<>();
 
@@ -58,6 +61,7 @@ public abstract class ModelItem extends Pane {
 			{
 				super.bind(parent);
 				super.bind(localToParentTransformProperty());
+				localToRootProperty().set(computeValue());
 			}
 			@Override
 			protected Transform computeValue() {
@@ -80,7 +84,24 @@ public abstract class ModelItem extends Pane {
 	 * @return	the underlying graph
 	 */
 	public Graph getGraph() {
-		return graph;
+		return getRoot().getGraph();
+	}
+
+	/**
+	 * Return the underlying map of DrawableNodes.
+	 * Should be changed to ModelItems, so we can have edges to clusters.
+	 * @return	a map from id to drawable / modelitem
+	 */
+	public Map<String, NodeItem> getNodes() {
+		return getRoot().getNodes();
+	}
+
+	/**
+	 * Return the root of this {@link ModelItem}.
+	 * @return	the root {@link ModelItem}
+	 */
+	public ModelItem getRoot() {
+		return parent.getRoot();
 	}
 
 	/**
