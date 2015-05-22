@@ -1,7 +1,8 @@
 package nl.tudelft.dnainator;
 
-import javafx.application.Application;
+import com.sun.javafx.application.LauncherImpl;
 import nl.tudelft.dnainator.ui.DNAinator;
+import nl.tudelft.dnainator.ui.splashscreen.SplashScreen;
 
 /**
  * DNAinator's main entry point.
@@ -17,6 +18,6 @@ public final class Main {
 	 * @param args Command-line arguments, unused for now.
 	 */
 	public static void main(String[] args) {
-		Application.launch(DNAinator.class, args);
+		LauncherImpl.launchApplication(DNAinator.class, SplashScreen.class, args);
 	}
 }

@@ -28,3 +28,10 @@
 	-fx-graphic: url("/ui/dnainator.iconset/icon_16x16.png");
 	-fx-padding: 0 10 0 5;
 }
+
+.splash-version {
+	-fx-font-size: 14px;
+	-fx-fill: #FFFFFF;
+	-fx-font-smoothing-type: lcd;
+	-fx-font-family: Kalinga;
+}
