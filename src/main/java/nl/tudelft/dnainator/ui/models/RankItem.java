@@ -44,6 +44,6 @@ public class RankItem extends CompositeItem {
 		}
 
 		load();
-		update(b, Thresholds.CLUSTER);
+		update(b, Thresholds.GRAPH);
 	}
 }

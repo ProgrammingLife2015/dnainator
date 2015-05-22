@@ -47,9 +47,9 @@ public class GraphItem extends CompositeItem {
 	}
 
 	private void load() {
-		for (int i = 0; i < NO_CLUSTERS; i++) {
-			ClusterItem ci = new ClusterItem(this, i * RANK_WIDTH);
-			getChildItems().add(ci);
+		for (int i = 0; i < NO_CLUSTERS * 10; i++) {
+			RankItem r = new RankItem(this, i);
+			getChildItems().add(r);
 		}
 	}
 
