@@ -1,3 +1,5 @@
+@import "tango.css";
+
 .dialog-pane .button-bar {
 	-fx-border-color: #D4D4D4 #FFFFFF #FFFFFF #FFFFFF;
 }
@@ -41,3 +43,4 @@
 	-fx-font-size: 11px;
 	-fx-text-fill: #a8a8a8;
 }
+
