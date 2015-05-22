@@ -382,8 +382,9 @@ public final class Neo4jGraph implements Graph {
 			String sequence = (String) end.getProperty(SEQUENCE);
 			String id = (String) end.getProperty(ID);
 
-			if (!visited.contains(id) &&
-					sequence.length() < threshold) {
+			if (!visited.contains(id)
+					&& (path.startNode().getId() == path.endNode().getId()
+					|| sequence.length() < threshold)) {
 				visited.add(id);
 				return Evaluation.INCLUDE_AND_CONTINUE;
 			}
