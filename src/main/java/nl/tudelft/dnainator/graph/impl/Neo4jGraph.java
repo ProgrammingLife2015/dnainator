@@ -4,10 +4,15 @@ import static org.neo4j.helpers.collection.IteratorUtil.loop;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.Set;
 
 import nl.tudelft.dnainator.core.SequenceNode;
+import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.core.impl.SequenceNodeImpl;
 import nl.tudelft.dnainator.graph.Graph;
@@ -322,12 +327,12 @@ public final class Neo4jGraph implements Graph {
 		String sequence	= (String) node.getProperty(SEQUENCE);
 		int rank	= (int)    node.getProperty(RANK);
 
-		List<String> incoming	= new ArrayList<>();
-		for (Relationship e : loop(node.getRelationships(Direction.INCOMING).iterator())) {
-			incoming.add((String) e.getStartNode().getProperty("id"));
+		List<String> outgoing = new ArrayList<>();
+		for (Relationship e : loop(node.getRelationships(Direction.OUTGOING).iterator())) {
+			outgoing.add((String) e.getStartNode().getProperty(ID));
 		}
 
-		return new SequenceNodeImpl(id, source, startref, endref, sequence, rank, incoming);
+		return new SequenceNodeImpl(id, source, startref, endref, sequence, rank, outgoing);
 	}
 
 	@Override
@@ -364,38 +369,74 @@ public final class Neo4jGraph implements Graph {
 	 */
 	private static class ClusterEvaluator implements Evaluator {
 		private int threshold;
+		private Set<String> visited;
 
-		public ClusterEvaluator(int threshold) {
+		public ClusterEvaluator(int threshold, Set<String> visited) {
 			this.threshold = threshold;
+			this.visited = visited;
 		}
+
 		@Override
 		public Evaluation evaluate(Path path) {
 			Node end = path.endNode();
-			String sequence = (String) end.getProperty("sequence");
+			visited.add((String) end.getProperty(ID));
+			String sequence = (String) end.getProperty(SEQUENCE);
 
-			if (path.startNode().getId() == path.endNode().getId()
-					|| sequence.length() < threshold) {
+			if (sequence.length() < threshold) {
 				return Evaluation.INCLUDE_AND_CONTINUE;
 			}
 			return Evaluation.EXCLUDE_AND_PRUNE;
 		}
 	}
 
-	@Override
-	public List<SequenceNode> getCluster(String startId, int threshold) {
+	private Cluster getCluster(Set<String> visited, String id, int threshold) {
 		TraversalDescription cluster = service.traversalDescription()
 						.depthFirst()
-						.relationships(RelTypes.NEXT, Direction.OUTGOING)
-						.evaluator(new ClusterEvaluator(threshold));
+						.relationships(RelTypes.NEXT, Direction.BOTH)
+						.evaluator(new ClusterEvaluator(threshold, visited));
 
 		List<SequenceNode> list = new ArrayList<>();
+		Node start = service.findNode(nodeLabel, ID, id);
+		int rankStart = (int) start.getProperty(RANK);
+		for (Path p : cluster.traverse()) {
+			SequenceNode end = createSequenceNode(p.endNode());
+			if (end.getRank() < rankStart) {
+				rankStart = end.getRank();
+			}
+			list.add(end);
+		}
+		return new Cluster(rankStart, list);
+	}
+
+	@Override
+	public Map<Integer, List<Cluster>> getClusters(List<SequenceNode> startNodes, int threshold) {
+		List<Cluster> rootClusters = new ArrayList<Cluster>();
+		Map<Integer, List<Cluster>> result = new HashMap<Integer, List<Cluster>>();
+		Set<String> visited = new HashSet<>();
 		try (Transaction tx = service.beginTx()) {
-			Node root = service.findNode(nodeLabel, "id", startId);
-			for (Path p : cluster.traverse(root)) {
-				list.add(createSequenceNode(p.endNode()));
+			for (SequenceNode sn : startNodes) {
+				if (visited.contains(sn.getId())) {
+					continue;
+				}
+				Cluster c = getCluster(visited, sn.getId(), threshold);
+				result.putIfAbsent(c.getStartRank(), new ArrayList<>());
+				result.get(c.getStartRank()).add(c);
+				rootClusters.add(c);
+			}
+			for (Cluster c : rootClusters) {
+				for (SequenceNode sn : c.getNodes()) {
+					for (String out : sn.getOutgoing()) {
+						if (visited.contains(out)) {
+							continue;
+						}
+						Cluster disjoint = getCluster(visited, out, threshold);
+						result.putIfAbsent(disjoint.getStartRank(), new ArrayList<>());
+						result.get(disjoint.getStartRank()).add(disjoint);
+					}
+				}
 			}
 		}
-		return list;
+		return result;
 	}
 
 	@Override

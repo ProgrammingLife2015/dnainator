@@ -68,11 +68,12 @@ public class NodeItem extends ModelItem {
 
 	@Override
 	public void update(Bounds b) {
-		if (edges.getChildren().size() < getSequenceNode().getIncoming().size()) {
-			for (String e : node.getIncoming()) {
+		// FIXME: it's outgoing edges now
+		if (edges.getChildren().size() < getSequenceNode().getOutgoing().size()) {
+			for (String e : node.getOutgoing()) {
 				NodeItem o = getNodes().get(e);
 				if (o != null) {
-					edges.getChildren().add(new DrawableEdge(this, o));
+					edges.getChildren().add(new DrawableEdge(o, this));
 				}
 			}
 		}
