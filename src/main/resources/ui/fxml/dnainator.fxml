@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.*?>
 <?import nl.tudelft.dnainator.ui.views.*?>
 
-<BorderPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.dnainator.ui.controllers.WindowController">
+<BorderPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.dnainator.ui.controllers.WindowController">
    <top>
       <MenuBar useSystemMenuBar="true" BorderPane.alignment="CENTER">
         <menus>
@@ -91,8 +91,12 @@
       </MenuBar>
    </top>
    <center>
-      <ScrollPane fitToHeight="true" fitToWidth="true" pannable="true" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-          <View fx:id="view" />
-      </ScrollPane>
+      <SplitPane fx:id="splitPane" orientation="VERTICAL">
+         <items>
+            <View fx:id="view" />
+            <ScrollPane fx:id="phyloView" pannable="true" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+            </ScrollPane>
+         </items>
+      </SplitPane>
    </center>
 </BorderPane>

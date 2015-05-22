@@ -5,10 +5,13 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
+import nl.tudelft.dnainator.tree.TreeNode;
 import nl.tudelft.dnainator.ui.services.GraphLoadService;
 import nl.tudelft.dnainator.ui.services.NewickLoadService;
 import nl.tudelft.dnainator.ui.views.View;
+import nl.tudelft.dnainator.ui.widgets.PhylogeneticTree;
 import nl.tudelft.dnainator.ui.widgets.dialogs.AboutDialog;
 import nl.tudelft.dnainator.ui.widgets.dialogs.ExceptionDialog;
 import nl.tudelft.dnainator.ui.widgets.dialogs.OpenDialog;
@@ -26,6 +29,7 @@ import java.util.Optional;
 public class WindowController {
 	@FXML private BorderPane root;
 	@FXML private View view;
+	@FXML private ScrollPane phyloView;
 	private GraphLoadService graphLoadService;
 	private NewickLoadService newickLoadService;
 	private ProgressDialog progressDialog;
@@ -48,6 +52,10 @@ public class WindowController {
 		newickLoadService.setOnFailed(e ->
 				new ExceptionDialog(root, newickLoadService.getException(),
 						"Error loading newick file!"));
+		newickLoadService.setOnSucceeded(e -> {
+			TreeNode rootNode = newickLoadService.getValue();
+			phyloView.setContent(new PhylogeneticTree(rootNode));
+		});
 	}
 
 	@FXML
@@ -85,7 +93,7 @@ public class WindowController {
 		AboutDialog about = new AboutDialog(root);
 		about.showAndWait();
 	}
-	
+
 	@FXML
 	private void exitAction(ActionEvent e) {
 		Platform.exit();
