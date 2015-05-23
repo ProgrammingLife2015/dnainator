@@ -5,6 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import nl.tudelft.dnainator.tree.TreeNode;
@@ -60,6 +61,9 @@ public class WindowController {
 
 	@FXML
 	private void openButtonAction(ActionEvent e) {
+		/* Can be safely cast as this action only belongs to a MenuItem defined in the FXML. */
+		((MenuItem) e.getSource()).setDisable(true);
+
 		progressDialog = new ProgressDialog(root, graphLoadService);
 		Optional<ButtonType> result = new OpenDialog(root, graphLoadService, newickLoadService)
 				.showAndWait();
@@ -68,6 +72,8 @@ public class WindowController {
 		} else {
 			reset();
 		}
+
+		((MenuItem) e.getSource()).setDisable(false);
 	}
 
 	private void restart() {
