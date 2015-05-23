@@ -3,6 +3,7 @@ package nl.tudelft.dnainator.ui.controllers;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -13,9 +14,8 @@ import nl.tudelft.dnainator.ui.views.View;
  * Controller class for all graph interaction.
  */
 public class ViewController {
-	private static final double ZOOM_FACTOR = 1e-3;
-	private static final int X_DELTA = 30;
-	private static final int Y_DELTA = 15;
+	private static final int X_DELTA = 40;
+	private static final int Y_DELTA = 20;
 	private static final double SCROLLSPEED_INC = 0.3;
 	private static final int MAX_SCROLL_FACTOR = 4;
 
@@ -47,34 +47,47 @@ public class ViewController {
 
 	@FXML
 	private void onScroll(ScrollEvent e) {
-		view.zoom(e.getDeltaY() * ZOOM_FACTOR, new Point2D(e.getX(), e.getY()));
+		view.zoom(e.getDeltaY(), new Point2D(e.getX(), e.getY()));
 	}
 
 	@FXML
 	private void onKeyPressed(KeyEvent e) {
-		scrollSpeedFactor = Math.min(scrollSpeedFactor + SCROLLSPEED_INC, MAX_SCROLL_FACTOR);
-		Point2D cur = new Point2D(view.getTranslateX(), view.getTranslateY());
+		KeyCode key = e.getCode();
 
-		switch (e.getCode()) {
+		if (key.isArrowKey()) {
+			scrollTo(key);
+		} else if (key == KeyCode.PLUS || key == KeyCode.EQUALS) {
+			view.zoomIn();
+		} else if (key == KeyCode.MINUS) {
+			view.zoomOut();
+		}
+	}
+
+	private void scrollTo(KeyCode keyCode) {
+		scrollSpeedFactor = Math.min(scrollSpeedFactor + SCROLLSPEED_INC, MAX_SCROLL_FACTOR);
+
+		switch (keyCode) {
 			case LEFT:
-				view.pan(cur.add(X_DELTA * scrollSpeedFactor, 0));
-				break;
+				view.pan(new Point2D(X_DELTA * scrollSpeedFactor, 0));
+				return;
 			case RIGHT:
-				view.pan(cur.add(-X_DELTA * scrollSpeedFactor, 0));
-				break;
+				view.pan(new Point2D(-X_DELTA * scrollSpeedFactor, 0));
+				return;
 			case UP:
-				view.pan(cur.add(0, Y_DELTA * scrollSpeedFactor));
-				break;
+				view.pan(new Point2D(0, Y_DELTA * scrollSpeedFactor));
+				return;
 			case DOWN:
-				view.pan(cur.add(0, -Y_DELTA * scrollSpeedFactor));
-				break;
+				view.pan(new Point2D(0, -Y_DELTA * scrollSpeedFactor));
+				return;
 			default:
-				break;
+				return;
 		}
 	}
 
 	@FXML
 	private void onKeyReleased(KeyEvent e) {
-		scrollSpeedFactor = 1;
+		if (e.getCode().isArrowKey()) {
+			scrollSpeedFactor = 1;
+		}
 	}
 }
