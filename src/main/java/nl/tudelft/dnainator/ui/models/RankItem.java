@@ -21,17 +21,18 @@ public class RankItem extends CompositeItem {
 	 */
 	public RankItem(ModelItem parent, int rank, List<Cluster> clusters) {
 		super(parent, rank);
-		
+
 		this.clusters = clusters;
 		getContent().setTranslateX(rank * RANK_WIDTH);
 	}
 
 	private void load() {
+		System.out.println("loading: " + getRank());
 		if (getChildItems().size() == 0) {
 			for (int i = 0; i < clusters.size(); i++) {
 				ClusterItem c = new ClusterItem(this, getRank(), clusters.get(i).getNodes());
-				c.setTranslateX(getRank() * RANK_WIDTH);
-				c.setTranslateY(i * RANK_WIDTH - clusters.size() * RANK_WIDTH / 2);
+				c.getContent().setTranslateX(getRank() * RANK_WIDTH);
+				c.getContent().setTranslateY(i * RANK_WIDTH - clusters.size() * RANK_WIDTH / 2);
 				getChildItems().add(c);
 			}
 		}

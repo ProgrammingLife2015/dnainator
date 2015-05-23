@@ -39,12 +39,12 @@ public class GraphItem extends CompositeItem {
 		this.clusters = new HashMap<>();
 
 		for (int i = 0; i < FOUR; i++) {
-			int width = NO_CLUSTERS * RANK_WIDTH * RANK_WIDTH / FOUR;
+			int width = NO_CLUSTERS * RANK_WIDTH / FOUR;
 			Rectangle r = new Rectangle(width, RANK_WIDTH, Color.BLACK);
 			r.setTranslateX(i * width);
 			getContent().getChildren().add(r);
 		}
-
+		load();
 	}
 
 	private void load() {

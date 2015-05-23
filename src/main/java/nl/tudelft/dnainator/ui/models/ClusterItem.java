@@ -2,12 +2,12 @@ package nl.tudelft.dnainator.ui.models;
 
 import java.util.List;
 
-import nl.tudelft.dnainator.core.SequenceNode;
-import nl.tudelft.dnainator.ui.drawables.DrawableEdge;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import nl.tudelft.dnainator.core.SequenceNode;
+import nl.tudelft.dnainator.ui.drawables.DrawableEdge;
 
 /**
  * The {@link ClusterItem} class represents the mid level object in the viewable model.
@@ -31,13 +31,14 @@ public class ClusterItem extends ModelItem {
 		this.clustered = clustered;
 		this.edges = new Group();
 
-		// Point for each node the cluster it is in.
-		clustered.forEach(node -> getClusters().put(node.getId(), this));
 		Circle c = new Circle(CLUSTER_SIZE * clustered.size(), Color.BLUE);
+		c.setOnMouseClicked(e -> System.out.println(clustered));
+
 		getContent().getChildren().add(edges);
 		getContent().getChildren().add(c);
 
-		c.setOnMouseClicked(e -> System.out.println(clustered));
+		// Point for each node the cluster it is in.
+		clustered.forEach(node -> getClusters().put(node.getId(), this));
 	}
 
 	private void load() {
@@ -69,5 +70,4 @@ public class ClusterItem extends ModelItem {
 	public List<SequenceNode> getClustered() {
 		return clustered;
 	}
-
 }

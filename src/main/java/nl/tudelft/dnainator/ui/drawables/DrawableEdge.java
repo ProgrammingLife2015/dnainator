@@ -21,7 +21,7 @@ public class DrawableEdge extends Line {
 			e.consume();
 		});
 		
-		startXProperty().bind(dest.translateXProperty().subtract(src.translateXProperty()));
-		startYProperty().bind(dest.translateYProperty().subtract(src.translateYProperty()));
+		endXProperty().bind(dest.getContent().translateXProperty().subtract(src.getContent().translateXProperty()));
+		endYProperty().bind(dest.getContent().translateYProperty().subtract(src.getContent().translateYProperty()));
 	}
 }
