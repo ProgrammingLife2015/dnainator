@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import javafx.application.Platform;
 import nl.tudelft.dnainator.ui.widgets.dialogs.ExceptionDialog;
 import javafx.application.Preloader;
 import javafx.scene.Scene;
@@ -40,8 +41,19 @@ public class SplashScreen extends Preloader {
 	}
 
 	@Override
+	public boolean handleErrorNotification(ErrorNotification info) {
+		new ExceptionDialog(null, info.getCause(),
+				"Could not launch the application!");
+		Platform.exit();
+		return false;
+	}
+
+	@Override
 	public void handleApplicationNotification(PreloaderNotification info) {
 		stage.hide();
+		if (info instanceof ErrorNotification) {
+			handleErrorNotification((ErrorNotification) info);
+		}
 	}
 
 	private Scene createPreloaderScene() {
