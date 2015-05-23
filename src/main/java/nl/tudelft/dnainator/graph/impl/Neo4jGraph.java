@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Queue;
 import java.util.Set;
 
 import nl.tudelft.dnainator.core.SequenceNode;
@@ -142,6 +143,8 @@ public final class Neo4jGraph implements Graph {
 			node.setProperty(SEQUENCE, s.getSequence());
 			node.setProperty(SOURCE, s.getSource());
 			node.setProperty(RANK, 0);
+			node.setProperty("size", s.getSequence().length());
+			node.setProperty("cluster", 0);
 
 			tx.success();
 		}
@@ -376,6 +379,13 @@ public final class Neo4jGraph implements Graph {
 			this.visited = visited;
 		}
 
+		/**
+		 * Evaluates a node and determines whether to include and / or continue.
+		 * Continues on and returns exactly those nodes that:
+		 * - haven't been visited yet and
+		 *   - are the start node
+		 *   - have a sequence < threshold (and thus belong to the same cluster)
+		 */
 		@Override
 		public Evaluation evaluate(Path path) {
 			Node end = path.endNode();
@@ -394,11 +404,11 @@ public final class Neo4jGraph implements Graph {
 
 	protected List<SequenceNode> getCluster(String id, int threshold) {
 		try (Transaction tx = service.beginTx()) {
-			return getCluster(new HashSet<String>(), id, threshold).getNodes();
+			return getCluster(new HashSet<String>(), id, threshold, 0).getNodes();
 		}
 	}
 
-	private Cluster getCluster(Set<String> visited, String id, int threshold) {
+	private Cluster getCluster(Set<String> visited, String id, int threshold, int clusterid) {
 		TraversalDescription cluster = service.traversalDescription()
 						.depthFirst()
 						.relationships(RelTypes.NEXT, Direction.BOTH)
@@ -413,38 +423,51 @@ public final class Neo4jGraph implements Graph {
 				rankStart = end.getRank();
 			}
 			list.add(end);
+
+			p.endNode().setProperty("cluster", clusterid);
 		}
+
 		return new Cluster(rankStart, list);
 	}
 
 	@Override
 	public Map<Integer, List<Cluster>> getClusters(List<SequenceNode> startNodes, int threshold) {
-		List<Cluster> rootClusters = new ArrayList<Cluster>();
+		Queue<Cluster> rootClusters = new LinkedList<Cluster>();
 		Map<Integer, List<Cluster>> result = new HashMap<Integer, List<Cluster>>();
 		Set<String> visited = new HashSet<>();
+		int clusterid = 0;
+
 		try (Transaction tx = service.beginTx()) {
 			for (SequenceNode sn : startNodes) {
 				if (visited.contains(sn.getId())) {
 					continue;
 				}
-				Cluster c = getCluster(visited, sn.getId(), threshold);
+				Cluster c = getCluster(visited, sn.getId(), threshold, clusterid++);
 				result.putIfAbsent(c.getStartRank(), new ArrayList<>());
 				result.get(c.getStartRank()).add(c);
 				rootClusters.add(c);
 			}
-			for (Cluster c : rootClusters) {
+			while (!rootClusters.isEmpty()) {
+				Cluster c = rootClusters.poll();
 				for (SequenceNode sn : c.getNodes()) {
 					for (String out : sn.getOutgoing()) {
 						if (visited.contains(out)) {
 							continue;
 						}
-						Cluster disjoint = getCluster(visited, out, Integer.MAX_VALUE);
+
+						Cluster disjoint = getCluster(visited, out, threshold, clusterid++);
 						result.putIfAbsent(disjoint.getStartRank(), new ArrayList<>());
 						result.get(disjoint.getStartRank()).add(disjoint);
+						rootClusters.add(disjoint);
+
+						tx.success();
 					}
 				}
 			}
+
+			tx.success();
 		}
+
 		return result;
 	}
 

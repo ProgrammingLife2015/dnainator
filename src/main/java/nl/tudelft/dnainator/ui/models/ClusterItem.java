@@ -14,8 +14,8 @@ import javafx.scene.shape.Circle;
  * Just like the {@link GraphItem} class, it's a {@link CompositeItem},
  * that can hold both content and children.
  */
-public class ClusterItem extends CompositeItem {
-	private static final int CLUSTER_SIZE = 20;
+public class ClusterItem extends ModelItem {
+	private static final int CLUSTER_SIZE = 3;
 	private List<SequenceNode> clustered;
 	private Group edges;
 
@@ -30,17 +30,17 @@ public class ClusterItem extends CompositeItem {
 		super(parent, rank);
 		this.clustered = clustered;
 		this.edges = new Group();
+
 		// Point for each node the cluster it is in.
 		clustered.forEach(node -> getClusters().put(node.getId(), this));
-		getContent().setTranslateX(rank * RANK_WIDTH);
+		Circle c = new Circle(CLUSTER_SIZE * clustered.size(), Color.BLUE);
 		getContent().getChildren().add(edges);
-		getContent().getChildren().add(new Circle(CLUSTER_SIZE, Color.BLUE));
+		getContent().getChildren().add(c);
+
+		c.setOnMouseClicked(e -> System.out.println(clustered));
 	}
 
 	private void load() {
-		if (getChildItems().size() != 0) {
-			return;
-		}
 		for (SequenceNode sn : clustered) {
 			for (String out : sn.getOutgoing()) {
 				ClusterItem cluster = getClusters().get(out);
@@ -61,7 +61,6 @@ public class ClusterItem extends CompositeItem {
 		}
 
 		load();
-		update(b, Thresholds.CLUSTER);
 	}
 
 	/**

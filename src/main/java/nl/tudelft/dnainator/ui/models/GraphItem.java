@@ -3,7 +3,6 @@ package nl.tudelft.dnainator.ui.models;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javafx.geometry.Bounds;
 import javafx.scene.paint.Color;
@@ -48,28 +47,13 @@ public class GraphItem extends CompositeItem {
 
 	}
 
-	private void load(int rankStart, int rankEnd) {
-		if (rankStart < 0) {
-			rankStart = 0;
-		}
-		if (rankEnd > NO_RANKS) {
-			rankEnd = NO_RANKS;
-		}
+	private void load() {
+		System.out.println("load iteration");
 
-		while (rankStart <= rankEnd) {
-			List<SequenceNode> roots = getGraph().getRank(rankStart);
-			Map<Integer, List<Cluster>> clusters = getGraph().getClusters(roots, 2000);
-			int maxRank = rankStart;
-			for (Entry<Integer, List<Cluster>> rankedClusters : clusters.entrySet()) {
-				int clusterRank = rankedClusters.getKey();
-				if (clusterRank > maxRank) {
-					maxRank = clusterRank;
-				}
-				RankItem r = new RankItem(this, clusterRank, rankedClusters.getValue());
-				getChildItems().add(r);
-			}
-			rankStart = maxRank;
-		}
+		List<SequenceNode> roots = getGraph().getRank(0);
+		Map<Integer, List<Cluster>> clusters = getGraph().getClusters(roots, 1000);
+
+		clusters.forEach((k, v) -> getChildItems().add(new RankItem(this, k, v)));
 	}
 
 	@Override
@@ -89,13 +73,6 @@ public class GraphItem extends CompositeItem {
 
 	@Override
 	public void update(Bounds b) {
-		if (!isInViewport(b)) {
-			return;
-		}
-		int start = (int) b.getMinX() / RANK_WIDTH;
-		int end = (int) b.getMaxX() / RANK_WIDTH;
-		System.out.println(start + " to " + end);
-		load(start, end);
 		update(b, Thresholds.GRAPH);
 	}
 }

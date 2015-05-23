@@ -95,8 +95,7 @@ public class SequenceNodeImpl implements SequenceNode {
 
 	@Override
 	public String toString() {
-		return "SequenceNode<" + getId() + "," + getSource() + ","
-				+ getStartRef() + "," + getEndRef() + "," + getSequence() + ">";
+		return "SequenceNode<" + getId() + "," + sequence.length() + ">";
 	}
 
 	@Override

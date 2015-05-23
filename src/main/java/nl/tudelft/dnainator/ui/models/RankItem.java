@@ -27,7 +27,6 @@ public class RankItem extends CompositeItem {
 	}
 
 	private void load() {
-		System.out.println("loading: " + getRank());
 		if (getChildItems().size() == 0) {
 			for (int i = 0; i < clusters.size(); i++) {
 				ClusterItem c = new ClusterItem(this, getRank(), clusters.get(i).getNodes());
