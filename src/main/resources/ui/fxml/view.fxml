@@ -4,6 +4,6 @@
 <?import javafx.scene.*?>
 <?import javafx.scene.layout.*?>
 
-<fx:root fx:id="view" onMouseDragged="#onMouseDragged" onMousePressed="#onMousePressed" onScroll="#onScroll" type="javafx.scene.layout.Pane" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.dnainator.ui.controllers.ViewController">
+<fx:root fx:id="view" onKeyPressed="#onKeyPressed" onKeyReleased="#onKeyReleased" onMouseDragged="#onMouseDragged" onMousePressed="#onMousePressed" onScroll="#onScroll" type="javafx.scene.layout.Pane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.dnainator.ui.controllers.ViewController">
     <Group fx:id="group" />
 </fx:root>
