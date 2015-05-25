@@ -26,7 +26,8 @@ public class RankItem extends CompositeItem {
 		getContent().setTranslateX(rank * RANK_WIDTH);
 	}
 
-	private void load() {
+	@Override
+	public void loadChildren() {
 		System.out.println("loading: " + getRank());
 		if (getChildItems().size() == 0) {
 			for (int i = 0; i < clusters.size(); i++) {
@@ -44,7 +45,6 @@ public class RankItem extends CompositeItem {
 			return;
 		}
 
-		load();
 		update(b, Thresholds.GRAPH);
 	}
 }

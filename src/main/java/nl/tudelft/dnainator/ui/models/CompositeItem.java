@@ -46,6 +46,8 @@ public abstract class CompositeItem extends ModelItem {
 		return children;
 	}
 
+	public abstract void loadChildren();
+
 	/**
 	 * Toggle between displaying own content or children.
 	 * @param visible	true for visible
@@ -56,6 +58,7 @@ public abstract class CompositeItem extends ModelItem {
 			getContent().setVisible(true);
 		}
 		if (!visible && getContent().isVisible()) {
+			loadChildren();
 			getContent().setVisible(false);
 			getChildContent().getChildren().addAll(getChildItems());
 		}

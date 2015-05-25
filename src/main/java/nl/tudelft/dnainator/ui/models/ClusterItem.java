@@ -31,7 +31,7 @@ public class ClusterItem extends ModelItem {
 		this.clustered = clustered;
 		this.edges = new Group();
 
-		Circle c = new Circle(CLUSTER_SIZE * clustered.size(), Color.BLUE);
+		Circle c = new Circle(CLUSTER_SIZE, Color.BLUE);
 		c.setOnMouseClicked(e -> System.out.println(clustered));
 
 		getContent().getChildren().add(edges);
@@ -42,6 +42,7 @@ public class ClusterItem extends ModelItem {
 	}
 
 	private void load() {
+		edges.getChildren().clear();
 		for (SequenceNode sn : clustered) {
 			for (String out : sn.getOutgoing()) {
 				ClusterItem cluster = getClusters().get(out);

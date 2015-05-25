@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import javafx.geometry.Bounds;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
@@ -45,17 +44,6 @@ public class GraphItem extends CompositeItem {
 			r.setTranslateX(i * width);
 			getContent().getChildren().add(r);
 		}
-		load();
-	}
-
-	private void load() {
-		System.out.println("load iteration");
-
-		List<String> roots = getGraph().getRank(0).stream()
-						.map(e -> e.getId()).collect(Collectors.toList());
-		Map<Integer, List<Cluster>> clusters = getGraph().getClusters(roots, 1000);
-
-		clusters.forEach((k, v) -> getChildItems().add(new RankItem(this, k, v)));
 	}
 
 	@Override
@@ -72,6 +60,19 @@ public class GraphItem extends CompositeItem {
 	public ModelItem getRoot() {
 		return this;
 	}
+
+	@Override
+	public void loadChildren() {
+		System.out.println("load iteration");
+		getChildItems().clear();
+		getChildContent().getChildren().clear();
+
+		List<String> roots = getGraph().getRank(0).stream()
+						.map(e -> e.getId()).collect(Collectors.toList());
+		Map<Integer, List<Cluster>> clusters = getGraph().getClusters(roots, 1);
+
+		clusters.forEach((k, v) -> getChildItems().add(new RankItem(this, k, v)));
+	};
 
 	@Override
 	public void update(Bounds b) {
