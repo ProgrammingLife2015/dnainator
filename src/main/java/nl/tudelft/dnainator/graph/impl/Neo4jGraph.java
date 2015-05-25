@@ -4,11 +4,13 @@ import static org.neo4j.helpers.collection.IteratorUtil.loop;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 
@@ -456,8 +458,11 @@ public final class Neo4jGraph implements Graph {
 	}
 
 	@Override
-	public Map<Integer, List<Cluster>> getClusters(List<String> startNodes, int threshold) {
-		Queue<Cluster> rootClusters = new LinkedList<Cluster>();
+	public Map<Integer, List<Cluster>> getClusters(List<String> startNodes,
+							int end, int threshold) {
+		Queue<Cluster> rootClusters = new PriorityQueue<>((e1, e2) -> 
+			e1.getStartRank() - e2.getStartRank()
+		);
 		Set<String> visited = new HashSet<>();
 		Map<Integer, List<Cluster>> result = new HashMap<Integer, List<Cluster>>();
 
@@ -468,6 +473,9 @@ public final class Neo4jGraph implements Graph {
 			// Find adjacent clusters as long as there are root clusters in the queue
 			while (!rootClusters.isEmpty()) {
 				Cluster c = rootClusters.poll();
+				if (c.getStartRank() > end) {
+					break;
+				}
 				// TODO: Might want to introduce a QueryResult class instead of this map
 				result.putIfAbsent(c.getStartRank(), new ArrayList<>());
 				result.get(c.getStartRank()).add(c);
@@ -479,7 +487,6 @@ public final class Neo4jGraph implements Graph {
 
 			tx.success();
 		}
-
 		return result;
 	}
 

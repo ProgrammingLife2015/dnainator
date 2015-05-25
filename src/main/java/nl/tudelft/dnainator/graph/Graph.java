@@ -69,5 +69,5 @@ public interface Graph extends GraphBuilder {
 	 * @param threshold		the clustering threshold
 	 * @return		a list representing the cluster
 	 */
-	Map<Integer, List<Cluster>> getClusters(List<String> startNodes, int threshold);
+	Map<Integer, List<Cluster>> getClusters(List<String> startNodes, int end, int threshold);
 }
