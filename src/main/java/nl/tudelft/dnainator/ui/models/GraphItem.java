@@ -3,6 +3,7 @@ package nl.tudelft.dnainator.ui.models;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javafx.geometry.Bounds;
 import javafx.scene.paint.Color;
@@ -50,7 +51,8 @@ public class GraphItem extends CompositeItem {
 	private void load() {
 		System.out.println("load iteration");
 
-		List<SequenceNode> roots = getGraph().getRank(0);
+		List<String> roots = getGraph().getRank(0).stream()
+						.map(e -> e.getId()).collect(Collectors.toList());
 		Map<Integer, List<Cluster>> clusters = getGraph().getClusters(roots, 1000);
 
 		clusters.forEach((k, v) -> getChildItems().add(new RankItem(this, k, v)));

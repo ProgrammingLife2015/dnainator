@@ -2,6 +2,8 @@ package nl.tudelft.dnainator.graph;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
 
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
@@ -54,9 +56,18 @@ public interface Graph extends GraphBuilder {
 
 	/**
 	 * Return a list of nodes that belong to the same cluster as the given startId.
+	 * @param visited	nodes that were already visited
 	 * @param startNodes	the start nodes
 	 * @param threshold		the clustering threshold
 	 * @return		a list representing the cluster
 	 */
-	Map<Integer, List<Cluster>> getClusters(List<SequenceNode> startNodes, int threshold);
+	Queue<Cluster> getClusters(Set<String> visited, List<String> startNodes, int threshold);
+
+	/**
+	 * Return a list of nodes that belong to the same cluster as the given startId.
+	 * @param startNodes	the start nodes
+	 * @param threshold		the clustering threshold
+	 * @return		a list representing the cluster
+	 */
+	Map<Integer, List<Cluster>> getClusters(List<String> startNodes, int threshold);
 }

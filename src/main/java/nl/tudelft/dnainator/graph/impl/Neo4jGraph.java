@@ -404,64 +404,76 @@ public final class Neo4jGraph implements Graph {
 
 	protected List<SequenceNode> getCluster(String id, int threshold) {
 		try (Transaction tx = service.beginTx()) {
-			return getCluster(new HashSet<String>(), id, threshold, 0).getNodes();
+			return getCluster(new HashSet<String>(), id, threshold).getNodes();
 		}
 	}
 
-	private Cluster getCluster(Set<String> visited, String id, int threshold, int clusterid) {
+	private Cluster getCluster(Set<String> visited, String id, int threshold) {
+		Node startNode = service.findNode(nodeLabel, ID, id);
+		List<SequenceNode> result = new ArrayList<>();
+
+		// A depth first traversal traveling along both incoming and outgoing edges.
 		TraversalDescription cluster = service.traversalDescription()
 						.depthFirst()
 						.relationships(RelTypes.NEXT, Direction.BOTH)
 						.evaluator(new ClusterEvaluator(threshold, visited));
 
-		List<SequenceNode> list = new ArrayList<>();
-		Node start = service.findNode(nodeLabel, ID, id);
-		int rankStart = (int) start.getProperty(RANK);
-		for (Path p : cluster.traverse(start)) {
-			SequenceNode end = createSequenceNode(p.endNode());
+		// Traverse the cluster starting from the startNode.
+		int rankStart = (int) startNode.getProperty(RANK);
+		for (Node n : cluster.traverse(startNode).nodes()) {
+			SequenceNode end = createSequenceNode(n);
+			result.add(end);
+
+			// Update this cluster's start rank according to the lowest node rank.
 			if (end.getRank() < rankStart) {
 				rankStart = end.getRank();
 			}
-			list.add(end);
-
-			p.endNode().setProperty("cluster", clusterid);
 		}
 
-		return new Cluster(rankStart, list);
+		return new Cluster(rankStart, result);
 	}
 
 	@Override
-	public Map<Integer, List<Cluster>> getClusters(List<SequenceNode> startNodes, int threshold) {
+	public Queue<Cluster> getClusters(Set<String> visited, List<String> startNodes, int threshold) {
 		Queue<Cluster> rootClusters = new LinkedList<Cluster>();
-		Map<Integer, List<Cluster>> result = new HashMap<Integer, List<Cluster>>();
-		Set<String> visited = new HashSet<>();
-		int clusterid = 0;
 
 		try (Transaction tx = service.beginTx()) {
-			for (SequenceNode sn : startNodes) {
-				if (visited.contains(sn.getId())) {
+			for (String sn : startNodes) {
+				// Continue if this startNode was consumed by another cluster
+				if (visited.contains(sn)) {
 					continue;
 				}
-				Cluster c = getCluster(visited, sn.getId(), threshold, clusterid++);
-				result.putIfAbsent(c.getStartRank(), new ArrayList<>());
-				result.get(c.getStartRank()).add(c);
+
+				// Otherwise get the cluster starting from this startNode
+				Cluster c = getCluster(visited, sn, threshold);
 				rootClusters.add(c);
 			}
+
+			tx.success();
+		}
+
+		return rootClusters;
+	}
+
+	@Override
+	public Map<Integer, List<Cluster>> getClusters(List<String> startNodes, int threshold) {
+		Queue<Cluster> rootClusters = new LinkedList<Cluster>();
+		Set<String> visited = new HashSet<>();
+		Map<Integer, List<Cluster>> result = new HashMap<Integer, List<Cluster>>();
+
+		try (Transaction tx = service.beginTx()) {
+			// Retrieve the root clusters starting from the startNodes and add them to the queue
+			rootClusters.addAll(getClusters(visited, startNodes, threshold));
+
+			// Find adjacent clusters as long as there are root clusters in the queue
 			while (!rootClusters.isEmpty()) {
 				Cluster c = rootClusters.poll();
+				// TODO: Might want to introduce a QueryResult class instead of this map
+				result.putIfAbsent(c.getStartRank(), new ArrayList<>());
+				result.get(c.getStartRank()).add(c);
+
 				for (SequenceNode sn : c.getNodes()) {
-					for (String out : sn.getOutgoing()) {
-						if (visited.contains(out)) {
-							continue;
-						}
-
-						Cluster disjoint = getCluster(visited, out, threshold, clusterid++);
-						result.putIfAbsent(disjoint.getStartRank(), new ArrayList<>());
-						result.get(disjoint.getStartRank()).add(disjoint);
-						rootClusters.add(disjoint);
-
-						tx.success();
-					}
+					rootClusters.addAll(getClusters(visited, sn.getOutgoing(), threshold));
 				}
 			}
 
