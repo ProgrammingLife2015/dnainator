@@ -13,18 +13,15 @@ public class ProgressDialog extends Alert {
 	private static final int PROGRESSBAR_WIDTH = 300;
 	private Node parent;
 	private ProgressBar progressBar;
-	private Service<?> service;
 
 	/**
 	 * Sets up the {@link Alert}, using the {@link Service} provided.
 	 * When the service has succeeded, the alert is closed.
 	 * @param parent The parent Node of this dialog.
-	 * @param service The service to be monitored.
 	 */
-	public ProgressDialog(Node parent, Service<?> service) {
+	public ProgressDialog(Node parent) {
 		super(AlertType.NONE);
 		this.parent = parent;
-		this.service = service;
 		setupProgressBar();
 		setupAlert();
 	}
@@ -41,15 +38,5 @@ public class ProgressDialog extends Alert {
 	private void setupProgressBar() {
 		progressBar = new ProgressBar();
 		progressBar.setPrefWidth(PROGRESSBAR_WIDTH);
-	}
-
-	/**
-	 * Shows the {@link Alert} if it is not null. If the cancel button is pressed,
-	 * the database is safely closed.
-	 * FIXME: ugly public path
-	 */
-	public void showDialog() {
-		this.showAndWait().filter(response -> response == ButtonType.CANCEL)
-				.ifPresent(response -> service.cancel());
 	}
 }
