@@ -57,10 +57,11 @@ public class PhylogeneticView extends Pane {
 		// Draw all children and attach an outgoing edge.
 		for (int i = 0; i < children.size(); i++) {
 			PhylogeneticNode node = draw(children.get(i), x + LEVELWIDTH, y + (i * LEAFHEIGHT));
+			PhylogeneticEdge edge = new PhylogeneticEdge(node);
+
 			drawnChildren.add(node);
-			PhylogeneticEdge edge = new PhylogeneticEdge(node, x);
 			node.setIncomingEdge(edge);
-			getChildren().addAll(node, edge);
+			getChildren().addAll(edge, node);
 		}
 
 		PhylogeneticNode first = drawnChildren.get(0);

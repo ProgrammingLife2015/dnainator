@@ -13,12 +13,10 @@ public class PhylogeneticEdge extends Path {
 	private VLineTo vline;
 
 	/**
-	 * Constructs a new {@link PhylogeneticEdge}, starting at the provided
-	 * {@link PhylogeneticNode}, extending to <code>levelWidth</code>.
+	 * Constructs a new {@link PhylogeneticEdge}, ending at the provided {@link PhylogeneticNode}.
 	 * @param dst This edge's destination node.
-	 * @param levelWidth This edge's width.
 	 */
-	public PhylogeneticEdge(PhylogeneticNode dst, double levelWidth) {
+	public PhylogeneticEdge(PhylogeneticNode dst) {
 		// Set start point of the Path.
 		MoveTo m = new MoveTo();
 		m.xProperty().bindBidirectional(dst.centerXProperty());
@@ -26,10 +24,10 @@ public class PhylogeneticEdge extends Path {
 		getElements().add(m);
 
 		// Add the horizontal line, starting at the path's start point.
-		hline = new HLineTo(levelWidth);
+		hline = new HLineTo();
 		getElements().add(hline);
 
-		// Add the vertical line, starting at the path's horizontal line's end point.
+		// Add the vertical line, starting at the horizontal line's end point.
 		vline = new VLineTo();
 		getElements().add(vline);
 
@@ -37,10 +35,12 @@ public class PhylogeneticEdge extends Path {
 	}
 
 	/**
-	 * Binds this {@link PhylogeneticEdge}'s vertical line to <code>src</code>.
-	 * @param src The {@link PhylogeneticNode} to bind this {@link VLineTo}'s end value to.
+	 * Binds this {@link PhylogeneticEdge}'s vertical and horizontal lines' end points
+	 * to <code>src</code>.
+	 * @param src The {@link PhylogeneticNode} to bind the end points to.
 	 */
 	public void bindTo(PhylogeneticNode src) {
 		vline.yProperty().bindBidirectional(src.centerYProperty());
+		hline.xProperty().bindBidirectional(src.centerXProperty());
 	}
 }
