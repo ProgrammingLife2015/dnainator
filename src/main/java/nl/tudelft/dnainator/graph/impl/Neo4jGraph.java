@@ -10,7 +10,6 @@ import static nl.tudelft.dnainator.graph.impl.PropertyTypes.STARTREF;
 import static org.neo4j.helpers.collection.IteratorUtil.loop;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,7 +20,6 @@ import java.util.Set;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.core.impl.Edge;
-import nl.tudelft.dnainator.core.impl.SequenceNodeImpl;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.command.Command;
 import nl.tudelft.dnainator.graph.impl.command.IndexCommand;
@@ -29,13 +27,13 @@ import nl.tudelft.dnainator.graph.impl.command.RankCommand;
 import nl.tudelft.dnainator.graph.impl.query.AllClustersQuery;
 import nl.tudelft.dnainator.graph.impl.query.ClusterQuery;
 import nl.tudelft.dnainator.graph.impl.query.ClustersFromQuery;
+import nl.tudelft.dnainator.graph.impl.query.NodeQuery;
 import nl.tudelft.dnainator.graph.impl.query.Query;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
 
-import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
@@ -181,20 +179,8 @@ public final class Neo4jGraph implements Graph {
 	 * @param node from the database.
 	 * @return a {@link SequenceNode} with the information of the given {@link Node}.
 	 */
-	public static SequenceNode createSequenceNode(Node node) {
-		String id	= (String) node.getProperty(ID.name());
-		String source	= (String) node.getProperty(SOURCE.name());
-		int startref	= (int)    node.getProperty(STARTREF.name());
-		int endref	= (int)    node.getProperty(ENDREF.name());
-		String sequence	= (String) node.getProperty(SEQUENCE.name());
-		int rank	= (int)    node.getProperty(RANK.name());
-
-		List<String> outgoing = new ArrayList<>();
-		for (Relationship e : loop(node.getRelationships(Direction.OUTGOING).iterator())) {
-			outgoing.add((String) e.getEndNode().getProperty(ID.name()));
-		}
-
-		return new SequenceNodeImpl(id, source, startref, endref, sequence, rank, outgoing);
+	public SequenceNode createSequenceNode(Node node) {
+		return new NodeQuery(node).execute(service);
 	}
 
 	@Override

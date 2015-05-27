@@ -18,6 +18,7 @@ import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
  */
 public class GraphItem extends CompositeItem {
 	private static final int FOUR = 4;
+	private static final int CLUSTER_DIVIDER = 100;
 
 	private Graph graph;
 	private Map<String, ClusterItem> clusters;
@@ -72,7 +73,8 @@ public class GraphItem extends CompositeItem {
 		List<String> roots = getGraph().getRank(minrank).stream()
 						.map(e -> e.getId()).collect(Collectors.toList());
 		System.out.println(b.getWidth());
-		Map<Integer, List<Cluster>> clusters = getGraph().getAllClusters(roots, maxrank, (int) (b.getWidth() / 100));
+		Map<Integer, List<Cluster>> clusters = getGraph().getAllClusters(roots, maxrank,
+										(int) (b.getWidth() / CLUSTER_DIVIDER));
 
 		clusters.forEach((k, v) -> getChildItems().add(new RankItem(this, k, v)));
 	};
