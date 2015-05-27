@@ -21,11 +21,25 @@ import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.traversal.TraversalDescription;
 
+/**
+ * The {@link ClusterQuery} creates one single {@link Cluster} from all nodes,
+ * starting at the start, that have a base sequence shorter than the specified threshold.
+ * It will only cluster nodes not yet marked as visited.
+ */
 public class ClusterQuery implements Query<Cluster> {
 	private Set<String> visited;
 	private String start;
 	private int threshold;
 
+	/**
+	 * Create a new {@link ClusterQuery}, which will:.
+	 * - only cluster nodes that haven't been visited yet
+	 * - use the specified threshold
+	 * - only return a single cluster
+	 * @param visited	the visited nodes
+	 * @param start		the start node
+	 * @param threshold	the clustering threshold
+	 */
 	public ClusterQuery(Set<String> visited, String start, int threshold) {
 		this.visited = visited;
 		this.start = start;

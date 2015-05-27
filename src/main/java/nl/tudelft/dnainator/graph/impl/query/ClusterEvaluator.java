@@ -17,6 +17,13 @@ public class ClusterEvaluator implements Evaluator {
 	private int threshold;
 	private Set<String> visited;
 
+	/**
+	 * Create a new {@link ClusterEvaluator}, which will:.
+	 * - only cluster nodes that haven't been visited yet
+	 * - use the specified threshold
+	 * @param threshold	the clustering threshold
+	 * @param visited	the visited nodes
+	 */
 	public ClusterEvaluator(int threshold, Set<String> visited) {
 		this.threshold = threshold;
 		this.visited = visited;

@@ -140,7 +140,7 @@ public final class Neo4jGraph implements Graph {
 	 * The roots are all the nodes with no incoming edges.
 	 * @return	a resource iterator
 	 */
-	private ResourceIterator<Node> rootIterator() {
+	protected ResourceIterator<Node> rootIterator() {
 		ResourceIterator<Node> roots;
 		Result res = service.execute(GET_ROOT);
 		roots = res.columnAs("s");
@@ -211,6 +211,12 @@ public final class Neo4jGraph implements Graph {
 		});
 	}
 
+	/**
+	 * Return a single cluster using the specified values.
+	 * @param start		the start node
+	 * @param threshold	the cluster threshold
+	 * @return		a list of sequence nodes
+	 */
 	protected List<SequenceNode> getCluster(String start, int threshold) {
 		return query(new ClusterQuery(new HashSet<String>(), start, threshold)).getNodes();
 	}
@@ -257,5 +263,13 @@ public final class Neo4jGraph implements Graph {
 			tx.success();
 		}
 		return res;
+	}
+
+	/**
+	 * Shut down this database.
+	 * USE WITH CAUTION!
+	 */
+	public void shutdown() {
+		service.shutdown();
 	}
 }

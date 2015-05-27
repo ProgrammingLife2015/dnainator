@@ -121,7 +121,7 @@ public class NodeParserTest {
 	public void testToString() {
 		SequenceNode a = new SequenceNodeImpl("a", "test", 1, 2, "ACTG");
 
-		assertEquals("SequenceNode<a,test,1,2,ACTG>", a.toString());
+		assertEquals("SequenceNode<a,4>", a.toString());
 	}
 
 	/**

@@ -15,12 +15,30 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.traversal.InitialBranchState.State;
 import org.neo4j.graphdb.traversal.Uniqueness;
 
+/**
+ * The {@link RankCommand} creates a topological ordering and
+ * ranks the nodes in the Neo4j database accordingly.
+ */
 public class RankCommand implements Command {
 	private static final int INIT_CAP = 4096;
 	private ResourceIterator<Node> roots;
 
+	/**
+	 * Create a new {@link RankCommand} that will
+	 * start ranking from the specified roots.
+	 * @param roots	the roots
+	 */
 	public RankCommand(ResourceIterator<Node> roots) {
 		this.roots = roots;
+	}
+
+	/**
+	 * Return a topological ordering on the specified database service.
+	 * @param service	the database service
+	 * @return		a topological ordering, starting from the roots
+	 */
+	public Iterable<Node> topologicalOrder(GraphDatabaseService service) {
+		return topologicalOrder(service, Primitive.longSet());
 	}
 
 	private Iterable<Node> topologicalOrder(GraphDatabaseService service,

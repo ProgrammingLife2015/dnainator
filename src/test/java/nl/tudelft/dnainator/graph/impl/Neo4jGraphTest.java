@@ -1,5 +1,6 @@
 package nl.tudelft.dnainator.graph.impl;
 
+import static nl.tudelft.dnainator.graph.impl.PropertyTypes.ID;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -21,6 +22,7 @@ import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.core.impl.SequenceNodeFactoryImpl;
 import nl.tudelft.dnainator.core.impl.SequenceNodeImpl;
+import nl.tudelft.dnainator.graph.impl.command.RankCommand;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
@@ -33,7 +35,6 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Transaction;
 
 /**
  * Test Neo4j graph implementation.
@@ -105,11 +106,11 @@ public class Neo4jGraphTest {
 		try {
 			EdgeParser ep = new EdgeParserImpl(new BufferedReader(new FileReader(edgeFile)));
 
-			try (Transaction tx = db.getService().beginTx()) {
-				for (Node n : db.topologicalOrder()) {
-					order.add(Integer.parseInt((String) n.getProperty("id")));
+			db.execute(e -> {
+				for (Node n : new RankCommand(db.rootIterator()).topologicalOrder(e)) {
+					order.add(Integer.parseInt((String) n.getProperty(ID.name())));
 				}
-			}
+			});
 			while (ep.hasNext()) {
 				Edge<String> next = ep.next();
 				int source = Integer.parseInt(next.getSource());

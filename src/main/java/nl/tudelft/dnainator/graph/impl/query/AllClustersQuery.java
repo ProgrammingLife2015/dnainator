@@ -13,14 +13,27 @@ import nl.tudelft.dnainator.core.impl.Cluster;
 
 import org.neo4j.graphdb.GraphDatabaseService;
 
+/**
+ * The {@link AllClustersQuery} creates {@link Cluster}s from all nodes,
+ * starting at the startNodes, and ending when the maximum specified start rank is reached.
+ */
 public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 	private List<String> startNodes;
 	private int threshold;
-	private int end;
+	private int maxRank;
 
-	public AllClustersQuery(List<String> startNodes, int end, int threshold) {
+	/**
+	 * Create a new {@link AllClustersQuery}, which will:.
+	 * - start clustering at the specified startNodes
+	 * - stop clustering when the end rank is reached
+	 * - use the specified clustering threshold
+	 * @param startNodes	the start nodes
+	 * @param maxRank	the maximum rank
+	 * @param threshold	the clustering threshold
+	 */
+	public AllClustersQuery(List<String> startNodes, int maxRank, int threshold) {
 		this.startNodes = startNodes;
-		this.end = end;
+		this.maxRank = maxRank;
 		this.threshold = threshold;
 	}
 
@@ -39,7 +52,7 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 		// Find adjacent clusters as long as there are root clusters in the queue
 		while (!rootClusters.isEmpty()) {
 			Cluster c = rootClusters.poll();
-			if (c.getStartRank() > end) {
+			if (c.getStartRank() > maxRank) {
 				break;
 			}
 			// TODO: Might want to introduce a QueryResult class instead of this map

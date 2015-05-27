@@ -6,9 +6,16 @@ import static nl.tudelft.dnainator.graph.impl.PropertyTypes.RANK;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 
+/**
+ * The {@link IndexCommand} creates indices on a Neo4j database.
+ */
 public class IndexCommand implements Command {
 	private Label nodeLabel;
 
+	/**
+	 * Create a new {@link IndexCommand} using the specified label.
+	 * @param nodeLabel	the label
+	 */
 	public IndexCommand(Label nodeLabel) {
 		this.nodeLabel = nodeLabel;
 	}

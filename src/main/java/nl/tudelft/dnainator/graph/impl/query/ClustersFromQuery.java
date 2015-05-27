@@ -9,11 +9,25 @@ import nl.tudelft.dnainator.core.impl.Cluster;
 
 import org.neo4j.graphdb.GraphDatabaseService;
 
+/**
+ * The {@link ClustersFromQuery} creates multiple {@link Cluster}s from all nodes,
+ * starting at a list of startNodes, that have a base sequence shorter than the specified threshold.
+ * It will only cluster nodes not yet marked as visited.
+ */
 public class ClustersFromQuery implements Query<Queue<Cluster>> {
 	private Set<String> visited;
 	private List<String> startNodes;
 	private int threshold;
 
+	/**
+	 * Create a new {@link ClustersFromQuery}, which will:.
+	 * - only cluster nodes that haven't been visited yet
+	 * - use the specified threshold
+	 * - return multiple clusters
+	 * @param visited	the visited nodes
+	 * @param startNodes	the list of start nodes
+	 * @param threshold	the clustering threshold
+	 */
 	public ClustersFromQuery(Set<String> visited, List<String> startNodes, int threshold) {
 		this.visited = visited;
 		this.startNodes = startNodes;
