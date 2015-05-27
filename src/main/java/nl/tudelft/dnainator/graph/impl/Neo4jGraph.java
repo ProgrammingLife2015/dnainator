@@ -1,15 +1,21 @@
 package nl.tudelft.dnainator.graph.impl;
 
+import static nl.tudelft.dnainator.graph.impl.PropertyTypes.ENDREF;
+import static nl.tudelft.dnainator.graph.impl.PropertyTypes.ID;
+import static nl.tudelft.dnainator.graph.impl.PropertyTypes.NODELABEL;
+import static nl.tudelft.dnainator.graph.impl.PropertyTypes.RANK;
+import static nl.tudelft.dnainator.graph.impl.PropertyTypes.SEQUENCE;
+import static nl.tudelft.dnainator.graph.impl.PropertyTypes.SOURCE;
+import static nl.tudelft.dnainator.graph.impl.PropertyTypes.STARTREF;
 import static org.neo4j.helpers.collection.IteratorUtil.loop;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
@@ -19,60 +25,38 @@ import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.core.impl.SequenceNodeImpl;
 import nl.tudelft.dnainator.graph.Graph;
+import nl.tudelft.dnainator.graph.impl.command.Command;
+import nl.tudelft.dnainator.graph.impl.command.RankCommand;
+import nl.tudelft.dnainator.graph.impl.query.ClusterQuery;
+import nl.tudelft.dnainator.graph.impl.query.Query;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
 
-import org.neo4j.collection.primitive.Primitive;
-import org.neo4j.collection.primitive.PrimitiveLongSet;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Path;
-import org.neo4j.graphdb.PathExpander;
 import org.neo4j.graphdb.Relationship;
-import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.ResourceIterator;
 import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-import org.neo4j.graphdb.traversal.BranchState;
-import org.neo4j.graphdb.traversal.Evaluation;
-import org.neo4j.graphdb.traversal.Evaluator;
-import org.neo4j.graphdb.traversal.InitialBranchState.State;
-import org.neo4j.graphdb.traversal.TraversalDescription;
-import org.neo4j.graphdb.traversal.Uniqueness;
 import org.neo4j.tooling.GlobalGraphOperations;
 
 /**
  * This class realizes a graphfactory using Neo4j as it's backend.
  */
 public final class Neo4jGraph implements Graph {
-	public static final String NODELABEL = "Node";
-	public static final String ID        = "id";
-	public static final String SOURCE    = "source";
-	public static final String STARTREF  = "start";
-	public static final String ENDREF    = "end";
-	public static final String SEQUENCE  = "sequence";
-	public static final String RANK      = "rank";
-
-	private static final String GET_ROOT = "MATCH (s:" + NODELABEL + ") "
-			+ "WHERE NOT (s)<-[:NEXT]-(:" + NODELABEL + ") "
+	private static final String GET_MAX_RANK = "MATCH n RETURN MAX(n." + RANK.name() + ")";
+	private static final String GET_ROOT = "MATCH (s:" + NODELABEL.name() + ") "
+			+ "WHERE NOT (s)<-[:NEXT]-(:" + NODELABEL.name() + ") "
 			+ "RETURN s";
 
 	private GraphDatabaseService service;
 	private Label nodeLabel;
-	private int maxRank;
-
-	/**
-	 * Edge relationship types.
-	 */
-	private enum RelTypes implements RelationshipType {
-		NEXT
-	}
 
 	/**
 	 * Constructs a Neo4j database on the specified path.
@@ -89,19 +73,19 @@ public final class Neo4jGraph implements Graph {
 		});
 
 		// Assign a label to our nodes
-		nodeLabel = DynamicLabel.label(NODELABEL);
+		nodeLabel = DynamicLabel.label(NODELABEL.name());
 		// Recreate our indices
 		try (Transaction tx = service.beginTx()) {
 			service.schema().getConstraints().forEach(e -> e.drop());
 			service.schema().getIndexes().forEach(e -> e.drop());
 
 			service.schema().constraintFor(nodeLabel)
-			.assertPropertyIsUnique(ID)
+			.assertPropertyIsUnique(ID.name())
 			.create();
 
 			// Generate an index on 'dist'
 			service.schema().indexFor(nodeLabel)
-			.on(RANK)
+			.on(RANK.name())
 			.create();
 
 			tx.success();
@@ -127,8 +111,8 @@ public final class Neo4jGraph implements Graph {
 	@Override
 	public void addEdge(Edge<String> edge) {
 		try (Transaction tx = service.beginTx()) {
-			Node source = service.findNode(nodeLabel, ID, edge.getSource());
-			Node dest   = service.findNode(nodeLabel, ID, edge.getDest());
+			Node source = service.findNode(nodeLabel, ID.name(), edge.getSource());
+			Node dest   = service.findNode(nodeLabel, ID.name(), edge.getDest());
 			source.createRelationshipTo(dest, RelTypes.NEXT);
 
 			tx.success();
@@ -139,14 +123,12 @@ public final class Neo4jGraph implements Graph {
 	public void addNode(SequenceNode s) {
 		try (Transaction tx = service.beginTx()) {
 			Node node = service.createNode(nodeLabel);
-			node.setProperty(ID, s.getId());
-			node.setProperty(STARTREF, s.getStartRef());
-			node.setProperty(ENDREF, s.getEndRef());
-			node.setProperty(SEQUENCE, s.getSequence());
-			node.setProperty(SOURCE, s.getSource());
-			node.setProperty(RANK, 0);
-			node.setProperty("size", s.getSequence().length());
-			node.setProperty("cluster", 0);
+			node.setProperty(ID.name(), s.getId());
+			node.setProperty(STARTREF.name(), s.getStartRef());
+			node.setProperty(ENDREF.name(), s.getEndRef());
+			node.setProperty(SEQUENCE.name(), s.getSequence());
+			node.setProperty(SOURCE.name(), s.getSource());
+			node.setProperty(RANK.name(), 0);
 
 			tx.success();
 		}
@@ -162,18 +144,10 @@ public final class Neo4jGraph implements Graph {
 			while (ep.hasNext()) {
 				addEdge(ep.next());
 			}
-			rankGraph();
+			execute(new RankCommand(rootIterator()));
 
 			tx.success();
 		}
-	}
-
-	/**
-	 * Retrieve the database service object of this instance.
-	 * @return	a neo4j database service
-	 */
-	protected GraphDatabaseService getService() {
-		return service;
 	}
 
 	/**
@@ -190,88 +164,6 @@ public final class Neo4jGraph implements Graph {
 
 	private Node getRoot() {
 		return rootIterator().next();
-	}
-
-	private static final int INIT_CAP = 4096;
-	/**
-	 * Get a topological ordering of the graph.
-	 * @return an {@link Iterable}, containing the nodes in
-	 * topological order.
-	 */
-	protected Iterable<Node> topologicalOrder() {
-		return topologicalOrder(Primitive.longSet(INIT_CAP));
-	}
-
-	private Iterable<Node> topologicalOrder(PrimitiveLongSet processed) {
-		ResourceIterator<Node> roots = rootIterator();
-		return service.traversalDescription()
-					.depthFirst()
-					.expand(new IncludesNodesWithoutIncoming()
-					, new State<>(processed, null))
-					// We manage uniqueness for ourselves.
-					.uniqueness(Uniqueness.NONE)
-					.traverse(loop(roots))
-					.nodes();
-	}
-
-	/**
-	 * PathExpander for determining the topological ordering.
-	 */
-	static class IncludesNodesWithoutIncoming implements PathExpander<PrimitiveLongSet> {
-
-		private boolean hasUnprocessedIncoming(PrimitiveLongSet processed, Node n) {
-			Iterable<Relationship> in = n.getRelationships(RelTypes.NEXT, Direction.INCOMING);
-			for (Relationship r : in) {
-				if (!processed.contains(r.getId())) {
-					return true;
-				}
-			}
-			// All incoming edges have been processed.
-			return false;
-		}
-
-		@Override
-		public Iterable<Relationship> expand(Path path,
-				BranchState<PrimitiveLongSet> state) {
-			Node from = path.endNode();
-			List<Relationship> expand = new LinkedList<>();
-			for (Relationship r : from.getRelationships(RelTypes.NEXT, Direction.OUTGOING)) {
-				PrimitiveLongSet processed = state.getState();
-				processed.add(r.getId());
-				if (!hasUnprocessedIncoming(processed, r.getEndNode())) {
-					// All of the dependencies of this node have been added to the result.
-					expand.add(r);
-				}
-			}
-			return expand;
-		}
-
-		@Override
-		public PathExpander<PrimitiveLongSet> reverse() {
-			throw new UnsupportedOperationException();
-		}
-
-	}
-
-	private void rankGraph() {
-		try (
-			Transaction tx = service.beginTx();
-			// Our set is located "off heap", i.e. not managed by the garbage collector.
-			// It is automatically closed after the try block, which frees the allocated memory.
-			PrimitiveLongSet processed = Primitive.offHeapLongSet(INIT_CAP)
-		) {
-			for (Node n : topologicalOrder(processed)) {
-				int rankSource = (int) n.getProperty(RANK);
-				for (Relationship r : n.getRelationships(RelTypes.NEXT, Direction.OUTGOING)) {
-					Node dest = r.getEndNode();
-					if ((int) dest.getProperty(RANK) < rankSource + 1) {
-						dest.setProperty(RANK, rankSource + 1);
-						maxRank = rankSource + 1;
-					}
-				}
-			}
-			tx.success();
-		}
 	}
 
 	@Override
@@ -293,7 +185,7 @@ public final class Neo4jGraph implements Graph {
 		SequenceNode node;
 
 		try (Transaction tx = service.beginTx()) {
-			node = createSequenceNode(service.findNode(nodeLabel, ID, s));
+			node = createSequenceNode(service.findNode(nodeLabel, ID.name(), s));
 
 			tx.success();
 		}
@@ -306,7 +198,7 @@ public final class Neo4jGraph implements Graph {
 		List<SequenceNode> nodes = new LinkedList<>();
 
 		try (Transaction tx = service.beginTx()) {
-			ResourceIterator<Node> res = service.findNodes(nodeLabel, RANK, rank);
+			ResourceIterator<Node> res = service.findNodes(nodeLabel, RANK.name(), rank);
 
 			for (Node n : loop(res)) {
 				nodes.add(createSequenceNode(n));
@@ -324,42 +216,28 @@ public final class Neo4jGraph implements Graph {
 	 * @param node from the database.
 	 * @return a {@link SequenceNode} with the information of the given {@link Node}.
 	 */
-	protected static SequenceNode createSequenceNode(Node node) {
-		String id	= (String) node.getProperty(ID);
-		String source	= (String) node.getProperty(SOURCE);
-		int startref	= (int)    node.getProperty(STARTREF);
-		int endref	= (int)    node.getProperty(ENDREF);
-		String sequence	= (String) node.getProperty(SEQUENCE);
-		int rank	= (int)    node.getProperty(RANK);
+	public static SequenceNode createSequenceNode(Node node) {
+		String id	= (String) node.getProperty(ID.name());
+		String source	= (String) node.getProperty(SOURCE.name());
+		int startref	= (int)    node.getProperty(STARTREF.name());
+		int endref	= (int)    node.getProperty(ENDREF.name());
+		String sequence	= (String) node.getProperty(SEQUENCE.name());
+		int rank	= (int)    node.getProperty(RANK.name());
 
 		List<String> outgoing = new ArrayList<>();
 		for (Relationship e : loop(node.getRelationships(Direction.OUTGOING).iterator())) {
-			outgoing.add((String) e.getEndNode().getProperty(ID));
+			outgoing.add((String) e.getEndNode().getProperty(ID.name()));
 		}
 
 		return new SequenceNodeImpl(id, source, startref, endref, sequence, rank, outgoing);
 	}
 
 	@Override
-	public List<Edge<String>> getEdges() {
-		List<Edge<String>> edges = new LinkedList<Edge<String>>();
-		try (Transaction tx = service.beginTx()) {
-			GlobalGraphOperations.at(service).getAllRelationships().forEach(e ->
-				edges.add(new Edge<String>((String) e.getStartNode().getProperty(ID),
-						(String) e.getEndNode().getProperty(ID)))
-			);
-
-			tx.success();
-		}
-
-		return edges;
-	}
-
-	@Override
 	public List<List<SequenceNode>> getRanks() {
+		int maxrank = (int) service.execute(GET_MAX_RANK).columnAs("s").next();
 		List<List<SequenceNode>> nodes = new LinkedList<>();
 		try (Transaction tx = service.beginTx()) {
-			for (int i = 0; i < maxRank; i++) {
+			for (int i = 0; i < maxrank; i++) {
 				nodes.add(getRank(i));
 			}
 
@@ -369,70 +247,11 @@ public final class Neo4jGraph implements Graph {
 		return nodes;
 	}
 
-	/**
-	 * Evaluates whether a node is part of a cluster based on the given threshold.
-	 */
-	private static class ClusterEvaluator implements Evaluator {
-		private int threshold;
-		private Set<String> visited;
-
-		public ClusterEvaluator(int threshold, Set<String> visited) {
-			this.threshold = threshold;
-			this.visited = visited;
-		}
-
-		/**
-		 * Evaluates a node and determines whether to include and / or continue.
-		 * Continues on and returns exactly those nodes that:
-		 * - haven't been visited yet and
-		 *   - are the start node
-		 *   - have a sequence < threshold (and thus belong to the same cluster)
-		 */
-		@Override
-		public Evaluation evaluate(Path path) {
-			Node end = path.endNode();
-			String sequence = (String) end.getProperty(SEQUENCE);
-			String id = (String) end.getProperty(ID);
-
-			if (!visited.contains(id)
-					&& (path.startNode().getId() == path.endNode().getId()
-					|| sequence.length() < threshold)) {
-				visited.add(id);
-				return Evaluation.INCLUDE_AND_CONTINUE;
-			}
-			return Evaluation.EXCLUDE_AND_PRUNE;
-		}
-	}
-
-	protected List<SequenceNode> getCluster(String id, int threshold) {
+	protected List<SequenceNode> getCluster(String start, int threshold) {
 		try (Transaction tx = service.beginTx()) {
-			return getCluster(new HashSet<String>(), id, threshold).getNodes();
+			return new ClusterQuery(new HashSet<String>(), start, threshold)
+					.execute(service).getNodes();
 		}
-	}
-
-	private Cluster getCluster(Set<String> visited, String id, int threshold) {
-		Node startNode = service.findNode(nodeLabel, ID, id);
-		List<SequenceNode> result = new ArrayList<>();
-
-		// A depth first traversal traveling along both incoming and outgoing edges.
-		TraversalDescription cluster = service.traversalDescription()
-						.depthFirst()
-						.relationships(RelTypes.NEXT, Direction.BOTH)
-						.evaluator(new ClusterEvaluator(threshold, visited));
-
-		// Traverse the cluster starting from the startNode.
-		int rankStart = (int) startNode.getProperty(RANK);
-		for (Node n : cluster.traverse(startNode).nodes()) {
-			SequenceNode end = createSequenceNode(n);
-			result.add(end);
-
-			// Update this cluster's start rank according to the lowest node rank.
-			if (end.getRank() < rankStart) {
-				rankStart = end.getRank();
-			}
-		}
-
-		return new Cluster(rankStart, result);
 	}
 
 	@Override
@@ -447,7 +266,7 @@ public final class Neo4jGraph implements Graph {
 				}
 
 				// Otherwise get the cluster starting from this startNode
-				Cluster c = getCluster(visited, sn, threshold);
+				Cluster c = new ClusterQuery(visited, sn, threshold).execute(service);
 				rootClusters.add(c);
 			}
 
@@ -480,9 +299,9 @@ public final class Neo4jGraph implements Graph {
 				result.putIfAbsent(c.getStartRank(), new ArrayList<>());
 				result.get(c.getStartRank()).add(c);
 
-				for (SequenceNode sn : c.getNodes()) {
+				c.getNodes().forEach(sn -> {
 					rootClusters.addAll(getClusters(visited, sn.getOutgoing(), threshold));
-				}
+				});
 			}
 
 			tx.success();
@@ -493,5 +312,24 @@ public final class Neo4jGraph implements Graph {
 	@Override
 	public List<SequenceNode> queryNodes(GraphQueryDescription qd) {
 		return Neo4jQuery.of(qd).execute(service);
+	}
+
+	/**
+	 * Execute a command on this database.
+	 * @param c	the command
+	 */
+	public void execute(Command c) {
+		c.execute(service);
+	}
+
+	/**
+	 * Execute a query on this database.
+	 * @param q	the query
+	 * @param <T>	the result type
+	 * @return	the result of the query
+	 */
+//	public Cluster query(Query<? extends QueryResult> q) {
+	public <T> T query(Query<T> q) {
+		return q.execute(service);
 	}
 }

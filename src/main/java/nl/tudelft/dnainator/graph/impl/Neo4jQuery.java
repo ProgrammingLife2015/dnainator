@@ -1,8 +1,8 @@
 package nl.tudelft.dnainator.graph.impl;
 
-import static nl.tudelft.dnainator.graph.impl.Neo4jGraph.ID;
-import static nl.tudelft.dnainator.graph.impl.Neo4jGraph.RANK;
-import static nl.tudelft.dnainator.graph.impl.Neo4jGraph.SOURCE;
+import static nl.tudelft.dnainator.graph.impl.PropertyTypes.ID;
+import static nl.tudelft.dnainator.graph.impl.PropertyTypes.RANK;
+import static nl.tudelft.dnainator.graph.impl.PropertyTypes.SOURCE;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -85,7 +85,7 @@ public final class Neo4jQuery implements GraphQuery {
 	public void compile(IDsFilter ids) {
 		parameters.compute("ids", (k, v) -> {
 			if (v == null) {
-				addCondition("n." + ID + " IN {ids}\n");
+				addCondition("n." + ID.name() + " IN {ids}\n");
 				return ids.getIds();
 			}
 			((Collection<String>) v).addAll(ids.getIds());
@@ -98,7 +98,7 @@ public final class Neo4jQuery implements GraphQuery {
 	public void compile(SourcesFilter sources) {
 		parameters.compute("sources", (k, v) -> {
 			if (v == null) {
-				addCondition("n." + SOURCE + " IN {sources}\n");
+				addCondition("n." + SOURCE.name() + " IN {sources}\n");
 				return sources.getSources();
 			}
 			((Collection<String>) v).addAll(sources.getSources());
@@ -113,13 +113,13 @@ public final class Neo4jQuery implements GraphQuery {
 
 	@Override
 	public void compile(RankStart start) {
-		addCondition("n." + RANK + " >= {from}\n");
+		addCondition("n." + RANK.name() + " >= {from}\n");
 		parameters.put("from", start.getStart());
 	}
 
 	@Override
 	public void compile(RankEnd end) {
-		addCondition("n." + RANK + " < {to}\n");
+		addCondition("n." + RANK.name() + " < {to}\n");
 		parameters.put("to", end.getEnd());
 	}
 

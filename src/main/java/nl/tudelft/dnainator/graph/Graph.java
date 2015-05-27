@@ -7,7 +7,6 @@ import java.util.Set;
 
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
-import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 
 /**
@@ -29,30 +28,17 @@ public interface Graph extends GraphBuilder {
 	SequenceNode getNode(String n);
 
 	/**
-	 * Find the nodes satisfying the given query.
-	 * @param q the query for finding the nodes.
-	 * @return the result of the query.
+	 * Get all the nodes with a specific rank from this graph.
+	 * @param rank	the rank
+	 * @return		a list of sequence nodes
 	 */
-	List<SequenceNode> queryNodes(GraphQueryDescription q);
+	List<SequenceNode> getRank(int rank);
 
 	/**
 	 * Get a list of all nodes from this graph.
 	 * @return	a list of all nodes, per rank
 	 */
 	List<List<SequenceNode>> getRanks();
-
-	/**
-	 * Get a list of all edges from this graph.
-	 * @return	a list of all edges
-	 */
-	List<Edge<String>> getEdges();
-
-	/**
-	 * Get all the nodes with a specific rank from this graph.
-	 * @param rank	the rank
-	 * @return		a list of sequence nodes
-	 */
-	List<SequenceNode> getRank(int rank);
 
 	/**
 	 * Return a list of nodes that belong to the same cluster as the given startId.
@@ -66,8 +52,16 @@ public interface Graph extends GraphBuilder {
 	/**
 	 * Return a list of nodes that belong to the same cluster as the given startId.
 	 * @param startNodes	the start nodes
-	 * @param threshold		the clustering threshold
+	 * @param end		the maximum rank of the cluster
+	 * @param threshold	the clustering threshold
 	 * @return		a list representing the cluster
 	 */
 	Map<Integer, List<Cluster>> getClusters(List<String> startNodes, int end, int threshold);
+
+	/**
+	 * Find the nodes satisfying the given query.
+	 * @param q the query for finding the nodes.
+	 * @return the result of the query.
+	 */
+	List<SequenceNode> queryNodes(GraphQueryDescription q);
 }

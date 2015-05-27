@@ -89,7 +89,7 @@ public final class Neo4jSingleton {
 	 */
 	public void stopDatabase(String path) throws IOException {
 		if (neodatabases.containsKey(path)) {
-			neodatabases.get(path).getService().shutdown();
+			neodatabases.get(path).execute(e -> e.shutdown());
 			neodatabases.remove(path);
 		}
 
