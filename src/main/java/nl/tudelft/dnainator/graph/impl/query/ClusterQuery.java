@@ -19,55 +19,48 @@ import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.traversal.TraversalDescription;
 
 public class ClusterQuery implements Query<Cluster> {
 	private Set<String> visited;
 	private String start;
 	private int threshold;
-	
+
 	public ClusterQuery(Set<String> visited, String start, int threshold) {
 		this.visited = visited;
 		this.start = start;
 		this.threshold = threshold;
 	}
-	
+
 	@Override
 	public Cluster execute(GraphDatabaseService service) {
 		Cluster cluster = null;
-		
-		try (Transaction tx = service.beginTx()) {
-			Label nodeLabel = DynamicLabel.label(NODELABEL.name());
-			Node startNode = service.findNode(nodeLabel, ID.name(), start);
-			List<Node> result = new ArrayList<>();
-		
-			// A depth first traversal traveling along both incoming and outgoing edges.
-			TraversalDescription clusterDesc = service.traversalDescription()
-							.depthFirst()
-							.relationships(RelTypes.NEXT, Direction.BOTH)
-							.evaluator(new ClusterEvaluator(threshold, visited));
-		
-			// Traverse the cluster starting from the startNode.
-			int rankStart = (int) startNode.getProperty(RANK.name());
-			for (Node end : clusterDesc.traverse(startNode).nodes()) {
-				result.add(end);
-		
-				// Update this cluster's start rank according to the lowest node rank.
-				int endRank = (int) startNode.getProperty(RANK.name());
-				if (endRank < rankStart) {
-					rankStart = endRank;
-				}
+		Label nodeLabel = DynamicLabel.label(NODELABEL.name());
+		Node startNode = service.findNode(nodeLabel, ID.name(), start);
+		List<Node> result = new ArrayList<>();
+
+		// A depth first traversal traveling along both incoming and outgoing edges.
+		TraversalDescription clusterDesc = service.traversalDescription()
+						.depthFirst()
+						.relationships(RelTypes.NEXT, Direction.BOTH)
+						.evaluator(new ClusterEvaluator(threshold, visited));
+		// Traverse the cluster starting from the startNode.
+		int rankStart = (int) startNode.getProperty(RANK.name());
+		for (Node end : clusterDesc.traverse(startNode).nodes()) {
+			result.add(end);
+
+			// Update this cluster's start rank according to the lowest node rank.
+			int endRank = (int) startNode.getProperty(RANK.name());
+			if (endRank < rankStart) {
+				rankStart = endRank;
 			}
-			
-			// Might want to internally pass nodes.
-			List<SequenceNode> retrieve = result.stream().map(e -> Neo4jGraph.createSequenceNode(e))
-							.collect(Collectors.toList());
-			cluster = new Cluster(rankStart, retrieve);
-			
-			tx.success();
 		}
-	
+
+		// Might want to internally pass nodes.
+		List<SequenceNode> retrieve = result.stream().map(e -> Neo4jGraph.createSequenceNode(e))
+						.collect(Collectors.toList());
+		cluster = new Cluster(rankStart, retrieve);
+
 		return cluster;
 	}
 }

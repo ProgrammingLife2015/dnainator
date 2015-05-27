@@ -72,7 +72,7 @@ public class GraphItem extends CompositeItem {
 		List<String> roots = getGraph().getRank(minrank).stream()
 						.map(e -> e.getId()).collect(Collectors.toList());
 		System.out.println(b.getWidth());
-		Map<Integer, List<Cluster>> clusters = getGraph().getClusters(roots, maxrank, (int) (b.getWidth() / 100));
+		Map<Integer, List<Cluster>> clusters = getGraph().getAllClusters(roots, maxrank, (int) (b.getWidth() / 100));
 
 		clusters.forEach((k, v) -> getChildItems().add(new RankItem(this, k, v)));
 	};

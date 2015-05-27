@@ -47,7 +47,7 @@ public interface Graph extends GraphBuilder {
 	 * @param threshold		the clustering threshold
 	 * @return		a list representing the cluster
 	 */
-	Queue<Cluster> getClusters(Set<String> visited, List<String> startNodes, int threshold);
+	Queue<Cluster> getClustersFrom(Set<String> visited, List<String> startNodes, int threshold);
 
 	/**
 	 * Return a list of nodes that belong to the same cluster as the given startId.
@@ -56,7 +56,7 @@ public interface Graph extends GraphBuilder {
 	 * @param threshold	the clustering threshold
 	 * @return		a list representing the cluster
 	 */
-	Map<Integer, List<Cluster>> getClusters(List<String> startNodes, int end, int threshold);
+	Map<Integer, List<Cluster>> getAllClusters(List<String> startNodes, int end, int threshold);
 
 	/**
 	 * Find the nodes satisfying the given query.

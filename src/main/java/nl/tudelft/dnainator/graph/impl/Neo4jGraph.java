@@ -11,12 +11,10 @@ import static org.neo4j.helpers.collection.IteratorUtil.loop;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 
@@ -26,8 +24,11 @@ import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.core.impl.SequenceNodeImpl;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.command.Command;
+import nl.tudelft.dnainator.graph.impl.command.IndexCommand;
 import nl.tudelft.dnainator.graph.impl.command.RankCommand;
+import nl.tudelft.dnainator.graph.impl.query.AllClustersQuery;
 import nl.tudelft.dnainator.graph.impl.query.ClusterQuery;
+import nl.tudelft.dnainator.graph.impl.query.ClustersFromQuery;
 import nl.tudelft.dnainator.graph.impl.query.Query;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 import nl.tudelft.dnainator.parser.EdgeParser;
@@ -75,21 +76,7 @@ public final class Neo4jGraph implements Graph {
 		// Assign a label to our nodes
 		nodeLabel = DynamicLabel.label(NODELABEL.name());
 		// Recreate our indices
-		try (Transaction tx = service.beginTx()) {
-			service.schema().getConstraints().forEach(e -> e.drop());
-			service.schema().getIndexes().forEach(e -> e.drop());
-
-			service.schema().constraintFor(nodeLabel)
-			.assertPropertyIsUnique(ID.name())
-			.create();
-
-			// Generate an index on 'dist'
-			service.schema().indexFor(nodeLabel)
-			.on(RANK.name())
-			.create();
-
-			tx.success();
-		}
+		execute(new IndexCommand(nodeLabel));
 	}
 
 	/**
@@ -195,19 +182,16 @@ public final class Neo4jGraph implements Graph {
 
 	@Override
 	public List<SequenceNode> getRank(int rank) {
-		List<SequenceNode> nodes = new LinkedList<>();
-
-		try (Transaction tx = service.beginTx()) {
+		return query(e -> {
 			ResourceIterator<Node> res = service.findNodes(nodeLabel, RANK.name(), rank);
+			List<SequenceNode> nodes = new LinkedList<>();
 
 			for (Node n : loop(res)) {
 				nodes.add(createSequenceNode(n));
 			}
 
-			tx.success();
-		}
-
-		return nodes;
+			return nodes;
+		});
 	}
 
 	/**
@@ -248,65 +232,19 @@ public final class Neo4jGraph implements Graph {
 	}
 
 	protected List<SequenceNode> getCluster(String start, int threshold) {
-		try (Transaction tx = service.beginTx()) {
-			return new ClusterQuery(new HashSet<String>(), start, threshold)
-					.execute(service).getNodes();
-		}
+		return query(new ClusterQuery(new HashSet<String>(), start, threshold)).getNodes();
 	}
 
 	@Override
-	public Queue<Cluster> getClusters(Set<String> visited, List<String> startNodes, int threshold) {
-		Queue<Cluster> rootClusters = new LinkedList<Cluster>();
-
-		try (Transaction tx = service.beginTx()) {
-			for (String sn : startNodes) {
-				// Continue if this startNode was consumed by another cluster
-				if (visited.contains(sn)) {
-					continue;
-				}
-
-				// Otherwise get the cluster starting from this startNode
-				Cluster c = new ClusterQuery(visited, sn, threshold).execute(service);
-				rootClusters.add(c);
-			}
-
-			tx.success();
-		}
-
-		return rootClusters;
+	public Queue<Cluster> getClustersFrom(Set<String> visited,
+						List<String> startNodes, int threshold) {
+		return query(new ClustersFromQuery(visited, startNodes, threshold));
 	}
 
 	@Override
-	public Map<Integer, List<Cluster>> getClusters(List<String> startNodes,
+	public Map<Integer, List<Cluster>> getAllClusters(List<String> startNodes,
 							int end, int threshold) {
-		Queue<Cluster> rootClusters = new PriorityQueue<>((e1, e2) -> 
-			e1.getStartRank() - e2.getStartRank()
-		);
-		Set<String> visited = new HashSet<>();
-		Map<Integer, List<Cluster>> result = new HashMap<Integer, List<Cluster>>();
-
-		try (Transaction tx = service.beginTx()) {
-			// Retrieve the root clusters starting from the startNodes and add them to the queue
-			rootClusters.addAll(getClusters(visited, startNodes, threshold));
-
-			// Find adjacent clusters as long as there are root clusters in the queue
-			while (!rootClusters.isEmpty()) {
-				Cluster c = rootClusters.poll();
-				if (c.getStartRank() > end) {
-					break;
-				}
-				// TODO: Might want to introduce a QueryResult class instead of this map
-				result.putIfAbsent(c.getStartRank(), new ArrayList<>());
-				result.get(c.getStartRank()).add(c);
-
-				c.getNodes().forEach(sn -> {
-					rootClusters.addAll(getClusters(visited, sn.getOutgoing(), threshold));
-				});
-			}
-
-			tx.success();
-		}
-		return result;
+		return query(new AllClustersQuery(startNodes, end, threshold));
 	}
 
 	@Override
@@ -319,7 +257,10 @@ public final class Neo4jGraph implements Graph {
 	 * @param c	the command
 	 */
 	public void execute(Command c) {
-		c.execute(service);
+		try (Transaction tx = service.beginTx()) {
+			c.execute(service);
+			tx.success();
+		}
 	}
 
 	/**
@@ -330,6 +271,11 @@ public final class Neo4jGraph implements Graph {
 	 */
 //	public Cluster query(Query<? extends QueryResult> q) {
 	public <T> T query(Query<T> q) {
-		return q.execute(service);
+		T res = null;
+		try (Transaction tx = service.beginTx()) {
+			res = q.execute(service);
+			tx.success();
+		}
+		return res;
 	}
 }
