@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.ui.widgets;
+package nl.tudelft.dnainator.ui.views;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ import nl.tudelft.dnainator.ui.drawables.PhylogeneticNode;
 /**
  * A {@link Pane} that positions {@link TreeNode}s as in a phylogenetic tree.
  */
-public class PhylogeneticTree extends Pane {
+public class PhylogeneticView extends Pane {
 	private static final double LEAFHEIGHT = 30;
 	private static final int MARGIN = 30;
 	private static final double LEVELWIDTH = 3 * MARGIN;
@@ -22,11 +22,11 @@ public class PhylogeneticTree extends Pane {
 	private double currentLeafY;
 
 	/**
-	 * Constructs a new {@link PhylogeneticTree}.
+	 * Constructs a new {@link PhylogeneticView}.
 	 * 
 	 * @param root The root of the phylogenetic tree.
 	 */
-	public PhylogeneticTree(TreeNode root) {
+	public PhylogeneticView(TreeNode root) {
 		this.currentLeafY = MARGIN;
 
 		setPadding(new Insets(MARGIN, 0, 0, MARGIN));

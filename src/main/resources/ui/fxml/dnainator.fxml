@@ -93,7 +93,7 @@
    <center>
       <SplitPane fx:id="splitPane" orientation="VERTICAL">
          <items>
-            <View fx:id="view" />
+            <StrainView fx:id="strainView" />
             <ScrollPane fx:id="phyloView" pannable="true" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
             </ScrollPane>
          </items>

@@ -13,7 +13,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import nl.tudelft.dnainator.ui.services.GraphLoadService;
 import nl.tudelft.dnainator.ui.services.NewickLoadService;
-import nl.tudelft.dnainator.ui.widgets.PhylogeneticTree;
+import nl.tudelft.dnainator.ui.views.PhylogeneticView;
 import nl.tudelft.dnainator.ui.widgets.animations.SlidingAnimation;
 import nl.tudelft.dnainator.ui.widgets.dialogs.ExceptionDialog;
 import nl.tudelft.dnainator.ui.widgets.dialogs.ProgressDialog;
@@ -45,7 +45,7 @@ public class FileOpenController {
 	private NewickLoadService newickLoadService;
 	private FileChooser fileChooser;
 	private ProgressDialog progressDialog;
-	private ObjectProperty<PhylogeneticTree> treeProperty;
+	private ObjectProperty<PhylogeneticView> treeProperty;
 	private SlidingAnimation animation;
 
 	/*
@@ -69,7 +69,7 @@ public class FileOpenController {
 				new ExceptionDialog(fileOpenPane.getParent(), newickLoadService.getException(),
 						"Error loading newick file!"));
 		newickLoadService.setOnSucceeded(e -> treeProperty.setValue(
-				new PhylogeneticTree(newickLoadService.getValue())
+				new PhylogeneticView(newickLoadService.getValue())
 		));
 
 		animation = new SlidingAnimation(fileOpenPane, WIDTH, ANIM_DURATION);
@@ -205,9 +205,9 @@ public class FileOpenController {
 	}
 
 	/**
-	 * @return The {@link PhylogeneticTree} property.
+	 * @return The {@link PhylogeneticView} property.
 	 */
-	public ObjectProperty<PhylogeneticTree> treeProperty() {
+	public ObjectProperty<PhylogeneticView> treeProperty() {
 		return treeProperty;
 	}
 

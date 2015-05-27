@@ -19,7 +19,7 @@ import nl.tudelft.dnainator.ui.widgets.dialogs.ExceptionDialog;
 /**
  * This class is the View part of the MVC pattern.
  */
-public class View extends Pane {
+public class StrainView extends Pane {
 	private static final double SCALE = .1;
 	private static final double ZOOM_FACTOR = 1e-3;
 	private static final int DEFAULT_ZOOM_IN = 55;
@@ -33,11 +33,11 @@ public class View extends Pane {
 	/**
 	 * Creates a new view instance.
 	 */
-	public View() {
+	public StrainView() {
 		loadFXML();
 		getStyleClass().add("view");
 		setOnContextMenuRequested(e -> {
-			ViewContext.getInstance().show(View.this, e.getScreenX(), e.getScreenY());
+			ViewContext.getInstance().show(StrainView.this, e.getScreenX(), e.getScreenY());
 			e.consume();
 		});
 
@@ -62,7 +62,7 @@ public class View extends Pane {
 		try {
 			fxmlLoader.load();
 		} catch (IOException e) {
-			new ExceptionDialog(null, e, "Can not load the View!");
+			new ExceptionDialog(null, e, "Can not load the strain view!");
 		}
 	}
 
