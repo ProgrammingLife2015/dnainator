@@ -83,16 +83,14 @@ public final class Neo4jGraph implements Graph {
 	 * Delete all nodes and relationships from this graph.
 	 */
 	public void clear() {
-		try (Transaction tx = service.beginTx()) {
-			for (Relationship r : GlobalGraphOperations.at(service).getAllRelationships()) {
+		execute(e -> {
+			for (Relationship r : GlobalGraphOperations.at(e).getAllRelationships()) {
 				r.delete();
 			}
-			for (Node n : GlobalGraphOperations.at(service).getAllNodes()) {
+			for (Node n : GlobalGraphOperations.at(e).getAllNodes()) {
 				n.delete();
 			}
-
-			tx.success();
-		}
+		});
 	}
 
 	@Override
@@ -155,35 +153,18 @@ public final class Neo4jGraph implements Graph {
 
 	@Override
 	public SequenceNode getRootNode() {
-		SequenceNode node;
-
-		try (Transaction tx = service.beginTx()) {
-			Node root = getRoot();
-			node = createSequenceNode(root);
-
-			tx.success();
-		}
-
-		return node;
+		return query(e -> createSequenceNode(getRoot()));
 	}
 
 	@Override
 	public SequenceNode getNode(String s) {
-		SequenceNode node;
-
-		try (Transaction tx = service.beginTx()) {
-			node = createSequenceNode(service.findNode(nodeLabel, ID.name(), s));
-
-			tx.success();
-		}
-
-		return node;
+		return query(e -> createSequenceNode(e.findNode(nodeLabel, ID.name(), s)));
 	}
 
 	@Override
 	public List<SequenceNode> getRank(int rank) {
 		return query(e -> {
-			ResourceIterator<Node> res = service.findNodes(nodeLabel, RANK.name(), rank);
+			ResourceIterator<Node> res = e.findNodes(nodeLabel, RANK.name(), rank);
 			List<SequenceNode> nodes = new LinkedList<>();
 
 			for (Node n : loop(res)) {
@@ -218,17 +199,16 @@ public final class Neo4jGraph implements Graph {
 
 	@Override
 	public List<List<SequenceNode>> getRanks() {
-		int maxrank = (int) service.execute(GET_MAX_RANK).columnAs("s").next();
-		List<List<SequenceNode>> nodes = new LinkedList<>();
-		try (Transaction tx = service.beginTx()) {
+		return query(e -> {
+			int maxrank = (int) e.execute(GET_MAX_RANK).columnAs("s").next();
+			List<List<SequenceNode>> nodes = new LinkedList<>();
+
 			for (int i = 0; i < maxrank; i++) {
 				nodes.add(getRank(i));
 			}
 
-			tx.success();
-		}
-
-		return nodes;
+			return nodes;
+		});
 	}
 
 	protected List<SequenceNode> getCluster(String start, int threshold) {
