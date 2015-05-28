@@ -6,9 +6,11 @@ import java.util.List;
 import javafx.geometry.Insets;
 import javafx.scene.layout.Pane;
 import nl.tudelft.dnainator.tree.TreeNode;
-import nl.tudelft.dnainator.ui.drawables.PhylogeneticEdge;
-import nl.tudelft.dnainator.ui.drawables.PhylogeneticLabel;
-import nl.tudelft.dnainator.ui.drawables.PhylogeneticNode;
+import nl.tudelft.dnainator.ui.drawables.phylogeny.AbstractNode;
+import nl.tudelft.dnainator.ui.drawables.phylogeny.Edge;
+import nl.tudelft.dnainator.ui.drawables.phylogeny.InternalNode;
+import nl.tudelft.dnainator.ui.drawables.phylogeny.Label;
+import nl.tudelft.dnainator.ui.drawables.phylogeny.LeafNode;
 
 /**
  * A {@link Pane} that positions {@link TreeNode}s as in a phylogenetic tree.
@@ -33,7 +35,7 @@ public class PhylogeneticView extends Pane {
 		getChildren().add(draw(root, MARGIN, 0));
 	}
 
-	private PhylogeneticNode draw(TreeNode node, double x, double y) {
+	private AbstractNode draw(TreeNode node, double x, double y) {
 		List<TreeNode> children = node.getChildren();
 		if (children.size() == 0) {
 			return drawLeaf(node, x);
@@ -41,35 +43,36 @@ public class PhylogeneticView extends Pane {
 		return drawInternal(children, x, y);
 	}
 
-	private PhylogeneticNode drawLeaf(TreeNode leaf, double x) {
+	private AbstractNode drawLeaf(TreeNode leaf, double x) {
 		double y = currentLeafY;
 
-		getChildren().add(new PhylogeneticLabel(x + OFFSET, y + OFFSET, leaf.getName()));
+		Label label = new Label(x + OFFSET, y + OFFSET, leaf.getName());
+		getChildren().add(label);
 		currentLeafY += LEAFHEIGHT;
 
-		return new PhylogeneticNode(x, y, SQUARE);
+		return new LeafNode(label, x, y, SQUARE);
 	}
 
-	private PhylogeneticNode drawInternal(List<TreeNode> children, double x, double y) {
-		List<PhylogeneticNode> drawnChildren = new ArrayList<>();
+	private AbstractNode drawInternal(List<TreeNode> children, double x, double y) {
+		List<AbstractNode> drawnChildren = new ArrayList<>();
 
 		// Draw all children and attach an outgoing edge.
 		for (int i = 0; i < children.size(); i++) {
-			PhylogeneticNode node = draw(children.get(i), x + LEVELWIDTH, y + (i * LEAFHEIGHT));
-			PhylogeneticEdge edge = new PhylogeneticEdge(node);
+			AbstractNode node = draw(children.get(i), x + LEVELWIDTH, y + (i * LEAFHEIGHT));
+			Edge edge = new Edge(node);
 
 			drawnChildren.add(node);
 			node.setIncomingEdge(edge);
 			getChildren().addAll(edge, node);
 		}
 
-		PhylogeneticNode first = drawnChildren.get(0);
-		PhylogeneticNode last = drawnChildren.get(drawnChildren.size() - 1);
+		AbstractNode first = drawnChildren.get(0);
+		AbstractNode last = drawnChildren.get(drawnChildren.size() - 1);
 
 		// Draw self and attach children's edges to it.
-		PhylogeneticNode root = new PhylogeneticNode(x, first.getCenterY()
+		InternalNode root = new InternalNode(drawnChildren, x, first.getCenterY()
 				+ (last.getCenterY() - first.getCenterY()) / 2, SQUARE);
-		for (PhylogeneticNode child : drawnChildren) {
+		for (AbstractNode child : drawnChildren) {
 			child.getIncomingEdge().bindTo(root);
 		}
 		return root;

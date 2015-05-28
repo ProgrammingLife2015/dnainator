@@ -1,24 +1,26 @@
-package nl.tudelft.dnainator.ui.drawables;
+package nl.tudelft.dnainator.ui.drawables.phylogeny;
 
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.shape.Rectangle;
 
 /**
- * A node for use in a phylogenetic tree.
+ * An abstract node for use in a phylogenetic tree. It provides the basic implementation
+ * for a node in the phylogenetic tree, as each node will need to have one incoming edge (except
+ * the root...) and a pair of (x,y) coordinates.
  */
-public class PhylogeneticNode extends Rectangle {
+public abstract class AbstractNode extends Rectangle {
 	private DoubleProperty centerX = new SimpleDoubleProperty(0.0, "centerX");
 	private DoubleProperty centerY = new SimpleDoubleProperty(0.0, "centerY");
-	private PhylogeneticEdge incomingEdge;
+	protected Edge incomingEdge;
 
 	/**
-	 * Constructs a new {@link PhylogeneticNode}.
+	 * Constructs a new {@link AbstractNode}.
 	 * @param x This node's center x-coordinate.
 	 * @param y This node's center y-coordinate.
 	 * @param dim This node's dimensions.
 	 */
-	public PhylogeneticNode(double x, double y, double dim) {
+	public AbstractNode(double x, double y, double dim) {
 		super(x - dim / 2, y - dim / 2, dim, dim);
 		getStyleClass().add("phylogenetic-node");
 
@@ -69,16 +71,16 @@ public class PhylogeneticNode extends Rectangle {
 	}
 
 	/**
-	 * @param edge This {@link PhylogeneticNode}'s incoming {@link PhylogeneticEdge}.
+	 * @param edge This {@link AbstractNode}'s incoming {@link Edge}.
 	 */
-	public void setIncomingEdge(PhylogeneticEdge edge) {
+	public void setIncomingEdge(Edge edge) {
 		this.incomingEdge = edge;
 	}
 
 	/**
-	 * @return This {@link PhylogeneticNode}'s incoming {@link PhylogeneticEdge}.
+	 * @return This {@link AbstractNode}'s incoming {@link Edge}.
 	 */
-	public PhylogeneticEdge getIncomingEdge() {
+	public Edge getIncomingEdge() {
 		return this.incomingEdge;
 	}
 }

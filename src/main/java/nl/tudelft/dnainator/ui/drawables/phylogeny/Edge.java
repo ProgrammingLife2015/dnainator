@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.ui.drawables;
+package nl.tudelft.dnainator.ui.drawables.phylogeny;
 
 import javafx.scene.shape.HLineTo;
 import javafx.scene.shape.MoveTo;
@@ -8,15 +8,15 @@ import javafx.scene.shape.VLineTo;
 /**
  * An edge for use in a phylogenetic tree.
  */
-public class PhylogeneticEdge extends Path {
+public class Edge extends Path {
 	private HLineTo hline;
 	private VLineTo vline;
 
 	/**
-	 * Constructs a new {@link PhylogeneticEdge}, ending at the provided {@link PhylogeneticNode}.
+	 * Constructs a new {@link Edge}, ending at the provided {@link AbstractNode}.
 	 * @param dst This edge's destination node.
 	 */
-	public PhylogeneticEdge(PhylogeneticNode dst) {
+	public Edge(AbstractNode dst) {
 		// Set start point of the Path.
 		MoveTo m = new MoveTo();
 		m.xProperty().bindBidirectional(dst.centerXProperty());
@@ -35,11 +35,10 @@ public class PhylogeneticEdge extends Path {
 	}
 
 	/**
-	 * Binds this {@link PhylogeneticEdge}'s vertical and horizontal lines' end points
-	 * to <code>src</code>.
-	 * @param src The {@link PhylogeneticNode} to bind the end points to.
+	 * Binds this {@link Edge}'s vertical and horizontal lines' end points to <code>src</code>.
+	 * @param src The {@link AbstractNode} to bind the end points to.
 	 */
-	public void bindTo(PhylogeneticNode src) {
+	public void bindTo(AbstractNode src) {
 		vline.yProperty().bindBidirectional(src.centerYProperty());
 		hline.xProperty().bindBidirectional(src.centerXProperty());
 	}
