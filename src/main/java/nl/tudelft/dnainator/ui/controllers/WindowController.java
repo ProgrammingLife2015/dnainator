@@ -5,8 +5,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
-import nl.tudelft.dnainator.ui.services.GraphLoadService;
-import nl.tudelft.dnainator.ui.services.NewickLoadService;
 import nl.tudelft.dnainator.ui.views.View;
 import nl.tudelft.dnainator.ui.widgets.dialogs.AboutDialog;
 
@@ -24,8 +22,8 @@ public class WindowController {
 	@FXML private FileOpenController fileOpenerController;
 
 	/**
-	 * Constructs a WindowController object, creating a {@link GraphLoadService}
-	 * and a {@link NewickLoadService} to go with it.
+	 * Constructs a WindowController object, binding the content of the tree view to
+	 * the <code>treeProperty</code> of the {@link FileOpenController}.
 	 */
 	@FXML
 	private void initialize() {
@@ -33,7 +31,7 @@ public class WindowController {
 	}
 
 	@FXML
-	private void openButtonAction(ActionEvent e) {
+	private void openButtonAction() {
 		fileOpenerController.toggle();
 	}
 

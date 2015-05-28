@@ -1,12 +1,14 @@
 package nl.tudelft.dnainator.ui.controllers;
 
+import javafx.beans.binding.Binding;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import nl.tudelft.dnainator.ui.services.GraphLoadService;
@@ -34,6 +36,10 @@ public class FileOpenController {
 	@FXML private TextField nodeField;
 	@FXML private TextField edgeField;
 	@FXML private TextField newickField;
+	@FXML private Label curNodeLabel;
+	@FXML private Label curEdgeLabel;
+	@FXML private Label curNewickLabel;
+	@FXML private Button openButton;
 
 	private GraphLoadService graphLoadService;
 	private NewickLoadService newickLoadService;
@@ -68,6 +74,17 @@ public class FileOpenController {
 
 		animation = new SlidingAnimation(fileOpenPane, WIDTH, ANIM_DURATION);
 				/*SlidingAnimation.Location.TOP_LEFT);*/
+
+		bindOpenButtonDisabling();
+	}
+
+	/**
+	 * Disables the openbutton when either no newick file or no node file is selected.
+	 */
+	private void bindOpenButtonDisabling() {
+		Binding<Boolean> isFilesFilled = Bindings.and(newickField.textProperty().isEmpty(),
+				nodeField.textProperty().isEmpty());
+		openButton.disableProperty().bind(isFilesFilled);
 	}
 
 	/*
@@ -75,7 +92,7 @@ public class FileOpenController {
 	 * to fill in the edge textfield as well.
 	 */
 	@FXML
-	private void onNodeFieldClicked(MouseEvent e) {
+	private void onNodeFieldClicked() {
 		File nodeFile = selectFile("Node file", NODE);
 		if (nodeFile != null) {
 			graphLoadService.setNodeFile(nodeFile);
@@ -86,11 +103,11 @@ public class FileOpenController {
 	}
 
 	/*
-     * If the edge textfield is clicked, open the filechooser and if a file is selected, try
-     * to fill in the node textfield as well.
-     */
+	 * If the edge textfield is clicked, open the filechooser and if a file is selected, try
+	 * to fill in the node textfield as well.
+	 */
 	@FXML
-	private void onEdgeFieldClicked(Event e) {
+	private void onEdgeFieldClicked() {
 		File edgeFile = selectFile("Edge file", EDGE);
 		if (edgeFile != null) {
 			graphLoadService.setEdgeFile(edgeFile);
@@ -105,7 +122,7 @@ public class FileOpenController {
 	 * fill in the newick textfield.
 	 */
 	@FXML
-	private void onNewickFieldClicked(Event e) {
+	private void onNewickFieldClicked() {
 		File newickFile = selectFile("Newick file", NEWICK);
 		if (newickFile != null) {
 			newickLoadService.setNewickFile(newickFile);
@@ -114,24 +131,41 @@ public class FileOpenController {
 	}
 
 	/*
-	 * If the open button is clicked, open the files if selected and hide the pane.
+	 * If the open button is clicked, open the files if selected and hide the pane. Clears the
+	 * text fields and updates the current file labels if files are opened.
 	 */
 	@FXML
-	private void onOpenAction(ActionEvent actionEvent) {
+	private void onOpenAction() {
 		progressDialog = new ProgressDialog(fileOpenPane.getParent());
+		resetTextFields();
+		animation.toggle();
 
-		if (!nodeField.getText().equals("") || !newickField.getText().equals("")) {
-			animation.toggle();
-		}
-
-		if (graphLoadService.nodeFileProperty().isNotNull().get()
-				&& graphLoadService.edgeFileProperty().isNotNull().get()) {
+		if (graphLoadService.getNodeFile() != null && graphLoadService.getEdgeFile() != null) {
 			graphLoadService.restart();
+			curNodeLabel.setText(graphLoadService.getNodeFile().getAbsolutePath());
+			curEdgeLabel.setText(graphLoadService.getEdgeFile().getAbsolutePath());
 		}
 
-		if (newickLoadService.newickFileProperty().isNotNull().get()) {
+		if (newickLoadService.getNewickFile() != null) {
 			newickLoadService.restart();
+			curNewickLabel.setText(newickLoadService.getNewickFile().getAbsolutePath());
 		}
+	}
+
+	/* Clears the files, textfields and hides the pane. */
+	@FXML
+	private void onCancelAction(ActionEvent actionEvent) {
+		animation.toggle();
+		graphLoadService.setNodeFile(null);
+		graphLoadService.setEdgeFile(null);
+		newickLoadService.setNewickFile(null);
+		resetTextFields();
+	}
+
+	private void resetTextFields() {
+		nodeField.clear();
+		edgeField.clear();
+		newickField.clear();
 	}
 
 	/**
