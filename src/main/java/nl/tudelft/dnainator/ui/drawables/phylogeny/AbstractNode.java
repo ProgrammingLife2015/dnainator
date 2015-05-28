@@ -1,6 +1,8 @@
 package nl.tudelft.dnainator.ui.drawables.phylogeny;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.shape.Rectangle;
 
@@ -10,6 +12,8 @@ import javafx.scene.shape.Rectangle;
  * the root...) and a pair of (x,y) coordinates.
  */
 public abstract class AbstractNode extends Rectangle {
+	private static final String INACTIVE = "inactive";
+	protected BooleanProperty inactive = new SimpleBooleanProperty(false, "inactive");
 	private DoubleProperty centerX = new SimpleDoubleProperty(0.0, "centerX");
 	private DoubleProperty centerY = new SimpleDoubleProperty(0.0, "centerY");
 	protected Edge incomingEdge;
@@ -22,10 +26,57 @@ public abstract class AbstractNode extends Rectangle {
 	 */
 	public AbstractNode(double x, double y, double dim) {
 		super(x - dim / 2, y - dim / 2, dim, dim);
-		getStyleClass().add("phylogenetic-node");
 
 		setCenterX(x);
 		setCenterY(y);
+		setOnMouseClicked(e -> onMouseClicked());
+
+		inactiveProperty().addListener((obj, oldV, newV) -> {
+			if (newV) {
+				addStyle(INACTIVE);
+			} else {
+				removeStyles();
+			}
+		});
+	}
+
+	/**
+	 * This function is called when the {@link AbstractNode} receives a mouse click. Internal nodes
+	 * treat this differently from leaf nodes.
+	 */
+	public abstract void onMouseClicked();
+
+	/**
+	 * Sets the inactive state of this {@link AbstractNode}. Note that only
+	 * leaf nodes can change their state; their parents automatically update
+	 * themselves if both children are inactive.
+	 * @param state The new state of this {@link AbstractNode}.
+	 */
+	public abstract void setInactive(boolean state);
+
+	/**
+	 * Adds a CSS class to the {@link AbstractNode}.
+	 * @param style The CSS class to add.
+	 */
+	protected abstract void addStyle(String style);
+
+	/**
+	 * Removes all CSS classes from the {@link AbstractNode}.
+	 */
+	protected abstract void removeStyles();
+
+	/**
+	 * @return The inactive state.
+	 */
+	public final boolean getInactive() {
+		return inactive.get();
+	}
+
+	/**
+	 * @return The inactive property.
+	 */
+	public BooleanProperty inactiveProperty() {
+		return inactive;
 	}
 
 	/**

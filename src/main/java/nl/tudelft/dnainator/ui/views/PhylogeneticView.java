@@ -50,7 +50,7 @@ public class PhylogeneticView extends Pane {
 		getChildren().add(label);
 		currentLeafY += LEAFHEIGHT;
 
-		return new LeafNode(label, x, y, SQUARE);
+		return new LeafNode(leaf, label, x, y, SQUARE);
 	}
 
 	private AbstractNode drawInternal(List<TreeNode> children, double x, double y) {
