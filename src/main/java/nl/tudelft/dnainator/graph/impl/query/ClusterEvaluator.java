@@ -19,8 +19,10 @@ public class ClusterEvaluator implements Evaluator {
 
 	/**
 	 * Create a new {@link ClusterEvaluator}, which will:.
-	 * - only cluster nodes that haven't been visited yet
-	 * - use the specified threshold
+	 * <ul>
+	 *   <li>only cluster nodes that haven't been visited yet</li>
+	 *   <li>use the specified threshold</li>
+	 * </ul>
 	 * @param threshold	the clustering threshold
 	 * @param visited	the visited nodes
 	 */
@@ -32,9 +34,13 @@ public class ClusterEvaluator implements Evaluator {
 	/**
 	 * Evaluates a node and determines whether to include and / or continue.
 	 * Continues on and returns exactly those nodes that:
-	 * - haven't been visited yet and
-	 *   - are the start node
-	 *   - have a sequence < threshold (and thus belong to the same cluster)
+	 * <ul>
+	 *   <li>haven't been visited yet and</li>
+	 *   <li>are the start node
+	 *   <ul>
+	 *     <li>have a sequence &lt; threshold (and thus belong to the same cluster)</li>
+	 *   </ul>
+	 * </ul>
 	 */
 	@Override
 	public Evaluation evaluate(Path path) {

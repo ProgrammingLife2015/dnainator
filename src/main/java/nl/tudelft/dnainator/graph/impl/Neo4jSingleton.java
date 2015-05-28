@@ -63,7 +63,6 @@ public final class Neo4jSingleton {
 	/**
 	 * Deletes the contents of the database associated with the default path, if it exists.
 	 * FIXME: {@link Neo4jGraph} seems to be unable to restart on a previously shut down path.
-	 * @throws IOException	when the database could not be deleted 
 	 */
 	public void deleteDatabase() {
 		deleteDatabase(DB_PATH);
@@ -72,7 +71,6 @@ public final class Neo4jSingleton {
 	/**
 	 * Deletes the contents of the database associated with the specified path, if it exists.
 	 * @param path	the path to the database
-	 * @throws IOException	when the database could not be deleted
 	 */
 	public void deleteDatabase(String path) {
 		if (neodatabases.containsKey(path)) {

@@ -5,8 +5,7 @@ import nl.tudelft.dnainator.ui.models.ClusterItem;
 import nl.tudelft.dnainator.ui.widgets.contexts.EdgeContext;
 
 /**
- * The drawable edge is the JavaFX counterpart of
- * {@link nl.tudelft.dnainator.core.Edge}.
+ * The drawable edge is a line that can be bound to the a source and a destination cluster.
  */
 public class DrawableEdge extends Line {
 	/**
