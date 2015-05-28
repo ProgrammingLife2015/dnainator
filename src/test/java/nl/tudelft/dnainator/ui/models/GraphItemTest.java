@@ -115,7 +115,7 @@ public class GraphItemTest {
 
 		gi.update(new Rectangle(5000, 2500).getBoundsInLocal());
 		assertFalse(gi.getContent().isVisible());
-		verify(graph, never()).getRank(anyInt());
+		verify(graph, Mockito.atLeastOnce()).getRank(anyInt());
 
 		gi.update(new Rectangle(1000, 500).getBoundsInLocal());
 		assertFalse(gi.getContent().isVisible());
