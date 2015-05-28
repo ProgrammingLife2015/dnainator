@@ -21,6 +21,9 @@ import nl.tudelft.dnainator.ui.widgets.dialogs.ExceptionDialog;
  */
 public class View extends Pane {
 	private static final double SCALE = .1;
+	private static final double ZOOM_FACTOR = 1e-3;
+	private static final int DEFAULT_ZOOM_IN = 55;
+	private static final int DEFAULT_ZOOM_OUT = -150;
 	private Affine scale;
 	private Translate toCenter;
 	private Translate translate;
@@ -98,17 +101,39 @@ public class View extends Pane {
 
 	/**
 	 * Zoom the camera by the amount given by zoom.
-	 * @param zoom		the amount to zoom in
+	 * @param delta		the amount to zoom in
 	 * @param center	the center of the zoom, in camera space
 	 */
-	public void zoom(Double zoom, Point2D center) {
+	public void zoom(double delta, Point2D center) {
 		try {
 			center = scale.inverseTransform(center.getX() - toCenter.getX() - translate.getX(),
 							center.getY() - toCenter.getY() - translate.getY());
-			scale.append(new Scale(1 + zoom, 1 + zoom, center.getX(), center.getY()));
+			double zoom = 1 + delta * ZOOM_FACTOR;
+			scale.append(new Scale(zoom, zoom, center.getX(), center.getY()));
 		} catch (NonInvertibleTransformException e) {
 			e.printStackTrace();
 		}
 		mi.update(cameraToWorld(getLayoutBounds()));
+	}
+
+	/**
+	 * Default zoom method. Zooms in the camera by a default amount and to the center of the view.
+	 */
+	public void zoomIn() {
+		zoom(DEFAULT_ZOOM_IN, getCenter());
+	}
+
+	/**
+	 * Default zoom method. Zooms out the camera by a default amount and to the center of the view.
+	 */
+	public void zoomOut() {
+		zoom(DEFAULT_ZOOM_OUT, getCenter());
+	}
+
+	/**
+	 * @return The center {@link Point2D} of the view.
+	 */
+	public final Point2D getCenter() {
+		return new Point2D(getWidth() / 2, getHeight() / 2);
 	}
 }

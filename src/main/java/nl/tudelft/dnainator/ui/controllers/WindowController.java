@@ -98,4 +98,14 @@ public class WindowController {
 	private void exitAction(ActionEvent e) {
 		Platform.exit();
 	}
+
+	@FXML
+	private void zoomInAction(ActionEvent e) {
+		view.zoomIn();
+	}
+
+	@FXML
+	private void zoomOutAction(ActionEvent e) {
+		view.zoomOut();
+	}
 }

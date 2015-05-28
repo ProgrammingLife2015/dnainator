@@ -43,12 +43,12 @@
           </Menu>
           <Menu mnemonicParsing="false" text="View">
             <items>
-                  <MenuItem mnemonicParsing="false" text="Zoom in">
+                  <MenuItem mnemonicParsing="false" onAction="#zoomInAction" text="Zoom in">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="PLUS" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                      </accelerator>
                   </MenuItem>
-                  <MenuItem mnemonicParsing="false" text="Zoom out">
+                  <MenuItem mnemonicParsing="false" onAction="#zoomOutAction" text="Zoom out">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="MINUS" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                      </accelerator>
