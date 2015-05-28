@@ -17,7 +17,7 @@ public class PhylogeneticView extends Pane {
 	private static final double LEAFHEIGHT = 30;
 	private static final int MARGIN = 30;
 	private static final double LEVELWIDTH = 3 * MARGIN;
-	private static final int SQUARE = 4;
+	private static final int SQUARE = 8;
 	private static final int OFFSET = 8;
 	private double currentLeafY;
 
