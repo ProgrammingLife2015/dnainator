@@ -20,6 +20,7 @@ import javafx.stage.StageStyle;
  */
 public class SplashScreen extends Preloader {
 	private static final String SPLASH_IMG = "/ui/splashscreen/splashscreen.png";
+	private static final String ICON = "/ui/dnainator.iconset/icon_512x512.png";
 	private static final String PROPERTIES = "config.properties";
 	private static final String STYLE = "/ui/style.css";
 	private static final int SPLASH_WIDTH = 620;
@@ -33,6 +34,7 @@ public class SplashScreen extends Preloader {
 	public void start(Stage primaryStage) throws Exception {
 		stage = primaryStage;
 		stage.initStyle(StageStyle.UNDECORATED);
+		stage.getIcons().add(new Image(getClass().getResourceAsStream(ICON)));
 		stage.setScene(createPreloaderScene());
 		stage.show();
 	}
