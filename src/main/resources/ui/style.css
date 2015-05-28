@@ -36,3 +36,8 @@
 	-fx-font-smoothing-type: lcd;
 	-fx-font-family: Kalinga;
 }
+
+.gray-label {
+	-fx-font-size: 11px;
+	-fx-text-fill: #a8a8a8;
+}

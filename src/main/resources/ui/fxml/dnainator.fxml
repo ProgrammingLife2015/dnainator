@@ -99,4 +99,7 @@
          </items>
       </SplitPane>
    </center>
+   <left>
+      <fx:include fx:id="fileOpener" source="openpane.fxml"/>
+   </left>
 </BorderPane>
