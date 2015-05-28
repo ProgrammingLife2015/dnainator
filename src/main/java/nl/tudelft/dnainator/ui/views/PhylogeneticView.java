@@ -38,7 +38,7 @@ public class PhylogeneticView extends Pane {
 		if (children.size() == 0) {
 			return drawLeaf(node, x);
 		}
-		return drawInternal(node, children, x, y);
+		return drawInternal(children, x, y);
 	}
 
 	private PhylogeneticNode drawLeaf(TreeNode leaf, double x) {
@@ -50,8 +50,7 @@ public class PhylogeneticView extends Pane {
 		return new PhylogeneticNode(x, y, SQUARE);
 	}
 
-	private PhylogeneticNode drawInternal(TreeNode root, List<TreeNode> children,
-			double x, double y) {
+	private PhylogeneticNode drawInternal(List<TreeNode> children, double x, double y) {
 		List<PhylogeneticNode> drawnChildren = new ArrayList<>();
 
 		// Draw all children and attach an outgoing edge.
@@ -68,12 +67,12 @@ public class PhylogeneticView extends Pane {
 		PhylogeneticNode last = drawnChildren.get(drawnChildren.size() - 1);
 
 		// Draw self and attach children's edges to it.
-		PhylogeneticNode self = new PhylogeneticNode(x, first.getCenterY()
+		PhylogeneticNode root = new PhylogeneticNode(x, first.getCenterY()
 				+ (last.getCenterY() - first.getCenterY()) / 2, SQUARE);
 		for (PhylogeneticNode child : drawnChildren) {
-			child.getIncomingEdge().bindTo(self);
+			child.getIncomingEdge().bindTo(root);
 		}
-		return self;
+		return root;
 	}
 
 }
