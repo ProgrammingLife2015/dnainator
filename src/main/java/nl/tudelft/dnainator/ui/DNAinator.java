@@ -14,6 +14,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
+import nl.tudelft.dnainator.ui.widgets.dialogs.ExceptionDialog;
 
 import java.io.IOException;
 
@@ -44,6 +45,13 @@ public class DNAinator extends Application {
 			}
 		};
 
+		task.setOnFailed(event -> {
+			Exception e = new RuntimeException(
+						"Could not launch the application. Please make sure only\n"
+								+ "one instance of the application exists at all times.");
+			notifyPreloader(new Preloader.ErrorNotification("DNAinator",
+					"Could not launch the application!", e));
+		});
 		new Thread(task).start();
 	}
 
@@ -69,7 +77,7 @@ public class DNAinator extends Application {
 					primaryStage.setScene(scene);
 					primaryStage.show();
 				} catch (IOException e) {
-					e.printStackTrace();
+					new ExceptionDialog(null, e, "Could not launch the Application!");
 				}
 			});
 		});
