@@ -2,6 +2,7 @@ package nl.tudelft.dnainator.ui.controllers;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
+import javafx.scene.Group;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
@@ -18,12 +19,15 @@ public class StrainViewController {
 	private static final double SCROLLSPEED_INC = 0.3;
 	private static final int MAX_SCROLL_FACTOR = 4;
 
-	@FXML private StrainView strainView;
+	@SuppressWarnings("unused") @FXML
+	private StrainView strainView;
+	@SuppressWarnings("unused") @FXML
+	private Group group;
 
 	private Point2D dragstart;
 	private double scrollSpeedFactor;
 
-	@FXML
+	@SuppressWarnings("unused") @FXML
 	private void onMouseDragged(MouseEvent e) {
 		if (e.getButton() == MouseButton.PRIMARY) {
 			Point2D end = new Point2D(e.getX(), e.getY());
@@ -34,7 +38,7 @@ public class StrainViewController {
 		}
 	}
 
-	@FXML
+	@SuppressWarnings("unused") @FXML
 	private void onMousePressed(MouseEvent e) {
 		scrollSpeedFactor = 1;
 		strainView.requestFocus();
@@ -43,12 +47,12 @@ public class StrainViewController {
 		}
 	}
 
-	@FXML
+	@SuppressWarnings("unused") @FXML
 	private void onScroll(ScrollEvent e) {
 		strainView.zoom(e.getDeltaY(), new Point2D(e.getX(), e.getY()));
 	}
 
-	@FXML
+	@SuppressWarnings("unused") @FXML
 	private void onKeyPressed(KeyEvent e) {
 		KeyCode key = e.getCode();
 
@@ -82,7 +86,7 @@ public class StrainViewController {
 		}
 	}
 
-	@FXML
+	@SuppressWarnings("unused") @FXML
 	private void onKeyReleased(KeyEvent e) {
 		if (e.getCode().isArrowKey()) {
 			scrollSpeedFactor = 1;

@@ -29,7 +29,7 @@ public final class ColorServer {
 	 * @throws AllColorsInUseException If all colors are currently in use.
 	 */
 	public String getColor(String source) throws AllColorsInUseException {
-		if (colors.containsKey((source))) {
+		if (colors.containsKey(source)) {
 			return colors.get(source);
 		} else if (occupied.cardinality() == COLORS) {
 			throw new AllColorsInUseException();

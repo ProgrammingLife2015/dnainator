@@ -1,12 +1,5 @@
 package nl.tudelft.dnainator.graph.impl;
 
-import static nl.tudelft.dnainator.graph.impl.PropertyTypes.ENDREF;
-import static nl.tudelft.dnainator.graph.impl.PropertyTypes.ID;
-import static nl.tudelft.dnainator.graph.impl.PropertyTypes.NODELABEL;
-import static nl.tudelft.dnainator.graph.impl.PropertyTypes.RANK;
-import static nl.tudelft.dnainator.graph.impl.PropertyTypes.SEQUENCE;
-import static nl.tudelft.dnainator.graph.impl.PropertyTypes.SOURCE;
-import static nl.tudelft.dnainator.graph.impl.PropertyTypes.STARTREF;
 import static org.neo4j.helpers.collection.IteratorUtil.loop;
 
 import java.io.IOException;
@@ -49,9 +42,10 @@ import org.neo4j.tooling.GlobalGraphOperations;
  * This class realizes a graphfactory using Neo4j as it's backend.
  */
 public final class Neo4jGraph implements Graph {
-	private static final String GET_MAX_RANK = "MATCH n RETURN MAX(n." + RANK.name() + ")";
-	private static final String GET_ROOT = "MATCH (s:" + NODELABEL.name() + ") "
-			+ "WHERE NOT (s)<-[:NEXT]-(:" + NODELABEL.name() + ") "
+	private static final String GET_MAX_RANK = "MATCH n RETURN MAX(n."
+			+ PropertyTypes.RANK.name() + ")";
+	private static final String GET_ROOT = "MATCH (s:" + PropertyTypes.NODELABEL.name() + ") "
+			+ "WHERE NOT (s)<-[:NEXT]-(:" + PropertyTypes.NODELABEL.name() + ") "
 			+ "RETURN s";
 
 	private GraphDatabaseService service;
@@ -72,7 +66,7 @@ public final class Neo4jGraph implements Graph {
 		});
 
 		// Assign a label to our nodes
-		nodeLabel = DynamicLabel.label(NODELABEL.name());
+		nodeLabel = DynamicLabel.label(PropertyTypes.NODELABEL.name());
 		// Recreate our indices
 		execute(new IndexCommand(nodeLabel));
 	}
@@ -94,8 +88,8 @@ public final class Neo4jGraph implements Graph {
 	@Override
 	public void addEdge(Edge<String> edge) {
 		try (Transaction tx = service.beginTx()) {
-			Node source = service.findNode(nodeLabel, ID.name(), edge.getSource());
-			Node dest   = service.findNode(nodeLabel, ID.name(), edge.getDest());
+			Node source = service.findNode(nodeLabel, PropertyTypes.ID.name(), edge.getSource());
+			Node dest   = service.findNode(nodeLabel, PropertyTypes.ID.name(), edge.getDest());
 			source.createRelationshipTo(dest, RelTypes.NEXT);
 
 			tx.success();
@@ -106,12 +100,12 @@ public final class Neo4jGraph implements Graph {
 	public void addNode(SequenceNode s) {
 		try (Transaction tx = service.beginTx()) {
 			Node node = service.createNode(nodeLabel);
-			node.setProperty(ID.name(), s.getId());
-			node.setProperty(STARTREF.name(), s.getStartRef());
-			node.setProperty(ENDREF.name(), s.getEndRef());
-			node.setProperty(SEQUENCE.name(), s.getSequence());
-			node.setProperty(SOURCE.name(), s.getSource());
-			node.setProperty(RANK.name(), 0);
+			node.setProperty(PropertyTypes.ID.name(), s.getId());
+			node.setProperty(PropertyTypes.STARTREF.name(), s.getStartRef());
+			node.setProperty(PropertyTypes.ENDREF.name(), s.getEndRef());
+			node.setProperty(PropertyTypes.SEQUENCE.name(), s.getSequence());
+			node.setProperty(PropertyTypes.SOURCE.name(), s.getSource());
+			node.setProperty(PropertyTypes.RANK.name(), 0);
 
 			tx.success();
 		}
@@ -156,13 +150,13 @@ public final class Neo4jGraph implements Graph {
 
 	@Override
 	public SequenceNode getNode(String s) {
-		return query(e -> createSequenceNode(e.findNode(nodeLabel, ID.name(), s)));
+		return query(e -> createSequenceNode(e.findNode(nodeLabel, PropertyTypes.ID.name(), s)));
 	}
 
 	@Override
 	public List<SequenceNode> getRank(int rank) {
 		return query(e -> {
-			ResourceIterator<Node> res = e.findNodes(nodeLabel, RANK.name(), rank);
+			ResourceIterator<Node> res = e.findNodes(nodeLabel, PropertyTypes.RANK.name(), rank);
 			List<SequenceNode> nodes = new LinkedList<>();
 
 			for (Node n : loop(res)) {
