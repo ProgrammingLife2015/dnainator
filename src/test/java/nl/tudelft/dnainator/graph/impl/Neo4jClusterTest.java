@@ -7,9 +7,14 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import nl.tudelft.dnainator.core.SequenceNode;
+import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.core.impl.SequenceNodeFactoryImpl;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
@@ -60,19 +65,26 @@ public class Neo4jClusterTest {
 	public void test() {
 		Set<String> expected;
 
+		List<SequenceNode> start = Collections.singletonList(db.getNode("1"));
 		// CHECKSTYLE.OFF: MagicNumber
-		expected = Sets.newSet("1", "2", "3");
-		assertEquals(expected, db.getCluster("1", 10).stream().map(sn -> sn.getId())
-								.collect(Collectors.toSet()));
-		expected = Sets.newSet("4", "5", "6", "7");
-		assertEquals(expected, db.getCluster("4", 10).stream().map(sn -> sn.getId())
-								.collect(Collectors.toSet()));
-		expected = Sets.newSet("4", "5", "6", "7", "8");
-		assertEquals(expected, db.getCluster("4", 12).stream().map(sn -> sn.getId())
-								.collect(Collectors.toSet()));
-		expected = Sets.newSet("1", "2", "3", "4", "5", "6", "7", "8");
-		assertEquals(expected, db.getCluster("1", 12).stream().map(sn -> sn.getId())
-								.collect(Collectors.toSet()));
+		Map<Integer, List<Cluster>> clusters = db.getClusters(start, 11);
+		expected = Sets.newSet("1", "3", "4", "5", "6", "7");
+		assertEquals(expected, clusters.get(0).get(0).getNodes()
+				.stream()
+				.map(sn -> sn.getId())
+				.collect(Collectors.toSet()));
+		// 2 Expected on rank 1
+		expected = Sets.newSet("2");
+		assertEquals(expected, clusters.get(1).get(0).getNodes()
+				.stream()
+				.map(sn -> sn.getId())
+				.collect(Collectors.toSet()));
+		// 8 Expected on rank 5
+		expected = Sets.newSet("8");
+		assertEquals(expected, clusters.get(5).get(0).getNodes()
+				.stream()
+				.map(sn -> sn.getId())
+				.collect(Collectors.toSet()));
 		// CHECKSTYLE.ON: MagicNumber
 	}
 

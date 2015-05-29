@@ -3,40 +3,39 @@ package nl.tudelft.dnainator.ui.models;
 import java.util.List;
 
 import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
-import nl.tudelft.dnainator.core.SequenceNode;
+import nl.tudelft.dnainator.core.impl.Cluster;
 
 /**
  * The {@link RankItem} class represents the bottom level object in the viewable model.
  * It can hold only content and no children, and is therefore a leaf in the composite pattern.
  */
 public class RankItem extends CompositeItem {
+	private List<Cluster> clusters;
+
 	/**
 	 * Construct a new bottom level {@link RankItem} using the default graph.
 	 * Every {@link RankItem} needs a reference to its parent.
 	 * @param parent	the parent of this {@link RankItem}
+	 * @param rank		the rank of this {@link RankItem}
+	 * @param clusters	the clusters this rankitem contains.
 	 */
-	public RankItem(ModelItem parent) {
-		super(parent);
+	public RankItem(ModelItem parent, int rank, List<Cluster> clusters) {
+		super(parent, rank);
 
-		bindLocalToRoot(parent.localToRootProperty());
+		this.clusters = clusters;
+		getContent().setTranslateX(rank * RANK_WIDTH);
 	}
 
-	private void load() {
+	@Override
+	public void loadChildren(Bounds b) {
+		System.out.println("loading: " + getRank());
 		if (getChildItems().size() == 0) {
-			int rank = (int) localToRoot(new Point2D(0, 0)).getX() / RANK_WIDTH;
-
-			List<SequenceNode> nodes = getGraph().getRank(rank);
-			for (int i = 0; i < nodes.size(); i++) {
-				NodeItem drawable = new NodeItem(this, nodes.get(i));
-				drawable.setTranslateY(i * RANK_WIDTH - nodes.size() * RANK_WIDTH / 2);
-
-				getChildItems().add(drawable);
-				getNodes().put(nodes.get(i).getId(), drawable);
+			for (int i = 0; i < clusters.size(); i++) {
+				ClusterItem c = new ClusterItem(this, getRank(), clusters.get(i).getNodes());
+				c.getContent().setTranslateX(getRank() * RANK_WIDTH);
+				c.getContent().setTranslateY(i * RANK_WIDTH - clusters.size() * RANK_WIDTH / 2);
+				getChildItems().add(c);
 			}
-
-			System.out.println("size: " + getNodes().size());
-			System.out.println("sequence children " + rank + ": " + getChildItems().size());
 		}
 	}
 
@@ -46,7 +45,6 @@ public class RankItem extends CompositeItem {
 			return;
 		}
 
-		load();
-		update(b, Thresholds.CLUSTER);
+		update(b, Thresholds.GRAPH);
 	}
 }

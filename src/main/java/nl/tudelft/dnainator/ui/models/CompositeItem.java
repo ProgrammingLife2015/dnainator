@@ -20,9 +20,10 @@ public abstract class CompositeItem extends ModelItem {
 	 * Base constructor for a {@link CompositeItem}.
 	 * Every {@link CompositeItem} needs a reference to its parent.
 	 * @param parent	the parent of this {@link CompositeItem}
+	 * @param rank		the rank of this {@link ClusterItem}
 	 */
-	public CompositeItem(ModelItem parent) {
-		super(parent);
+	public CompositeItem(ModelItem parent, int rank) {
+		super(parent, rank);
 
 		childContent = new Group();
 		children = new ArrayList<>();
@@ -45,16 +46,19 @@ public abstract class CompositeItem extends ModelItem {
 		return children;
 	}
 
+	public abstract void loadChildren(Bounds b);
+
 	/**
 	 * Toggle between displaying own content or children.
 	 * @param visible	true for visible
 	 */
-	public void toggle(boolean visible) {
+	public void toggle(Bounds b, boolean visible) {
 		if (visible && !getContent().isVisible()) {
 			getChildContent().getChildren().clear();
 			getContent().setVisible(true);
 		}
-		if (!visible && getContent().isVisible()) {
+		if (!visible) {
+			loadChildren(b);
 			getContent().setVisible(false);
 			getChildContent().getChildren().addAll(getChildItems());
 		}
@@ -67,9 +71,9 @@ public abstract class CompositeItem extends ModelItem {
 	 */
 	public void update(Bounds b, Thresholds t) {
 		if (b.getWidth() > t.get()) {
-			toggle(true);
+			toggle(b, true);
 		} else {
-			toggle(false);
+			toggle(b, false);
 
 			for (ModelItem m : getChildItems()) {
 				m.update(b);

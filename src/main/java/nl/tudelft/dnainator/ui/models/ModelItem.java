@@ -4,14 +4,8 @@ package nl.tudelft.dnainator.ui.models;
 
 import java.util.Map;
 
-import javafx.beans.binding.ObjectBinding;
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Bounds;
-import javafx.geometry.Point2D;
 import javafx.scene.Group;
-import javafx.scene.layout.Pane;
-import javafx.scene.transform.Transform;
 import nl.tudelft.dnainator.graph.Graph;
 
 /**
@@ -27,48 +21,27 @@ import nl.tudelft.dnainator.graph.Graph;
  * the concatenation of all parent rootToItem properties when instantiating a
  * concrete subclass.
  */
-public abstract class ModelItem extends Pane {
-	public static final int CLUSTER_SIZE = 20;
+public abstract class ModelItem extends Group {
 	public static final int RANK_WIDTH = 10;
-
-	static final int NO_CLUSTERS = 330;
-	static final int NO_RANKS = 10;
+	public static final int NO_CLUSTERS = 3300;
+	public static final int NO_RANKS = 10;
 
 	private ModelItem parent;
 	private Group content;
-	private ObjectProperty<Transform> localToRoot;
+	private int rank;
 
 	/**
 	 * Base constructor for a {@link ModelItem}.
 	 * Every {@link ModelItem} needs a reference to its parent.
 	 * @param parent	the parent of this {@link ModelItem}
+	 * @param rank		the rank of this {@link ModelItem}
 	 */
-	public ModelItem(ModelItem parent) {
+	public ModelItem(ModelItem parent, int rank) {
 		this.parent = parent;
 		this.content = new Group();
-		this.localToRoot = new SimpleObjectProperty<>();
+		this.rank = rank;
 
 		getChildren().add(content);
-	}
-
-	/**
-	 * This method binds localToRoot to the concatenated transforms of the parent and child.
-	 * Every subclass, except the root, should bind its parent for correct positioning.
-	 * @param parent	the parent transform
-	 */
-	public void bindLocalToRoot(ObjectProperty<Transform> parent) {
-		ObjectBinding<Transform> transform = new ObjectBinding<Transform>() {
-			{
-				super.bind(parent);
-				super.bind(localToParentTransformProperty());
-				localToRootProperty().set(computeValue());
-			}
-			@Override
-			protected Transform computeValue() {
-				return parent.get().createConcatenation(getLocalToParentTransform());
-			}
-		};
-		localToRootProperty().bind(transform);
 	}
 
 	/**
@@ -92,8 +65,16 @@ public abstract class ModelItem extends Pane {
 	 * Should be changed to ModelItems, so we can have edges to clusters.
 	 * @return	a map from id to drawable / modelitem
 	 */
-	public Map<String, NodeItem> getNodes() {
-		return getRoot().getNodes();
+	public Map<String, ClusterItem> getClusters() {
+		return getRoot().getClusters();
+	}
+
+	/**
+	 * Return the rank of this {@link ModelItem}.
+	 * @return	the rank
+	 */
+	public int getRank() {
+		return rank;
 	}
 
 	/**
@@ -105,54 +86,12 @@ public abstract class ModelItem extends Pane {
 	}
 
 	/**
-	 * Return the concatenation of transforms from the root to this item.
-	 * @return	a concatenation of transforms
-	 */
-	public Transform getLocalToRoot() {
-		return localToRoot.get();
-	}
-
-	/**
-	 * Set the concatenation of transforms from the root to this item.
-	 * @param t	a concatenation of transforms
-	 */
-	public void setLocalToRoot(Transform t) {
-		localToRoot.set(t);
-	}
-
-	/**
-	 * Return the property containing the concatenation of transforms from the root to this item.
-	 * @return	a concatenation of transforms
-	 */
-	public ObjectProperty<Transform> localToRootProperty() {
-		return localToRoot;
-	}
-
-	/**
-	 * Transform a given bounding box b from local coordinates to root coordinates.
-	 * @param b	the bounds to transform
-	 * @return	the transformed bounds
-	 */
-	public Bounds localToRoot(Bounds b) {
-		return getLocalToRoot().transform(b);
-	}
-
-	/**
-	 * Transform a given point p from local coordinates to root coordinates.
-	 * @param p	the point to transform
-	 * @return	the transformed point
-	 */
-	public Point2D localToRoot(Point2D p) {
-		return getLocalToRoot().transform(p);
-	}
-
-	/**
 	 * Check whether this object intersects with the given viewport bounds.
 	 * @param b	the given viewport bounds
 	 * @return	true when (partially) in viewport, false otherwise
 	 */
 	public boolean isInViewport(Bounds b) {
-		return b.intersects(localToRoot(getContent().getBoundsInLocal()));
+		return b.contains(getContent().localToParent(0, 0));
 	}
 
 	/**

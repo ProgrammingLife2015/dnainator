@@ -4,7 +4,7 @@ package nl.tudelft.dnainator.ui.models;
  * This enum holds zooming thresholds for the various zooming levels.
  */
 public enum Thresholds {
-	GRAPH(10000),
+	GRAPH(5000),
 	CLUSTER(2000);
 	
 	private final int threshold;

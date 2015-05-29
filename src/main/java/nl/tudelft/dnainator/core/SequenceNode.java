@@ -42,15 +42,15 @@ public interface SequenceNode {
 	 */
 	int getRank();
 
-	/**
-	 * The associated incoming neighbours.
-	 * @return	a list of neighbour id's
-	 */
-	List<String> getIncoming();
-
 	@Override
 	boolean equals(Object other);
 
 	@Override
 	int hashCode();
+
+	/**
+	 * The associated incoming neighbours.
+	 * @return	a list of neighbour id's
+	 */
+	List<String> getOutgoing();
 }

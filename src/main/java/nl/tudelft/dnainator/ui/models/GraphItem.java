@@ -1,13 +1,14 @@
 package nl.tudelft.dnainator.ui.models;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javafx.geometry.Bounds;
-import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.transform.Translate;
+import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
 
@@ -19,7 +20,7 @@ public class GraphItem extends CompositeItem {
 	private static final int FOUR = 4;
 
 	private Graph graph;
-	private Map<String, NodeItem> nodes;
+	private Map<String, ClusterItem> clusters;
 
 	/**
 	 * Construct a new top level {@link GraphItem} using the default graph.
@@ -33,26 +34,15 @@ public class GraphItem extends CompositeItem {
 	 * @param graph	the specified graph
 	 */
 	public GraphItem(Graph graph) {
-		super(null);
+		super(null, 0);
 		this.graph = graph;
-		this.nodes = new HashMap<>();
+		this.clusters = new HashMap<>();
 
-		localToRootProperty().set(new Translate());
-
-		Group g = new Group();
 		for (int i = 0; i < FOUR; i++) {
-			int width = NO_CLUSTERS * NO_RANKS * RANK_WIDTH / FOUR;
-			Rectangle r = new Rectangle(width, CLUSTER_SIZE, Color.BLACK);
+			int width = NO_CLUSTERS * RANK_WIDTH / FOUR;
+			Rectangle r = new Rectangle(width, RANK_WIDTH, Color.BLACK);
 			r.setTranslateX(i * width);
-			g.getChildren().add(r);
-		}
-		getContent().getChildren().add(g);
-
-		// FIXME: These should be lazily instantiated!
-		for (int i = 0; i < NO_CLUSTERS; i++) {
-			ClusterItem ci = new ClusterItem(this);
-			ci.setTranslateX(i * NO_RANKS * RANK_WIDTH);
-			getChildItems().add(ci);
+			getContent().getChildren().add(r);
 		}
 	}
 
@@ -62,14 +52,30 @@ public class GraphItem extends CompositeItem {
 	}
 
 	@Override
-	public Map<String, NodeItem> getNodes() {
-		return nodes;
+	public Map<String, ClusterItem> getClusters() {
+		return clusters;
 	}
 
 	@Override
 	public ModelItem getRoot() {
 		return this;
 	}
+
+	@Override
+	public void loadChildren(Bounds b) {
+		System.out.println("load iteration");
+		getChildItems().clear();
+		getChildContent().getChildren().clear();
+
+		int minrank = (int) (Math.max(b.getMinX() / RANK_WIDTH, 0));
+		int maxrank = (int) (b.getMaxX() / RANK_WIDTH);
+		List<String> roots = getGraph().getRank(minrank).stream()
+						.map(e -> e.getId()).collect(Collectors.toList());
+		System.out.println(b.getWidth());
+		Map<Integer, List<Cluster>> clusters = getGraph().getClusters(roots, maxrank, (int) (b.getWidth() / 100));
+
+		clusters.forEach((k, v) -> getChildItems().add(new RankItem(this, k, v)));
+	};
 
 	@Override
 	public void update(Bounds b) {

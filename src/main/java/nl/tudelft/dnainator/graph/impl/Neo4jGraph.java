@@ -4,10 +4,18 @@ import static org.neo4j.helpers.collection.IteratorUtil.loop;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.PriorityQueue;
+import java.util.Queue;
+import java.util.Set;
 
 import nl.tudelft.dnainator.core.SequenceNode;
+import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.core.impl.SequenceNodeImpl;
 import nl.tudelft.dnainator.graph.Graph;
@@ -137,6 +145,8 @@ public final class Neo4jGraph implements Graph {
 			node.setProperty(SEQUENCE, s.getSequence());
 			node.setProperty(SOURCE, s.getSource());
 			node.setProperty(RANK, 0);
+			node.setProperty("size", s.getSequence().length());
+			node.setProperty("cluster", 0);
 
 			tx.success();
 		}
@@ -322,12 +332,12 @@ public final class Neo4jGraph implements Graph {
 		String sequence	= (String) node.getProperty(SEQUENCE);
 		int rank	= (int)    node.getProperty(RANK);
 
-		List<String> incoming	= new ArrayList<>();
-		for (Relationship e : loop(node.getRelationships(Direction.INCOMING).iterator())) {
-			incoming.add((String) e.getStartNode().getProperty("id"));
+		List<String> outgoing = new ArrayList<>();
+		for (Relationship e : loop(node.getRelationships(Direction.OUTGOING).iterator())) {
+			outgoing.add((String) e.getEndNode().getProperty(ID));
 		}
 
-		return new SequenceNodeImpl(id, source, startref, endref, sequence, rank, incoming);
+		return new SequenceNodeImpl(id, source, startref, endref, sequence, rank, outgoing);
 	}
 
 	@Override
@@ -364,38 +374,120 @@ public final class Neo4jGraph implements Graph {
 	 */
 	private static class ClusterEvaluator implements Evaluator {
 		private int threshold;
+		private Set<String> visited;
 
-		public ClusterEvaluator(int threshold) {
+		public ClusterEvaluator(int threshold, Set<String> visited) {
 			this.threshold = threshold;
+			this.visited = visited;
 		}
+
+		/**
+		 * Evaluates a node and determines whether to include and / or continue.
+		 * Continues on and returns exactly those nodes that:
+		 * - haven't been visited yet and
+		 *   - are the start node
+		 *   - have a sequence < threshold (and thus belong to the same cluster)
+		 */
 		@Override
 		public Evaluation evaluate(Path path) {
 			Node end = path.endNode();
-			String sequence = (String) end.getProperty("sequence");
+			String sequence = (String) end.getProperty(SEQUENCE);
+			String id = (String) end.getProperty(ID);
 
-			if (path.startNode().getId() == path.endNode().getId()
-					|| sequence.length() < threshold) {
+			if (!visited.contains(id)
+					&& (path.startNode().getId() == path.endNode().getId()
+					|| sequence.length() < threshold)) {
+				visited.add(id);
 				return Evaluation.INCLUDE_AND_CONTINUE;
 			}
 			return Evaluation.EXCLUDE_AND_PRUNE;
 		}
 	}
 
-	@Override
-	public List<SequenceNode> getCluster(String startId, int threshold) {
+	protected List<SequenceNode> getCluster(String id, int threshold) {
+		try (Transaction tx = service.beginTx()) {
+			return getCluster(new HashSet<String>(), id, threshold).getNodes();
+		}
+	}
+
+	private Cluster getCluster(Set<String> visited, String id, int threshold) {
+		Node startNode = service.findNode(nodeLabel, ID, id);
+		List<SequenceNode> result = new ArrayList<>();
+
+		// A depth first traversal traveling along both incoming and outgoing edges.
 		TraversalDescription cluster = service.traversalDescription()
 						.depthFirst()
-						.relationships(RelTypes.NEXT, Direction.OUTGOING)
-						.evaluator(new ClusterEvaluator(threshold));
+						.relationships(RelTypes.NEXT, Direction.BOTH)
+						.evaluator(new ClusterEvaluator(threshold, visited));
 
-		List<SequenceNode> list = new ArrayList<>();
-		try (Transaction tx = service.beginTx()) {
-			Node root = service.findNode(nodeLabel, "id", startId);
-			for (Path p : cluster.traverse(root)) {
-				list.add(createSequenceNode(p.endNode()));
+		// Traverse the cluster starting from the startNode.
+		int rankStart = (int) startNode.getProperty(RANK);
+		for (Node n : cluster.traverse(startNode).nodes()) {
+			SequenceNode end = createSequenceNode(n);
+			result.add(end);
+
+			// Update this cluster's start rank according to the lowest node rank.
+			if (end.getRank() < rankStart) {
+				rankStart = end.getRank();
 			}
 		}
-		return list;
+
+		return new Cluster(rankStart, result);
+	}
+
+	@Override
+	public Queue<Cluster> getClusters(Set<String> visited, List<String> startNodes, int threshold) {
+		Queue<Cluster> rootClusters = new LinkedList<Cluster>();
+
+		try (Transaction tx = service.beginTx()) {
+			for (String sn : startNodes) {
+				// Continue if this startNode was consumed by another cluster
+				if (visited.contains(sn)) {
+					continue;
+				}
+
+				// Otherwise get the cluster starting from this startNode
+				Cluster c = getCluster(visited, sn, threshold);
+				rootClusters.add(c);
+			}
+
+			tx.success();
+		}
+
+		return rootClusters;
+	}
+
+	@Override
+	public Map<Integer, List<Cluster>> getClusters(List<String> startNodes,
+							int end, int threshold) {
+		Queue<Cluster> rootClusters = new PriorityQueue<>((e1, e2) -> 
+			e1.getStartRank() - e2.getStartRank()
+		);
+		Set<String> visited = new HashSet<>();
+		Map<Integer, List<Cluster>> result = new HashMap<Integer, List<Cluster>>();
+
+		try (Transaction tx = service.beginTx()) {
+			// Retrieve the root clusters starting from the startNodes and add them to the queue
+			rootClusters.addAll(getClusters(visited, startNodes, threshold));
+
+			// Find adjacent clusters as long as there are root clusters in the queue
+			while (!rootClusters.isEmpty()) {
+				Cluster c = rootClusters.poll();
+				if (c.getStartRank() > end) {
+					break;
+				}
+				// TODO: Might want to introduce a QueryResult class instead of this map
+				result.putIfAbsent(c.getStartRank(), new ArrayList<>());
+				result.get(c.getStartRank()).add(c);
+
+				for (SequenceNode sn : c.getNodes()) {
+					rootClusters.addAll(getClusters(visited, sn.getOutgoing(), threshold));
+				}
+			}
+
+			tx.success();
+		}
+		return result;
 	}
 
 	@Override

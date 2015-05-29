@@ -15,7 +15,7 @@ public class SequenceNodeImpl implements SequenceNode {
 	private int end;
 	private String sequence;
 	private int rank;
-	private List<String> incoming;
+	private List<String> outgoing;
 
 	/**
 	 * Constructs a default sequence with all parameters specified.
@@ -37,17 +37,17 @@ public class SequenceNodeImpl implements SequenceNode {
 	 * @param end The end position of the sequence.
 	 * @param sequence The sequence.
 	 * @param rank The rank.
-	 * @param incoming The neighbours
+	 * @param outgoing The neighbours
 	 */
 	public SequenceNodeImpl(String id, String source,
-			int start, int end, String sequence, int rank, List<String> incoming) {
+			int start, int end, String sequence, int rank, List<String> outgoing) {
 		this.id = id;
 		this.source = source;
 		this.start = start;
 		this.end = end;
 		this.sequence = sequence;
 		this.rank = rank;
-		this.incoming = incoming;
+		this.outgoing = outgoing;
 	}
 
 	@Override
@@ -95,8 +95,7 @@ public class SequenceNodeImpl implements SequenceNode {
 
 	@Override
 	public String toString() {
-		return "SequenceNode<" + getId() + "," + getSource() + ","
-				+ getStartRef() + "," + getEndRef() + "," + getSequence() + ">";
+		return "SequenceNode<" + getId() + "," + sequence.length() + ">";
 	}
 
 	@Override
@@ -105,7 +104,7 @@ public class SequenceNodeImpl implements SequenceNode {
 	}
 
 	@Override
-	public List<String> getIncoming() {
-		return incoming;
+	public List<String> getOutgoing() {
+		return outgoing;
 	}
 }
