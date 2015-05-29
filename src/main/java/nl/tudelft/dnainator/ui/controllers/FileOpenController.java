@@ -32,14 +32,14 @@ public class FileOpenController {
 	private static final int WIDTH = 550;
 	private static final int ANIM_DURATION = 250;
 
-	@FXML private GridPane fileOpenPane;
-	@FXML private TextField nodeField;
-	@FXML private TextField edgeField;
-	@FXML private TextField newickField;
-	@FXML private Label curNodeLabel;
-	@FXML private Label curEdgeLabel;
-	@FXML private Label curNewickLabel;
-	@FXML private Button openButton;
+	@SuppressWarnings("unused") @FXML private GridPane fileOpenPane;
+	@SuppressWarnings("unused") @FXML private TextField nodeField;
+	@SuppressWarnings("unused") @FXML private TextField edgeField;
+	@SuppressWarnings("unused") @FXML private TextField newickField;
+	@SuppressWarnings("unused") @FXML private Label curNodeLabel;
+	@SuppressWarnings("unused") @FXML private Label curEdgeLabel;
+	@SuppressWarnings("unused") @FXML private Label curNewickLabel;
+	@SuppressWarnings("unused") @FXML private Button openButton;
 
 	private GraphLoadService graphLoadService;
 	private NewickLoadService newickLoadService;
@@ -51,7 +51,7 @@ public class FileOpenController {
 	/*
 	 * Sets up the services, filechooser and treeproperty.
 	 */
-	@FXML
+	@SuppressWarnings("unused") @FXML
 	private void initialize() {
 		fileChooser = new FileChooser();
 		treeProperty = new SimpleObjectProperty<>(this, "tree");
@@ -91,7 +91,7 @@ public class FileOpenController {
 	 * If the node textfield is clicked, open the filechooser and if a file is selected, try
 	 * to fill in the edge textfield as well.
 	 */
-	@FXML
+	@SuppressWarnings("unused") @FXML
 	private void onNodeFieldClicked() {
 		File nodeFile = selectFile("Node file", NODE);
 		if (nodeFile != null) {
@@ -106,7 +106,7 @@ public class FileOpenController {
 	 * If the edge textfield is clicked, open the filechooser and if a file is selected, try
 	 * to fill in the node textfield as well.
 	 */
-	@FXML
+	@SuppressWarnings("unused") @FXML
 	private void onEdgeFieldClicked() {
 		File edgeFile = selectFile("Edge file", EDGE);
 		if (edgeFile != null) {
@@ -121,7 +121,7 @@ public class FileOpenController {
 	 * If the newick textfield is clicked, open the filechooser and if a file is selected,
 	 * fill in the newick textfield.
 	 */
-	@FXML
+	@SuppressWarnings("unused") @FXML
 	private void onNewickFieldClicked() {
 		File newickFile = selectFile("Newick file", NEWICK);
 		if (newickFile != null) {
@@ -134,7 +134,7 @@ public class FileOpenController {
 	 * If the open button is clicked, open the files if selected and hide the pane. Clears the
 	 * text fields and updates the current file labels if files are opened.
 	 */
-	@FXML
+	@SuppressWarnings("unused") @FXML
 	private void onOpenAction() {
 		progressDialog = new ProgressDialog(fileOpenPane.getParent());
 		resetTextFields();
@@ -153,7 +153,7 @@ public class FileOpenController {
 	}
 
 	/* Clears the files, textfields and hides the pane. */
-	@FXML
+	@SuppressWarnings("unused") @FXML
 	private void onCancelAction(ActionEvent actionEvent) {
 		animation.toggle();
 		graphLoadService.setNodeFile(null);

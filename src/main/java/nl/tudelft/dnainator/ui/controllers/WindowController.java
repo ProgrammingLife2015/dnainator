@@ -16,42 +16,46 @@ import nl.tudelft.dnainator.ui.widgets.dialogs.AboutDialog;
  * </p>
  */
 public class WindowController {
-	@FXML private BorderPane root;
-	@FXML private StrainView strainView;
-	@FXML private ScrollPane phyloView;
-	@FXML private FileOpenController fileOpenerController;
+	@SuppressWarnings("unused") @FXML
+	private BorderPane root;
+	@SuppressWarnings("unused") @FXML
+	private StrainView strainView;
+	@SuppressWarnings("unused") @FXML
+	private ScrollPane phyloView;
+	@SuppressWarnings("unused") @FXML
+	private FileOpenController fileOpenerController;
 
 	/**
 	 * Constructs a WindowController object, binding the content of the tree view to
 	 * the <code>treeProperty</code> of the {@link FileOpenController}.
 	 */
-	@FXML
+	@SuppressWarnings("unused") @FXML
 	private void initialize() {
 		phyloView.contentProperty().bind(fileOpenerController.treeProperty());
 	}
 
-	@FXML
+	@SuppressWarnings("unused") @FXML
 	private void openButtonAction() {
 		fileOpenerController.toggle();
 	}
 
-	@FXML
+	@SuppressWarnings("unused") @FXML
 	private void aboutUsAction(ActionEvent e) {
 		AboutDialog about = new AboutDialog(root);
 		about.showAndWait();
 	}
 
-	@FXML
+	@SuppressWarnings("unused") @FXML
 	private void exitAction(ActionEvent e) {
 		Platform.exit();
 	}
 
-	@FXML
+	@SuppressWarnings("unused") @FXML
 	private void zoomInAction(ActionEvent e) {
 		strainView.zoomIn();
 	}
 
-	@FXML
+	@SuppressWarnings("unused") @FXML
 	private void zoomOutAction(ActionEvent e) {
 		strainView.zoomOut();
 	}
