@@ -5,7 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
-import nl.tudelft.dnainator.ui.views.View;
+import nl.tudelft.dnainator.ui.views.StrainView;
 import nl.tudelft.dnainator.ui.widgets.dialogs.AboutDialog;
 
 /**
@@ -17,7 +17,7 @@ import nl.tudelft.dnainator.ui.widgets.dialogs.AboutDialog;
  */
 public class WindowController {
 	@FXML private BorderPane root;
-	@FXML private View view;
+	@FXML private StrainView strainView;
 	@FXML private ScrollPane phyloView;
 	@FXML private FileOpenController fileOpenerController;
 
@@ -48,11 +48,11 @@ public class WindowController {
 
 	@FXML
 	private void zoomInAction(ActionEvent e) {
-		view.zoomIn();
+		strainView.zoomIn();
 	}
 
 	@FXML
 	private void zoomOutAction(ActionEvent e) {
-		view.zoomOut();
+		strainView.zoomOut();
 	}
 }
