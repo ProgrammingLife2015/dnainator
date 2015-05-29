@@ -8,19 +8,19 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import nl.tudelft.dnainator.ui.views.StrainView;
+import nl.tudelft.dnainator.ui.views.AbstractView;
 
 /**
- * Controller class for all graph interaction.
+ * Controller class for all views.
  */
-public class StrainViewController {
+public class AbstractViewController {
 	private static final int X_DELTA = 40;
 	private static final int Y_DELTA = 20;
 	private static final double SCROLLSPEED_INC = 0.3;
 	private static final int MAX_SCROLL_FACTOR = 4;
 
 	@SuppressWarnings("unused") @FXML
-	private StrainView strainView;
+	private AbstractView view;
 	@SuppressWarnings("unused") @FXML
 	private Group group;
 
@@ -32,7 +32,7 @@ public class StrainViewController {
 		if (e.getButton() == MouseButton.PRIMARY) {
 			Point2D end = new Point2D(e.getX(), e.getY());
 			Point2D delta = end.subtract(dragstart);
-			strainView.pan(delta);
+			view.pan(delta);
 
 			dragstart = end;
 		}
@@ -41,7 +41,7 @@ public class StrainViewController {
 	@SuppressWarnings("unused") @FXML
 	private void onMousePressed(MouseEvent e) {
 		scrollSpeedFactor = 1;
-		strainView.requestFocus();
+		view.requestFocus();
 		if (e.getButton() == MouseButton.PRIMARY) {
 			dragstart = new Point2D(e.getX(), e.getY());
 		}
@@ -49,7 +49,7 @@ public class StrainViewController {
 
 	@SuppressWarnings("unused") @FXML
 	private void onScroll(ScrollEvent e) {
-		strainView.zoom(e.getDeltaY(), new Point2D(e.getX(), e.getY()));
+		view.zoom(e.getDeltaY(), new Point2D(e.getX(), e.getY()));
 	}
 
 	@SuppressWarnings("unused") @FXML
@@ -59,9 +59,9 @@ public class StrainViewController {
 		if (key.isArrowKey()) {
 			scrollTo(key);
 		} else if (key == KeyCode.PLUS || key == KeyCode.EQUALS) {
-			strainView.zoomIn();
+			view.zoomIn();
 		} else if (key == KeyCode.MINUS) {
-			strainView.zoomOut();
+			view.zoomOut();
 		}
 	}
 
@@ -70,16 +70,16 @@ public class StrainViewController {
 
 		switch (keyCode) {
 			case LEFT:
-				strainView.pan(new Point2D(X_DELTA * scrollSpeedFactor, 0));
+				view.pan(new Point2D(X_DELTA * scrollSpeedFactor, 0));
 				return;
 			case RIGHT:
-				strainView.pan(new Point2D(-X_DELTA * scrollSpeedFactor, 0));
+				view.pan(new Point2D(-X_DELTA * scrollSpeedFactor, 0));
 				return;
 			case UP:
-				strainView.pan(new Point2D(0, Y_DELTA * scrollSpeedFactor));
+				view.pan(new Point2D(0, Y_DELTA * scrollSpeedFactor));
 				return;
 			case DOWN:
-				strainView.pan(new Point2D(0, -Y_DELTA * scrollSpeedFactor));
+				view.pan(new Point2D(0, -Y_DELTA * scrollSpeedFactor));
 				return;
 			default:
 				return;

@@ -3,8 +3,8 @@ package nl.tudelft.dnainator.ui.controllers;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
+import nl.tudelft.dnainator.ui.views.PhylogeneticView;
 import nl.tudelft.dnainator.ui.views.StrainView;
 import nl.tudelft.dnainator.ui.widgets.dialogs.AboutDialog;
 
@@ -21,17 +21,17 @@ public class WindowController {
 	@SuppressWarnings("unused") @FXML
 	private StrainView strainView;
 	@SuppressWarnings("unused") @FXML
-	private ScrollPane phyloView;
+	private PhylogeneticView phyloView;
 	@SuppressWarnings("unused") @FXML
 	private FileOpenController fileOpenerController;
 
 	/**
-	 * Constructs a WindowController object, binding the content of the tree view to
-	 * the <code>treeProperty</code> of the {@link FileOpenController}.
+	 * Constructs a WindowController object, binding <code>rootProperty</code> of the
+	 * {@link PhylogeneticView} the <code>treeProperty</code> of the {@link FileOpenController}.
 	 */
 	@SuppressWarnings("unused") @FXML
 	private void initialize() {
-		phyloView.contentProperty().bind(fileOpenerController.treeProperty());
+		phyloView.rootProperty().bind(fileOpenerController.treeProperty());
 	}
 
 	@SuppressWarnings("unused") @FXML
