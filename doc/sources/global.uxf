@@ -4,17 +4,10 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-<<<<<<< HEAD
       <x>762</x>
       <y>705</y>
       <w>51</w>
       <h>24</h>
-=======
-      <x>1200</x>
-      <y>1240</y>
-      <w>136</w>
-      <h>64</h>
->>>>>>> 708b98f... Update global UML
     </coordinates>
     <panel_attributes>&lt;&lt;interface&gt;&gt;
 /EdgeParser/
@@ -26,17 +19,10 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-<<<<<<< HEAD
       <x>849</x>
       <y>705</y>
       <w>51</w>
       <h>24</h>
-=======
-      <x>1432</x>
-      <y>1240</y>
-      <w>136</w>
-      <h>64</h>
->>>>>>> 708b98f... Update global UML
     </coordinates>
     <panel_attributes>&lt;&lt;interface&gt;&gt;
 /NodeParser/
@@ -48,17 +34,10 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-<<<<<<< HEAD
       <x>960</x>
       <y>744</y>
       <w>36</w>
       <h>18</h>
-=======
-      <x>1728</x>
-      <y>1344</y>
-      <w>96</w>
-      <h>48</h>
->>>>>>> 708b98f... Update global UML
     </coordinates>
     <panel_attributes>HeaderParser
 --
@@ -68,17 +47,10 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-<<<<<<< HEAD
       <x>747</x>
       <y>747</y>
       <w>81</w>
       <h>18</h>
-=======
-      <x>1160</x>
-      <y>1352</y>
-      <w>216</w>
-      <h>48</h>
->>>>>>> 708b98f... Update global UML
     </coordinates>
     <panel_attributes>/BufferedEdgeParser/
 --
@@ -88,17 +60,10 @@
   <element>
     <id>Relation</id>
     <coordinates>
-<<<<<<< HEAD
       <x>783</x>
       <y>726</y>
       <w>9</w>
       <h>27</h>
-=======
-      <x>1256</x>
-      <y>1296</y>
-      <w>24</w>
-      <h>72</h>
->>>>>>> 708b98f... Update global UML
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
@@ -106,17 +71,10 @@
   <element>
     <id>Relation</id>
     <coordinates>
-<<<<<<< HEAD
       <x>873</x>
       <y>726</y>
       <w>9</w>
       <h>27</h>
-=======
-      <x>1496</x>
-      <y>1296</y>
-      <w>24</w>
-      <h>72</h>
->>>>>>> 708b98f... Update global UML
     </coordinates>
     <panel_attributes>lt=&lt;&lt;.</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
@@ -124,17 +82,10 @@
   <element>
     <id>UMLClass</id>
     <coordinates>
-<<<<<<< HEAD
       <x>834</x>
       <y>747</y>
       <w>84</w>
       <h>18</h>
-=======
-      <x>1392</x>
-      <y>1352</y>
-      <w>224</w>
-      <h>48</h>
->>>>>>> 708b98f... Update global UML
     </coordinates>
     <panel_attributes>/BufferedNodeParser/
 --
@@ -145,17 +96,10 @@ BufferedReader)</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-<<<<<<< HEAD
       <x>840</x>
       <y>783</y>
       <w>72</w>
       <h>21</h>
-=======
-      <x>1408</x>
-      <y>1448</y>
-      <w>192</w>
-      <h>56</h>
->>>>>>> 708b98f... Update global UML
     </coordinates>
     <panel_attributes>JFASTANodeParser
 --
@@ -166,17 +110,10 @@ BufferedReader)</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-<<<<<<< HEAD
       <x>873</x>
       <y>762</y>
       <w>9</w>
       <h>27</h>
-=======
-      <x>1496</x>
-      <y>1392</y>
-      <w>24</w>
-      <h>72</h>
->>>>>>> 708b98f... Update global UML
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
@@ -184,17 +121,10 @@ BufferedReader)</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-<<<<<<< HEAD
       <x>915</x>
       <y>747</y>
       <w>51</w>
       <h>12</h>
-=======
-      <x>1608</x>
-      <y>1352</y>
-      <w>136</w>
-      <h>32</h>
->>>>>>> 708b98f... Update global UML
     </coordinates>
     <panel_attributes>lt=-
 uses &gt;</panel_attributes>
@@ -203,17 +133,10 @@ uses &gt;</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-<<<<<<< HEAD
       <x>759</x>
       <y>783</y>
       <w>54</w>
       <h>33</h>
-=======
-      <x>1192</x>
-      <y>1448</y>
-      <w>144</w>
-      <h>88</h>
->>>>>>> 708b98f... Update global UML
     </coordinates>
     <panel_attributes>DefaultEdgeParser
 --
@@ -227,17 +150,10 @@ uses &gt;</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-<<<<<<< HEAD
       <x>783</x>
       <y>762</y>
       <w>9</w>
       <h>27</h>
-=======
-      <x>1256</x>
-      <y>1392</y>
-      <w>24</w>
-      <h>72</h>
->>>>>>> 708b98f... Update global UML
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
@@ -245,17 +161,10 @@ uses &gt;</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-<<<<<<< HEAD
       <x>948</x>
       <y>777</y>
       <w>66</w>
       <h>27</h>
-=======
-      <x>1696</x>
-      <y>1432</y>
-      <w>176</w>
-      <h>72</h>
->>>>>>> 708b98f... Update global UML
     </coordinates>
     <panel_attributes>SequenceFactory
 --
@@ -266,17 +175,10 @@ end, sequence): SequenceNode</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-<<<<<<< HEAD
       <x>915</x>
       <y>756</y>
       <w>39</w>
       <h>45</h>
-=======
-      <x>1608</x>
-      <y>1376</y>
-      <w>104</w>
-      <h>120</h>
->>>>>>> 708b98f... Update global UML
     </coordinates>
     <panel_attributes>lt=-
 uses &gt;</panel_attributes>
@@ -285,17 +187,10 @@ uses &gt;</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-<<<<<<< HEAD
       <x>960</x>
       <y>816</y>
       <w>33</w>
       <h>9</h>
-=======
-      <x>1728</x>
-      <y>1536</y>
-      <w>88</w>
-      <h>24</h>
->>>>>>> 708b98f... Update global UML
     </coordinates>
     <panel_attributes>SequenceNode</panel_attributes>
     <additional_attributes/>
@@ -303,17 +198,10 @@ uses &gt;</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-<<<<<<< HEAD
       <x>972</x>
       <y>801</y>
       <w>27</w>
       <h>21</h>
-=======
-      <x>1760</x>
-      <y>1496</y>
-      <w>72</w>
-      <h>56</h>
->>>>>>> 708b98f... Update global UML
     </coordinates>
     <panel_attributes>lt=-
 creates &gt;</panel_attributes>
@@ -322,17 +210,10 @@ creates &gt;</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-<<<<<<< HEAD
       <x>780</x>
       <y>645</y>
       <w>90</w>
       <h>33</h>
-=======
-      <x>1248</x>
-      <y>1080</y>
-      <w>240</w>
-      <h>88</h>
->>>>>>> 708b98f... Update global UML
     </coordinates>
     <panel_attributes>&lt;&lt;interface&gt;&gt;
 /GraphBuilder/
@@ -346,17 +227,10 @@ creates &gt;</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-<<<<<<< HEAD
       <x>852</x>
       <y>675</y>
       <w>21</w>
       <h>36</h>
-=======
-      <x>1440</x>
-      <y>1160</y>
-      <w>56</w>
-      <h>96</h>
->>>>>>> 708b98f... Update global UML
     </coordinates>
     <panel_attributes>lt=-
 uses &gt;</panel_attributes>
@@ -365,17 +239,10 @@ uses &gt;</panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-<<<<<<< HEAD
       <x>789</x>
       <y>675</y>
       <w>21</w>
       <h>36</h>
-=======
-      <x>1272</x>
-      <y>1160</y>
-      <w>56</w>
-      <h>96</h>
->>>>>>> 708b98f... Update global UML
     </coordinates>
     <panel_attributes>lt=-
 uses &gt;</panel_attributes>
@@ -384,17 +251,10 @@ uses &gt;</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-<<<<<<< HEAD
       <x>1023</x>
       <y>51</y>
       <w>42</w>
       <h>9</h>
-=======
-      <x>784</x>
-      <y>0</y>
-      <w>112</w>
-      <h>24</h>
->>>>>>> 708b98f... Update global UML
     </coordinates>
     <panel_attributes>Main
 --
@@ -404,17 +264,10 @@ uses &gt;</panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-<<<<<<< HEAD
       <x>606</x>
       <y>582</y>
       <w>123</w>
       <h>45</h>
-=======
-      <x>784</x>
-      <y>912</y>
-      <w>328</w>
-      <h>120</h>
->>>>>>> 708b98f... Update global UML
     </coordinates>
     <panel_attributes>Neo4jGraph
 --
@@ -428,7 +281,6 @@ uses &gt;</panel_attributes>
   </element>
   <element>
     <id>Relation</id>
-<<<<<<< HEAD
     <coordinates>
       <x>822</x>
       <y>624</y>
@@ -456,21 +308,10 @@ uses &gt;</panel_attributes>
 +getCluster(s: String, thres: int): List&lt;SequenceNode&gt;
 +queryNodes(q: QueryDesc): List&lt;SequenceNode&gt;</panel_attributes>
     <additional_attributes/>
-=======
-    <coordinates>
-      <x>1360</x>
-      <y>1024</y>
-      <w>24</w>
-      <h>72</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
->>>>>>> 708b98f... Update global UML
   </element>
   <element>
-    <id>UMLClass</id>
+    <id>Relation</id>
     <coordinates>
-<<<<<<< HEAD
       <x>726</x>
       <y>600</y>
       <w>45</w>
@@ -515,28 +356,11 @@ creates &gt;</panel_attributes>
     <panel_attributes>DNAinator
 --
 </panel_attributes>
-=======
-      <x>1208</x>
-      <y>912</y>
-      <w>328</w>
-      <h>120</h>
-    </coordinates>
-    <panel_attributes>&lt;&lt;interface&gt;&gt;
-/Graph/
---
-+getRootNode(): SequenceNode
-+getNode(s: String): SequenceNode
-+getRank(rank: int): List&lt;SequenceNode&gt;
-+getRanks(): List&lt;List&lt;SequenceNode&gt;&gt;
-+getCluster(s: String, thres: int): List&lt;SequenceNode&gt;
-+queryNodes(q: QueryDesc): List&lt;SequenceNode&gt;</panel_attributes>
->>>>>>> 708b98f... Update global UML
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-<<<<<<< HEAD
       <x>1056</x>
       <y>57</y>
       <w>36</w>
@@ -569,20 +393,10 @@ uses &gt;</panel_attributes>
     <panel_attributes>lt=.
 /FXMLLoader/</panel_attributes>
     <additional_attributes/>
-=======
-      <x>1104</x>
-      <y>960</y>
-      <w>120</w>
-      <h>24</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
-    <additional_attributes>130.0;10.0;10.0;10.0</additional_attributes>
->>>>>>> 708b98f... Update global UML
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-<<<<<<< HEAD
       <x>1050</x>
       <y>126</y>
       <w>60</w>
@@ -591,41 +405,23 @@ uses &gt;</panel_attributes>
     <panel_attributes>lt=-
 creates &gt;</panel_attributes>
     <additional_attributes>180.0;110.0;10.0;10.0</additional_attributes>
-=======
-      <x>712</x>
-      <y>16</y>
-      <w>104</w>
-      <h>88</h>
-    </coordinates>
-    <panel_attributes>lt=-
-creates &gt;</panel_attributes>
-    <additional_attributes>10.0;90.0;110.0;10.0</additional_attributes>
->>>>>>> 708b98f... Update global UML
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-<<<<<<< HEAD
       <x>1074</x>
       <y>159</y>
       <w>63</w>
       <h>9</h>
-=======
-      <x>632</x>
-      <y>88</y>
-      <w>168</w>
-      <h>24</h>
->>>>>>> 708b98f... Update global UML
     </coordinates>
-    <panel_attributes>SplashScreen
+    <panel_attributes>WindowController
 --
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
-    <id>UMLClass</id>
+    <id>Relation</id>
     <coordinates>
-<<<<<<< HEAD
       <x>1026</x>
       <y>81</y>
       <w>36</w>
@@ -634,22 +430,10 @@ creates &gt;</panel_attributes>
     <panel_attributes>lt=-
 &lt; signals</panel_attributes>
     <additional_attributes>10.0;20.0;100.0;20.0</additional_attributes>
-=======
-      <x>872</x>
-      <y>88</y>
-      <w>168</w>
-      <h>24</h>
-    </coordinates>
-    <panel_attributes>DNAinator
---
-</panel_attributes>
-    <additional_attributes/>
->>>>>>> 708b98f... Update global UML
   </element>
   <element>
-    <id>Relation</id>
+    <id>UMLClass</id>
     <coordinates>
-<<<<<<< HEAD
       <x>921</x>
       <y>183</y>
       <w>63</w>
@@ -659,21 +443,10 @@ creates &gt;</panel_attributes>
 --
 </panel_attributes>
     <additional_attributes/>
-=======
-      <x>872</x>
-      <y>16</y>
-      <w>96</w>
-      <h>88</h>
-    </coordinates>
-    <panel_attributes>lt=-
-creates &gt;</panel_attributes>
-    <additional_attributes>100.0;90.0;10.0;10.0</additional_attributes>
->>>>>>> 708b98f... Update global UML
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-<<<<<<< HEAD
       <x>948</x>
       <y>126</y>
       <w>90</w>
@@ -682,21 +455,10 @@ creates &gt;</panel_attributes>
     <panel_attributes>lt=-
 creates &gt;</panel_attributes>
     <additional_attributes>10.0;190.0;280.0;10.0</additional_attributes>
-=======
-      <x>832</x>
-      <y>104</y>
-      <w>136</w>
-      <h>96</h>
-    </coordinates>
-    <panel_attributes>lt=-
-uses &gt;</panel_attributes>
-    <additional_attributes>10.0;100.0;150.0;10.0</additional_attributes>
->>>>>>> 708b98f... Update global UML
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-<<<<<<< HEAD
       <x>855</x>
       <y>240</y>
       <w>63</w>
@@ -705,21 +467,11 @@ uses &gt;</panel_attributes>
     <panel_attributes>ViewController
 --
 </panel_attributes>
-=======
-      <x>792</x>
-      <y>184</y>
-      <w>88</w>
-      <h>24</h>
-    </coordinates>
-    <panel_attributes>lt=.
-/FXMLLoader/</panel_attributes>
->>>>>>> 708b98f... Update global UML
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-<<<<<<< HEAD
       <x>915</x>
       <y>189</y>
       <w>42</w>
@@ -728,21 +480,10 @@ uses &gt;</panel_attributes>
     <panel_attributes>lt=-
 uses &gt;</panel_attributes>
     <additional_attributes>10.0;80.0;120.0;10.0</additional_attributes>
-=======
-      <x>872</x>
-      <y>176</y>
-      <w>136</w>
-      <h>32</h>
-    </coordinates>
-    <panel_attributes>lt=-
-creates &gt;</panel_attributes>
-    <additional_attributes>150.0;20.0;10.0;20.0</additional_attributes>
->>>>>>> 708b98f... Update global UML
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-<<<<<<< HEAD
       <x>900</x>
       <y>213</y>
       <w>33</w>
@@ -773,21 +514,12 @@ creates &gt;</panel_attributes>
       <h>9</h>
     </coordinates>
     <panel_attributes>ViewContext
-=======
-      <x>992</x>
-      <y>184</y>
-      <w>168</w>
-      <h>24</h>
-    </coordinates>
-    <panel_attributes>WindowController
->>>>>>> 708b98f... Update global UML
 --
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
-<<<<<<< HEAD
     <coordinates>
       <x>900</x>
       <y>159</y>
@@ -862,22 +594,10 @@ creates &gt;</panel_attributes>
 --
 </panel_attributes>
     <additional_attributes/>
-=======
-    <coordinates>
-      <x>792</x>
-      <y>80</y>
-      <w>96</w>
-      <h>32</h>
-    </coordinates>
-    <panel_attributes>lt=-
-&lt; signals</panel_attributes>
-    <additional_attributes>10.0;20.0;100.0;20.0</additional_attributes>
->>>>>>> 708b98f... Update global UML
   </element>
   <element>
-    <id>UMLClass</id>
+    <id>Relation</id>
     <coordinates>
-<<<<<<< HEAD
       <x>1095</x>
       <y>165</y>
       <w>21</w>
@@ -886,22 +606,10 @@ creates &gt;</panel_attributes>
     <panel_attributes>lt=-
 uses &gt;</panel_attributes>
     <additional_attributes>10.0;120.0;10.0;10.0</additional_attributes>
-=======
-      <x>512</x>
-      <y>352</y>
-      <w>168</w>
-      <h>24</h>
-    </coordinates>
-    <panel_attributes>View
---
-</panel_attributes>
-    <additional_attributes/>
->>>>>>> 708b98f... Update global UML
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-<<<<<<< HEAD
       <x>1116</x>
       <y>165</y>
       <w>21</w>
@@ -915,34 +623,10 @@ uses &gt;</panel_attributes>
 
 uses &gt;</panel_attributes>
     <additional_attributes>10.0;130.0;10.0;10.0</additional_attributes>
-=======
-      <x>584</x>
-      <y>200</y>
-      <w>240</w>
-      <h>168</h>
-    </coordinates>
-    <panel_attributes>lt=-
-creates &gt;</panel_attributes>
-    <additional_attributes>10.0;190.0;280.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>336</x>
-      <y>504</y>
-      <w>168</w>
-      <h>24</h>
-    </coordinates>
-    <panel_attributes>ViewController
---
-</panel_attributes>
-    <additional_attributes/>
->>>>>>> 708b98f... Update global UML
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-<<<<<<< HEAD
       <x>1074</x>
       <y>165</y>
       <w>21</w>
@@ -987,21 +671,10 @@ creates &gt;</panel_attributes>
     <panel_attributes>lt=-
 creates &gt;</panel_attributes>
     <additional_attributes>120.0;20.0;10.0;20.0</additional_attributes>
-=======
-      <x>496</x>
-      <y>368</y>
-      <w>112</w>
-      <h>80</h>
-    </coordinates>
-    <panel_attributes>lt=-
-uses &gt;</panel_attributes>
-    <additional_attributes>10.0;80.0;120.0;10.0</additional_attributes>
->>>>>>> 708b98f... Update global UML
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-<<<<<<< HEAD
       <x>1098</x>
       <y>240</y>
       <w>63</w>
@@ -1053,33 +726,11 @@ creates &gt;</panel_attributes>
     <panel_attributes>PhylogeneticNode
 --
 </panel_attributes>
-=======
-      <x>456</x>
-      <y>432</y>
-      <w>88</w>
-      <h>24</h>
-    </coordinates>
-    <panel_attributes>lt=.
-/FXMLLoader/</panel_attributes>
->>>>>>> 708b98f... Update global UML
     <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>408</x>
-      <y>448</y>
-      <w>112</w>
-      <h>72</h>
-    </coordinates>
-    <panel_attributes>lt=-
-creates &gt;</panel_attributes>
-    <additional_attributes>10.0;70.0;120.0;10.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-<<<<<<< HEAD
       <x>1215</x>
       <y>201</y>
       <w>63</w>
@@ -1101,22 +752,11 @@ creates &gt;</panel_attributes>
     <panel_attributes>PhylogeneticLabel
 --
 </panel_attributes>
-=======
-      <x>296</x>
-      <y>288</y>
-      <w>168</w>
-      <h>24</h>
-    </coordinates>
-    <panel_attributes>ViewContext
---
-</panel_attributes>
->>>>>>> 708b98f... Update global UML
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-<<<<<<< HEAD
       <x>1200</x>
       <y>165</y>
       <w>27</w>
@@ -1133,21 +773,10 @@ creates &gt;</panel_attributes>
 
 creates &gt;</panel_attributes>
     <additional_attributes>10.0;180.0;10.0;10.0</additional_attributes>
-=======
-      <x>456</x>
-      <y>288</y>
-      <w>80</w>
-      <h>88</h>
-    </coordinates>
-    <panel_attributes>lt=-
-&lt; uses</panel_attributes>
-    <additional_attributes>10.0;10.0;70.0;90.0</additional_attributes>
->>>>>>> 708b98f... Update global UML
   </element>
   <element>
-    <id>UMLClass</id>
+    <id>Relation</id>
     <coordinates>
-<<<<<<< HEAD
       <x>1212</x>
       <y>165</y>
       <w>27</w>
@@ -1173,22 +802,10 @@ creates &gt;</panel_attributes>
     <panel_attributes>lt=-
 creates &gt;</panel_attributes>
     <additional_attributes>10.0;60.0;10.0;10.0</additional_attributes>
-=======
-      <x>904</x>
-      <y>552</y>
-      <w>168</w>
-      <h>24</h>
-    </coordinates>
-    <panel_attributes>GraphLoadService
---
-</panel_attributes>
-    <additional_attributes/>
->>>>>>> 708b98f... Update global UML
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-<<<<<<< HEAD
       <x>906</x>
       <y>411</y>
       <w>81</w>
@@ -1203,22 +820,11 @@ creates &gt;</panel_attributes>
 +getChildItems(): List&lt;ModelItem&gt;
 +toggle(visible: bool)
 +update(b: Bounds, t: Threshold)</panel_attributes>
-=======
-      <x>936</x>
-      <y>448</y>
-      <w>168</w>
-      <h>24</h>
-    </coordinates>
-    <panel_attributes>ProgressDialog
---
-</panel_attributes>
->>>>>>> 708b98f... Update global UML
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-<<<<<<< HEAD
       <x>777</x>
       <y>492</y>
       <w>93</w>
@@ -1294,44 +900,22 @@ creates &gt;</panel_attributes>
 
 +isInViewport(b: Bounds)
 /+update(b: Bounds)/</panel_attributes>
-=======
-      <x>1176</x>
-      <y>272</y>
-      <w>168</w>
-      <h>24</h>
-    </coordinates>
-    <panel_attributes>PhylogeneticView
---
-</panel_attributes>
->>>>>>> 708b98f... Update global UML
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-<<<<<<< HEAD
       <x>951</x>
       <y>288</y>
       <w>102</w>
       <h>9</h>
     </coordinates>
     <panel_attributes>Group</panel_attributes>
-=======
-      <x>928</x>
-      <y>272</y>
-      <w>120</w>
-      <h>24</h>
-    </coordinates>
-    <panel_attributes>AboutDialog
---
-</panel_attributes>
->>>>>>> 708b98f... Update global UML
     <additional_attributes/>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-<<<<<<< HEAD
       <x>996</x>
       <y>294</y>
       <w>9</w>
@@ -1607,26 +1191,10 @@ m2=*</panel_attributes>
 +execute(service: GraphDatabaseService):
                 SequenceNode</panel_attributes>
     <additional_attributes/>
-=======
-      <x>920</x>
-      <y>392</y>
-      <w>56</w>
-      <h>176</h>
-    </coordinates>
-    <panel_attributes>lt=-
-
-
-
-
-
-uses &gt;</panel_attributes>
-    <additional_attributes>10.0;200.0;10.0;10.0</additional_attributes>
->>>>>>> 708b98f... Update global UML
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-<<<<<<< HEAD
       <x>423</x>
       <y>639</y>
       <w>45</w>
@@ -1648,623 +1216,19 @@ m1=1
 m2=0..*
 &lt; executes</panel_attributes>
     <additional_attributes>170.0;150.0;10.0;10.0</additional_attributes>
-=======
-      <x>992</x>
-      <y>200</y>
-      <w>56</w>
-      <h>88</h>
-    </coordinates>
-    <panel_attributes>lt=-
-uses &gt;</panel_attributes>
-    <additional_attributes>10.0;90.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>1008</x>
-      <y>392</y>
-      <w>72</w>
-      <h>72</h>
-    </coordinates>
-    <panel_attributes>lt=-
-creates &gt;</panel_attributes>
-    <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
->>>>>>> 708b98f... Update global UML
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-<<<<<<< HEAD
       <x>555</x>
       <y>600</y>
       <w>57</w>
       <h>48</h>
     </coordinates>
     <panel_attributes>lt=-
-=======
-      <x>1000</x>
-      <y>464</y>
-      <w>128</w>
-      <h>104</h>
-    </coordinates>
-    <panel_attributes>lt=-
-&lt; monitors/cancels</panel_attributes>
-    <additional_attributes>10.0;110.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1152</x>
-      <y>184</y>
-      <w>88</w>
-      <h>104</h>
-    </coordinates>
-    <panel_attributes>lt=-
-sets &gt;</panel_attributes>
-    <additional_attributes>50.0;110.0;50.0;10.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>920</x>
-      <y>376</y>
-      <w>168</w>
-      <h>24</h>
-    </coordinates>
-    <panel_attributes>FileOpenController
---
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>1584</x>
-      <y>456</y>
-      <w>216</w>
-      <h>112</h>
-    </coordinates>
-    <panel_attributes>/CompositeItem/
---
--childContent: Group
--children: List&lt;ModelItem&gt;
---
-+getChildContent(): Group
-+getChildItems(): List&lt;ModelItem&gt;
-+toggle(visible: bool)
-+update(b: Bounds, t: Threshold)</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>1240</x>
-      <y>672</y>
-      <w>248</w>
-      <h>144</h>
-    </coordinates>
-    <panel_attributes>GraphItem
---
--graph: Graph
--clusters: Map&lt;String,ClusterItem&gt;
---
-+GraphItem()
-+GraphItem(g: Graph)
-+getClusters(): Map&lt;String,ClusterItem&gt;
-+getGraph(): Graph
-+getRoot(): ModelItem
-+loadChildren(b: Bounds)
-+update(b: Bounds)
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1360</x>
-      <y>560</y>
-      <w>344</w>
-      <h>128</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>410.0;10.0;410.0;70.0;10.0;70.0;10.0;140.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1680</x>
-      <y>560</y>
-      <w>24</w>
-      <h>128</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;140.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1680</x>
-      <y>360</y>
-      <w>168</w>
-      <h>112</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>190.0;10.0;190.0;50.0;10.0;50.0;10.0;120.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>1704</x>
-      <y>192</y>
-      <w>272</w>
-      <h>176</h>
-    </coordinates>
-    <panel_attributes>/ModelItem/
---
--parent: ModelItem
--content: Group
--rank: int
---
-+getClusters(): Map&lt;String,ClusterItem&gt;
-+getGraph(): Graph
-+getContent(): Group
-+getRank(): int
-+getRoot(): ModelItem
-
-+isInViewport(b: Bounds)
-/+update(b: Bounds)/</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>1704</x>
-      <y>128</y>
-      <w>272</w>
-      <h>24</h>
-    </coordinates>
-    <panel_attributes>Group</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1824</x>
-      <y>144</y>
-      <w>24</w>
-      <h>64</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1632</x>
-      <y>240</y>
-      <w>88</w>
-      <h>232</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;-
-m1=0..*</panel_attributes>
-    <additional_attributes>90.0;10.0;10.0;10.0;10.0;270.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>1560</x>
-      <y>672</y>
-      <w>256</w>
-      <h>88</h>
-    </coordinates>
-    <panel_attributes>RankItem
---
-clusters: List&lt;Cluster&gt;
---
-+RankItem(parent: ModelItem, clusters: List)
-+update(b: Bounds)</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>1888</x>
-      <y>672</y>
-      <w>280</w>
-      <h>96</h>
-    </coordinates>
-    <panel_attributes>ClusterItem
---
--clustered: List&lt;SequenceNode&gt;
--edges: Group
---
-+ClusterItem(parent: ModelItem, clustered: List)
-+getClustered(): List&lt;SequenceNode&gt;
-+update(b: Bounds)
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1480</x>
-      <y>712</y>
-      <w>96</w>
-      <h>32</h>
-    </coordinates>
-    <panel_attributes>m1=1
-m2=*</panel_attributes>
-    <additional_attributes>10.0;10.0;100.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1808</x>
-      <y>712</y>
-      <w>96</w>
-      <h>32</h>
-    </coordinates>
-    <panel_attributes>m1=1
-m2=*</panel_attributes>
-    <additional_attributes>10.0;10.0;100.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1824</x>
-      <y>360</y>
-      <w>216</w>
-      <h>328</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;50.0;250.0;50.0;250.0;390.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1360</x>
-      <y>808</y>
-      <w>24</w>
-      <h>120</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;130.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>400</x>
-      <y>832</y>
-      <w>256</w>
-      <h>56</h>
-    </coordinates>
-    <panel_attributes>&lt;&lt;interface&gt;&gt;
-/Command/
---
-+execute(service: GraphDatabaseService)</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>400</x>
-      <y>1048</y>
-      <w>256</w>
-      <h>56</h>
-    </coordinates>
-    <panel_attributes>&lt;&lt;interface&gt;&gt;
-/Query&lt;T&gt;/
---
-+query(service: GraphDatabaseService): T</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>0</x>
-      <y>752</y>
-      <w>304</w>
-      <h>56</h>
-    </coordinates>
-    <panel_attributes>IndexCommand
---
-+IndexCommand(nodeLabel: Label)
-+execute(service: GraphDatabaseService)</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>296</x>
-      <y>768</y>
-      <w>120</w>
-      <h>104</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
-    <additional_attributes>130.0;110.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>296</x>
-      <y>1064</y>
-      <w>120</w>
-      <h>24</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
-    <additional_attributes>130.0;10.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>0</x>
-      <y>824</y>
-      <w>304</w>
-      <h>64</h>
-    </coordinates>
-    <panel_attributes>RankCommand
---
-+RankCommand(roots: Iterator&lt;Node&gt;)
-+topologicalOrder(service: GraphDatabaseService)
-+execute(service: GraphDatabaseService)</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>296</x>
-      <y>848</y>
-      <w>120</w>
-      <h>24</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
-    <additional_attributes>130.0;10.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>0</x>
-      <y>928</y>
-      <w>304</w>
-      <h>80</h>
-    </coordinates>
-    <panel_attributes>AllClustersQuery
---
-+AllClustersQuery(startNodes: List&lt;String&gt;,
-                              maxRank: int, threshold: int)
-+execute(service: GraphDatabaseService):
-                Map&lt;Integer, List&lt;Cluster&gt; &gt;</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>0</x>
-      <y>1136</y>
-      <w>304</w>
-      <h>80</h>
-    </coordinates>
-    <panel_attributes>ClusterQuery
---
-+ClusterQuery(visited: Set&lt;String&gt;, start: String,
-                         threshold: int)
-+execute(service: GraphDatabaseService):
-                Cluster</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>296</x>
-      <y>1064</y>
-      <w>120</w>
-      <h>128</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
-    <additional_attributes>130.0;10.0;10.0;140.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>0</x>
-      <y>1032</y>
-      <w>304</w>
-      <h>80</h>
-    </coordinates>
-    <panel_attributes>ClustersFromQuery
---
-+ClusterQuery(visited: Set&lt;String&gt;,
-                         start: List&lt;String&gt;, threshold: int)
-+execute(service: GraphDatabaseService):
-                 Queue&lt;Cluster&gt;</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>296</x>
-      <y>968</y>
-      <w>120</w>
-      <h>120</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
-    <additional_attributes>130.0;130.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>0</x>
-      <y>1240</y>
-      <w>304</w>
-      <h>80</h>
-    </coordinates>
-    <panel_attributes>NodeQuery
---
-+NodeQuery(node: Node)
-+execute(service: GraphDatabaseService):
-                SequenceNode</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>296</x>
-      <y>1064</y>
-      <w>120</w>
-      <h>232</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
-    <additional_attributes>130.0;10.0;10.0;270.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>648</x>
-      <y>848</y>
-      <w>152</w>
-      <h>136</h>
-    </coordinates>
-    <panel_attributes>lt=-
-m1=1
-m2=0..*
-&lt; executes</panel_attributes>
-    <additional_attributes>170.0;150.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>648</x>
-      <y>960</y>
-      <w>152</w>
-      <h>128</h>
-    </coordinates>
-    <panel_attributes>lt=-
->>>>>>> 708b98f... Update global UML
 m1=1
 m2=0..*
 &lt; executes</panel_attributes>
     <additional_attributes>170.0;10.0;10.0;140.0</additional_attributes>
-<<<<<<< HEAD
-=======
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>1296</x>
-      <y>328</y>
-      <w>80</w>
-      <h>24</h>
-    </coordinates>
-    <panel_attributes>/Node/
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>1352</x>
-      <y>408</y>
-      <w>104</w>
-      <h>24</h>
-    </coordinates>
-    <panel_attributes>LeafNode
---</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>1224</x>
-      <y>408</y>
-      <w>104</w>
-      <h>24</h>
-    </coordinates>
-    <panel_attributes>InternalNode
---</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1328</x>
-      <y>288</y>
-      <w>56</w>
-      <h>56</h>
-    </coordinates>
-    <panel_attributes>lt=-
-uses &gt;</panel_attributes>
-    <additional_attributes>10.0;50.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1360</x>
-      <y>344</y>
-      <w>24</w>
-      <h>80</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;80.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1304</x>
-      <y>344</y>
-      <w>24</w>
-      <h>80</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;80.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>824</x>
-      <y>200</y>
-      <w>112</w>
-      <h>200</h>
-    </coordinates>
-    <panel_attributes>lt=-
-creates &gt;</panel_attributes>
-    <additional_attributes>120.0;230.0;10.0;230.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>UMLClass</id>
-    <coordinates>
-      <x>1112</x>
-      <y>328</y>
-      <w>136</w>
-      <h>24</h>
-    </coordinates>
-    <panel_attributes>NewickLoadService
---
-</panel_attributes>
-    <additional_attributes/>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1080</x>
-      <y>344</y>
-      <w>144</w>
-      <h>56</h>
-    </coordinates>
-    <panel_attributes>lt=-
-uses &gt;</panel_attributes>
-    <additional_attributes>120.0;10.0;120.0;50.0;10.0;50.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>1184</x>
-      <y>288</y>
-      <w>72</w>
-      <h>56</h>
-    </coordinates>
-    <panel_attributes>lt=-
-creates &gt;</panel_attributes>
-    <additional_attributes>10.0;50.0;10.0;10.0</additional_attributes>
->>>>>>> 708b98f... Update global UML
   </element>
 </diagram>
