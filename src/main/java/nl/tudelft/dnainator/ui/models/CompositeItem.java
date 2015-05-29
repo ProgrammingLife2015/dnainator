@@ -46,10 +46,15 @@ public abstract class CompositeItem extends ModelItem {
 		return children;
 	}
 
+	/**
+	 * Load the children of this {@link CompositeItem}.
+	 * @param b		the bounds of the viewport
+	 */
 	public abstract void loadChildren(Bounds b);
 
 	/**
 	 * Toggle between displaying own content or children.
+	 * @param b		the bounds of the viewport
 	 * @param visible	true for visible
 	 */
 	public void toggle(Bounds b, boolean visible) {
