@@ -98,6 +98,8 @@
                     <versionRange>[3.4,)</versionRange>
                     <goals>
                       <goal>pmd</goal>
+                      <goal>check</goal>
+                      <goal>cpd-check</goal>
                     </goals>
                   </pluginExecutionFilter>
                   <action>
@@ -174,11 +176,31 @@
         <version>3.4</version>
         <executions>
           <execution>
-            <id>verify-pmd</id>
+            <id>pmd</id>
             <phase>process-classes</phase>
             <goals>
               <goal>pmd</goal>
             </goals>
+          </execution>
+          <execution>
+            <id>verify-pmd</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <verbose>true</verbose>
+            </configuration>
+          </execution>
+          <execution>
+            <id>verify-cpd</id>
+            <phase>process-classes</phase>
+            <goals>
+              <goal>cpd-check</goal>
+            </goals>
+            <configuration>
+              <verbose>true</verbose>
+            </configuration>
           </execution>
         </executions>
       </plugin>
