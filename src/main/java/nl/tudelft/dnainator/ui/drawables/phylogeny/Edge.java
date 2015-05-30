@@ -19,8 +19,8 @@ public class Edge extends Path {
 	public Edge(AbstractNode dst) {
 		// Set start point of the Path.
 		MoveTo m = new MoveTo();
-		m.xProperty().bindBidirectional(dst.centerXProperty());
-		m.yProperty().bindBidirectional(dst.centerYProperty());
+		m.xProperty().bindBidirectional(dst.translateXProperty());
+		m.yProperty().bindBidirectional(dst.translateYProperty());
 		getElements().add(m);
 
 		// Add the horizontal line, starting at the path's start point.
@@ -39,7 +39,7 @@ public class Edge extends Path {
 	 * @param src The {@link AbstractNode} to bind the end points to.
 	 */
 	public void bindTo(AbstractNode src) {
-		vline.yProperty().bindBidirectional(src.centerYProperty());
-		hline.xProperty().bindBidirectional(src.centerXProperty());
+		vline.yProperty().bindBidirectional(src.translateYProperty());
+		hline.xProperty().bindBidirectional(src.translateXProperty());
 	}
 }

@@ -1,5 +1,8 @@
 package nl.tudelft.dnainator.ui.drawables.phylogeny;
 
+import javafx.beans.binding.Bindings;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import nl.tudelft.dnainator.tree.TreeNode;
 import nl.tudelft.dnainator.ui.AllColorsInUseException;
 import nl.tudelft.dnainator.ui.ColorServer;
@@ -10,23 +13,22 @@ import nl.tudelft.dnainator.ui.widgets.dialogs.ExceptionDialog;
  * a label, displaying the source of the DNA strain it represents.
  */
 public class LeafNode extends AbstractNode {
+	private static final int OFFSET = 8;
 	private TreeNode node;
+	private Text label;
 	private boolean highlighted;
-	private Label label;
 
 	/**
 	 * Constructs a new {@link LeafNode}.
-	 * @param node The {@link TreeNode} this leaf represents.
-	 * @param label This node's label.
-	 * @param x This node's center x-coordinate.
-	 * @param y This node's center y-coordinate.
-	 * @param dim This node's dimensions.
 	 */
-	public LeafNode(TreeNode node, Label label, double x, double y, double dim) {
-		super(x, y, dim);
+	public LeafNode(AbstractNode parent, TreeNode node, double xOffset, double yOffset) {
+		super(parent, xOffset, yOffset);
 		this.node = node;
+		this.label = new Text(node.getName());
 		this.highlighted = false;
-		this.label = label;
+
+		label.setTextAlignment(TextAlignment.CENTER);
+		getChildren().add(label);
 	}
 
 	@Override

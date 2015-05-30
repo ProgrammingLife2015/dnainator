@@ -4,6 +4,7 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.scene.Group;
 import javafx.scene.shape.Rectangle;
 
 /**
@@ -11,24 +12,22 @@ import javafx.scene.shape.Rectangle;
  * for a node in the phylogenetic tree, as each node will need to have one incoming edge (except
  * the root...) and a pair of (x,y) coordinates.
  */
-public abstract class AbstractNode extends Rectangle {
+public abstract class AbstractNode extends Group {
 	private static final String INACTIVE = "inactive";
+	private static final int DIM = 8;
 	protected BooleanProperty inactive = new SimpleBooleanProperty(false, "inactive");
-	private DoubleProperty centerX = new SimpleDoubleProperty(0.0, "centerX");
-	private DoubleProperty centerY = new SimpleDoubleProperty(0.0, "centerY");
 	protected Edge incomingEdge;
 
 	/**
 	 * Constructs a new {@link AbstractNode}.
-	 * @param x This node's center x-coordinate.
-	 * @param y This node's center y-coordinate.
-	 * @param dim This node's dimensions.
 	 */
-	public AbstractNode(double x, double y, double dim) {
-		super(x - dim / 2, y - dim / 2, dim, dim);
+	public AbstractNode(AbstractNode parent, double xOffset, double yOffset) {
+		getChildren().add(new Rectangle(DIM, DIM, DIM, DIM));
 
-		setCenterX(x);
-		setCenterY(y);
+		if (parent != null) {
+			translateXProperty().bind(parent.translateXProperty().add(xOffset));
+			translateYProperty().bind(parent.translateYProperty().add(yOffset));
+		}
 		setOnMouseClicked(e -> onMouseClicked());
 
 		inactiveProperty().addListener((obj, oldV, newV) -> {
@@ -77,48 +76,6 @@ public abstract class AbstractNode extends Rectangle {
 	 */
 	public BooleanProperty inactiveProperty() {
 		return inactive;
-	}
-
-	/**
-	 * @param x The center x-coordinate to set.
-	 */
-	public final void setCenterX(double x) {
-		centerX.set(x);
-	}
-
-	/**
-	 * @return The center x-coordinate.
-	 */
-	public final double getCenterX() {
-		return centerX.get();
-	}
-
-	/**
-	 * @return The center x property.
-	 */
-	public DoubleProperty centerXProperty() {
-		return centerX;
-	}
-
-	/**
-	 * @param y The center y-coordinate to set.
-	 */
-	public final void setCenterY(double y) {
-		centerY.set(y);
-	}
-
-	/**
-	 * @return The center y-coordinate.
-	 */
-	public final double getCenterY() {
-		return centerY.get();
-	}
-
-	/**
-	 * @return The center y property.
-	 */
-	public DoubleProperty centerYProperty() {
-		return centerY;
 	}
 
 	/**

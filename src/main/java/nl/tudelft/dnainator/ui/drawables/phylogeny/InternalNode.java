@@ -2,6 +2,7 @@ package nl.tudelft.dnainator.ui.drawables.phylogeny;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.BooleanProperty;
+import nl.tudelft.dnainator.tree.TreeNode;
 
 import java.util.List;
 
@@ -15,19 +16,13 @@ public class InternalNode extends AbstractNode {
 
 	/**
 	 * Constructs a new {@link InternalNode}.
-	 * @param children The children that form the subtree of which this {@link InternalNode} is
-	 *                 the root node.
-	 * @param x This node's center x-coordinate.
-	 * @param y This node's center y-coordinate.
-	 * @param dim This node's dimensions.
 	 */
-	public InternalNode(List<AbstractNode> children, double x, double y, double dim) {
-		super(x, y, dim);
-		this.children = children;
-		bindAllChildrenProperties();
+	public InternalNode(AbstractNode parent, double xOffset, double yOffset) {
+		super(parent, xOffset, yOffset);
+		//bindInactiveProperties();
 	}
 
-	private void bindAllChildrenProperties() {
+	private void bindInactiveProperties() {
 		inactiveProperty().bind(
 				Bindings.createBooleanBinding(() -> children.stream()
 						.allMatch(AbstractNode::getInactive), children.stream()
