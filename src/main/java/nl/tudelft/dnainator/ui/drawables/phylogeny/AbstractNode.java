@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.Group;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 
 /**
  * An abstract node for use in a phylogenetic tree. It provides the basic implementation
@@ -14,22 +15,22 @@ import javafx.scene.shape.Rectangle;
  */
 public abstract class AbstractNode extends Group {
 	private static final String INACTIVE = "inactive";
+	private static final double LEVELWIDTH = 150;
 	private static final int DIM = 8;
 	protected BooleanProperty inactive = new SimpleBooleanProperty(false, "inactive");
+	protected DoubleProperty margin = new SimpleDoubleProperty(0, "margin");
+	protected Shape shape;
 	protected Edge incomingEdge;
 
 	/**
 	 * Constructs a new {@link AbstractNode}.
 	 */
-	public AbstractNode(AbstractNode parent, double xOffset, double yOffset) {
-		getChildren().add(new Rectangle(DIM, DIM, DIM, DIM));
+	public AbstractNode() {
+		this.shape = new Rectangle(0 - DIM / 2, 0 - DIM / 2, DIM, DIM);
+		getChildren().add(this.shape);
+		this.shape.setOnMouseClicked(e -> onMouseClicked());
 
-		if (parent != null) {
-			translateXProperty().bind(parent.translateXProperty().add(xOffset));
-			translateYProperty().bind(parent.translateYProperty().add(yOffset));
-		}
-		setOnMouseClicked(e -> onMouseClicked());
-
+		this.translateXProperty().set(LEVELWIDTH);
 		inactiveProperty().addListener((obj, oldV, newV) -> {
 			if (newV) {
 				addStyle(INACTIVE);
@@ -72,10 +73,24 @@ public abstract class AbstractNode extends Group {
 	}
 
 	/**
+	 * @return The margin of the node for its siblings.
+	 */
+	public final double getMargin() {
+		return margin.get();
+	}
+
+	/**
 	 * @return The inactive property.
 	 */
 	public BooleanProperty inactiveProperty() {
 		return inactive;
+	}
+
+	/**
+	 * @return The inactive property.
+	 */
+	public DoubleProperty marginProperty() {
+		return margin;
 	}
 
 	/**

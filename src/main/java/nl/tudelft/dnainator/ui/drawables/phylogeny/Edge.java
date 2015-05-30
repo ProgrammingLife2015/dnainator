@@ -9,9 +9,6 @@ import javafx.scene.shape.VLineTo;
  * An edge for use in a phylogenetic tree.
  */
 public class Edge extends Path {
-	private HLineTo hline;
-	private VLineTo vline;
-
 	/**
 	 * Constructs a new {@link Edge}, ending at the provided {@link AbstractNode}.
 	 * @param dst This edge's destination node.
@@ -24,22 +21,13 @@ public class Edge extends Path {
 		getElements().add(m);
 
 		// Add the horizontal line, starting at the path's start point.
-		hline = new HLineTo();
+		HLineTo hline = new HLineTo();
 		getElements().add(hline);
 
 		// Add the vertical line, starting at the horizontal line's end point.
-		vline = new VLineTo();
+		VLineTo vline = new VLineTo();
 		getElements().add(vline);
 
 		getStyleClass().add("phylogenetic-edge");
-	}
-
-	/**
-	 * Binds this {@link Edge}'s vertical and horizontal lines' end points to <code>src</code>.
-	 * @param src The {@link AbstractNode} to bind the end points to.
-	 */
-	public void bindTo(AbstractNode src) {
-		vline.yProperty().bindBidirectional(src.translateYProperty());
-		hline.xProperty().bindBidirectional(src.translateXProperty());
 	}
 }
