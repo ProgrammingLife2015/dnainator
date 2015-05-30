@@ -12,7 +12,6 @@ import javafx.scene.transform.Scale;
 import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
 import nl.tudelft.dnainator.ui.models.GraphItem;
-import nl.tudelft.dnainator.ui.models.ModelItem;
 import nl.tudelft.dnainator.ui.widgets.contexts.ViewContext;
 import nl.tudelft.dnainator.ui.widgets.dialogs.ExceptionDialog;
 
@@ -28,7 +27,7 @@ public class StrainView extends Pane {
 	private Translate toCenter;
 	private Translate translate;
 
-	private ModelItem mi;
+	private GraphItem gi;
 
 	/**
 	 * Creates a new view instance.
@@ -48,11 +47,11 @@ public class StrainView extends Pane {
 		translate = new Translate();
 		scale = new Affine(new Scale(SCALE, SCALE));
 
-		mi = new GraphItem();
-		mi.getTransforms().add(toCenter);
-		mi.getTransforms().add(translate);
-		mi.getTransforms().add(scale);
-		getChildren().add(mi);
+		gi = new GraphItem();
+		gi.getTransforms().add(toCenter);
+		gi.getTransforms().add(translate);
+		gi.getTransforms().add(scale);
+		getChildren().add(gi);
 	}
 
 	private void loadFXML() {
@@ -96,7 +95,7 @@ public class StrainView extends Pane {
 	public void pan(Point2D delta) {
 		translate.setX(translate.getX() + delta.getX());
 		translate.setY(translate.getY() + delta.getY());
-		mi.update(cameraToWorld(getLayoutBounds()));
+		gi.update(cameraToWorld(getLayoutBounds()));
 	}
 
 	/**
@@ -113,7 +112,7 @@ public class StrainView extends Pane {
 		} catch (NonInvertibleTransformException e) {
 			e.printStackTrace();
 		}
-		mi.update(cameraToWorld(getLayoutBounds()));
+		gi.update(cameraToWorld(getLayoutBounds()));
 	}
 
 	/**

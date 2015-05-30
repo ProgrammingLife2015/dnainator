@@ -7,6 +7,7 @@ import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import javafx.geometry.Bounds;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.shape.Rectangle;
 import nl.tudelft.dnainator.graph.Graph;
@@ -26,6 +27,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class GraphItemTest {
 	@Mock private Graph graph;
 	@Mock private Node node;
+	@Mock private Group child, content;
 	private GraphItem gi;
 
 	/**
@@ -33,7 +35,9 @@ public class GraphItemTest {
 	 */
 	@Before
 	public void setup() {
-		gi = new GraphItem(graph);
+		child = new Group();
+		content = new Group();
+		gi = new GraphItem(graph, content, child);
 	}
 
 	/**
@@ -42,22 +46,8 @@ public class GraphItemTest {
 	 */
 	@Test
 	public void testConstruction() {
-		assertEquals(graph, gi.getGraph());
-
 		verify(graph, never()).getRank(anyInt());
 		verify(graph, never()).getRanks();
-	}
-
-	/**
-	 * Test setting the content.
-	 */
-	@Test
-	public void testSetContent() {
-		// CHECKSTYLE.OFF: MagicNumber
-		assertEquals(4, gi.getContent().getChildren().size());
-		gi.getContent().getChildren().add(new GraphItem(graph));
-		assertEquals(5, gi.getContent().getChildren().size());
-		// CHECKSTYLE.ON: MagicNumber
 	}
 
 	/**
@@ -70,24 +60,24 @@ public class GraphItemTest {
 		Bounds viewport = new Rectangle(640, 480).getBoundsInLocal();
 		assertEquals(true, gi.isInViewport(viewport));
 
-		gi.getContent().setTranslateX(0);
-		gi.getContent().setTranslateY(-1);
+		content.setTranslateX(0);
+		content.setTranslateY(-1);
 		assertEquals(false, gi.isInViewport(viewport));
 
-		gi.getContent().setTranslateX(0);
-		gi.getContent().setTranslateY(480);
+		content.setTranslateX(0);
+		content.setTranslateY(480);
 		assertEquals(true, gi.isInViewport(viewport));
 
-		gi.getContent().setTranslateX(0);
-		gi.getContent().setTranslateY(481);
+		content.setTranslateX(0);
+		content.setTranslateY(481);
 		assertEquals(false, gi.isInViewport(viewport));
 
-		gi.getContent().setTranslateX(640);
-		gi.getContent().setTranslateY(0);
+		content.setTranslateX(640);
+		content.setTranslateY(0);
 		assertEquals(true, gi.isInViewport(viewport));
 
-		gi.getContent().setTranslateX(641);
-		gi.getContent().setTranslateY(0);
+		content.setTranslateX(641);
+		content.setTranslateY(0);
 		assertEquals(false, gi.isInViewport(viewport));
 		// CHECKSTYLE.ON: MagicNumber
 	}
@@ -110,19 +100,19 @@ public class GraphItemTest {
 	public void testUpdate() {
 		// CHECKSTYLE.OFF: MagicNumber
 		gi.update(new Rectangle(20000, 10000).getBoundsInLocal());
-		assertTrue(gi.getContent().isVisible());
+		assertTrue(content.isVisible());
 		verify(graph, never()).getRank(anyInt());
 
 		gi.update(new Rectangle(5000, 2500).getBoundsInLocal());
-		assertFalse(gi.getContent().isVisible());
+		assertFalse(content.isVisible());
 		verify(graph, Mockito.atLeastOnce()).getRank(anyInt());
 
 		gi.update(new Rectangle(1000, 500).getBoundsInLocal());
-		assertFalse(gi.getContent().isVisible());
+		assertFalse(content.isVisible());
 		verify(graph, Mockito.atLeastOnce()).getRank(anyInt());
 
 		gi.update(new Rectangle(20000, 10000).getBoundsInLocal());
-		assertTrue(gi.getContent().isVisible());
+		assertTrue(content.isVisible());
 		verify(graph, Mockito.atLeastOnce()).getRank(anyInt());
 		// CHECKSTYLE.ON: MagicNumber
 	}
