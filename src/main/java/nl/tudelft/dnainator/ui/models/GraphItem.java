@@ -9,6 +9,7 @@ import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
@@ -22,7 +23,9 @@ import nl.tudelft.dnainator.ui.drawables.DrawableEdge;
 public class GraphItem extends Group {
 	private static final int RANK_WIDTH = 10;
 	private static final int NO_CLUSTERS = 33000;
-	private static final int FOUR = 4;
+	/* JavaFX scene graph cannot handle rectangles larger than 10k pixels, so we split a 30k
+	* rectangle into 4 slices. */
+	private static final int SLICES = 4;
 	private static final int CLUSTER_DIVIDER = 100;
 
 	private Graph graph;
@@ -39,17 +42,18 @@ public class GraphItem extends Group {
 
 	/**
 	 * Construct a new top level {@link GraphItem} using the specified graph.
-	 * @param graph	the specified graph
+	 * @param graph	The specified graph.
 	 */
 	public GraphItem(Graph graph) {
 		this(graph, new Group(), new Group());
 	}
 
 	/**
-	 * Construct a new top level {@link GraphItem} using the specified graph.
-	 * @param graph	the specified graph
-	 * @param content the specified graph content
-	 * @param childContent the specified child content
+	 * Construct a new top level {@link GraphItem} using the specified graph, content and child
+	 * content.
+	 * @param graph	The specified graph.
+	 * @param content The specified graph content.
+	 * @param childContent The specified child content.
 	 */
 	public GraphItem(Graph graph, Group content, Group childContent) {
 		this.graph = graph;
@@ -64,37 +68,37 @@ public class GraphItem extends Group {
 
 	/**
 	 * Check whether this object intersects with the given viewport bounds.
-	 * @param b	the given viewport bounds
-	 * @return	true when (partially) in viewport, false otherwise
+	 * @param bounds	The given viewport bounds.
+	 * @return	True if (partially) in viewport, false otherwise.
 	 */
-	public boolean isInViewport(Bounds b) {
-		return b.contains(content.localToParent(0, 0));
+	public boolean isInViewport(Bounds bounds) {
+		return bounds.contains(content.localToParent(0, 0));
 	}
 
 	/*
 	 * Load the drawable content of the graph itself.
 	 */
 	private void loadContent() {
-		for (int i = 0; i < FOUR; i++) {
-			int width = NO_CLUSTERS * RANK_WIDTH / FOUR;
-			Rectangle r = new Rectangle(width, RANK_WIDTH, Color.BLACK);
-			r.setTranslateX(i * width);
-			content.getChildren().add(r);
+		for (int i = 0; i < SLICES; i++) {
+			int width = NO_CLUSTERS * RANK_WIDTH / SLICES;
+			Rectangle rectangle = new Rectangle(width, RANK_WIDTH, Color.BLACK);
+			rectangle.setTranslateX(i * width);
+			content.getChildren().add(rectangle);
 		}
 	}
 
 	/*
 	 * Load the drawable content of the graph's children, given the bounds of the viewing port.
 	 */
-	private void loadChildren(Bounds b) {
-		int minrank = (int) (Math.max(b.getMinX() / RANK_WIDTH, 0));
-		int maxrank = (int) (b.getMaxX() / RANK_WIDTH);
+	private void loadChildren(Bounds bounds) {
+		int minRank = (int) (Math.max(bounds.getMinX() / RANK_WIDTH, 0));
+		int maxRank = (int) (bounds.getMaxX() / RANK_WIDTH);
 
-		System.out.println("load iteration: " + minrank + " -> " + maxrank);
-		List<String> roots = graph.getRank(minrank).stream()
-				.map(e -> e.getId()).collect(Collectors.toList());
-		Map<Integer, List<Cluster>> result = graph.getAllClusters(roots, maxrank,
-				(int) (b.getWidth() / CLUSTER_DIVIDER));
+		System.out.println("load iteration: " + minRank + " -> " + maxRank);
+		List<String> roots = graph.getRank(minRank).stream()
+				.map(SequenceNode::getId).collect(Collectors.toList());
+		Map<Integer, List<Cluster>> result = graph.getAllClusters(roots, maxRank,
+				(int) (bounds.getWidth() / CLUSTER_DIVIDER));
 
 		clusters.clear();
 		childContent.getChildren().clear();
@@ -106,31 +110,31 @@ public class GraphItem extends Group {
 	/*
 	 * Load the drawable content of the edges for all displayed clusters.
 	 */
-	private void loadEdges(ClusterDrawable d) {
+	private void loadEdges(ClusterDrawable cluster) {
 		childContent.getChildren().addAll(
-				d.getClustered().stream().flatMap(e -> e.getOutgoing().stream())
-				.filter(i -> clusters.containsKey(i))
-				.filter(i -> clusters.get(i) != d)
-				.map(o -> new DrawableEdge(d, clusters.get(o)))
-				.collect(Collectors.toList()));
+				cluster.getClustered().stream().flatMap(e -> e.getOutgoing().stream())
+						.filter(clusters::containsKey)
+						.filter(i -> clusters.get(i) != cluster)
+						.map(o -> new DrawableEdge(cluster, clusters.get(o)))
+						.collect(Collectors.toList()));
 	}
 
-	private void loadRank(Integer k, List<Cluster> v) {
-		for (int i = 0; i < v.size(); i++) {
-			ClusterDrawable c = new ClusterDrawable(v.get(i).getNodes());
-			c.getClustered().forEach(e -> clusters.put(e.getId(), c));
-			c.setTranslateX(k * RANK_WIDTH);
-			c.setTranslateY(i * RANK_WIDTH - v.size() * RANK_WIDTH / 2);
-			childContent.getChildren().add(c);
+	private void loadRank(Integer key, List<Cluster> value) {
+		for (int i = 0; i < value.size(); i++) {
+			ClusterDrawable cluster = new ClusterDrawable(value.get(i).getNodes());
+			cluster.getClustered().forEach(e -> clusters.put(e.getId(), cluster));
+			cluster.setTranslateX(key * RANK_WIDTH);
+			cluster.setTranslateY(i * RANK_WIDTH - value.size() * RANK_WIDTH / 2);
+			childContent.getChildren().add(cluster);
 		}
 	}
 
 	/**
 	 * Toggle between displaying own content or children.
-	 * @param b		the bounds of the viewport
-	 * @param visible	true for visible
+	 * @param bounds     The bounds of the viewport.
+	 * @param visible    True if the content needs to be visible, false otherwise.
 	 */
-	public void toggle(Bounds b, boolean visible) {
+	public void toggle(Bounds bounds, boolean visible) {
 		if (visible && !content.isVisible()) {
 			childContent.getChildren().clear();
 			content.setVisible(true);
@@ -138,7 +142,7 @@ public class GraphItem extends Group {
 		}
 		if (!visible) {
 			content.setVisible(false);
-			loadChildren(b);
+			loadChildren(bounds);
 		}
 	}
 
@@ -146,13 +150,13 @@ public class GraphItem extends Group {
 	 * Update method that should be called after scaling.
 	 * This method checks how zoomed in we are by transforming bounds to root coordinates,
 	 * and then dynamically adds and deletes items in the JavaFX scene graph.
-	 * @param b	the bounds of the viewport to update
+	 * @param bounds	The bounds of the viewport to update.
 	 */
-	public void update(Bounds b) {
-		if (b.getWidth() > Thresholds.GRAPH.get()) {
-			toggle(b, true);
+	public void update(Bounds bounds) {
+		if (bounds.getWidth() > Thresholds.GRAPH.get()) {
+			toggle(bounds, true);
 		} else {
-			toggle(b, false);
+			toggle(bounds, false);
 		}
 	}
 }

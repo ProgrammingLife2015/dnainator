@@ -5,6 +5,7 @@ import java.util.List;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import nl.tudelft.dnainator.core.SequenceNode;
 
@@ -14,7 +15,7 @@ import nl.tudelft.dnainator.core.SequenceNode;
 public class ClusterDrawable extends Group {
 	private static final int CLUSTER_SIZE = 3;
 	private List<SequenceNode> clustered;
-	private Circle c;
+	private Shape shape;
 
 	/**
 	 * Construct a new mid level {@link ClusterDrawable} using the default graph.
@@ -23,17 +24,17 @@ public class ClusterDrawable extends Group {
 	public ClusterDrawable(List<SequenceNode> clustered) {
 		this.clustered = clustered;
 
-		c = new Circle(CLUSTER_SIZE, Color.BLUE);
-		c.setOnMouseClicked(e -> System.out.println(clustered));
-		Text t = new Text(Integer.toString(clustered.size()));
-		t.setStyle("-fx-font-size: 2pt");
+		shape = new Circle(CLUSTER_SIZE, Color.BLUE);
+		shape.setOnMouseClicked(e -> System.out.println(clustered));
+		Text label = new Text(Integer.toString(clustered.size()));
+		label.setStyle("-fx-font-size: 2pt");
 
-		getChildren().add(c);
-		getChildren().add(t);
+		getChildren().add(shape);
+		getChildren().add(label);
 	}
 
 	/**
-	 * @return the {@link SequenceNode}s in this cluster
+	 * @return the {@link SequenceNode}s in this cluster.
 	 */
 	public List<SequenceNode> getClustered() {
 		return clustered;
