@@ -1,8 +1,7 @@
 package nl.tudelft.dnainator.graph.impl;
 
-import static org.neo4j.helpers.collection.IteratorUtil.loop;
-
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -50,6 +49,7 @@ public final class Neo4jGraph implements Graph {
 
 	private GraphDatabaseService service;
 	private Label nodeLabel;
+	private Label sourceLabel;
 
 	/**
 	 * Constructs a Neo4j database on the specified path.
@@ -67,8 +67,9 @@ public final class Neo4jGraph implements Graph {
 
 		// Assign a label to our nodes
 		nodeLabel = DynamicLabel.label(PropertyTypes.NODELABEL.name());
+		sourceLabel = DynamicLabel.label(PropertyTypes.SOURCE.name());
 		// Recreate our indices
-		execute(new IndexCommand(nodeLabel));
+		execute(new IndexCommand(nodeLabel, sourceLabel));
 	}
 
 	/**
@@ -104,8 +105,17 @@ public final class Neo4jGraph implements Graph {
 			node.setProperty(PropertyTypes.STARTREF.name(), s.getStartRef());
 			node.setProperty(PropertyTypes.ENDREF.name(), s.getEndRef());
 			node.setProperty(PropertyTypes.SEQUENCE.name(), s.getSequence());
-			node.setProperty(PropertyTypes.SOURCE.name(), s.getSource());
 			node.setProperty(PropertyTypes.RANK.name(), 0);
+
+			// FIXME: @Skip: Should be replaced when SequenceNode contains a list of sources
+			Arrays.asList(s.getSource().split(",")).forEach(e -> {
+				Node source = service.findNode(sourceLabel, PropertyTypes.SOURCE.name(), e);
+				if (source == null) {
+					source = service.createNode(sourceLabel);
+					source.setProperty(PropertyTypes.SOURCE.name(), e);
+				}
+				node.createRelationshipTo(source, RelTypes.SOURCE);
+			});
 
 			tx.success();
 		}
@@ -158,10 +168,7 @@ public final class Neo4jGraph implements Graph {
 		return query(e -> {
 			ResourceIterator<Node> res = e.findNodes(nodeLabel, PropertyTypes.RANK.name(), rank);
 			List<SequenceNode> nodes = new LinkedList<>();
-
-			for (Node n : loop(res)) {
-				nodes.add(createSequenceNode(n));
-			}
+			res.forEachRemaining(n -> nodes.add(createSequenceNode(n)));
 
 			return nodes;
 		});

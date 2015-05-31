@@ -39,7 +39,7 @@ public final class Neo4jQuery implements GraphQuery {
 	private Predicate<SequenceNode> p;
 
 	private Neo4jQuery() {
-		this.sb = new StringBuilder("MATCH n\n");
+		this.sb = new StringBuilder("MATCH n-[" + SOURCE.name() + "]->p\n");
 	}
 
 	private void addCondition(String c) {
@@ -99,7 +99,7 @@ public final class Neo4jQuery implements GraphQuery {
 	public void compile(SourcesFilter sources) {
 		parameters.compute("sources", (k, v) -> {
 			if (v == null) {
-				addCondition("n." + SOURCE.name() + " IN {sources}\n");
+				addCondition("p." + SOURCE.name() + " IN {sources}\n");
 				return sources.getSources();
 			}
 			((Collection<String>) v).addAll(sources.getSources());

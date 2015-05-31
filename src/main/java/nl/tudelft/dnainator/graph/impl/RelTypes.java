@@ -6,5 +6,6 @@ import org.neo4j.graphdb.RelationshipType;
  * Edge relationship types.
  */
 public enum RelTypes implements RelationshipType {
-	NEXT
+	NEXT,
+	SOURCE
 }
