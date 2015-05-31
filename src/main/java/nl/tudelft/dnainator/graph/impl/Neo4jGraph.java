@@ -2,6 +2,7 @@ package nl.tudelft.dnainator.graph.impl;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -45,6 +46,7 @@ public final class Neo4jGraph implements Graph {
 	private static final String GET_ROOT = "MATCH (s:" + PropertyTypes.NODELABEL.name() + ") "
 			+ "WHERE NOT (s)<-[:NEXT]-(:" + PropertyTypes.NODELABEL.name() + ") "
 			+ "RETURN s";
+	private static final int TRANSACTION_SIZE = 10000;
 
 	private GraphDatabaseService service;
 	private Label nodeLabel;
@@ -73,16 +75,35 @@ public final class Neo4jGraph implements Graph {
 
 	/**
 	 * Delete all nodes and relationships from this graph.
+	 * FIXME: Should be replaced by batchinserter code
 	 */
 	public void clear() {
-		execute(e -> {
-			for (Relationship r : GlobalGraphOperations.at(e).getAllRelationships()) {
-				r.delete();
+		boolean cont;
+
+		cont = true;
+		while (cont) {
+			try (Transaction tx = service.beginTx()) {
+				Iterator<Relationship> edges = GlobalGraphOperations.at(service)
+								.getAllRelationships().iterator();
+				for (int i = 0; edges.hasNext() && i < 2 * TRANSACTION_SIZE; i++) {
+					edges.next().delete();
+				}
+				cont = edges.hasNext();
+				tx.success();
 			}
-			for (Node n : GlobalGraphOperations.at(e).getAllNodes()) {
-				n.delete();
+		}
+		cont = true;
+		while (cont) {
+			try (Transaction tx = service.beginTx()) {
+				ResourceIterator<Node> nodes = GlobalGraphOperations.at(service)
+								.getAllNodes().iterator();
+				for (int i = 0; nodes.hasNext() && i < TRANSACTION_SIZE; i++) {
+					nodes.next().delete();
+				}
+				cont = nodes.hasNext();
+				tx.success();
 			}
-		});
+		}
 	}
 
 	@Override
@@ -122,10 +143,17 @@ public final class Neo4jGraph implements Graph {
 	@Override
 	public void constructGraph(NodeParser np, EdgeParser ep)
 			throws IOException, ParseException {
-		try (Transaction tx = service.beginTx()) {
-			while (np.hasNext()) {
-				addNode(np.next());
+		while (np.hasNext()) {
+			try (Transaction tx = service.beginTx()) {
+				for (int i = 0; i < TRANSACTION_SIZE && np.hasNext(); i++) {
+					addNode(np.next());
+				}
+				tx.success();
 			}
+			System.out.println("node batch!");
+		}
+
+		try (Transaction tx = service.beginTx()) {
 			while (ep.hasNext()) {
 				addEdge(ep.next());
 			}
