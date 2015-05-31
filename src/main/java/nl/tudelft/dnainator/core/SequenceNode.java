@@ -13,10 +13,10 @@ public interface SequenceNode {
 	String getId();
 
 	/**
-	 * The associated source.
-	 * @return	the source
+	 * The associated source strains.
+	 * @return	the sources
 	 */
-	String getSource();
+	List<String> getSources();
 
 	/**
 	 * The associated start ref.
@@ -53,4 +53,5 @@ public interface SequenceNode {
 	 * @return	a list of neighbour id's
 	 */
 	List<String> getOutgoing();
+
 }

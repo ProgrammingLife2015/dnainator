@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -77,9 +78,9 @@ public class Neo4jGraphTest {
 	@Test
 	public void testNodeLookup() {
 		// CHECKSTYLE.OFF: MagicNumber
-		SequenceNode node1 = new SequenceNodeImpl("2", "ASDF", 1, 5, "TATA");
-		SequenceNode node2 = new SequenceNodeImpl("3", "ASDF", 5, 9, "TATA");
-		SequenceNode node3 = new SequenceNodeImpl("5", "ASDF", 4, 8, "TATA");
+		SequenceNode node1 = new SequenceNodeImpl("2", Arrays.asList("ASDF"), 1, 5, "TATA");
+		SequenceNode node2 = new SequenceNodeImpl("3", Arrays.asList("ASDF"), 5, 9, "TATA");
+		SequenceNode node3 = new SequenceNodeImpl("5", Arrays.asList("ASDF"), 4, 8, "TATA");
 		assertEquals(node1, db.getNode("2"));
 		assertEquals(node2, db.getNode("3"));
 		assertEquals(node3, db.getNode("5"));
@@ -92,7 +93,7 @@ public class Neo4jGraphTest {
 	@Test
 	public void testRootLookup() {
 		// CHECKSTYLE.OFF: MagicNumber
-		SequenceNode root = new SequenceNodeImpl("5", "ASDF", 4, 8, "TATA");
+		SequenceNode root = new SequenceNodeImpl("5", Arrays.asList("ASDF"), 4, 8, "TATA");
 		assertEquals(root, db.getRootNode());
 		// CHECKSTYLE.ON: MagicNumber
 	}

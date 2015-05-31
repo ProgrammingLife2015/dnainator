@@ -1,7 +1,6 @@
 package nl.tudelft.dnainator.graph.impl;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -107,8 +106,7 @@ public final class Neo4jGraph implements Graph {
 			node.setProperty(PropertyTypes.SEQUENCE.name(), s.getSequence());
 			node.setProperty(PropertyTypes.RANK.name(), 0);
 
-			// FIXME: @Skip: Should be replaced when SequenceNode contains a list of sources
-			Arrays.asList(s.getSource().split(",")).forEach(e -> {
+			s.getSources().forEach(e -> {
 				Node source = service.findNode(sourceLabel, PropertyTypes.SOURCE.name(), e);
 				if (source == null) {
 					source = service.createNode(sourceLabel);

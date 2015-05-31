@@ -35,10 +35,9 @@ public class NodeQuery implements Query<SequenceNode> {
 		String sequence	= (String) node.getProperty(PropertyTypes.SEQUENCE.name());
 		int rank	= (int)    node.getProperty(PropertyTypes.RANK.name());
 
-		// FIXME: Should be able to pass a list of string to the SequenceNode.
-		final StringBuilder source = new StringBuilder();
+		List<String> sources = new ArrayList<>();
 		node.getRelationships(RelTypes.SOURCE).forEach(e -> {
-			source.append((String) e.getEndNode().getProperty(PropertyTypes.SOURCE.name()));
+			sources.add((String) e.getEndNode().getProperty(PropertyTypes.SOURCE.name()));
 		});
 
 		List<String> outgoing = new ArrayList<>();
@@ -46,7 +45,7 @@ public class NodeQuery implements Query<SequenceNode> {
 			outgoing.add((String) e.getEndNode().getProperty(PropertyTypes.ID.name()));
 		});
 
-		return new SequenceNodeImpl(id, source.toString(), startref, endref,
+		return new SequenceNodeImpl(id, sources, startref, endref,
 						sequence, rank, outgoing);
 	}
 }
