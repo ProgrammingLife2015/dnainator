@@ -43,12 +43,3 @@
 	-fx-font-size: 11px;
 	-fx-text-fill: #a8a8a8;
 }
-
-.inactive {
-	-fx-fill: #DFDFDF;
-}
-
-.inactive-edge {
-	-fx-stroke: #DFDFDF;
-}
-
