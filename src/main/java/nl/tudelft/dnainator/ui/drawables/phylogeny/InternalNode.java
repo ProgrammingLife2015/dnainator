@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
  * property to the AND of its children's inactive properties to automatically update itself.
  */
 public class InternalNode extends AbstractNode {
+	private static final double LEVELWIDTH = 150;
 	private List<AbstractNode> children;
 
 	/**
@@ -30,6 +31,7 @@ public class InternalNode extends AbstractNode {
 		DoubleBinding rangeBegin = marginProperty().divide(2).negate();
 		for (AbstractNode child : children) {
 			child.translateYProperty().bind(rangeBegin.add(child.marginProperty().divide(2)));
+			child.translateXProperty().set(LEVELWIDTH);
 			rangeBegin = rangeBegin.add(child.marginProperty());
 			Edge e = new Edge(child);
 			this.getChildren().add(0, e);

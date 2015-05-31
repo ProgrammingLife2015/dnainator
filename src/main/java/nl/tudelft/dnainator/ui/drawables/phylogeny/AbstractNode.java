@@ -15,7 +15,6 @@ import javafx.scene.shape.Shape;
  */
 public abstract class AbstractNode extends Group {
 	private static final String INACTIVE = "inactive";
-	private static final double LEVELWIDTH = 150;
 	private static final int DIM = 8;
 	protected BooleanProperty inactive = new SimpleBooleanProperty(false, "inactive");
 	protected DoubleProperty margin = new SimpleDoubleProperty(0, "margin");
@@ -30,7 +29,6 @@ public abstract class AbstractNode extends Group {
 		getChildren().add(this.shape);
 		this.shape.setOnMouseClicked(e -> onMouseClicked());
 
-		this.translateXProperty().set(LEVELWIDTH);
 		inactiveProperty().addListener((obj, oldV, newV) -> {
 			if (newV) {
 				addStyle(INACTIVE);
