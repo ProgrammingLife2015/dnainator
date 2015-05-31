@@ -58,17 +58,10 @@ public class InternalNode extends AbstractNode {
 	@Override
 	protected void addStyle(String style) {
 		shape.getStyleClass().add(style);
-		// The root node has no incoming edge.
-		if (incomingEdge != null) {
-			incomingEdge.getStyleClass().add(style + "-edge");
-		}
 	}
 
 	@Override
 	protected void removeStyles() {
 		shape.getStyleClass().clear();
-		if (incomingEdge != null) {
-			incomingEdge.getStyleClass().clear();
-		}
 	}
 }

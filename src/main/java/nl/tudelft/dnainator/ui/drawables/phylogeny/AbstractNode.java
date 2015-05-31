@@ -8,14 +8,13 @@ import javafx.scene.shape.Shape;
 
 /**
  * An abstract node for use in a phylogenetic tree. It provides the basic implementation
- * for a node in the phylogenetic tree, as each node will need to have one incoming edge (except
- * the root...) and a pair of (x,y) coordinates.
+ * for a node in the phylogenetic tree, and forms an abstract interface for both leaf and
+ * internal nodes.
  */
 public abstract class AbstractNode extends Group {
 	protected static final int DIM = 8;
 	protected DoubleProperty margin = new SimpleDoubleProperty(0, "margin");
 	protected Shape shape;
-	protected Edge incomingEdge;
 
 	/**
 	 * Constructs a new {@link AbstractNode}.
@@ -62,12 +61,5 @@ public abstract class AbstractNode extends Group {
 	 */
 	public DoubleProperty marginProperty() {
 		return margin;
-	}
-
-	/**
-	 * @return This {@link AbstractNode}'s incoming {@link Edge}.
-	 */
-	public Edge getIncomingEdge() {
-		return this.incomingEdge;
 	}
 }

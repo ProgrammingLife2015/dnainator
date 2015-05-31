@@ -54,14 +54,12 @@ public class LeafNode extends AbstractNode {
 	@Override
 	protected void addStyle(String style) {
 		shape.getStyleClass().add(style);
-		incomingEdge.getStyleClass().add(style + "-edge");
 		label.getStyleClass().add(style);
 	}
 
 	@Override
 	protected void removeStyles() {
 		shape.getStyleClass().clear();
-		incomingEdge.getStyleClass().clear();
 		label.getStyleClass().clear();
 	}
 }
