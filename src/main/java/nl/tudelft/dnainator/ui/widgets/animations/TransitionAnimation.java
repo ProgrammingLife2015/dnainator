@@ -4,8 +4,9 @@ import javafx.animation.Transition;
 import javafx.scene.layout.Pane;
 
 /**
- * A {@link CustomAnimation} which is toggleable.
+ * A {@link CustomAnimation} which animates a transition.
  * It applies the animation onto a {@link Pane}.
+ * The animation is carried out in {@link Direction}.
  */
 public abstract class TransitionAnimation extends Transition implements CustomAnimation {
 	
@@ -21,6 +22,7 @@ public abstract class TransitionAnimation extends Transition implements CustomAn
 	
 	protected Pane pane;
 	protected int width;
+	protected int height;
 	protected int duration;
 	protected Direction direction;
 
@@ -28,12 +30,15 @@ public abstract class TransitionAnimation extends Transition implements CustomAn
 	 * Construct a new {@link TransitionAnimation}.
 	 * @param pane         The {@link Pane} which is animated.
 	 * @param width        The length over which the pane will slide.
+	 * @param height       The vertical length over which the pane will slide.
 	 * @param duration     The duration of the animations.
-	 * @param direction    The {@link SlidingAnimation.Location} of the {@link Pane}.
+	 * @param direction    The {@link Direction} of the animation.
 	 */
-	public TransitionAnimation(Pane pane, int width, int duration, Direction direction) {
+	public TransitionAnimation(Pane pane, int width, int height, int duration, 
+			Direction direction) {
 		this.pane = pane;
 		this.width = width;
+		this.height = height;
 		this.duration = duration;
 		this.direction = direction;
 		

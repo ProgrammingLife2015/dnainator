@@ -15,7 +15,6 @@ import nl.tudelft.dnainator.tree.TreeNode;
 import nl.tudelft.dnainator.ui.services.GraphLoadService;
 import nl.tudelft.dnainator.ui.services.NewickLoadService;
 import nl.tudelft.dnainator.ui.widgets.animations.SlidingAnimation;
-import nl.tudelft.dnainator.ui.widgets.animations.TransitionAnimation;
 import nl.tudelft.dnainator.ui.widgets.dialogs.ExceptionDialog;
 import nl.tudelft.dnainator.ui.widgets.dialogs.ProgressDialog;
 
@@ -30,6 +29,7 @@ public class FileOpenController {
 	private static final String NODE = ".node.graph";
 	private static final String NEWICK = ".nwk";
 
+	private static final int HEIGHT = 250;
 	private static final int WIDTH = 550;
 	private static final int ANIM_DURATION = 250;
 
@@ -71,8 +71,8 @@ public class FileOpenController {
 						"Error loading newick file!"));
 		newickLoadService.setOnSucceeded(e -> treeProperty.setValue(newickLoadService.getValue()));
 
-		animation = new SlidingAnimation(fileOpenPane, WIDTH, ANIM_DURATION);
-				/*SlidingAnimation.Location.TOP_LEFT);*/
+		animation = new SlidingAnimation(fileOpenPane, WIDTH, HEIGHT, ANIM_DURATION,
+				SlidingAnimation.Direction.LEFT);
 
 		bindOpenButtonDisabling();
 	}
