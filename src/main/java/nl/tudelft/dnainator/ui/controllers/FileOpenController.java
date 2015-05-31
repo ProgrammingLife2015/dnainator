@@ -31,7 +31,7 @@ public class FileOpenController {
 	private static final String NEWICK = ".nwk";
 
 	private static final int WIDTH = 550;
-	private static final int ANIM_DURATION = 500;
+	private static final int ANIM_DURATION = 250;
 
 	@SuppressWarnings("unused") @FXML private GridPane fileOpenPane;
 	@SuppressWarnings("unused") @FXML private TextField nodeField;

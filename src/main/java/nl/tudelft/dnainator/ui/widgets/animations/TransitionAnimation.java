@@ -1,6 +1,5 @@
 package nl.tudelft.dnainator.ui.widgets.animations;
 
-import nl.tudelft.dnainator.ui.widgets.animations.Direction;
 import javafx.animation.Transition;
 import javafx.scene.layout.Pane;
 
@@ -9,6 +8,16 @@ import javafx.scene.layout.Pane;
  * It applies the animation onto a {@link Pane}.
  */
 public abstract class TransitionAnimation extends Transition implements CustomAnimation {
+	
+	/**
+	 * An enum that indicates which direction the animation will transition to.
+	 */
+	public enum Direction {
+		UP,
+		DOWN,
+		LEFT,
+		RIGHT
+	}
 	
 	protected Pane pane;
 	protected int width;

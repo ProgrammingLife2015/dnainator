@@ -25,7 +25,7 @@ public class SlidingAnimation extends TransitionAnimation {
 	}
 	
 	/**
-	 * Creates a sliding animation with default {@link Direction}.
+	 * Creates a sliding animation with default {@link Direction#RIGHT}.
 	 * @param pane         The {@link Pane} to be animated.
 	 * @param width        The length over which the pane will slide.
 	 * @param duration     The duration of the animations.
@@ -39,7 +39,6 @@ public class SlidingAnimation extends TransitionAnimation {
 	public void setupAnimation() {
 		curWidth = width;
 		setCycleDuration(Duration.millis(duration));
-		this.setOnFinished(actionEvent -> pane.setVisible(!pane.isVisible()));
 	}
 
 	@Override
@@ -55,11 +54,13 @@ public class SlidingAnimation extends TransitionAnimation {
 				curWidth = width * (1.0 - frac);
 				pane.setPrefWidth(curWidth);
 				pane.setTranslateX(curWidth - width);
+				this.setOnFinished(actionEvent -> pane.setVisible(false));
 				return;
 			case RIGHT :
 				curWidth = width * frac;
 				pane.setPrefWidth(curWidth);
 				pane.setTranslateX(curWidth - width);
+				this.setOnFinished(actionEvent -> pane.setVisible(true));
 				return;
 			default :
 				return;
