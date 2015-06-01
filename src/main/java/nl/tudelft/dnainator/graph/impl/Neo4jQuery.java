@@ -12,7 +12,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import nl.tudelft.dnainator.core.SequenceNode;
-import nl.tudelft.dnainator.graph.impl.query.NodeQuery;
 import nl.tudelft.dnainator.graph.query.GraphQuery;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 import nl.tudelft.dnainator.graph.query.IDsFilter;
@@ -65,7 +64,7 @@ public final class Neo4jQuery implements GraphQuery {
 			Result r = db.execute(sb.toString(), parameters);
 			ResourceIterator<Node> it = r.columnAs("n");
 			result = IteratorUtil.asCollection(it).stream()
-				.map(e -> new NodeQuery(e).execute(db))
+				.map(e -> new Neo4jSequenceNode(db, e))
 				.filter(p)
 				.collect(Collectors.toList());
 			tx.success();

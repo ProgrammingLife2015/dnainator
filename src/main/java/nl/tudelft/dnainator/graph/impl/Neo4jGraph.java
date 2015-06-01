@@ -19,7 +19,6 @@ import nl.tudelft.dnainator.graph.impl.command.RankCommand;
 import nl.tudelft.dnainator.graph.impl.query.AllClustersQuery;
 import nl.tudelft.dnainator.graph.impl.query.ClusterQuery;
 import nl.tudelft.dnainator.graph.impl.query.ClustersFromQuery;
-import nl.tudelft.dnainator.graph.impl.query.NodeQuery;
 import nl.tudelft.dnainator.graph.impl.query.Query;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 import nl.tudelft.dnainator.parser.EdgeParser;
@@ -207,7 +206,7 @@ public final class Neo4jGraph implements Graph {
 	 * @return a {@link SequenceNode} with the information of the given {@link Node}.
 	 */
 	public SequenceNode createSequenceNode(Node node) {
-		return new NodeQuery(node).execute(service);
+		return new Neo4jSequenceNode(service, node);
 	}
 
 	@Override
