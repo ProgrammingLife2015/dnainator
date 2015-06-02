@@ -42,12 +42,16 @@ public abstract class AbstractNode extends Group {
 	 * Adds a CSS class to the {@link AbstractNode}.
 	 * @param style The CSS class to add.
 	 */
-	protected abstract void addStyle(String style);
+	protected void addStyle(String style) {
+		shape.getStyleClass().add(style);
+	}
 
 	/**
 	 * Removes all CSS classes from the {@link AbstractNode}.
 	 */
-	protected abstract void removeStyles();
+	protected void removeStyles() {
+		shape.getStyleClass().clear();
+	}
 
 	/**
 	 * @return The margin of the node for its siblings.

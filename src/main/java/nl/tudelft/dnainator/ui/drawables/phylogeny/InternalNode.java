@@ -54,14 +54,4 @@ public class InternalNode extends AbstractNode {
 	public void onMouseClicked() {
 		new CollapsedNode(this);
 	}
-
-	@Override
-	protected void addStyle(String style) {
-		shape.getStyleClass().add(style);
-	}
-
-	@Override
-	protected void removeStyles() {
-		shape.getStyleClass().clear();
-	}
 }

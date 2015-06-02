@@ -19,7 +19,7 @@ public class CollapsedNode extends AbstractNode {
 	public CollapsedNode(InternalNode wrapped) {
 		wrappedNode = wrapped;
 		wrappedNode.getChildren().forEach(child -> child.setVisible(false));
-		wrappedNode.getChildren().add(0, this);
+		wrappedNode.getChildren().add(this);
 		// Bind the margin of the wrapped node to this margin, so that the layout adapts.
 		wrappedNode.marginProperty().bind(this.marginProperty());
 
@@ -45,17 +45,4 @@ public class CollapsedNode extends AbstractNode {
 		// Rebind the margins, so that the layout adapts.
 		wrappedNode.bindMargins();
 	}
-
-	@Override
-	protected void addStyle(String style) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	protected void removeStyles() {
-		// TODO Auto-generated method stub
-
-	}
-
 }
