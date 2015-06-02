@@ -1,41 +1,38 @@
 package nl.tudelft.dnainator.ui.drawables.phylogeny;
 
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.Group;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 
 /**
  * An abstract node for use in a phylogenetic tree. It provides the basic implementation
- * for a node in the phylogenetic tree, as each node will need to have one incoming edge (except
- * the root...) and a pair of (x,y) coordinates.
+ * for a node in the phylogenetic tree, and forms an abstract interface for both leaf and
+ * internal nodes.
  */
 public abstract class AbstractNode extends Group {
-	private static final String INACTIVE = "inactive";
-	private static final int DIM = 8;
-	protected BooleanProperty inactive = new SimpleBooleanProperty(false, "inactive");
+	protected static final int DIM = 8;
 	protected DoubleProperty margin = new SimpleDoubleProperty(0, "margin");
+	protected IntegerProperty leafCount = new SimpleIntegerProperty(0, "leafCount");
 	protected Shape shape;
-	protected Edge incomingEdge;
 
 	/**
 	 * Constructs a new {@link AbstractNode}.
 	 */
 	public AbstractNode() {
-		this.shape = new Rectangle(0 - DIM / 2, 0 - DIM / 2, DIM, DIM);
+		this.shape = getShape();
 		getChildren().add(this.shape);
 		this.shape.setOnMouseClicked(e -> onMouseClicked());
+	}
 
-		inactiveProperty().addListener((obj, oldV, newV) -> {
-			if (newV) {
-				addStyle(INACTIVE);
-			} else {
-				removeStyles();
-			}
-		});
+	/**
+	 * @return the shape of this node. Default is a centered rectangle.
+	 */
+	public Shape getShape() {
+		return new Rectangle(0 - DIM / 2, 0 - DIM / 2, DIM, DIM);
 	}
 
 	/**
@@ -45,29 +42,18 @@ public abstract class AbstractNode extends Group {
 	public abstract void onMouseClicked();
 
 	/**
-	 * Sets the inactive state of this {@link AbstractNode}. Note that only
-	 * leaf nodes can change their state; their parents automatically update
-	 * themselves if both children are inactive.
-	 * @param state The new state of this {@link AbstractNode}.
-	 */
-	public abstract void setInactive(boolean state);
-
-	/**
 	 * Adds a CSS class to the {@link AbstractNode}.
 	 * @param style The CSS class to add.
 	 */
-	protected abstract void addStyle(String style);
+	protected void addStyle(String style) {
+		shape.getStyleClass().add(style);
+	}
 
 	/**
 	 * Removes all CSS classes from the {@link AbstractNode}.
 	 */
-	protected abstract void removeStyles();
-
-	/**
-	 * @return The inactive state.
-	 */
-	public final boolean getInactive() {
-		return inactive.get();
+	protected void removeStyles() {
+		shape.getStyleClass().clear();
 	}
 
 	/**
@@ -78,30 +64,24 @@ public abstract class AbstractNode extends Group {
 	}
 
 	/**
-	 * @return The inactive property.
-	 */
-	public BooleanProperty inactiveProperty() {
-		return inactive;
-	}
-
-	/**
-	 * @return The inactive property.
+	 * @return The margin property.
 	 */
 	public DoubleProperty marginProperty() {
 		return margin;
 	}
 
 	/**
-	 * @param edge This {@link AbstractNode}'s incoming {@link Edge}.
+	 * @return The number of leafs of this node.
 	 */
-	public void setIncomingEdge(Edge edge) {
-		this.incomingEdge = edge;
+	public final int getLeafCount() {
+		return leafCount.get();
 	}
 
 	/**
-	 * @return This {@link AbstractNode}'s incoming {@link Edge}.
+	 * @return The leaf count property, which keeps track of the number
+	 * of leafs in this node.
 	 */
-	public Edge getIncomingEdge() {
-		return this.incomingEdge;
+	public IntegerProperty leafCountProperty() {
+		return leafCount;
 	}
 }

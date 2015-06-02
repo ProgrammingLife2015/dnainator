@@ -2,20 +2,22 @@ package nl.tudelft.dnainator.ui.drawables.phylogeny;
 
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
  * This class represents internal nodes in the phylogenetic tree. Each internal node has a list
- * of children (even though in our case the tree is always binary). It binds its own inactive
- * property to the AND of its children's inactive properties to automatically update itself.
+ * of children (even though in our case the tree is always binary).
+ * It can be collapsed by means of a clicklistener.
  */
 public class InternalNode extends AbstractNode {
 	private static final double LEVELWIDTH = 150;
 	private List<AbstractNode> children;
+	private List<Edge> outgoingEdges;
 
 	/**
 	 * Constructs a new {@link InternalNode}.
@@ -23,9 +25,9 @@ public class InternalNode extends AbstractNode {
 	 */
 	public InternalNode(List<AbstractNode> children) {
 		this.children = children;
-		this.marginProperty().bind(Bindings.createDoubleBinding(() -> children.stream()
-				.collect(Collectors.summingDouble(AbstractNode::getMargin)), children.stream()
-				.map(AbstractNode::marginProperty).toArray(DoubleProperty[]::new)));
+		this.outgoingEdges = new ArrayList<>();
+		bindMargins();
+		bindLeafCount();
 
 		// Position the children.
 		DoubleBinding rangeBegin = marginProperty().divide(2).negate();
@@ -34,47 +36,30 @@ public class InternalNode extends AbstractNode {
 			child.translateXProperty().set(LEVELWIDTH);
 			rangeBegin = rangeBegin.add(child.marginProperty());
 			Edge e = new Edge(child);
-			this.getChildren().add(0, e);
-			child.setIncomingEdge(e);
+			this.outgoingEdges.add(e);
 		}
+		this.getChildren().addAll(0, outgoingEdges);
 		// Add the nodes after the edges, so that they're on top.
 		this.getChildren().addAll(children);
-		bindInactiveProperties();
 	}
 
-	private void bindInactiveProperties() {
-		inactiveProperty().bind(
-				Bindings.createBooleanBinding(() -> children.stream()
-						.allMatch(AbstractNode::getInactive), children.stream()
-						.map(AbstractNode::inactiveProperty).toArray(BooleanProperty[]::new)));
+	/**
+	 * Bind this margin property to the sum of the children margin properties.
+	 */
+	protected void bindMargins() {
+		this.marginProperty().bind(Bindings.createDoubleBinding(() -> children.stream()
+				.collect(Collectors.summingDouble(AbstractNode::getMargin)), children.stream()
+				.map(AbstractNode::marginProperty).toArray(DoubleProperty[]::new)));
+	}
+
+	private void bindLeafCount() {
+		this.leafCountProperty().bind(Bindings.createIntegerBinding(() -> children.stream()
+				.collect(Collectors.summingInt(AbstractNode::getLeafCount)), children.stream()
+				.map(AbstractNode::leafCountProperty).toArray(IntegerProperty[]::new)));
 	}
 
 	@Override
 	public void onMouseClicked() {
-		setInactive(!getInactive());
-	}
-
-	@Override
-	public void setInactive(boolean state) {
-		for (AbstractNode child : children) {
-			child.setInactive(state);
-		}
-	}
-
-	@Override
-	protected void addStyle(String style) {
-		shape.getStyleClass().add(style);
-		// The root node has no incoming edge.
-		if (incomingEdge != null) {
-			incomingEdge.getStyleClass().add(style + "-edge");
-		}
-	}
-
-	@Override
-	protected void removeStyles() {
-		shape.getStyleClass().clear();
-		if (incomingEdge != null) {
-			incomingEdge.getStyleClass().clear();
-		}
+		new CollapsedNode(this);
 	}
 }

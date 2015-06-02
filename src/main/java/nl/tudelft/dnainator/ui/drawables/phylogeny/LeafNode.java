@@ -12,9 +12,9 @@ import nl.tudelft.dnainator.ui.widgets.dialogs.ExceptionDialog;
  * a label, displaying the source of the DNA strain it represents.
  */
 public class LeafNode extends AbstractNode {
-	private static final double LEAFHEIGHT = 30;
-	private static final int LABEL_X_OFFSET = 8;
-	private static final int LABEL_Y_OFFSET = 4;
+	protected static final double LEAFHEIGHT = 30;
+	protected static final int LABEL_X_OFFSET = 8;
+	protected static final int LABEL_Y_OFFSET = 4;
 	private TreeNode node;
 	private Text label;
 	private boolean highlighted;
@@ -29,6 +29,7 @@ public class LeafNode extends AbstractNode {
 		this.label.onMouseClickedProperty().bind(shape.onMouseClickedProperty());
 		this.highlighted = false;
 		this.marginProperty().set(LEAFHEIGHT);
+		this.leafCountProperty().set(1);
 
 		label.setTextAlignment(TextAlignment.CENTER);
 		getChildren().add(label);
@@ -36,10 +37,6 @@ public class LeafNode extends AbstractNode {
 
 	@Override
 	public void onMouseClicked() {
-		if (getInactive()) {
-			return;
-		}
-
 		removeStyles();
 		if (!highlighted) {
 			try {
@@ -56,26 +53,14 @@ public class LeafNode extends AbstractNode {
 	}
 
 	@Override
-	public void setInactive(boolean state) {
-		if (highlighted) {
-			removeStyles();
-			ColorServer.getInstance().revokeColor(node.getName());
-			highlighted = false;
-		}
-		inactive.set(state);
-	}
-
-	@Override
 	protected void addStyle(String style) {
 		shape.getStyleClass().add(style);
-		incomingEdge.getStyleClass().add(style + "-edge");
 		label.getStyleClass().add(style);
 	}
 
 	@Override
 	protected void removeStyles() {
 		shape.getStyleClass().clear();
-		incomingEdge.getStyleClass().clear();
 		label.getStyleClass().clear();
 	}
 }
