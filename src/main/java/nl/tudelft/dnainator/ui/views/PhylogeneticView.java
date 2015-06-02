@@ -3,8 +3,11 @@ package nl.tudelft.dnainator.ui.views;
 import java.util.ArrayList;
 import java.util.List;
 
-import javafx.geometry.Insets;
-import javafx.scene.layout.Pane;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.scene.Group;
+import javafx.scene.transform.Affine;
+import javafx.scene.transform.Scale;
 import nl.tudelft.dnainator.tree.TreeNode;
 import nl.tudelft.dnainator.ui.drawables.phylogeny.AbstractNode;
 import nl.tudelft.dnainator.ui.drawables.phylogeny.Edge;
@@ -13,26 +16,60 @@ import nl.tudelft.dnainator.ui.drawables.phylogeny.Label;
 import nl.tudelft.dnainator.ui.drawables.phylogeny.LeafNode;
 
 /**
- * A {@link Pane} that positions {@link TreeNode}s as in a phylogenetic tree.
+ * An implementation of {@link AbstractView} for displaying a phylogenetic tree.
  */
-public class PhylogeneticView extends Pane {
+public class PhylogeneticView extends AbstractView {
+	private static final int SCALE = 1;
 	private static final double LEAFHEIGHT = 30;
 	private static final int MARGIN = 30;
 	private static final double LEVELWIDTH = 3 * MARGIN;
 	private static final int SQUARE = 8;
 	private static final int OFFSET = 8;
+	private ObjectProperty<TreeNode> rootProperty = new SimpleObjectProperty<>(null, "root");
 	private double currentLeafY;
+	private Group group;
 
 	/**
 	 * Constructs a new {@link PhylogeneticView}.
-	 * 
-	 * @param root The root of the phylogenetic tree.
 	 */
-	public PhylogeneticView(TreeNode root) {
-		this.currentLeafY = MARGIN;
+	public PhylogeneticView() {
+		super();
+		group = new Group();
+		setTransforms(group);
+		getChildren().add(group);
+		rootProperty().addListener((obj, oldV, newV) -> redraw());
+	}
 
-		setPadding(new Insets(MARGIN, 0, 0, MARGIN));
-		getChildren().add(draw(root, MARGIN, 0));
+	@Override
+	public Affine getScale() {
+		return new Affine(new Scale(SCALE, SCALE));
+	}
+
+	/**
+	 * @param root The {@link TreeNode} to set as root.
+	 */
+	public final void setRoot(TreeNode root) {
+		rootProperty.set(root);
+	}
+
+	/**
+	 * @return The root node, if any.
+	 */
+	public final TreeNode getRoot() {
+		return rootProperty.get();
+	}
+
+	/**
+	 * @return The root node property.
+	 */
+	public ObjectProperty<TreeNode> rootProperty() {
+		return rootProperty;
+	}
+
+	private void redraw() {
+		this.currentLeafY = MARGIN;
+		group.getChildren().clear();
+		group.getChildren().add(draw(getRoot(), MARGIN, 0));
 	}
 
 	private AbstractNode draw(TreeNode node, double x, double y) {
@@ -47,7 +84,7 @@ public class PhylogeneticView extends Pane {
 		double y = currentLeafY;
 
 		Label label = new Label(x + OFFSET, y + OFFSET, leaf.getName());
-		getChildren().add(label);
+		group.getChildren().add(label);
 		currentLeafY += LEAFHEIGHT;
 
 		return new LeafNode(leaf, label, x, y, SQUARE);
@@ -63,7 +100,7 @@ public class PhylogeneticView extends Pane {
 
 			drawnChildren.add(node);
 			node.setIncomingEdge(edge);
-			getChildren().addAll(edge, node);
+			group.getChildren().addAll(edge, node);
 		}
 
 		AbstractNode first = drawnChildren.get(0);

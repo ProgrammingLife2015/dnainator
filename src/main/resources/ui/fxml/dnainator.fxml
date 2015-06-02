@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.image.*?>
-<?import javafx.geometry.*?>
 <?import javafx.scene.input.*?>
 <?import javafx.scene.control.*?>
-<?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import nl.tudelft.dnainator.ui.views.*?>
 
@@ -94,8 +91,7 @@
       <SplitPane fx:id="splitPane" orientation="VERTICAL">
          <items>
             <StrainView fx:id="strainView" />
-            <ScrollPane fx:id="phyloView" pannable="true" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
-            </ScrollPane>
+            <PhylogeneticView fx:id="phyloView" />
          </items>
       </SplitPane>
    </center>
