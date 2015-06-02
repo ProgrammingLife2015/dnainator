@@ -31,6 +31,12 @@ public class StrainView extends AbstractView {
 		super.pan(delta);
 		gi.update(cameraToWorld(getLayoutBounds()));
 	}
+	
+	public void setPan(double x, double y) {
+		scale.setToIdentity();
+		translate.setX(x);
+		translate.setY(y);
+	}
 
 	@Override
 	public void zoom(double delta, Point2D center) {
