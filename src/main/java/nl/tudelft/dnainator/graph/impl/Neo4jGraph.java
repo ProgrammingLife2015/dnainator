@@ -125,6 +125,7 @@ public final class Neo4jGraph implements Graph {
 			node.setProperty(PropertyTypes.ENDREF.name(), s.getEndRef());
 			node.setProperty(PropertyTypes.SEQUENCE.name(), s.getSequence());
 			node.setProperty(PropertyTypes.RANK.name(), 0);
+			node.setProperty(PropertyTypes.SCORE.name(), s.getSequence().length());
 
 			s.getSources().forEach(e -> {
 				Node source = service.findNode(sourceLabel, PropertyTypes.SOURCE.name(), e);

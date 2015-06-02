@@ -2,6 +2,8 @@ package nl.tudelft.dnainator.core.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import nl.tudelft.dnainator.core.SequenceNode;
 
@@ -10,7 +12,7 @@ import nl.tudelft.dnainator.core.SequenceNode;
  */
 public class SequenceNodeImpl implements SequenceNode {
 	private String id;
-	private List<String> sources;
+	private Set<String> sources;
 	private int start;
 	private int end;
 	private String sequence;
@@ -42,7 +44,7 @@ public class SequenceNodeImpl implements SequenceNode {
 	public SequenceNodeImpl(String id, List<String> sources,
 			int start, int end, String sequence, int rank, List<String> outgoing) {
 		this.id = id;
-		this.sources = sources;
+		this.sources = sources.stream().collect(Collectors.toSet());
 		this.start = start;
 		this.end = end;
 		this.sequence = sequence;
@@ -56,7 +58,7 @@ public class SequenceNodeImpl implements SequenceNode {
 	}
 
 	@Override
-	public List<String> getSources() {
+	public Set<String> getSources() {
 		return sources;
 	}
 

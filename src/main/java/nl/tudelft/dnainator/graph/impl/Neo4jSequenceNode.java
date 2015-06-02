@@ -1,16 +1,15 @@
 package nl.tudelft.dnainator.graph.impl;
 
-import static org.neo4j.helpers.collection.IteratorUtil.loop;
-
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import nl.tudelft.dnainator.core.SequenceNode;
 
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.Transaction;
 
 public class Neo4jSequenceNode implements SequenceNode {
@@ -22,7 +21,7 @@ public class Neo4jSequenceNode implements SequenceNode {
 	private int end;
 	private String sequence;
 	private int rank;
-	private ArrayList<String> sources;
+	private Set<String> sources;
 	private List<String> outgoing;
 
 	private boolean loaded;
@@ -33,13 +32,16 @@ public class Neo4jSequenceNode implements SequenceNode {
 		this.service = service;
 		this.node = node;
 		this.outgoing = new ArrayList<>();
-		this.sources = new ArrayList<>();
+		this.sources = new HashSet<>();
 
 		try (Transaction tx = service.beginTx()) {
 			this.id = (String) node.getProperty(PropertyTypes.ID.name());
 
 			node.getRelationships(RelTypes.NEXT, Direction.OUTGOING).forEach(e -> {
 				outgoing.add((String) e.getEndNode().getProperty(PropertyTypes.ID.name()));
+			});
+			node.getRelationships(RelTypes.SOURCE, Direction.OUTGOING).forEach(e -> {
+				sources.add((String) e.getEndNode().getProperty(PropertyTypes.SOURCE.name()));
 			});
 
 			tx.success();
@@ -52,8 +54,7 @@ public class Neo4jSequenceNode implements SequenceNode {
 	}
 
 	@Override
-	public List<String> getSources() {
-		load();
+	public Set<String> getSources() {
 		return sources;
 	}
 

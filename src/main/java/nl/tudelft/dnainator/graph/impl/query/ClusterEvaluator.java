@@ -1,7 +1,7 @@
 package nl.tudelft.dnainator.graph.impl.query;
 
 import static nl.tudelft.dnainator.graph.impl.PropertyTypes.ID;
-import static nl.tudelft.dnainator.graph.impl.PropertyTypes.SEQUENCE;
+import static nl.tudelft.dnainator.graph.impl.PropertyTypes.SCORE;
 
 import java.util.Set;
 
@@ -45,12 +45,12 @@ public class ClusterEvaluator implements Evaluator {
 	@Override
 	public Evaluation evaluate(Path path) {
 		Node end = path.endNode();
-		String sequence = (String) end.getProperty(SEQUENCE.name());
+		int score = (int) end.getProperty(SCORE.name());
 		String id = (String) end.getProperty(ID.name());
 
 		if (!visited.contains(id)
 				&& (path.startNode().getId() == path.endNode().getId()
-				|| sequence.length() < threshold)) {
+				|| score < threshold)) {
 			visited.add(id);
 			return Evaluation.INCLUDE_AND_CONTINUE;
 		}

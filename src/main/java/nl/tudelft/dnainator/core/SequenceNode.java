@@ -1,6 +1,7 @@
 package nl.tudelft.dnainator.core;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * Interface that all sequences should implement.
@@ -16,7 +17,7 @@ public interface SequenceNode {
 	 * The associated source strains.
 	 * @return	the sources
 	 */
-	List<String> getSources();
+	Set<String> getSources();
 
 	/**
 	 * The associated start ref.
