@@ -3,6 +3,7 @@ package nl.tudelft.dnainator.ui.drawables.phylogeny;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,7 @@ public class InternalNode extends AbstractNode {
 		this.children = children;
 		this.outgoingEdges = new ArrayList<>();
 		bindMargins();
+		bindLeafCount();
 
 		// Position the children.
 		DoubleBinding rangeBegin = marginProperty().divide(2).negate();
@@ -48,6 +50,12 @@ public class InternalNode extends AbstractNode {
 		this.marginProperty().bind(Bindings.createDoubleBinding(() -> children.stream()
 				.collect(Collectors.summingDouble(AbstractNode::getMargin)), children.stream()
 				.map(AbstractNode::marginProperty).toArray(DoubleProperty[]::new)));
+	}
+
+	private void bindLeafCount() {
+		this.leafCountProperty().bind(Bindings.createIntegerBinding(() -> children.stream()
+				.collect(Collectors.summingInt(AbstractNode::getLeafCount)), children.stream()
+				.map(AbstractNode::leafCountProperty).toArray(IntegerProperty[]::new)));
 	}
 
 	@Override

@@ -23,7 +23,8 @@ public class CollapsedNode extends AbstractNode {
 		// Bind the margin of the wrapped node to this margin, so that the layout adapts.
 		wrappedNode.marginProperty().bind(this.marginProperty());
 
-		this.label = new Text(LeafNode.LABEL_X_OFFSET, LeafNode.LABEL_Y_OFFSET, "collapsed.");
+		this.label = new Text(LeafNode.LABEL_X_OFFSET, LeafNode.LABEL_Y_OFFSET, "");
+		this.label.textProperty().bind(wrapped.leafCountProperty().asString().concat(" strains"));
 		this.label.onMouseClickedProperty().bind(shape.onMouseClickedProperty());
 		this.label.setTextAlignment(TextAlignment.CENTER);
 		getChildren().add(this.label);

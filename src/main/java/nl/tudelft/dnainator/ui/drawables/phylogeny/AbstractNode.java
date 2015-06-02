@@ -1,7 +1,9 @@
 package nl.tudelft.dnainator.ui.drawables.phylogeny;
 
 import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.Group;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
@@ -14,6 +16,7 @@ import javafx.scene.shape.Shape;
 public abstract class AbstractNode extends Group {
 	protected static final int DIM = 8;
 	protected DoubleProperty margin = new SimpleDoubleProperty(0, "margin");
+	protected IntegerProperty leafCount = new SimpleIntegerProperty(0, "leafCount");
 	protected Shape shape;
 
 	/**
@@ -65,5 +68,20 @@ public abstract class AbstractNode extends Group {
 	 */
 	public DoubleProperty marginProperty() {
 		return margin;
+	}
+
+	/**
+	 * @return The number of leafs of this node.
+	 */
+	public final int getLeafCount() {
+		return leafCount.get();
+	}
+
+	/**
+	 * @return The leaf count property, which keeps track of the number
+	 * of leafs in this node.
+	 */
+	public IntegerProperty leafCountProperty() {
+		return leafCount;
 	}
 }

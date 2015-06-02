@@ -29,6 +29,7 @@ public class LeafNode extends AbstractNode {
 		this.label.onMouseClickedProperty().bind(shape.onMouseClickedProperty());
 		this.highlighted = false;
 		this.marginProperty().set(LEAFHEIGHT);
+		this.leafCountProperty().set(1);
 
 		label.setTextAlignment(TextAlignment.CENTER);
 		getChildren().add(label);
