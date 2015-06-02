@@ -10,37 +10,20 @@ import javafx.scene.layout.Pane;
  */
 public abstract class TransitionAnimation extends Transition implements CustomAnimation {
 	
-	/**
-	 * An enum that indicates which direction the animation will transition to.
-	 */
-	public enum Direction {
-		UP,
-		DOWN,
-		LEFT,
-		RIGHT
-	}
-	
 	protected Pane pane;
-	protected int width;
-	protected int height;
-	protected int duration;
-	protected Direction direction;
+	protected double size;
+	protected double duration;
 
 	/**
 	 * Construct a new {@link TransitionAnimation}.
 	 * @param pane         The {@link Pane} which is animated.
-	 * @param width        The length over which the pane will slide.
-	 * @param height       The vertical length over which the pane will slide.
+	 * @param size        The length over which the pane will slide.
 	 * @param duration     The duration of the animations.
-	 * @param direction    The {@link Direction} of the animation.
 	 */
-	public TransitionAnimation(Pane pane, int width, int height, int duration, 
-			Direction direction) {
+	public TransitionAnimation(Pane pane, double size, double duration) {
 		this.pane = pane;
-		this.width = width;
-		this.height = height;
+		this.size = size;
 		this.duration = duration;
-		this.direction = direction;
 		
 		setupAnimation();
 	}
