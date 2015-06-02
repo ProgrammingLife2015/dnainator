@@ -28,8 +28,8 @@ public class WindowController {
 	private WelcomeController welcomeController;
 	private StrainView strainView;
 	private PhylogeneticView phyloView;
-
-	@FXML private PropertyPane propertyPane;
+	@SuppressWarnings("unused") @FXML 
+	private PropertyPane propertyPane;
 
 	/**
 	 * Constructs a WindowController object, binding <code>rootProperty</code> of the
@@ -52,6 +52,7 @@ public class WindowController {
 			phyloView = new PhylogeneticView(colorServer);
 			constructView();
 		});
+		strainView.lastClickedProperty().addListener((ob, ov, nv) -> propertyPane.update(nv));
 	}
 	
 	private void constructView() {
@@ -94,5 +95,9 @@ public class WindowController {
 	@SuppressWarnings("unused") @FXML
 	private void resetPositionAction(ActionEvent e) {
 		strainView.resetTranslate();
+	}
+	
+	private void toggleProperties(ActionEvent e) {
+		propertyPane.toggle();
 	}
 }

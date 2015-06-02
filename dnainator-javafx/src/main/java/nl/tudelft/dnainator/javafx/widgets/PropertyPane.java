@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.List;
 
 import nl.tudelft.dnainator.javafx.widgets.dialogs.ExceptionDialog;
+import nl.tudelft.dnainator.javafx.widgets.animations.LeftSlideAnimation;
+import nl.tudelft.dnainator.javafx.widgets.animations.SlidingAnimation;
+import nl.tudelft.dnainator.javafx.widgets.animations.TransitionAnimation.Position;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
@@ -17,6 +21,9 @@ public class PropertyPane extends VBox {
 	private static final String FXML = "/ui/fxml/propertypane.fxml";
 	@FXML private Label label;
 	@FXML private VBox vbox;
+	private SlidingAnimation sa;
+	private static final int WIDTH = 300;
+	private static final int ANIM_DURATION = 250;
 
 	/**
 	 * Creates a new property pane.
@@ -25,6 +32,9 @@ public class PropertyPane extends VBox {
 		loadFXML();
 		getStyleClass().add("property-pane");
 		label.setId("properties-label");
+		setPrefWidth(WIDTH);
+		setMinWidth(0);
+		sa = new LeftSlideAnimation(this, WIDTH, ANIM_DURATION, Position.RIGHT);
 	}
 
 	private void loadFXML() {
@@ -63,5 +73,12 @@ public class PropertyPane extends VBox {
 		for (String s : list) {
 			vbox.getChildren().add(new Label(s));
 		}
+	}
+	
+	/**
+	 * Toggle the sliding animation on the {@link PropertyPane}.
+	 */
+	public void toggle() {
+		sa.toggle();
 	}
 }
