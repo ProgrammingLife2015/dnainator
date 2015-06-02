@@ -4,32 +4,30 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.scene.Group;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 
 /**
  * An abstract node for use in a phylogenetic tree. It provides the basic implementation
  * for a node in the phylogenetic tree, as each node will need to have one incoming edge (except
  * the root...) and a pair of (x,y) coordinates.
  */
-public abstract class AbstractNode extends Rectangle {
+public abstract class AbstractNode extends Group {
 	private static final String INACTIVE = "inactive";
+	private static final int DIM = 8;
 	protected BooleanProperty inactive = new SimpleBooleanProperty(false, "inactive");
-	private DoubleProperty centerX = new SimpleDoubleProperty(0.0, "centerX");
-	private DoubleProperty centerY = new SimpleDoubleProperty(0.0, "centerY");
+	protected DoubleProperty margin = new SimpleDoubleProperty(0, "margin");
+	protected Shape shape;
 	protected Edge incomingEdge;
 
 	/**
 	 * Constructs a new {@link AbstractNode}.
-	 * @param x This node's center x-coordinate.
-	 * @param y This node's center y-coordinate.
-	 * @param dim This node's dimensions.
 	 */
-	public AbstractNode(double x, double y, double dim) {
-		super(x - dim / 2, y - dim / 2, dim, dim);
-
-		setCenterX(x);
-		setCenterY(y);
-		setOnMouseClicked(e -> onMouseClicked());
+	public AbstractNode() {
+		this.shape = new Rectangle(0 - DIM / 2, 0 - DIM / 2, DIM, DIM);
+		getChildren().add(this.shape);
+		this.shape.setOnMouseClicked(e -> onMouseClicked());
 
 		inactiveProperty().addListener((obj, oldV, newV) -> {
 			if (newV) {
@@ -73,6 +71,13 @@ public abstract class AbstractNode extends Rectangle {
 	}
 
 	/**
+	 * @return The margin of the node for its siblings.
+	 */
+	public final double getMargin() {
+		return margin.get();
+	}
+
+	/**
 	 * @return The inactive property.
 	 */
 	public BooleanProperty inactiveProperty() {
@@ -80,45 +85,10 @@ public abstract class AbstractNode extends Rectangle {
 	}
 
 	/**
-	 * @param x The center x-coordinate to set.
+	 * @return The inactive property.
 	 */
-	public final void setCenterX(double x) {
-		centerX.set(x);
-	}
-
-	/**
-	 * @return The center x-coordinate.
-	 */
-	public final double getCenterX() {
-		return centerX.get();
-	}
-
-	/**
-	 * @return The center x property.
-	 */
-	public DoubleProperty centerXProperty() {
-		return centerX;
-	}
-
-	/**
-	 * @param y The center y-coordinate to set.
-	 */
-	public final void setCenterY(double y) {
-		centerY.set(y);
-	}
-
-	/**
-	 * @return The center y-coordinate.
-	 */
-	public final double getCenterY() {
-		return centerY.get();
-	}
-
-	/**
-	 * @return The center y property.
-	 */
-	public DoubleProperty centerYProperty() {
-		return centerY;
+	public DoubleProperty marginProperty() {
+		return margin;
 	}
 
 	/**

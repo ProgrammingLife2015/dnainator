@@ -1,5 +1,7 @@
 package nl.tudelft.dnainator.ui.drawables.phylogeny;
 
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
 import nl.tudelft.dnainator.tree.TreeNode;
 import nl.tudelft.dnainator.ui.AllColorsInUseException;
 import nl.tudelft.dnainator.ui.ColorServer;
@@ -10,23 +12,26 @@ import nl.tudelft.dnainator.ui.widgets.dialogs.ExceptionDialog;
  * a label, displaying the source of the DNA strain it represents.
  */
 public class LeafNode extends AbstractNode {
+	private static final double LEAFHEIGHT = 30;
+	private static final int LABEL_X_OFFSET = 8;
+	private static final int LABEL_Y_OFFSET = 4;
 	private TreeNode node;
+	private Text label;
 	private boolean highlighted;
-	private Label label;
 
 	/**
 	 * Constructs a new {@link LeafNode}.
-	 * @param node The {@link TreeNode} this leaf represents.
-	 * @param label This node's label.
-	 * @param x This node's center x-coordinate.
-	 * @param y This node's center y-coordinate.
-	 * @param dim This node's dimensions.
+	 * @param node The original treenode.
 	 */
-	public LeafNode(TreeNode node, Label label, double x, double y, double dim) {
-		super(x, y, dim);
+	public LeafNode(TreeNode node) {
 		this.node = node;
+		this.label = new Text(LABEL_X_OFFSET, LABEL_Y_OFFSET, node.getName());
+		this.label.onMouseClickedProperty().bind(shape.onMouseClickedProperty());
 		this.highlighted = false;
-		this.label = label;
+		this.marginProperty().set(LEAFHEIGHT);
+
+		label.setTextAlignment(TextAlignment.CENTER);
+		getChildren().add(label);
 	}
 
 	@Override
@@ -62,14 +67,14 @@ public class LeafNode extends AbstractNode {
 
 	@Override
 	protected void addStyle(String style) {
-		getStyleClass().add(style);
+		shape.getStyleClass().add(style);
 		incomingEdge.getStyleClass().add(style + "-edge");
 		label.getStyleClass().add(style);
 	}
 
 	@Override
 	protected void removeStyles() {
-		getStyleClass().clear();
+		shape.getStyleClass().clear();
 		incomingEdge.getStyleClass().clear();
 		label.getStyleClass().clear();
 	}
