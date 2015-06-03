@@ -32,7 +32,7 @@ public abstract class AbstractView extends Pane {
 	protected Translate toCenter;
 	protected Translate translate;
 
-	private ObjectProperty<Propertyable> lastClicked;
+	public static ObjectProperty<Propertyable> lastClicked;
 
 	/**
 	 * Constructs a new {@link AbstractView}. Sets up the necessary transforms and

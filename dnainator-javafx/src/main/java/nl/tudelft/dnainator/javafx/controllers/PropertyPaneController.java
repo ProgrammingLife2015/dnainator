@@ -1,11 +1,11 @@
 package nl.tudelft.dnainator.javafx.controllers;
 
 import java.util.List;
-
 import nl.tudelft.dnainator.javafx.widgets.Propertyable;
 import nl.tudelft.dnainator.javafx.widgets.animations.LeftSlideAnimation;
 import nl.tudelft.dnainator.javafx.widgets.animations.SlidingAnimation;
 import nl.tudelft.dnainator.javafx.widgets.animations.TransitionAnimation.Position;
+import nl.tudelft.dnainator.javafx.widgets.ClusterProperties;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
@@ -41,6 +41,13 @@ public class PropertyPaneController {
 		propertyTitle.setText(p.getType());
 		vbox.getChildren().clear();
 
+		if (p instanceof ClusterProperties) {
+			ClusterProperties cs = (ClusterProperties) p;
+			updateIds(cs);
+			updateStartRefs(cs);
+			updateEndRefs(cs);
+			updateSequences(cs);
+		}	
 		updateSources(p);
 	}
 
@@ -57,6 +64,62 @@ public class PropertyPaneController {
 		for (String s : list) {
 			vbox.getChildren().add(new Label(s));
 		}
+	}
+	
+	private void updateIds(ClusterProperties cp) {
+		List<String> ids = cp.getIds();
+		if (ids == null) {
+			return;
+		}
+		
+		Label idLabel = new Label("Id(s)");
+		idLabel.getStyleClass().add("property-header");
+		vbox.getChildren().add(idLabel);
+		StringBuilder sb = new StringBuilder();
+		ids.forEach(id -> sb.append(id + ", "));
+		vbox.getChildren().add(new Label(sb.toString().substring(0, sb.toString().length() - 2)));
+	}
+	
+	private void updateStartRefs(ClusterProperties cp) {
+		List<Integer> sRefs = cp.getStartRefs();
+		if (sRefs == null) {
+			return;
+		}
+		
+		Label srLabel = new Label("Start Reference(s)");
+		srLabel.getStyleClass().add("property-header");
+		vbox.getChildren().add(srLabel);
+		StringBuilder sb = new StringBuilder();
+		sRefs.forEach(sRef -> sb.append(sRef + ", "));
+		vbox.getChildren().add(new Label(sb.toString().substring(0, sb.toString().length() - 2)));
+	}
+	
+	private void updateEndRefs(ClusterProperties cp) {
+		List<Integer> eRefs = cp.getEndRefs();
+		if (eRefs == null) {
+			return;
+		}
+		
+		Label erLabel = new Label("End Reference(s)");
+		erLabel.getStyleClass().add("property-header");
+		vbox.getChildren().add(erLabel);
+		StringBuilder sb = new StringBuilder();
+		eRefs.forEach(eRef -> sb.append(eRef + ", "));
+		vbox.getChildren().add(new Label(sb.toString().substring(0, sb.toString().length() - 2)));
+	}
+	
+	private void updateSequences(ClusterProperties cp) {
+		List<String> seqs = cp.getSequences();
+		if (seqs == null) {
+			return;
+		}
+		
+		Label seqLabel = new Label("Sequence(s)");
+		seqLabel.getStyleClass().add("property-header");
+		vbox.getChildren().add(seqLabel);
+		StringBuilder sb = new StringBuilder();
+		seqs.forEach(seq -> sb.append(seq + ", "));
+		vbox.getChildren().add(new Label(sb.toString().substring(0, sb.toString().length() - 2)));
 	}
 	
 	/**

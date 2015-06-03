@@ -9,12 +9,12 @@ import java.util.List;
 public interface Propertyable {
 	
 	/**
-	 * @return This {@link ModelItem}'s type.
+	 * @return The type of the {@link Propertyable} element.
 	 */
 	String getType();
 
 	/**
-	 * @return This {@link ModelItem}'s sources.
+	 * @return The sources of the {@link Propertyable} element.
 	 */
 	List<String> getSources();
 }
