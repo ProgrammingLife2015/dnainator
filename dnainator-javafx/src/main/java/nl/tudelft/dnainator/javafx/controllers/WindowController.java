@@ -9,7 +9,6 @@ import javafx.scene.layout.BorderPane;
 import nl.tudelft.dnainator.javafx.ColorServer;
 import nl.tudelft.dnainator.javafx.views.PhylogeneticView;
 import nl.tudelft.dnainator.javafx.views.StrainView;
-import nl.tudelft.dnainator.javafx.widgets.PropertyPane;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.AboutDialog;
 
 
@@ -53,7 +52,6 @@ public class WindowController {
 			phyloView = new PhylogeneticView(colorServer);
 			constructView();
 		});
-		strainView.lastClickedProperty().addListener((ob, ov, nv) -> propertyPaneController.update(nv));
 	}
 	
 	private void constructView() {
@@ -61,6 +59,7 @@ public class WindowController {
 		splitPane.setOrientation(Orientation.VERTICAL);
 		root.setCenter(splitPane);
 	}
+
 
 	@SuppressWarnings("unused") @FXML
 	private void openButtonAction() {
@@ -98,6 +97,7 @@ public class WindowController {
 		strainView.resetTranslate();
 	}
 	
+	@SuppressWarnings("unused") @FXML
 	private void toggleProperties(ActionEvent e) {
 		propertyPaneController.toggle();
 	}

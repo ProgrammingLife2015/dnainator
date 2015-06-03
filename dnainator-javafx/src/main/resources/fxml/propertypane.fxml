@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 
-<javafx.scene.layout.VBox fx:id="propertyPane" alignment="TOP_CENTER" minHeight="0.0" minWidth="0.0" prefWidth="300.0" spacing="25.0" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.dnainator.ui.controllers.PropertyPaneController">
+<javafx.scene.layout.VBox fx:id="propertyPane" alignment="TOP_CENTER" minHeight="0.0" minWidth="0.0" prefWidth="300.0" spacing="25.0" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.dnainator.javafx.controllers.PropertyPaneController">
    <padding>
       <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
    </padding>

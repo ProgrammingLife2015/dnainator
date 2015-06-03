@@ -2,5 +2,5 @@
 
 <?import javafx.scene.layout.Pane?>
 
-<fx:root fx:id="view" onKeyPressed="#onKeyPressed" onKeyReleased="#onKeyReleased" onMouseDragged="#onMouseDragged" onMousePressed="#onMousePressed" onScroll="#onScroll" type="javafx.scene.layout.Pane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.dnainator.javafx.controllers.AbstractViewController">
+<fx:root fx:id="view" onKeyPressed="#onKeyPressed" onKeyReleased="#onKeyReleased" onMouseClicked="#onMouseClicked" onMouseDragged="#onMouseDragged" onMousePressed="#onMousePressed" onScroll="#onScroll" type="javafx.scene.layout.Pane" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.dnainator.javafx.controllers.AbstractViewController">
 </fx:root>
