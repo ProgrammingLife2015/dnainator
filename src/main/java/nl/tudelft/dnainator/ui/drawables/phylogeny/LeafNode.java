@@ -3,9 +3,6 @@ package nl.tudelft.dnainator.ui.drawables.phylogeny;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import nl.tudelft.dnainator.tree.TreeNode;
-import nl.tudelft.dnainator.ui.AllColorsInUseException;
-import nl.tudelft.dnainator.ui.ColorServer;
-import nl.tudelft.dnainator.ui.widgets.dialogs.ExceptionDialog;
 
 /**
  * This class represents leaf nodes in the phylogenetic tree. Each leaf node has a reference to
@@ -39,15 +36,15 @@ public class LeafNode extends AbstractNode {
 	public void onMouseClicked() {
 		removeStyles();
 		if (!highlighted) {
-			try {
-				String color = ColorServer.getInstance().getColor(node.getName());
-				addStyle(color);
+			//try {
+				//String color = ColorServer.getInstance().getColor(node.getName());
+				//addStyle(color);
 				highlighted = true;
-			} catch (AllColorsInUseException e) {
-				new ExceptionDialog(null, e, "The maximum amount of colors are in use");
-			}
+			//} catch (AllColorsInUseException e) {
+			//	new ExceptionDialog(null, e, "The maximum amount of colors are in use");
+			//}
 		} else {
-			ColorServer.getInstance().revokeColor(node.getName());
+			//ColorServer.getInstance().revokeColor(node.getName());
 			highlighted = false;
 		}
 	}

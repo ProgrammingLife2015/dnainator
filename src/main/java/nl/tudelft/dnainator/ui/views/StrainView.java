@@ -1,6 +1,7 @@
 package nl.tudelft.dnainator.ui.views;
 
 import javafx.geometry.Point2D;
+import nl.tudelft.dnainator.ui.ColorServer;
 import nl.tudelft.dnainator.ui.models.GraphItem;
 import nl.tudelft.dnainator.ui.widgets.contexts.ViewContext;
 
@@ -12,8 +13,9 @@ public class StrainView extends AbstractView {
 
 	/**
 	 * Creates a new strain view instance.
+	 * @param colorServer The {@link ColorServer} to communicate with.
 	 */
-	public StrainView() {
+	public StrainView(ColorServer colorServer) {
 		super();
 
 		setOnContextMenuRequested(e -> {

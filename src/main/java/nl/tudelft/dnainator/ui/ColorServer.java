@@ -11,14 +11,16 @@ import java.util.Map;
  * It keeps a {@link HashMap} of strain sources to CSS classes and uses a {@link BitSet} as a list
  * of occupied colors.
  */
-public final class ColorServer {
+public class ColorServer {
 	private static final String COLOR = "color-";
 	private static final int COLORS = 21;
-	private static ColorServer instance = new ColorServer();
 	private	Map<String, String> colors;
 	private BitSet occupied;
 
-	private ColorServer() {
+	/**
+	 * Instantiates a new {@link ColorServer}.
+	 */
+	public ColorServer() {
 		colors = new HashMap<>(COLORS);
 		occupied = new BitSet(COLORS);
 	}
@@ -56,10 +58,4 @@ public final class ColorServer {
 		occupied.set(index, false);
 	}
 
-	/**
-	 * @return The {@link ColorServer} instance.
-	 */
-	public static ColorServer getInstance() {
-		return instance;
-	}
 }

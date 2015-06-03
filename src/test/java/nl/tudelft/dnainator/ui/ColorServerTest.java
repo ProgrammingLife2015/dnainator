@@ -1,5 +1,6 @@
 package nl.tudelft.dnainator.ui;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -12,6 +13,15 @@ import static org.junit.Assert.assertTrue;
 public class ColorServerTest {
 	private static final String TKK_REF = "TKK_REF";
 	private static final String TKK_REF_0026 = "TKK_REF_0026";
+	private ColorServer colorServer;
+
+	/**
+	 * Sets up the test environment.
+	 */
+	@Before
+	public void setup() {
+		colorServer = new ColorServer();
+	}
 
 	/**
 	 * Tests whether simply getting one color that is not used yet, works.
@@ -19,9 +29,9 @@ public class ColorServerTest {
 	 */
 	@Test
 	public void testGetColorSimple() throws AllColorsInUseException {
-		String col0 = ColorServer.getInstance().getColor(TKK_REF);
+		String col0 = colorServer.getColor(TKK_REF);
 		assertEquals("color-0", col0);
-		ColorServer.getInstance().revokeColor(TKK_REF);
+		colorServer.revokeColor(TKK_REF);
 	}
 
 	/**
@@ -30,12 +40,12 @@ public class ColorServerTest {
 	 */
 	@Test
 	public void testGetColorMultiple() throws AllColorsInUseException {
-		String col0 = ColorServer.getInstance().getColor(TKK_REF);
+		String col0 = colorServer.getColor(TKK_REF);
 		assertEquals("color-0", col0);
-		String col1 = ColorServer.getInstance().getColor(TKK_REF_0026);
+		String col1 = colorServer.getColor(TKK_REF_0026);
 		assertEquals("color-1", col1);
-		ColorServer.getInstance().revokeColor(TKK_REF);
-		ColorServer.getInstance().revokeColor(TKK_REF_0026);
+		colorServer.revokeColor(TKK_REF);
+		colorServer.revokeColor(TKK_REF_0026);
 	}
 
 	/**
@@ -44,10 +54,10 @@ public class ColorServerTest {
 	 */
 	@Test
 	public void testGetColorSame() throws AllColorsInUseException {
-		String col0 = ColorServer.getInstance().getColor(TKK_REF);
-		String col1 = ColorServer.getInstance().getColor(TKK_REF);
+		String col0 = colorServer.getColor(TKK_REF);
+		String col1 = colorServer.getColor(TKK_REF);
 		assertTrue(col0 == col1);
-		ColorServer.getInstance().revokeColor(TKK_REF);
+		colorServer.revokeColor(TKK_REF);
 	}
 
 	/**
@@ -56,12 +66,12 @@ public class ColorServerTest {
 	 */
 	@Test
 	public void testRevoke() throws AllColorsInUseException {
-		String col0 = ColorServer.getInstance().getColor(TKK_REF);
+		String col0 = colorServer.getColor(TKK_REF);
 		assertEquals("color-0", col0);
-		ColorServer.getInstance().revokeColor(TKK_REF);
-		String col1 = ColorServer.getInstance().getColor(TKK_REF);
+		colorServer.revokeColor(TKK_REF);
+		String col1 = colorServer.getColor(TKK_REF);
 		assertEquals("color-0", col1);
 		assertFalse(col0 == col1);
-		ColorServer.getInstance().revokeColor(TKK_REF);
+		colorServer.revokeColor(TKK_REF);
 	}
 }

@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
+import nl.tudelft.dnainator.ui.ColorServer;
 import nl.tudelft.dnainator.ui.views.PhylogeneticView;
 import nl.tudelft.dnainator.ui.views.StrainView;
 import nl.tudelft.dnainator.ui.widgets.dialogs.AboutDialog;
@@ -35,8 +36,9 @@ public class WindowController {
 	}
 
 	private void createViews() {
-		strainView = new StrainView();
-		PhylogeneticView phyloView = new PhylogeneticView();
+		ColorServer colorServer = new ColorServer();
+		strainView = new StrainView(colorServer);
+		PhylogeneticView phyloView = new PhylogeneticView(colorServer);
 		phyloView.rootProperty().bind(fileOpenerController.treeProperty());
 		SplitPane splitPane = new SplitPane(strainView, phyloView);
 		splitPane.setOrientation(Orientation.VERTICAL);
