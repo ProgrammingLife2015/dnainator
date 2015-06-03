@@ -51,9 +51,10 @@ public abstract class AbstractNode extends Group {
 
 	/**
 	 * Removes all CSS classes from the {@link AbstractNode}.
+	 * @param style The CSS class to remove.
 	 */
-	protected void removeStyles() {
-		shape.getStyleClass().clear();
+	protected void removeStyle(String style) {
+		shape.getStyleClass().remove(style);
 	}
 
 	/**

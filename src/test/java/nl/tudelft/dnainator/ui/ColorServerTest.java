@@ -4,7 +4,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
@@ -29,6 +28,7 @@ public class ColorServerTest {
 	 */
 	@Test
 	public void testGetColorSimple() throws AllColorsInUseException {
+		colorServer.askColor(TKK_REF);
 		String col0 = colorServer.getColor(TKK_REF);
 		assertEquals("color-0", col0);
 		colorServer.revokeColor(TKK_REF);
@@ -40,8 +40,10 @@ public class ColorServerTest {
 	 */
 	@Test
 	public void testGetColorMultiple() throws AllColorsInUseException {
+		colorServer.askColor(TKK_REF);
 		String col0 = colorServer.getColor(TKK_REF);
 		assertEquals("color-0", col0);
+		colorServer.askColor(TKK_REF_0026);
 		String col1 = colorServer.getColor(TKK_REF_0026);
 		assertEquals("color-1", col1);
 		colorServer.revokeColor(TKK_REF);
@@ -54,6 +56,7 @@ public class ColorServerTest {
 	 */
 	@Test
 	public void testGetColorSame() throws AllColorsInUseException {
+		colorServer.askColor(TKK_REF);
 		String col0 = colorServer.getColor(TKK_REF);
 		String col1 = colorServer.getColor(TKK_REF);
 		assertTrue(col0 == col1);
@@ -66,12 +69,14 @@ public class ColorServerTest {
 	 */
 	@Test
 	public void testRevoke() throws AllColorsInUseException {
+		colorServer.askColor(TKK_REF);
 		String col0 = colorServer.getColor(TKK_REF);
 		assertEquals("color-0", col0);
 		colorServer.revokeColor(TKK_REF);
+		colorServer.askColor(TKK_REF);
 		String col1 = colorServer.getColor(TKK_REF);
 		assertEquals("color-0", col1);
-		assertFalse(col0 == col1);
+		assertTrue(col0 == col1);
 		colorServer.revokeColor(TKK_REF);
 	}
 }

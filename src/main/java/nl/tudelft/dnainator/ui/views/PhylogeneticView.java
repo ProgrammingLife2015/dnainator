@@ -44,7 +44,7 @@ public class PhylogeneticView extends AbstractView {
 
 	private AbstractNode draw(TreeNode node) {
 		if (node.getChildren().size() == 0) {
-			return new LeafNode(node);
+			return new LeafNode(node, colorServer);
 		}
 
 		AbstractNode self = new InternalNode(node.getChildren().stream()
