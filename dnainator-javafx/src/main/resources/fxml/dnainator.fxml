@@ -81,6 +81,6 @@
       <fx:include fx:id="fileOpener" source="openpane.fxml" />
    </left>
    <right>
-      <PropertyPane fx:id="propertyPane" prefHeight="480.0" prefWidth="300.0" />
+      <fx:include fx:id="propertyPane" source="propertypane.fxml" />
    </right>
 </BorderPane>

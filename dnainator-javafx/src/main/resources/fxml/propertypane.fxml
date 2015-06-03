@@ -6,12 +6,12 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 
-<fx:root fx:id="propertypane" type="javafx.scene.layout.VBox" alignment="TOP_CENTER" spacing="25.0" xmlns="http://javafx.com/javafx/8.0.45" xmlns:fx="http://javafx.com/fxml/1">
+<javafx.scene.layout.VBox fx:id="propertyPane" alignment="TOP_CENTER" minHeight="0.0" minWidth="0.0" prefWidth="300.0" spacing="25.0" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.dnainator.ui.controllers.PropertyPaneController">
    <padding>
       <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
    </padding>
    <children>
-      <Label fx:id="label" layoutX="249.0" layoutY="33.0" textAlignment="CENTER" />
-      <VBox fx:id="vbox" alignment="TOP_CENTER" spacing="10.0" layoutX="250.0" layoutY="100.0" prefHeight="200.0" prefWidth="100.0" />
+      <Label fx:id="propertyTitle" layoutX="250.0" layoutY="33.0" stylesheets="@../style.css" textAlignment="CENTER" />
+      <VBox fx:id="vbox" alignment="TOP_CENTER" layoutX="250.0" layoutY="100.0" prefHeight="200.0" prefWidth="100.0" spacing="10.0" />
    </children>
-</fx:root>
+</javafx.scene.layout.VBox>

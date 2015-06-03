@@ -12,6 +12,7 @@ import nl.tudelft.dnainator.javafx.views.StrainView;
 import nl.tudelft.dnainator.javafx.widgets.PropertyPane;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.AboutDialog;
 
+
 /**
  * The WindowController is a controller class for the main window.
  * <p>
@@ -29,7 +30,7 @@ public class WindowController {
 	private StrainView strainView;
 	private PhylogeneticView phyloView;
 	@SuppressWarnings("unused") @FXML 
-	private PropertyPane propertyPane;
+	private PropertyPaneController propertyPaneController;
 
 	/**
 	 * Constructs a WindowController object, binding <code>rootProperty</code> of the
@@ -52,7 +53,7 @@ public class WindowController {
 			phyloView = new PhylogeneticView(colorServer);
 			constructView();
 		});
-		strainView.lastClickedProperty().addListener((ob, ov, nv) -> propertyPane.update(nv));
+		strainView.lastClickedProperty().addListener((ob, ov, nv) -> propertyPaneController.update(nv));
 	}
 	
 	private void constructView() {
@@ -98,6 +99,6 @@ public class WindowController {
 	}
 	
 	private void toggleProperties(ActionEvent e) {
-		propertyPane.toggle();
+		propertyPaneController.toggle();
 	}
 }
