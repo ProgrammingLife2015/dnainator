@@ -17,7 +17,13 @@ import nl.tudelft.dnainator.ui.drawables.Drawable;
  * The {@link ClusterDrawable} class represents the mid level object in the viewable model.
  */
 public class ClusterDrawable extends Group implements Drawable {
-	private static final int CLUSTER_SIZE = 3;
+	private static final int SINGLE = 1;
+	private static final int SMALL = 3;
+	private static final int MEDIUM = 10;
+	private static final double SINGLE_RADIUS = 2;
+	private static final double SMALL_RADIUS = 4;
+	private static final double MEDIUM_RADIUS = 5;
+	private static final double LARGE_RADIUS = 6;
 	private static final int PIETHRESHOLD = 10;
 	private List<SequenceNode> clustered;
 	private Set<String> sources;
@@ -38,8 +44,14 @@ public class ClusterDrawable extends Group implements Drawable {
 		label = new Text(Integer.toString(clustered.size()));
 		label.setStyle("-fx-font-size: 2pt");
 
+		draw(colorServer);
+	}
+
+	private void draw(ColorServer colorServer) {
+		double radius = getRadius();
+
 		if (sources.size() > PIETHRESHOLD) {
-			getChildren().add(new Circle(CLUSTER_SIZE));
+			getChildren().add(new Circle(radius));
 		} else {
 			colorServer.addListener(this::onColorServerChanged);
 
@@ -47,10 +59,24 @@ public class ClusterDrawable extends Group implements Drawable {
 					.map(e -> colorServer.getColor(e))
 					.filter(e -> e != null)
 					.collect(Collectors.toList());
-			pie = new Pie(CLUSTER_SIZE, collect);
+			pie = new Pie(radius, collect);
 			getChildren().add(pie);
 		}
 		getChildren().add(label);
+	}
+
+	private double getRadius() {
+		int nChildren = clustered.size();
+
+		if (nChildren == SINGLE) {
+			return SINGLE_RADIUS;
+		} else if (nChildren <= SMALL) {
+			return SMALL_RADIUS;
+		} else if (nChildren <= MEDIUM) {
+			return MEDIUM_RADIUS;
+		} else {
+			return LARGE_RADIUS;
+		}
 	}
 
 	private void onColorServerChanged(
