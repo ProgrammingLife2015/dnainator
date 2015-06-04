@@ -14,8 +14,10 @@
 	-fx-font-weight: bold;
 }
 
-#properties-label {
-	-fx-font-size: 20px;
+#properties-title {
+	-fx-font-family: Kalinga;
+	-fx-font-smoothing-type: lcd;
+	-fx-font-size: 28px;
 	-fx-alignment: center;
 	-fx-font-weight: bold;
 }
@@ -23,6 +25,10 @@
 .property-header {
 	-fx-font-weight: bold;
 	-fx-alignment: center;
+}
+
+.property-info {
+	-fx-text-alignment: left;
 }
 
 .view {

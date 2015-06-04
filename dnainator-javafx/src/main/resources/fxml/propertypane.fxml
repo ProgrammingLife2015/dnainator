@@ -1,17 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.effect.*?>
 <?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 
-<javafx.scene.layout.VBox fx:id="propertyPane" alignment="TOP_CENTER" minHeight="0.0" minWidth="0.0" prefWidth="300.0" spacing="25.0" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.dnainator.javafx.controllers.PropertyPaneController">
+<javafx.scene.layout.VBox fx:id="propertyPane" alignment="TOP_CENTER" minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="300.0" spacing="25.0" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.dnainator.javafx.controllers.PropertyPaneController">
    <padding>
       <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
    </padding>
    <children>
-      <Label fx:id="propertyTitle" layoutX="250.0" layoutY="33.0" stylesheets="@../style.css" textAlignment="CENTER" />
-      <VBox fx:id="vbox" alignment="TOP_CENTER" layoutX="250.0" layoutY="100.0" prefHeight="200.0" prefWidth="100.0" spacing="10.0" />
+      <Label id="properties-title" fx:id="propertyType" layoutX="250.0" layoutY="33.0" stylesheets="@../style.css" text="TYPE" textAlignment="CENTER" visible="false" />
+      <VBox fx:id="vbox" layoutX="250.0" layoutY="300.0" minHeight="0.0" minWidth="0.0" prefHeight="550.0" prefWidth="300.0" spacing="10.0">
+         <children>
+            <Label fx:id="id" styleClass="property-header" text="Id(s)" translateX="125.0" visible="false" />
+            <Label fx:id="idInfo" styleClass="property-info" text="IDINFO" visible="false">
+               <VBox.margin>
+                  <Insets />
+               </VBox.margin>
+            </Label>
+            <Separator fx:id="idSeparator" prefWidth="200.0" visible="false" />
+            <Label fx:id="sRef" styleClass="property-header" text="Start Reference(s)" translateX="85.0" visible="false" />
+            <Label fx:id="sRefInfo" styleClass="property-info" text="SREFINFO" visible="false" />
+            <Separator fx:id="sRefSeparator" prefWidth="200.0" visible="false" />
+            <Label fx:id="eRef" styleClass="property-header" text="End Reference(s)" visible="false" />
+            <Label fx:id="eRefInfo" styleClass="property-info" text="EREFINFO" visible="false" />
+            <Separator fx:id="eRefSeparator" prefWidth="200.0" visible="false" />
+            <Label fx:id="seq" styleClass="property-header" text="Sequence(s)" visible="false" />
+            <Label fx:id="seqInfo" styleClass="property-info" text="SEQINFO" visible="false" />
+            <Separator fx:id="seqSeparator" prefWidth="200.0" visible="false" />
+            <Label fx:id="source" styleClass="property-header" text="Sources" visible="false" />
+            <Label fx:id="sourceInfo" styleClass="property-info" text="SOURCEINFO" visible="false" />
+         </children></VBox>
    </children>
 </javafx.scene.layout.VBox>

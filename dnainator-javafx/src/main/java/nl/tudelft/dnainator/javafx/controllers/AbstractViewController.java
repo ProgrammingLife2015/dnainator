@@ -105,7 +105,6 @@ public class AbstractViewController {
 	private void onMouseClicked(MouseEvent e) {
 		if (e.getButton() == MouseButton.PRIMARY) {
 			Node res = e.getPickResult().getIntersectedNode();
-			res.setPickOnBounds(true);
 			
 			if (res != null && res instanceof Propertyable) {
 				System.out.println("FXNode: " + ((Propertyable) res).getType());

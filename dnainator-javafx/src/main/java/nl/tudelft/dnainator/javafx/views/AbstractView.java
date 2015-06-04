@@ -32,7 +32,7 @@ public abstract class AbstractView extends Pane {
 	protected Translate toCenter;
 	protected Translate translate;
 
-	public static ObjectProperty<Propertyable> lastClicked;
+	private static ObjectProperty<Propertyable> lastClicked;
 
 	/**
 	 * Constructs a new {@link AbstractView}. Sets up the necessary transforms and
@@ -192,21 +192,21 @@ public abstract class AbstractView extends Pane {
 	/**
 	 * @param p The last clicked {@link Propertyable}.
 	 */
-	public final void setLastClicked(Propertyable p) {
+	public static final void setLastClicked(Propertyable p) {
 		lastClicked.set(p);
 	}
 
 	/**
 	 * @return The last clicked {@link Propertyable}, if any.
 	 */
-	public final Propertyable getLastClicked() {
+	public static final Propertyable getLastClicked() {
 		return lastClicked.get();
 	}
 
 	/**
 	 * @return The last clicked property.
 	 */
-	public ObjectProperty<Propertyable> lastClickedProperty() {
+	public static ObjectProperty<Propertyable> lastClickedProperty() {
 		return lastClicked;
 	}
 }
