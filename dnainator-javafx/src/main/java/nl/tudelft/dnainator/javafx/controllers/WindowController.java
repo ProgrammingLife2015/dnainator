@@ -7,6 +7,7 @@ import javafx.geometry.Orientation;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
 import nl.tudelft.dnainator.javafx.ColorServer;
+import nl.tudelft.dnainator.javafx.views.AbstractView;
 import nl.tudelft.dnainator.javafx.views.PhylogeneticView;
 import nl.tudelft.dnainator.javafx.views.StrainView;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.AboutDialog;
@@ -31,10 +32,6 @@ public class WindowController {
 	@SuppressWarnings("unused") @FXML 
 	private PropertyPaneController propertyPaneController;
 
-	/**
-	 * Constructs a WindowController object, binding <code>rootProperty</code> of the
-	 * {@link PhylogeneticView} the <code>treeProperty</code> of the {@link FileOpenController}.
-	 */
 	@SuppressWarnings("unused") @FXML
 	private void initialize() {
 		ColorServer colorServer = new ColorServer();
@@ -58,6 +55,9 @@ public class WindowController {
 		SplitPane splitPane = new SplitPane(strainView, phyloView);
 		splitPane.setOrientation(Orientation.VERTICAL);
 		root.setCenter(splitPane);
+		
+		AbstractView.lastClickedProperty().addListener(
+				(ob, ov, nv) -> propertyPaneController.update(nv));
 	}
 
 

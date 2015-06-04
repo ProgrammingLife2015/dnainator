@@ -6,18 +6,26 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
+import java.util.List;
+import nl.tudelft.dnainator.javafx.views.AbstractView;
+import nl.tudelft.dnainator.javafx.widgets.Propertyable;
 
 /**
  * The drawable edge is a line that can be bound to the a source and a destination cluster.
  */
-public class Edge extends Group {
+public class Edge extends Group implements Propertyable {
 	private Line edge;
+	private static final String TYPE = "Edge";
+	private ClusterDrawable src;
+	private ClusterDrawable dst;
 
 	/**
 	 * Instantiate the source part of a new Edge.
 	 * @param src This edge's source node.
 	 */
 	private Edge(ClusterDrawable src) {
+		this.src = src;
+		setOnMouseClicked(e -> AbstractView.setLastClicked(this));
 		edge = new Line();
 		edge.startXProperty().bind(src.translateXProperty());
 		edge.startYProperty().bind(src.translateYProperty());
@@ -31,6 +39,7 @@ public class Edge extends Group {
 	 */
 	public Edge(ClusterDrawable src, ClusterDrawable dest) {
 		this(src);
+		this.dst = src;
 		edge.endXProperty().bind(dest.translateXProperty());
 		edge.endYProperty().bind(dest.translateYProperty());
 	}
@@ -59,17 +68,19 @@ public class Edge extends Group {
 		return edge;
 	}
 
-//	@Override
-//	public String getType() {
-//		return TYPE;
-//	}
+	@Override
+	public String getType() {
+		return TYPE;
+	}
 
-//	@Override
-//	public List<String> getSources() {
-////		ArrayList<String> res = new ArrayList<>();
-////		res.add(src.getSequenceNode().getSource());
-////		res.add(dst.getSequenceNode().getSource());
-////		return res;
-//		return null;
-//	}
+	/**
+	 * All the sources that both src and destination contained.
+	 */
+	@Override
+	public List<String> getSources() {
+		if (dst != null) {
+			src.getSources().retainAll(dst.getSources());
+		}
+		return src.getSources();
+	}
 }

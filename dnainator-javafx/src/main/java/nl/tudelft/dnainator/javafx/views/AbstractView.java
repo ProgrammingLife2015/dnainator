@@ -32,7 +32,8 @@ public abstract class AbstractView extends Pane {
 	protected Translate toCenter;
 	protected Translate translate;
 
-	private static ObjectProperty<Propertyable> lastClicked;
+	private static ObjectProperty<Propertyable> lastClicked = 
+			new SimpleObjectProperty<>(AbstractView.class, "lastClicked");
 
 	/**
 	 * Constructs a new {@link AbstractView}. Sets up the necessary transforms and
@@ -41,7 +42,6 @@ public abstract class AbstractView extends Pane {
 	public AbstractView() {
 		loadFXML();
 		getStyleClass().add("view");
-		lastClicked = new SimpleObjectProperty<>(this, "lastClicked");
 		toCenter = new Translate();
 		widthProperty().addListener((o, v1, v2) -> toCenter.setX(v2.intValue() / 2));
 		heightProperty().addListener((o, v1, v2) -> toCenter.setY(v2.intValue() / 2));

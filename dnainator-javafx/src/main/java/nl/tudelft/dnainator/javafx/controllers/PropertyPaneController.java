@@ -20,6 +20,7 @@ public class PropertyPaneController {
 	private SlidingAnimation animation;
 	private static final int WIDTH = 300;
 	private static final int ANIM_DURATION = 250;
+	private static final int TOOLTIP_WIDTH = 450;
 	
 	@SuppressWarnings("unused") @FXML private VBox propertyPane;
 	@SuppressWarnings("unused") @FXML private VBox vbox;
@@ -40,12 +41,10 @@ public class PropertyPaneController {
 	@SuppressWarnings("unused") @FXML private Label sourceInfo;
 
 	/*
-	 * Sets up the services, filechooser and treeproperty.
+	 * Sets up the animation for the property pane.
 	 */
 	@SuppressWarnings("unused") @FXML
 	private void initialize() {
-		propertyPane.getStyleClass().add("property-pane");
-		propertyType.setId("properties-label");
 		animation = new LeftSlideAnimation(propertyPane, WIDTH, ANIM_DURATION, Position.RIGHT);
 	}
 	
@@ -73,17 +72,13 @@ public class PropertyPaneController {
 		if (ids == null) {
 			return;
 		}
-		id.setVisible(true);
-		idSeparator.setVisible(true);
 
-		vbox.getChildren().add(id);
-		StringBuilder sb = new StringBuilder();
-		ids.forEach(id -> sb.append(id + ", "));
-		idInfo.setText(sb.toString().substring(0, sb.toString().length() - 2));
-		idInfo.getStyleClass().add("property-info");
-		idInfo.setVisible(true);
-		vbox.getChildren().add(idInfo);
-		vbox.getChildren().add(idSeparator);
+		setLabelGroupVisible(id, idInfo, idSeparator);
+		String res = setupInfoText(ids);
+		idInfo.setText(res);
+		attachTooltip(idInfo, res);
+		
+		vbox.getChildren().addAll(id, idInfo, idSeparator);
 	}
 	
 	private void updateStartRefs(ClusterProperties cp) {
@@ -92,12 +87,12 @@ public class PropertyPaneController {
 			return;
 		}
 		
-		Label srLabel = new Label("Start Reference(s)");
-		srLabel.getStyleClass().add("property-header");
-		vbox.getChildren().add(srLabel);
-		StringBuilder sb = new StringBuilder();
-		sRefs.forEach(sRef -> sb.append(sRef + ", "));
-		vbox.getChildren().add(new Label(sb.toString().substring(0, sb.toString().length() - 2)));
+		setLabelGroupVisible(sRef, sRefInfo, sRefSeparator);
+		String res = setupInfoText(sRefs);
+		sRefInfo.setText(res);
+		attachTooltip(sRefInfo, res);
+		
+		vbox.getChildren().addAll(sRef, sRefInfo, sRefSeparator);
 	}
 	
 	private void updateEndRefs(ClusterProperties cp) {
@@ -106,12 +101,12 @@ public class PropertyPaneController {
 			return;
 		}
 		
-		Label erLabel = new Label("End Reference(s)");
-		erLabel.getStyleClass().add("property-header");
-		vbox.getChildren().add(erLabel);
-		StringBuilder sb = new StringBuilder();
-		eRefs.forEach(eRef -> sb.append(eRef + ", "));
-		vbox.getChildren().add(new Label(sb.toString().substring(0, sb.toString().length() - 2)));
+		setLabelGroupVisible(eRef, eRefInfo, eRefSeparator);
+		String res = setupInfoText(eRefs);
+		eRefInfo.setText(res);
+		attachTooltip(eRefInfo, res);
+		
+		vbox.getChildren().addAll(eRef, eRefInfo, eRefSeparator);
 	}
 	
 	private void updateSequences(ClusterProperties cp) {
@@ -119,17 +114,13 @@ public class PropertyPaneController {
 		if (seqs == null) {
 			return;
 		}
+
+		setLabelGroupVisible(seq, seqInfo, seqSeparator);
+		String res = setupInfoText(seqs);
+		seqInfo.setText(res);
+		attachTooltip(seqInfo, res);
 		
-		Label seqLabel = new Label("Sequence(s)");
-		seqLabel.getStyleClass().add("property-header");
-		vbox.getChildren().add(seqLabel);
-		StringBuilder sb = new StringBuilder();
-		seqs.forEach(seq -> sb.append(seq + ", "));
-		String res = sb.toString().substring(0, sb.toString().length() - 2);
-		Label seqLabels = new Label(res);
-		Tooltip t = new Tooltip(res);
-		Tooltip.install(seqLabels, t);
-		vbox.getChildren().add(seqLabels);
+		vbox.getChildren().addAll(seq, seqInfo, seqSeparator);
 	}
 	
 	private void updateSources(Propertyable p) {
@@ -137,21 +128,47 @@ public class PropertyPaneController {
 		if (sources == null) {
 			return;
 		}
-
-		source.setVisible(true);
-		vbox.getChildren().add(source);
-		StringBuilder sb = new StringBuilder();
-		sources.forEach(source -> {
-			sb.append(source + ", ");
-			
-		});
-		String res = sb.toString().substring(0, sb.toString().length() - 2);
-		Tooltip t = new Tooltip(res);
+		
+		setLabelGroupVisible(source, sourceInfo, null);
+		
+		String res = setupInfoText(sources);
 		sourceInfo.setText(res);
-		t.setPrefWidth(200);
-		Tooltip.install(sourceInfo, t);
-		sourceInfo.setVisible(true);
-		vbox.getChildren().add(sourceInfo);
+		
+		attachTooltip(sourceInfo, res);
+		vbox.getChildren().addAll(source, sourceInfo);
+	}
+	
+	private void setLabelGroupVisible(Label title, Label info, Separator separator) {
+		title.setVisible(true);
+		info.setVisible(true);
+		
+		if (separator != null) {
+			separator.setVisible(true);
+		}
+	}
+	
+	private String setupInfoText(List<?> infoText) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < infoText.size(); i++) {
+			sb.append(infoText.get(i));
+			if (i < infoText.size() - 1) {
+				sb.append(", ");
+			}
+		}
+		return sb.toString();
+	}
+	
+	/**
+	 * Attach a {@link Tooltip} to a label.
+	 * @param attachee     The {@link Label} the {@link Tooltip} will be attached to.
+	 * @param msg          The {@link Tooltip}'s message.
+	 */
+	private void attachTooltip(Label attachee, String msg) {
+		Tooltip t = new Tooltip(msg);
+		t.setWrapText(true);
+		t.setAutoFix(true);
+		t.setMaxWidth(TOOLTIP_WIDTH);
+		Tooltip.install(attachee, t);
 	}
 	
 	/**

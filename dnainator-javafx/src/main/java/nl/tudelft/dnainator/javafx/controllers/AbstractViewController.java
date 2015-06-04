@@ -3,14 +3,12 @@ package nl.tudelft.dnainator.javafx.controllers;
 import javafx.fxml.FXML;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import nl.tudelft.dnainator.javafx.views.AbstractView;
-import nl.tudelft.dnainator.javafx.widgets.Propertyable;
 
 /**
  * Controller class for all views.
@@ -97,19 +95,6 @@ public class AbstractViewController {
 	private void onKeyReleased(KeyEvent e) {
 		if (e.getCode().isArrowKey()) {
 			scrollSpeedFactor = 1;
-		}
-	}
-	
-	// TEMPORARY
-	@SuppressWarnings("unused") @FXML
-	private void onMouseClicked(MouseEvent e) {
-		if (e.getButton() == MouseButton.PRIMARY) {
-			Node res = e.getPickResult().getIntersectedNode();
-			
-			if (res != null && res instanceof Propertyable) {
-				System.out.println("FXNode: " + ((Propertyable) res).getType());
-				view.setLastClicked((Propertyable) res);
-			}
 		}
 	}
 }
