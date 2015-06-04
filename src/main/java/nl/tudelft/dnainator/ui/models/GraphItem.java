@@ -14,8 +14,8 @@ import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
 import nl.tudelft.dnainator.ui.ColorServer;
-import nl.tudelft.dnainator.ui.drawables.ClusterDrawable;
-import nl.tudelft.dnainator.ui.drawables.DrawableEdge;
+import nl.tudelft.dnainator.ui.drawables.strains.ClusterDrawable;
+import nl.tudelft.dnainator.ui.drawables.strains.Edge;
 
 /**
  * The {@link GraphItem} class represents the graph that contains the DNA strain.
@@ -121,7 +121,7 @@ public class GraphItem extends Group {
 				cluster.getClustered().stream().flatMap(e -> e.getOutgoing().stream())
 						.filter(clusters::containsKey)
 						.filter(i -> clusters.get(i) != cluster)
-						.map(o -> new DrawableEdge(cluster, clusters.get(o)))
+						.map(o -> new Edge(cluster, clusters.get(o)))
 						.collect(Collectors.toList()));
 	}
 

@@ -1,24 +1,23 @@
-package nl.tudelft.dnainator.ui.drawables;
+package nl.tudelft.dnainator.ui.drawables.strains;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import javafx.collections.MapChangeListener;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.ui.ColorServer;
+import nl.tudelft.dnainator.ui.drawables.Drawable;
 
 /**
  * The {@link ClusterDrawable} class represents the mid level object in the viewable model.
  */
-public class ClusterDrawable extends Group {
+public class ClusterDrawable extends Group implements Drawable {
 	private static final int CLUSTER_SIZE = 3;
 	private List<SequenceNode> clustered;
 	private Set<String> sources;
@@ -75,13 +74,15 @@ public class ClusterDrawable extends Group {
 		});
 	}
 
-	private void addStyle(String style) {
+	@Override
+	public void addStyle(String style) {
 		for (Node node : getChildren()) {
 			node.getStyleClass().add(style);
 		}
 	}
 
-	private void removeStyle(String style) {
+	@Override
+	public void removeStyle(String style) {
 		for (Node node : getChildren()) {
 			node.getStyleClass().remove(style);
 		}

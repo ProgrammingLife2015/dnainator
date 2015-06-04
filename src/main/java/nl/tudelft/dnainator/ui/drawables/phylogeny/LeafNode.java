@@ -67,16 +67,4 @@ public class LeafNode extends AbstractNode {
 			colorServer.revokeColor(node.getName());
 		}
 	}
-
-	@Override
-	protected void addStyle(String style) {
-		shape.getStyleClass().add(style);
-		label.getStyleClass().add(style);
-	}
-
-	@Override
-	protected void removeStyle(String style) {
-		shape.getStyleClass().remove(style);
-		label.getStyleClass().remove(style);
-	}
 }

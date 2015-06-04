@@ -2,10 +2,10 @@ package nl.tudelft.dnainator.ui.widgets.contexts;
 
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
-import nl.tudelft.dnainator.ui.drawables.DrawableEdge;
+import nl.tudelft.dnainator.ui.drawables.strains.Edge;
 
 /**
- * Creates a {@link ContextMenu} for {@link DrawableEdge}s. It needs to be singleton because
+ * Creates a {@link ContextMenu} for {@link Edge}s. It needs to be singleton because
  * only one context menu may exist per context, thus only one instance of this class may
  * exist at a time.
  */
