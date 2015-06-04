@@ -1,14 +1,13 @@
 package nl.tudelft.dnainator.ui.drawables.strains;
 
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javafx.collections.MapChangeListener;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.ui.ColorServer;
@@ -19,10 +18,11 @@ import nl.tudelft.dnainator.ui.drawables.Drawable;
  */
 public class ClusterDrawable extends Group implements Drawable {
 	private static final int CLUSTER_SIZE = 3;
+	private static final int PIETHRESHOLD = 10;
 	private List<SequenceNode> clustered;
 	private Set<String> sources;
-	private Shape shape;
 	private Text label;
+	private Pie pie;
 
 	/**
 	 * Construct a new mid level {@link ClusterDrawable} using the default graph.
@@ -31,61 +31,47 @@ public class ClusterDrawable extends Group implements Drawable {
 	 */
 	public ClusterDrawable(ColorServer colorServer, List<SequenceNode> clustered) {
 		this.clustered = clustered;
-		this.sources = new HashSet<>();
-		for (SequenceNode n : clustered) {
-			for (String src : n.getSource().split(",")) {
-				sources.add(src);
-			}
-		}
-		//this.sources = clustered.stream()
-		//		.flatMap(node -> node.getSource().split(","))
-		//		.collect(Collectors.toSet());
-		shape = new Circle(CLUSTER_SIZE);
-		shape.setOnMouseClicked(e -> System.out.println(clustered));
+		this.sources = clustered.stream()
+				.flatMap(e -> Arrays.asList(e.getSource().split(",")).stream())
+				.collect(Collectors.toSet());
+
 		label = new Text(Integer.toString(clustered.size()));
 		label.setStyle("-fx-font-size: 2pt");
 
-		checkForColor(colorServer);
-		colorServer.addListener(change -> onColorServerChanged(change));
+		if (sources.size() > PIETHRESHOLD) {
+			getChildren().add(new Circle(CLUSTER_SIZE));
+		} else {
+			colorServer.addListener(this::onColorServerChanged);
 
-		getChildren().add(shape);
-		getChildren().add(label);
-	}
-
-	private void checkForColor(ColorServer colorServer) {
-		for (String source : sources) {
-			String style = colorServer.getColor(source);
-			if (style != null) {
-				addStyle(style);
-			}
+			List<String> collect = sources.stream()
+					.map(e -> colorServer.getColor(e))
+					.filter(e -> e != null)
+					.collect(Collectors.toList());
+			pie = new Pie(CLUSTER_SIZE, collect);
+			getChildren().add(pie);
 		}
+		getChildren().add(label);
 	}
 
 	private void onColorServerChanged(
 			MapChangeListener.Change<? extends String, ? extends String> change) {
-		sources.stream().forEach(source -> {
-			if (source.equals(change.getKey())) {
-				if (change.wasAdded()) {
-					addStyle(change.getValueAdded());
-				} else {
-					removeStyle(change.getValueRemoved());
-				}
-			}
-		});
+		if (!sources.contains(change.getKey())) {
+			return;
+		} else if (change.wasAdded()) {
+			addStyle(change.getValueAdded());
+		} else if (change.wasRemoved()) {
+			removeStyle(change.getValueRemoved());
+		}
 	}
 
 	@Override
 	public void addStyle(String style) {
-		for (Node node : getChildren()) {
-			node.getStyleClass().add(style);
-		}
+		pie.getStyles().add(style);
 	}
 
 	@Override
 	public void removeStyle(String style) {
-		for (Node node : getChildren()) {
-			node.getStyleClass().remove(style);
-		}
+		pie.getStyles().remove(style);
 	}
 
 	/**
