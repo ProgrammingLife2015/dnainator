@@ -50,7 +50,7 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 		rootClusters.addAll(clusterFrom.execute(service));
 
 		// Find adjacent clusters as long as there are root clusters in the queue
-		int minrank = rootClusters.stream().mapToInt(e -> e.getStartRank()).min().getAsInt();
+		int minrank = rootClusters.stream().mapToInt(e -> e.getStartRank()).min().orElse(0);
 		while (!rootClusters.isEmpty()) {
 			Cluster c = rootClusters.poll();
 			if (c.getStartRank() < minrank || c.getStartRank() > maxRank) {
