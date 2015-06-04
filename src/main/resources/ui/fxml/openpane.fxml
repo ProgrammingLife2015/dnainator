@@ -6,7 +6,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane fx:id="fileOpenPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0" minWidth="0" prefHeight="250.0" prefWidth="550" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.dnainator.ui.controllers.FileOpenController">
+<GridPane fx:id="fileOpenPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0" minWidth="0" prefHeight="300.0" prefWidth="550" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.dnainator.ui.controllers.FileOpenController">
   <columnConstraints>
     <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" minWidth="0.0" prefWidth="50.0" />
     <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="300.0" />
@@ -17,6 +17,8 @@
     <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
       <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
     <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+      <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
       <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
       <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
   </rowConstraints>
@@ -35,15 +37,18 @@
       <TextField fx:id="nodeField" onMouseClicked="#onNodeFieldClicked" promptText="*.node.graph" GridPane.columnIndex="1" />
       <TextField fx:id="edgeField" onMouseClicked="#onEdgeFieldClicked" promptText="*.edge.graph" GridPane.columnIndex="1" GridPane.rowIndex="2" />
       <TextField fx:id="newickField" onMouseClicked="#onNewickFieldClicked" promptText="*.nwk" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-      <Label fx:id="curNodeLabel" styleClass="gray-label" stylesheets="@../style.css" text="Current node file: " GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-      <Label fx:id="curEdgeLabel" styleClass="gray-label" stylesheets="@../style.css" text="Current edge file: " GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-      <Label fx:id="curNewickLabel" styleClass="gray-label" stylesheets="@../style.css" text="Current newick file: " GridPane.columnIndex="1" GridPane.rowIndex="5"/>
-      <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="6">
+      <Label fx:id="curNodeLabel" styleClass="gray-label" stylesheets="@../style.css" text="Current node file: " GridPane.columnIndex="1" GridPane.rowIndex="1" />
+      <Label fx:id="curEdgeLabel" styleClass="gray-label" stylesheets="@../style.css" text="Current edge file: " GridPane.columnIndex="1" GridPane.rowIndex="3" />
+      <Label fx:id="curNewickLabel" styleClass="gray-label" stylesheets="@../style.css" text="Current newick file: " GridPane.columnIndex="1" GridPane.rowIndex="5" />
+      <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="8">
          <children>
             <Button fx:id="openButton" disable="true" mnemonicParsing="false" onAction="#onOpenAction" text="Open" />
             <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#onCancelAction" text="Cancel" />
          </children>
       </HBox>
+      <Label text="Annotations file:" GridPane.rowIndex="6" />
+      <TextField fx:id="gffField" onMouseClicked="#onGFFFieldClicked" promptText="*.gff" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+      <Label fx:id="curGffLabel" styleClass="gray-label" stylesheets="@../style.css" text="Current annotations file: " GridPane.columnIndex="1" GridPane.rowIndex="7" />
    </children>
    <padding>
       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

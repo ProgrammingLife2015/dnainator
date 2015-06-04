@@ -17,6 +17,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.tree.TreeNode;
+import nl.tudelft.dnainator.ui.services.GFFLoadService;
 import nl.tudelft.dnainator.ui.services.GraphLoadService;
 import nl.tudelft.dnainator.ui.services.NewickLoadService;
 import nl.tudelft.dnainator.ui.widgets.animations.LeftSlideAnimation;
@@ -33,6 +34,7 @@ public class FileOpenController {
 	private static final String EDGE = ".edge.graph";
 	private static final String NODE = ".node.graph";
 	private static final String NEWICK = ".nwk";
+	private static final String GFF = ".gff";
 
 	private static final int WIDTH = 550;
 	private static final int ANIM_DURATION = 250;
@@ -41,13 +43,16 @@ public class FileOpenController {
 	@SuppressWarnings("unused") @FXML private TextField nodeField;
 	@SuppressWarnings("unused") @FXML private TextField edgeField;
 	@SuppressWarnings("unused") @FXML private TextField newickField;
+	@SuppressWarnings("unused") @FXML private TextField gffField;
 	@SuppressWarnings("unused") @FXML private Label curNodeLabel;
 	@SuppressWarnings("unused") @FXML private Label curEdgeLabel;
 	@SuppressWarnings("unused") @FXML private Label curNewickLabel;
+	@SuppressWarnings("unused") @FXML private Label curGffLabel;
 	@SuppressWarnings("unused") @FXML private Button openButton;
 
 	private GraphLoadService graphLoadService;
 	private NewickLoadService newickLoadService;
+	private GFFLoadService gffLoadService;
 	private FileChooser fileChooser;
 	private ProgressDialog progressDialog;
 	private ObjectProperty<TreeNode> treeProperty;
@@ -80,16 +85,24 @@ public class FileOpenController {
 						"Error loading newick file!"));
 		newickLoadService.setOnSucceeded(e -> treeProperty.setValue(newickLoadService.getValue()));
 
+		gffLoadService = new GFFLoadService();
+		gffLoadService.setOnFailed(e ->
+				new ExceptionDialog(fileOpenPane.getParent(), gffLoadService.getException(),
+						"Error loading annotations file!"));
+		gffLoadService.getDatabase().bind(graphLoadService.databaseProperty());
+
 		animation = new LeftSlideAnimation(fileOpenPane, WIDTH, ANIM_DURATION, Position.LEFT);
+
 		bindOpenButtonDisabling();
 	}
 
-	/**
+	/*
 	 * Disables the openbutton when either no newick file or no node file is selected.
 	 */
 	private void bindOpenButtonDisabling() {
-		Binding<Boolean> isFilesFilled = Bindings.and(newickField.textProperty().isEmpty(),
-				nodeField.textProperty().isEmpty());
+		/* At least one of the three major files need to be filled. */
+		Binding<Boolean> isFilesFilled = Bindings.and(nodeField.textProperty().isEmpty(),
+				newickField.textProperty().isEmpty()).and(gffField.textProperty().isEmpty());
 		openButton.disableProperty().bind(isFilesFilled);
 	}
 
@@ -137,6 +150,19 @@ public class FileOpenController {
 	}
 
 	/*
+	 * If the GFF textfield is clicked, open the filechooser and if a file is selected,
+	 * fill in the GFF textfield.
+	 */
+	@SuppressWarnings("unused") @FXML
+	private void onGFFFieldClicked() {
+		File gffFile = selectFile("GFF file", GFF);
+		if (gffFile != null) {
+			gffLoadService.setGffFilePath(gffFile.getAbsolutePath());
+			gffField.setText(gffLoadService.getGffFilePath());
+		}
+	}
+
+	/*
 	 * If the open button is clicked, open the files if selected and hide the pane. Clears the
 	 * text fields and updates the current file labels if files are opened.
 	 */
@@ -163,6 +189,11 @@ public class FileOpenController {
 			newickLoadService.restart();
 			curNewickLabel.setText(newickLoadService.getNewickFile().getAbsolutePath());
 		}
+
+		if (gffLoadService.getGffFilePath() != null) {
+			gffLoadService.restart();
+			curGffLabel.setText(gffLoadService.getGffFilePath());
+		}
 	}
 
 	/* Clears the files, textfields and hides the pane. */
@@ -172,6 +203,7 @@ public class FileOpenController {
 		graphLoadService.setNodeFile(null);
 		graphLoadService.setEdgeFile(null);
 		newickLoadService.setNewickFile(null);
+		gffLoadService.setGffFilePath(null);
 		resetTextFields();
 	}
 
@@ -179,6 +211,7 @@ public class FileOpenController {
 		nodeField.clear();
 		edgeField.clear();
 		newickField.clear();
+		gffField.clear();
 	}
 
 	/**
