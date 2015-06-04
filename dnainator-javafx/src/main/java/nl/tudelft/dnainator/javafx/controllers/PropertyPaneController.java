@@ -8,6 +8,7 @@ import nl.tudelft.dnainator.javafx.widgets.animations.TransitionAnimation.Positi
 import nl.tudelft.dnainator.javafx.widgets.ClusterProperties;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.VBox;
 
 /**
@@ -52,18 +53,22 @@ public class PropertyPaneController {
 	}
 
 	private void updateSources(Propertyable p) {
-		List<String> list = p.getSources();
-		if (list == null) {
+		List<String> sources = p.getSources();
+		if (sources == null) {
 			return;
 		}
 
 		Label id = new Label("Sources");
 		id.getStyleClass().add("property-header");
 		vbox.getChildren().add(id);
+		sources.forEach(source -> {
+			Label sourceLabel = new Label(source);
+			
+			Tooltip t = new Tooltip(source);
+			Tooltip.install(sourceLabel, t);
+			vbox.getChildren().add(sourceLabel);
+		});
 
-		for (String s : list) {
-			vbox.getChildren().add(new Label(s));
-		}
 	}
 	
 	private void updateIds(ClusterProperties cp) {
@@ -119,7 +124,11 @@ public class PropertyPaneController {
 		vbox.getChildren().add(seqLabel);
 		StringBuilder sb = new StringBuilder();
 		seqs.forEach(seq -> sb.append(seq + ", "));
-		vbox.getChildren().add(new Label(sb.toString().substring(0, sb.toString().length() - 2)));
+		String res = sb.toString().substring(0, sb.toString().length() - 2);
+		Label seqLabels = new Label(res);
+		Tooltip t = new Tooltip(res);
+		Tooltip.install(seqLabels, t);
+		vbox.getChildren().add(seqLabels);
 	}
 	
 	/**
