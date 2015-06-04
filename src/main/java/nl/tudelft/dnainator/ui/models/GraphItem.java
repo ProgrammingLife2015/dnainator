@@ -13,6 +13,7 @@ import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
+import nl.tudelft.dnainator.ui.ColorServer;
 import nl.tudelft.dnainator.ui.drawables.ClusterDrawable;
 import nl.tudelft.dnainator.ui.drawables.DrawableEdge;
 
@@ -28,6 +29,7 @@ public class GraphItem extends Group {
 	private static final int SLICES = 4;
 	private static final int CLUSTER_DIVIDER = 100;
 
+	private ColorServer colorServer;
 	private Graph graph;
 	private Map<String, ClusterDrawable> clusters;
 	private Group content;
@@ -35,27 +37,31 @@ public class GraphItem extends Group {
 
 	/**
 	 * Construct a new top level {@link GraphItem} using the default graph.
+	 * @param colorServer The {@link ColorServer} to bind to.
 	 */
-	public GraphItem() {
-		this(Neo4jSingleton.getInstance().getDatabase(), new Group(), new Group());
+	public GraphItem(ColorServer colorServer) {
+		this(colorServer, Neo4jSingleton.getInstance().getDatabase(), new Group(), new Group());
 	}
 
 	/**
 	 * Construct a new top level {@link GraphItem} using the specified graph.
+	 * @param colorServer The {@link ColorServer} to bind to.
 	 * @param graph	The specified graph.
 	 */
-	public GraphItem(Graph graph) {
-		this(graph, new Group(), new Group());
+	public GraphItem(ColorServer colorServer, Graph graph) {
+		this(colorServer, graph, new Group(), new Group());
 	}
 
 	/**
 	 * Construct a new top level {@link GraphItem} using the specified graph, content and child
 	 * content.
+	 * @param colorServer The {@link ColorServer} to bind to.
 	 * @param graph	The specified graph.
 	 * @param content The specified graph content.
 	 * @param childContent The specified child content.
 	 */
-	public GraphItem(Graph graph, Group content, Group childContent) {
+	public GraphItem(ColorServer colorServer, Graph graph, Group content, Group childContent) {
+		this.colorServer = colorServer;
 		this.graph = graph;
 		this.clusters = new HashMap<>();
 		this.content = content;
@@ -121,7 +127,7 @@ public class GraphItem extends Group {
 
 	private void loadRank(Integer key, List<Cluster> value) {
 		for (int i = 0; i < value.size(); i++) {
-			ClusterDrawable cluster = new ClusterDrawable(value.get(i).getNodes());
+			ClusterDrawable cluster = new ClusterDrawable(colorServer, value.get(i).getNodes());
 			cluster.getClustered().forEach(e -> clusters.put(e.getId(), cluster));
 			cluster.setTranslateX(key * RANK_WIDTH);
 			cluster.setTranslateY(i * RANK_WIDTH - value.size() * RANK_WIDTH / 2);

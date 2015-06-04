@@ -12,6 +12,7 @@ import javafx.scene.Node;
 import javafx.scene.shape.Rectangle;
 import nl.tudelft.dnainator.graph.Graph;
 
+import nl.tudelft.dnainator.ui.ColorServer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,7 +38,7 @@ public class GraphItemTest {
 	public void setup() {
 		child = new Group();
 		content = new Group();
-		gi = new GraphItem(graph, content, child);
+		gi = new GraphItem(new ColorServer(), graph, content, child);
 	}
 
 	/**

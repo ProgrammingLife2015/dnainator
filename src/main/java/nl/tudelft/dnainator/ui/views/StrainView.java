@@ -23,7 +23,7 @@ public class StrainView extends AbstractView {
 			e.consume();
 		});
 
-		gi = new GraphItem();
+		gi = new GraphItem(colorServer);
 		setTransforms(gi);
 		getChildren().add(gi);
 	}
