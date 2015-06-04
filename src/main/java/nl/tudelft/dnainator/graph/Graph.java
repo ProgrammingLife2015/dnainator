@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import nl.tudelft.dnainator.annotation.AnnotationCollection;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
@@ -26,6 +27,11 @@ public interface Graph {
 	 * @return	a SequenceNode
 	 */
 	SequenceNode getNode(String n);
+
+	/**
+	 * @return The {@link AnnotationCollection} containing the annotations.
+	 */
+	AnnotationCollection getAnnotations();
 
 	/**
 	 * Get all the nodes with a specific rank from this graph.
