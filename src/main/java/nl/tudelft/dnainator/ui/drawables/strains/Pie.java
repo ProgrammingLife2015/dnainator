@@ -47,11 +47,11 @@ public class Pie extends Group {
 	// so suppress it for PMD et al.
 	@SuppressWarnings("unused")
 	private void onChange(SetChangeListener.Change<? extends String> change) {
+		slices.getChildren().clear();
 		if (styles.isEmpty()) {
 			return;
 		}
 
-		slices.getChildren().clear();
 		int start = 0;
 		int delta = FULLCIRCLE / styles.size();
 		for (String style : styles) {
