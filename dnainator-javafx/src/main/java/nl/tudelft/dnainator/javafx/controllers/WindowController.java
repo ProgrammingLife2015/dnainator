@@ -11,8 +11,13 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
 import javafx.scene.control.Menu;
+import javafx.geometry.Pos;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import nl.tudelft.dnainator.graph.Graph;
+import nl.tudelft.dnainator.javafx.widgets.StrainControl;
 
 /**
  * The WindowController is a controller class for the main window.
@@ -43,12 +48,12 @@ public class WindowController {
 		ColorServer colorServer = new ColorServer();
 		fileOpenController.dbPathProperty().set(welcomeController.getListedPaths());
 		fileOpenController.graphProperty().addListener((obj, oldV, newV) -> {
-			strainView = new StrainView(colorServer, newV);
+			createStrainView(colorServer, newV);
 			phyloView = new PhylogeneticView(colorServer, newV.getTree());
 			constructView();
 		});
 		welcomeController.dbProperty().addListener((obj, oldV, newV) -> {
-			strainView = new StrainView(colorServer, newV);
+			createStrainView(colorServer, newV);
 			phyloView = new PhylogeneticView(colorServer, newV.getTree());
 			constructView();
 		});
@@ -62,7 +67,14 @@ public class WindowController {
 		AbstractView.lastClickedProperty().addListener(
 				(ob, ov, nv) -> propertyPaneController.update(nv));
 	}
-	
+
+	private Pane createStrainView(ColorServer colorServer, Graph graph) {
+		strainView = new StrainView(colorServer, graph);
+		StrainControl strainControl = new StrainControl(strainView);
+		StackPane.setAlignment(strainControl, Pos.TOP_RIGHT);
+		return new StackPane(strainView, /*minimap,*/ strainControl);
+	}
+
 	@SuppressWarnings("unused") @FXML
 	private void openButtonAction() {
 		fileOpenController.toggle();
