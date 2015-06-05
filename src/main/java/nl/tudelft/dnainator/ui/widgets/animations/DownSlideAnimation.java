@@ -13,21 +13,18 @@ public class DownSlideAnimation extends SlidingAnimation {
 	 * @param pane         The {@link Pane} to be animated.
 	 * @param size         The size over which the animation will occur.
 	 * @param duration     The duration of the animations.
+	 * @param pos          The position of the {@link Pane}.
 	 */
-	public DownSlideAnimation(Pane pane, double size, double duration) {
-		super(pane, size, duration);
+	public DownSlideAnimation(Pane pane, double size, double duration, Position pos) {
+		super(pane, size, duration, pos);
 	}
 
 	@Override
-	protected void interpolate(double frac) {
-		curSize = size * (1.0 - frac);
-		pane.setPrefHeight(curSize);
-		pane.setTranslateY(curSize - size);
-		this.setOnFinished(actionEvent -> pane.setVisible(false));
-	}
-
-	@Override
-	public DirectionAnimation opposite() {
-		return new UpSlideAnimation(pane, size, duration);
+	public void setCurSize(double frac) {
+		if (pos == Position.TOP) {
+			newSize = size * frac;
+		} else if (pos == Position.BOTTOM) {
+			newSize = size * (1.0 - frac);
+		}
 	}
 }
