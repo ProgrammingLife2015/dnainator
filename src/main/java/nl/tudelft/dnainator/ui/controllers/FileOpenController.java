@@ -16,6 +16,7 @@ import nl.tudelft.dnainator.ui.services.GraphLoadService;
 import nl.tudelft.dnainator.ui.services.NewickLoadService;
 import nl.tudelft.dnainator.ui.widgets.animations.LeftSlideAnimation;
 import nl.tudelft.dnainator.ui.widgets.animations.SlidingAnimation;
+import nl.tudelft.dnainator.ui.widgets.animations.TransitionAnimation.Position;
 import nl.tudelft.dnainator.ui.widgets.dialogs.ExceptionDialog;
 import nl.tudelft.dnainator.ui.widgets.dialogs.ProgressDialog;
 
@@ -71,8 +72,7 @@ public class FileOpenController {
 						"Error loading newick file!"));
 		newickLoadService.setOnSucceeded(e -> treeProperty.setValue(newickLoadService.getValue()));
 
-		animation = new LeftSlideAnimation(fileOpenPane, WIDTH, ANIM_DURATION);
-
+		animation = new LeftSlideAnimation(fileOpenPane, WIDTH, ANIM_DURATION, Position.LEFT);
 		bindOpenButtonDisabling();
 	}
 

@@ -11,7 +11,7 @@ import javafx.util.Duration;
 public abstract class SlidingAnimation extends DirectionAnimation {
 	
 	private DirectionAnimation da;
-	protected double curSize;
+
 	
 	/**
 	 * Creates the sliding animation, using the provided parameters for the duration, amount to
@@ -19,16 +19,25 @@ public abstract class SlidingAnimation extends DirectionAnimation {
 	 * @param pane         The {@link Pane} to be animated.
 	 * @param size         The size over which the animation will occur.
 	 * @param duration     The duration of the animation.
+	 * @param pos          The position of the {@link Pane}.
 	 */
-	public SlidingAnimation(Pane pane, double size, double duration) {
-		super(pane, size, duration);
+	public SlidingAnimation(Pane pane, double size, double duration, Position pos) {
+		super(pane, size, duration, pos);
 	}
 	
 	@Override
 	public void setupAnimation() {
 		da = this;
-		curSize = size;
+		newSize = size;
 		setCycleDuration(Duration.millis(duration));
+	}
+	
+	@Override
+	protected void interpolate(double frac) {
+		newSize = getCurSize(frac);
+		setMovement(newSize);
+//		pane.setPrefWidth(curSize);
+//		pane.setTranslateX(curSize - size);
 	}
 	
 	/**
@@ -36,10 +45,10 @@ public abstract class SlidingAnimation extends DirectionAnimation {
 	 * shown it will be hidden and vice-versa.
 	 */
 	public void toggle() {
-		if (this.getStatus() == Status.STOPPED) {
+		if (da.getStatus() == Status.STOPPED) {
 			pane.setVisible(true);
-			da = da.opposite();
 			da.play();
+			da = da.opposite();
 		}
 	}
 }

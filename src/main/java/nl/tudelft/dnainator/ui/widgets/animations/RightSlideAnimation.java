@@ -13,21 +13,24 @@ public class RightSlideAnimation extends SlidingAnimation {
 	 * @param pane         The {@link Pane} to be animated.
 	 * @param size         The size over which the animation will occur.
 	 * @param duration     The duration of the animation.
+	 * @param pos          The position of the {@link Pane}.
 	 */
-	public RightSlideAnimation(Pane pane, double size, double duration) {
-		super(pane, size, duration);
-	}
-
-	@Override
-	protected void interpolate(double frac) {
-		curSize = size * (1.0 - frac);
-		pane.setPrefWidth(curSize);
-		pane.setTranslateX(curSize - size);
-		this.setOnFinished(actionEvent -> pane.setVisible(true));
+	public RightSlideAnimation(Pane pane, double size, double duration, Position pos) {
+		super(pane, size, duration, pos);
 	}
 	
 	@Override
 	public DirectionAnimation opposite() {
-		return new LeftSlideAnimation(pane, size, duration);
+		return new LeftSlideAnimation(pane, size, duration, pos);
+	}
+
+	@Override
+	public double getCurSize(double frac) {
+		if (pos == Position.LEFT) {
+			newSize = size * frac;
+		} else if (pos == Position.RIGHT) {
+			newSize = size * (1.0 - frac);
+		}
+		return newSize;
 	}
 }
