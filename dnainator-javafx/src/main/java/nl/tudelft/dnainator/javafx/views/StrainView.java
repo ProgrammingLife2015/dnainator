@@ -52,4 +52,10 @@ public class StrainView extends AbstractView {
 		super.resetTranslate();
 		updateStrain();
 	}
+	
+	public void setPan(double x, double y) {
+		scale.setToIdentity();
+		translate.setX(x);
+		translate.setY(y);
+	}
 }

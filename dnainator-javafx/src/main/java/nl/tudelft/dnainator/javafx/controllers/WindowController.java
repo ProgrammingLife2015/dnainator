@@ -3,9 +3,16 @@ package nl.tudelft.dnainator.javafx.controllers;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.javafx.ColorServer;
 import nl.tudelft.dnainator.javafx.views.AbstractView;
 import nl.tudelft.dnainator.javafx.views.PhylogeneticView;
@@ -37,7 +44,7 @@ public class WindowController {
 		ColorServer colorServer = new ColorServer();
 		fileOpenController.dbPathProperty().set(welcomeController.getListedPaths());
 		fileOpenController.graphProperty().addListener((obj, oldV, newV) -> {
-			strainView = new StrainView(colorServer, newV);
+			createStrainView(colorServer, newV);
 			constructView();
 		});
 		fileOpenController.treeProperty().addListener((obj, oldV, newV) -> {
@@ -45,7 +52,7 @@ public class WindowController {
 			phyloView.rootProperty().set(newV);
 		});
 		welcomeController.dbProperty().addListener((obj, oldV, newV) -> {
-			strainView = new StrainView(colorServer, newV);
+			createStrainView(colorServer, newV);
 			phyloView = new PhylogeneticView(colorServer);
 			constructView();
 		});
@@ -60,6 +67,24 @@ public class WindowController {
 				(ob, ov, nv) -> propertyPaneController.update(nv));
 	}
 
+	private Pane createStrainView(ColorServer colorServer, Graph graph) {
+		strainView = new StrainView(colorServer, graph);
+		VBox vbox = new VBox();
+		vbox.setPadding(new Insets(10));
+		vbox.setMaxWidth(100);
+
+		TextField jumpToSequenceEntry = new TextField();
+		//jumpToSequenceEntry.setPrefColumnCount(4);
+		jumpToSequenceEntry.setPromptText("Jump to sequence...");
+		jumpToSequenceEntry.setOnAction(e -> {
+			double x = Double.parseDouble(jumpToSequenceEntry.getCharacters().toString());
+			strainView.setPan(-x, 25);
+		});
+		vbox.getChildren().add(jumpToSequenceEntry);
+
+		StackPane.setAlignment(vbox, Pos.TOP_RIGHT);
+		return new StackPane(strainView, /*minimap,*/ vbox);
+	}
 
 	@SuppressWarnings("unused") @FXML
 	private void openButtonAction() {
