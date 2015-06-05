@@ -19,28 +19,12 @@ public class UpSlideAnimation extends SlidingAnimation {
 		super(pane, size, duration, pos);
 	}
 
-//	@Override
-//	protected void interpolate(double frac) {
-//		curSize = size * frac;
-//		pane.setPrefHeight(curSize);
-//		pane.setTranslateY(curSize - size);
-//		this.setOnFinished(actionEvent -> pane.setVisible(true));
-//	}
-
 	@Override
-	public DirectionAnimation opposite() {
-		return new DownSlideAnimation(pane, size, duration, pos);
-	}
-
-	@Override
-	public double getCurSize(double frac) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void setMovement(double move) {
-		// TODO Auto-generated method stub
-		
+	public void setCurSize(double frac) {
+		if (pos == Position.TOP) {
+			newSize = size * (1.0 - frac);
+		} else if (pos == Position.BOTTOM) {
+			newSize = size * frac;
+		}
 	}
 }

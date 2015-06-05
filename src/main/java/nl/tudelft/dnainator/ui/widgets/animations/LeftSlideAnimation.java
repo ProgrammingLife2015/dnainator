@@ -18,19 +18,13 @@ public class LeftSlideAnimation extends SlidingAnimation {
 	public LeftSlideAnimation(Pane pane, double size, double duration, Position pos) {
 		super(pane, size, duration, pos);
 	}
-	
-	@Override
-	public DirectionAnimation opposite() {
-		return new RightSlideAnimation(pane, size, duration, pos);
-	}
 
 	@Override
-	public double getCurSize(double frac) {
+	public void setCurSize(double frac) {
 		if (pos == Position.LEFT) {
 			newSize = size * (1.0 - frac);
 		} else if (pos == Position.RIGHT) {
 			newSize = size * frac;
 		}
-		return newSize;
 	}
 }

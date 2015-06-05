@@ -8,10 +8,9 @@ import javafx.util.Duration;
  * The animation is a {@link DirectionAnimation} in the sense that it may,
  * slide either in a upward, downward or sideway fashion.
  */
-public abstract class SlidingAnimation extends DirectionAnimation {
+public abstract class SlidingAnimation extends TransitionAnimation {
 	
-	private DirectionAnimation da;
-
+	protected double newSize;
 	
 	/**
 	 * Creates the sliding animation, using the provided parameters for the duration, amount to
@@ -27,17 +26,39 @@ public abstract class SlidingAnimation extends DirectionAnimation {
 	
 	@Override
 	public void setupAnimation() {
-		da = this;
 		newSize = size;
 		setCycleDuration(Duration.millis(duration));
 	}
 	
 	@Override
 	protected void interpolate(double frac) {
-		newSize = getCurSize(frac);
-		setMovement(newSize);
-//		pane.setPrefWidth(curSize);
-//		pane.setTranslateX(curSize - size);
+		setCurSize(frac);
+		setMovement();
+	}
+	
+	/**
+	 * Set the newly computed {@link Pane} size.
+	 * @param frac a fraction (that goes from 0.0 to 1.0).
+	 */
+	public abstract void setCurSize(double frac);
+	
+	/**
+	 * Does the sliding animation, through translations and width changing of the {@link Pane}.
+	 */
+	public void setMovement() {
+		if (pos == Position.LEFT) {
+			pane.setPrefWidth(newSize);
+			pane.setTranslateX(newSize - size);
+		} else if (pos == Position.RIGHT) {
+			pane.setPrefWidth(newSize);
+			pane.setTranslateX(size - newSize);
+		} else if (pos == Position.TOP) {
+			pane.setPrefHeight(newSize);
+			pane.setTranslateY(size - newSize);
+		} else if (pos == Position.BOTTOM) {
+			pane.setPrefHeight(newSize);
+			pane.setTranslateY(newSize - size);
+		}
 	}
 	
 	/**
@@ -45,10 +66,9 @@ public abstract class SlidingAnimation extends DirectionAnimation {
 	 * shown it will be hidden and vice-versa.
 	 */
 	public void toggle() {
-		if (da.getStatus() == Status.STOPPED) {
+		if (this.getStatus() == Status.STOPPED) {
 			pane.setVisible(true);
-			da.play();
-			da = da.opposite();
+			this.play();
 		}
 	}
 }

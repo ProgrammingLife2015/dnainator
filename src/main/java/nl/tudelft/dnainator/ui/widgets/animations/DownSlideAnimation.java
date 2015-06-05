@@ -20,19 +20,11 @@ public class DownSlideAnimation extends SlidingAnimation {
 	}
 
 	@Override
-	public DirectionAnimation opposite() {
-		return new UpSlideAnimation(pane, size, duration, pos);
-	}
-
-	@Override
-	public double getCurSize(double frac) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void setMovement(double move) {
-		// TODO Auto-generated method stub
-		
+	public void setCurSize(double frac) {
+		if (pos == Position.TOP) {
+			newSize = size * frac;
+		} else if (pos == Position.BOTTOM) {
+			newSize = size * (1.0 - frac);
+		}
 	}
 }

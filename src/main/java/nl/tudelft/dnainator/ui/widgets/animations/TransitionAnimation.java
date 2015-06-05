@@ -37,7 +37,10 @@ public abstract class TransitionAnimation extends Transition implements CustomAn
 		this.size = size;
 		this.duration = duration;
 		this.pos = pos;
-		
+		this.setOnFinished(actionEvent -> {
+			pane.setVisible(true);
+			setRate(-getRate());
+		});
 		setupAnimation();
 	}
 	
