@@ -35,6 +35,10 @@ public class StrainView extends AbstractView {
 		updateStrain();
 	}
 
+	public void zoom(double delta) {
+		zoom(delta, getCenter());
+	}
+	
 	@Override
 	public void zoom(double delta, Point2D center) {
 		super.zoom(delta, center);

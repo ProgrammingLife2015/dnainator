@@ -18,6 +18,7 @@ import nl.tudelft.dnainator.javafx.views.AbstractView;
 import nl.tudelft.dnainator.javafx.views.PhylogeneticView;
 import nl.tudelft.dnainator.javafx.views.StrainView;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.AboutDialog;
+import nl.tudelft.dnainator.javafx.widgets.StrainControl;
 
 
 /**
@@ -69,21 +70,9 @@ public class WindowController {
 
 	private Pane createStrainView(ColorServer colorServer, Graph graph) {
 		strainView = new StrainView(colorServer, graph);
-		VBox vbox = new VBox();
-		vbox.setPadding(new Insets(10));
-		vbox.setMaxWidth(100);
-
-		TextField jumpToSequenceEntry = new TextField();
-		//jumpToSequenceEntry.setPrefColumnCount(4);
-		jumpToSequenceEntry.setPromptText("Jump to sequence...");
-		jumpToSequenceEntry.setOnAction(e -> {
-			double x = Double.parseDouble(jumpToSequenceEntry.getCharacters().toString());
-			strainView.setPan(-x, 25);
-		});
-		vbox.getChildren().add(jumpToSequenceEntry);
-
-		StackPane.setAlignment(vbox, Pos.TOP_RIGHT);
-		return new StackPane(strainView, /*minimap,*/ vbox);
+		StrainControl strainControl = new StrainControl(strainView);
+		StackPane.setAlignment(strainControl, Pos.TOP_RIGHT);
+		return new StackPane(strainView, /*minimap,*/ strainControl);
 	}
 
 	@SuppressWarnings("unused") @FXML
