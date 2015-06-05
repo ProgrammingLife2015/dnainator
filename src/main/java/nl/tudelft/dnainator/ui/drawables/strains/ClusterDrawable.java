@@ -17,14 +17,14 @@ import nl.tudelft.dnainator.ui.drawables.Drawable;
  * The {@link ClusterDrawable} class represents the mid level object in the viewable model.
  */
 public class ClusterDrawable extends Group implements Drawable {
-	private static final int SINGLE = 1;
-	private static final int SMALL = 3;
-	private static final int MEDIUM = 10;
-	private static final double SINGLE_RADIUS = 2;
-	private static final double SMALL_RADIUS = 4;
-	private static final double MEDIUM_RADIUS = 5;
-	private static final double LARGE_RADIUS = 6;
-	private static final int PIETHRESHOLD = 10;
+	protected static final int SINGLE = 1;
+	protected static final int SMALL = 3;
+	protected static final int MEDIUM = 10;
+	protected static final double SINGLE_RADIUS = 2;
+	protected static final double SMALL_RADIUS = 4;
+	protected static final double MEDIUM_RADIUS = 5;
+	protected static final double LARGE_RADIUS = 6;
+	protected static final int PIETHRESHOLD = 20;
 	private List<SequenceNode> clustered;
 	private Set<String> sources;
 	private Text label;
@@ -65,7 +65,11 @@ public class ClusterDrawable extends Group implements Drawable {
 		getChildren().add(label);
 	}
 
-	private double getRadius() {
+	/**
+	 * Return the radius of this cluster drawable.
+	 * @return	the radius
+	 */
+	protected double getRadius() {
 		int nChildren = clustered.size();
 
 		if (nChildren == SINGLE) {
