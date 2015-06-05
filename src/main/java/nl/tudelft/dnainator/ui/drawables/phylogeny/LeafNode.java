@@ -1,5 +1,6 @@
 package nl.tudelft.dnainator.ui.drawables.phylogeny;
 
+import javafx.collections.MapChangeListener;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import nl.tudelft.dnainator.tree.TreeNode;
@@ -17,16 +18,24 @@ public class LeafNode extends AbstractNode {
 	protected static final int LABEL_Y_OFFSET = 4;
 	private TreeNode node;
 	private Text label;
+	private ColorServer colorServer;
 	private boolean highlighted;
 
 	/**
 	 * Constructs a new {@link LeafNode}.
 	 * @param node The original treenode.
+	 * @param colorServer The {@link ColorServer} to bind to for colors.
 	 */
-	public LeafNode(TreeNode node) {
+	public LeafNode(TreeNode node, ColorServer colorServer) {
 		this.node = node;
 		this.label = new Text(LABEL_X_OFFSET, LABEL_Y_OFFSET, node.getName());
 		this.label.onMouseClickedProperty().bind(shape.onMouseClickedProperty());
+		this.colorServer = colorServer;
+		this.colorServer.addListener(change -> {
+			if (change.getKey().equals(node.getName())) {
+				onColorServerChanged(change);
+			}
+		});
 		this.highlighted = false;
 		this.marginProperty().set(LEAFHEIGHT);
 		this.leafCountProperty().set(1);
@@ -35,32 +44,27 @@ public class LeafNode extends AbstractNode {
 		getChildren().add(label);
 	}
 
-	@Override
-	public void onMouseClicked() {
-		removeStyles();
-		if (!highlighted) {
-			try {
-				String color = ColorServer.getInstance().getColor(node.getName());
-				addStyle(color);
-				highlighted = true;
-			} catch (AllColorsInUseException e) {
-				new ExceptionDialog(null, e, "The maximum amount of colors are in use");
-			}
+	private void onColorServerChanged(
+			MapChangeListener.Change<? extends String, ? extends String> change) {
+		if (change.wasAdded()) {
+			highlighted = true;
+			addStyle(change.getValueAdded());
 		} else {
-			ColorServer.getInstance().revokeColor(node.getName());
 			highlighted = false;
+			removeStyle(change.getValueRemoved());
 		}
 	}
 
 	@Override
-	protected void addStyle(String style) {
-		shape.getStyleClass().add(style);
-		label.getStyleClass().add(style);
-	}
-
-	@Override
-	protected void removeStyles() {
-		shape.getStyleClass().clear();
-		label.getStyleClass().clear();
+	public void onMouseClicked() {
+		if (!highlighted) {
+			try {
+				colorServer.askColor(node.getName());
+			} catch (AllColorsInUseException e) {
+				new ExceptionDialog(null, e, "All colors are currently in use!");
+			}
+		} else {
+			colorServer.revokeColor(node.getName());
+		}
 	}
 }

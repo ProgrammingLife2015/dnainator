@@ -3,7 +3,10 @@ package nl.tudelft.dnainator.ui.controllers;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Orientation;
+import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
+import nl.tudelft.dnainator.ui.ColorServer;
 import nl.tudelft.dnainator.ui.views.PhylogeneticView;
 import nl.tudelft.dnainator.ui.views.StrainView;
 import nl.tudelft.dnainator.ui.widgets.dialogs.AboutDialog;
@@ -19,19 +22,27 @@ public class WindowController {
 	@SuppressWarnings("unused") @FXML
 	private BorderPane root;
 	@SuppressWarnings("unused") @FXML
-	private StrainView strainView;
-	@SuppressWarnings("unused") @FXML
-	private PhylogeneticView phyloView;
-	@SuppressWarnings("unused") @FXML
 	private FileOpenController fileOpenerController;
+	@SuppressWarnings("unused") @FXML
+	private WelcomeController welcomeController;
+	private StrainView strainView;
 
-	/**
-	 * Constructs a WindowController object, binding <code>rootProperty</code> of the
-	 * {@link PhylogeneticView} the <code>treeProperty</code> of the {@link FileOpenController}.
-	 */
 	@SuppressWarnings("unused") @FXML
 	private void initialize() {
+		welcomeController.doneProperty().addListener((obj, oldV, newV) -> {
+			createViews();
+			welcomeController.doneProperty().unbind();
+		});
+	}
+
+	private void createViews() {
+		ColorServer colorServer = new ColorServer();
+		strainView = new StrainView(colorServer);
+		PhylogeneticView phyloView = new PhylogeneticView(colorServer);
 		phyloView.rootProperty().bind(fileOpenerController.treeProperty());
+		SplitPane splitPane = new SplitPane(strainView, phyloView);
+		splitPane.setOrientation(Orientation.VERTICAL);
+		root.setCenter(splitPane);
 	}
 
 	@SuppressWarnings("unused") @FXML

@@ -5,15 +5,17 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
+import nl.tudelft.dnainator.ui.drawables.Drawable;
 
 /**
  * An abstract node for use in a phylogenetic tree. It provides the basic implementation
  * for a node in the phylogenetic tree, and forms an abstract interface for both leaf and
  * internal nodes.
  */
-public abstract class AbstractNode extends Group {
+public abstract class AbstractNode extends Group implements Drawable {
 	protected static final int DIM = 8;
 	protected DoubleProperty margin = new SimpleDoubleProperty(0, "margin");
 	protected IntegerProperty leafCount = new SimpleIntegerProperty(0, "leafCount");
@@ -29,7 +31,8 @@ public abstract class AbstractNode extends Group {
 	}
 
 	/**
-	 * @return the shape of this node. Default is a centered rectangle.
+	 * Allows each implementing class to define its own {@link Shape}.
+	 * @return The {@link Shape} to use in the implementing class. Default is a centered rectangle.
 	 */
 	public Shape getShape() {
 		return new Rectangle(0 - DIM / 2, 0 - DIM / 2, DIM, DIM);
@@ -41,19 +44,18 @@ public abstract class AbstractNode extends Group {
 	 */
 	public abstract void onMouseClicked();
 
-	/**
-	 * Adds a CSS class to the {@link AbstractNode}.
-	 * @param style The CSS class to add.
-	 */
-	protected void addStyle(String style) {
-		shape.getStyleClass().add(style);
+	@Override
+	public void addStyle(String style) {
+		for (Node child : getChildren()) {
+			child.getStyleClass().add(style);
+		}
 	}
 
-	/**
-	 * Removes all CSS classes from the {@link AbstractNode}.
-	 */
-	protected void removeStyles() {
-		shape.getStyleClass().clear();
+	@Override
+	public void removeStyle(String style) {
+		for (Node child : getChildren()) {
+			child.getStyleClass().remove(style);
+		}
 	}
 
 	/**

@@ -3,7 +3,6 @@
 <?import javafx.scene.input.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import nl.tudelft.dnainator.ui.views.*?>
 
 <BorderPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.dnainator.ui.controllers.WindowController">
    <top>
@@ -88,12 +87,7 @@
       </MenuBar>
    </top>
    <center>
-      <SplitPane fx:id="splitPane" orientation="VERTICAL">
-         <items>
-            <StrainView fx:id="strainView" />
-            <PhylogeneticView fx:id="phyloView" />
-         </items>
-      </SplitPane>
+      <fx:include fx:id="welcome" source="welcome.fxml"/>
    </center>
    <left>
       <fx:include fx:id="fileOpener" source="openpane.fxml"/>

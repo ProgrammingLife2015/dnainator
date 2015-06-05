@@ -7,6 +7,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Scale;
 import nl.tudelft.dnainator.tree.TreeNode;
+import nl.tudelft.dnainator.ui.ColorServer;
 import nl.tudelft.dnainator.ui.drawables.phylogeny.AbstractNode;
 import nl.tudelft.dnainator.ui.drawables.phylogeny.InternalNode;
 import nl.tudelft.dnainator.ui.drawables.phylogeny.LeafNode;
@@ -17,12 +18,15 @@ import nl.tudelft.dnainator.ui.drawables.phylogeny.LeafNode;
 public class PhylogeneticView extends AbstractView {
 	private static final int SCALE = 1;
 	private ObjectProperty<TreeNode> rootProperty = new SimpleObjectProperty<>(null, "root");
+	private ColorServer colorServer;
 
 	/**
 	 * Constructs a new {@link PhylogeneticView}.
+	 * @param colorServer The {@link ColorServer} to communicate with.
 	 */
-	public PhylogeneticView() {
+	public PhylogeneticView(ColorServer colorServer) {
 		super();
+		this.colorServer = colorServer;
 		rootProperty().addListener((obj, oldV, newV) -> redraw());
 	}
 
@@ -40,7 +44,7 @@ public class PhylogeneticView extends AbstractView {
 
 	private AbstractNode draw(TreeNode node) {
 		if (node.getChildren().size() == 0) {
-			return new LeafNode(node);
+			return new LeafNode(node, colorServer);
 		}
 
 		AbstractNode self = new InternalNode(node.getChildren().stream()
