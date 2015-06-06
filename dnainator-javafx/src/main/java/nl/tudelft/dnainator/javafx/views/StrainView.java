@@ -33,24 +33,24 @@ public class StrainView extends AbstractView {
 	@Override
 	public void pan(Point2D delta) {
 		super.pan(delta);
-		strain.update(cameraToWorld(getLayoutBounds()));
+		strain.update(cameraToWorld(getLayoutBounds()), scale.getMxx());
 	}
 
 	@Override
 	public void zoom(double delta, Point2D center) {
 		super.zoom(delta, center);
-		strain.update(cameraToWorld(getLayoutBounds()));
+		strain.update(cameraToWorld(getLayoutBounds()), scale.getMxx());
 	}
 
 	@Override
 	public void resetZoom() {
 		super.resetZoom();
-		strain.update(cameraToWorld(getLayoutBounds()));
+		strain.update(cameraToWorld(getLayoutBounds()), scale.getMxx());
 	}
 
 	@Override
 	public void resetTranslate() {
 		super.resetTranslate();
-		strain.update(cameraToWorld(getLayoutBounds()));
+		strain.update(cameraToWorld(getLayoutBounds()), scale.getMxx());
 	}
 }

@@ -94,7 +94,6 @@ public class Strain extends Group {
 				.map(SequenceNode::getId).collect(Collectors.toList());
 		Map<Integer, List<Cluster>> result = graph.getAllClusters(roots, maxRank,
 				(int) (bounds.getWidth() / CLUSTER_DIVIDER));
-
 		clusters.clear();
 		childContent.getChildren().clear();
 
@@ -146,9 +145,10 @@ public class Strain extends Group {
 	 * This method checks how zoomed in we are by transforming bounds to root coordinates,
 	 * and then dynamically adds and deletes items in the JavaFX scene graph.
 	 * @param bounds	The bounds of the viewport to update.
+	 * @param curZoom   The current zoom level.
 	 */
-	public void update(Bounds bounds) {
-		if (bounds.getWidth() > Thresholds.GRAPH.get()) {
+	public void update(Bounds bounds, double curZoom) {
+		if (curZoom < Thresholds.GRAPH.get()) {
 			toggle(bounds, true);
 		} else {
 			toggle(bounds, false);

@@ -19,10 +19,12 @@ import java.io.IOException;
  */
 public abstract class AbstractView extends Pane {
 	private static final String FXML = "/fxml/view.fxml";
-	private static final double SCALE = .1;
+	private static final double SCALE = 1;
 	protected static final double ZOOM_FACTOR = 1e-3;
-	protected static final int DEFAULT_ZOOM_IN = 55;
-	protected static final int DEFAULT_ZOOM_OUT = -150;
+	protected static final int ZOOM_IN_STEP = 55;
+	protected static final int ZOOM_OUT_STEP = -150;
+	protected static final double ZOOM_IN_BOUND = 15;
+	protected static final double ZOOM_OUT_BOUND = .1;
 	protected Affine scale;
 	protected Translate toCenter;
 	protected Translate translate;
@@ -34,7 +36,6 @@ public abstract class AbstractView extends Pane {
 	public AbstractView() {
 		loadFXML();
 		getStyleClass().add("view");
-
 		toCenter = new Translate();
 		widthProperty().addListener((o, v1, v2) -> toCenter.setX(v2.intValue() / 2));
 		heightProperty().addListener((o, v1, v2) -> toCenter.setY(v2.intValue() / 2));
@@ -109,11 +110,16 @@ public abstract class AbstractView extends Pane {
 	 * @param center	the center of the zoom, in camera space
 	 */
 	public void zoom(double delta, Point2D center) {
+		Point2D world;
+		double zoom = 1 + delta * ZOOM_FACTOR;
 		try {
-			center = scale.inverseTransform(center.getX() - toCenter.getX() - translate.getX(),
-					center.getY() - toCenter.getY() - translate.getY());
-			double zoom = 1 + delta * ZOOM_FACTOR;
-			scale.append(new Scale(zoom, zoom, center.getX(), center.getY()));
+			world = scale.inverseTransform(center.getX() - toCenter.getX() - translate.getX(),
+							center.getY() - toCenter.getY() - translate.getY());
+			Transform newScale = scale.createConcatenation(new Scale(zoom, zoom,
+										world.getX(), world.getY()));
+			if (newScale.getMyy() > ZOOM_OUT_BOUND && newScale.getMxx() < ZOOM_IN_BOUND) {
+				scale.setToTransform(newScale);
+			}
 		} catch (NonInvertibleTransformException e) {
 			e.printStackTrace();
 		}
@@ -123,18 +129,17 @@ public abstract class AbstractView extends Pane {
 	 * Default zoom method. Zooms in the camera by a default amount and to the center of the view.
 	 */
 	public void zoomIn() {
-		zoom(DEFAULT_ZOOM_IN, getCenter());
+		zoom(ZOOM_IN_STEP, getCenter());
 	}
 
 	/**
 	 * Default zoom method. Zooms out the camera by a default amount and to the center of the view.
 	 */
 	public void zoomOut() {
-		zoom(DEFAULT_ZOOM_OUT, getCenter());
+		zoom(ZOOM_OUT_STEP, getCenter());
 	}
 
 	/**
-	 * Resets the zoom level to the default value.
 	 */
 	public void resetZoom() {
 		scale.setToTransform(getScale());
@@ -151,7 +156,7 @@ public abstract class AbstractView extends Pane {
 		scale.setTy(0);
 		worldToCamera();
 	}
-
+	
 	/**
 	 * @return The center {@link Point2D} of the view.
 	 */

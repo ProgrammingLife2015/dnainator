@@ -2,13 +2,14 @@ package nl.tudelft.dnainator.javafx.drawables.strains;
 
 /**
  * This enum holds zooming thresholds for the various zooming levels.
+ * The amount corresponds to the level of scaling.
  */
 public enum Thresholds {
-	GRAPH(5000),
-	CLUSTER(2000);
+	GRAPH(2.4),
+	CLUSTER(4.0);
 	
-	private final int threshold;
-	private Thresholds(int threshold) {
+	private final double threshold;
+	private Thresholds(double threshold) {
 		this.threshold = threshold;
 	}
 	
@@ -16,7 +17,7 @@ public enum Thresholds {
 	 * Return the associated threshold.
 	 * @return	a zooming threshold
 	 */
-	public int get() {
+	public double get() {
 		return threshold;
 	}
 }
