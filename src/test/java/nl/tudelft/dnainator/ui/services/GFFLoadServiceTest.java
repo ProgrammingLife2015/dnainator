@@ -77,7 +77,7 @@ public class GFFLoadServiceTest {
 		AnnotationCollection ac = completableFuture.get(DELAY, TimeUnit.MILLISECONDS);
 
 		assertNotNull(ac);
-		assertEquals(1, ac.getAll().size());
+		assertEquals(2, ac.getAll().size());
 	}
 
 	/**

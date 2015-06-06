@@ -1,1 +1,5 @@
-TEST	source	CDS	10	20	0.0	-	2	attr1=asdf;attr2=fdsa
+TEST1	source	notCDS	10	20	0.0	-	2	displayName="TEST1";attr1=asdf;attr2=fdsa
+TEST2	source	CDS	10	20	0.0	-	2	displayName="TEST2";attr1=asdf;attr2=fdsa
+TEST3	source	notCDS	10	20	0.0	-	2	displayName="TEST3";attr1=asdf;attr2=fdsa
+TEST4	source	CDS	10	20	0.0	-	2	displayName="TEST4";attr1=asdf;attr2=fdsa
+TEST5	source	notCDS	10	20	0.0	-	2	displayName="TEST5";attr1=asdf;attr2=fdsa

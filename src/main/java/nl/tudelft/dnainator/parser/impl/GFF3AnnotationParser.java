@@ -2,6 +2,7 @@ package nl.tudelft.dnainator.parser.impl;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import org.biojava.nbio.genome.parsers.gff.Feature;
 import org.biojava.nbio.genome.parsers.gff.FeatureI;
@@ -19,6 +20,7 @@ import nl.tudelft.dnainator.parser.AnnotationParser;
 public class GFF3AnnotationParser implements AnnotationParser {
 	private Iterator<FeatureI> delegate;
 	private FeatureI next;
+	private boolean needsNext = true;
 
 	/**
 	 * Constructs a new {@link AnnotationParser} reading from the file with
@@ -35,6 +37,7 @@ public class GFF3AnnotationParser implements AnnotationParser {
 	private boolean eatNoneCDS() {
 		do {
 			if (!delegate.hasNext()) {
+				next = null;
 				return false;
 			}
 			next = delegate.next();
@@ -44,25 +47,19 @@ public class GFF3AnnotationParser implements AnnotationParser {
 
 	@Override
 	public boolean hasNext() {
-		return eatNoneCDS();
+		if (needsNext) {
+			needsNext = false;
+			return eatNoneCDS();
+		}
+		return next != null;
 	}
 
 	@Override
 	public Annotation next() {
-		return new BioJavaAnnotation((Feature) next);
-	}
-
-	/**
-	 * @param args args.
-	 * @throws IOException exception.
-	 */
-	public static void main(String[] args) throws IOException {
-		AnnotationParser p = new GFF3AnnotationParser("decorationV5_20130412.gff");
-		while (p.hasNext()) {
-			Annotation next = p.next();
-			if (next.getGeneName().contains("0001")) {
-				System.out.println(next.getStart());
-			}
+		if (!hasNext()) {
+			throw new NoSuchElementException();
 		}
+		needsNext = true;
+		return new BioJavaAnnotation((Feature) next);
 	}
 }
