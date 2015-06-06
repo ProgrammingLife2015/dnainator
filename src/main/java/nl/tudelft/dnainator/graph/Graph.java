@@ -12,7 +12,7 @@ import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 /**
  * Interface for backend agnostic interaction with a graph.
  */
-public interface Graph extends GraphBuilder {
+public interface Graph {
 	/**
 	 * Get the root node of this graph.
 	 * FIXME: This is the node that has no incoming edges.

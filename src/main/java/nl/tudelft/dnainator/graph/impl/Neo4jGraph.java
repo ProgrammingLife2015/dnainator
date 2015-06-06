@@ -1,8 +1,6 @@
 package nl.tudelft.dnainator.graph.impl;
 
-import java.io.IOException;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +9,6 @@ import java.util.Set;
 
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
-import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.command.Command;
 import nl.tudelft.dnainator.graph.impl.command.RankCommand;
@@ -20,20 +17,15 @@ import nl.tudelft.dnainator.graph.impl.query.ClusterQuery;
 import nl.tudelft.dnainator.graph.impl.query.ClustersFromQuery;
 import nl.tudelft.dnainator.graph.impl.query.Query;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
-import nl.tudelft.dnainator.parser.EdgeParser;
-import nl.tudelft.dnainator.parser.NodeParser;
-import nl.tudelft.dnainator.parser.exceptions.ParseException;
 
 import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.ResourceIterator;
 import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-import org.neo4j.tooling.GlobalGraphOperations;
 
 /**
  * This class realizes a graphfactory using Neo4j as it's backend.
@@ -44,7 +36,6 @@ public final class Neo4jGraph implements Graph {
 	private static final String GET_ROOT = "MATCH (s:" + PropertyTypes.NODELABEL.name() + ") "
 			+ "WHERE NOT (s)<-[:NEXT]-(:" + PropertyTypes.NODELABEL.name() + ") "
 			+ "RETURN s";
-	private static final int TRANSACTION_SIZE = 10000;
 
 	private GraphDatabaseService service;
 	protected static final Label NODELABEL = DynamicLabel.label(PropertyTypes.NODELABEL.name());
@@ -66,97 +57,6 @@ public final class Neo4jGraph implements Graph {
 
 		// Rank the graph.
 		execute(e -> new RankCommand(rootIterator()).execute(e));
-	}
-
-	/**
-	 * Delete all nodes and relationships from this graph.
-	 * FIXME: Should be replaced by batchinserter code
-	 */
-	public void clear() {
-		boolean cont;
-
-		cont = true;
-		while (cont) {
-			try (Transaction tx = service.beginTx()) {
-				Iterator<Relationship> edges = GlobalGraphOperations.at(service)
-								.getAllRelationships().iterator();
-				for (int i = 0; edges.hasNext() && i < 2 * TRANSACTION_SIZE; i++) {
-					edges.next().delete();
-				}
-				cont = edges.hasNext();
-				tx.success();
-			}
-		}
-		cont = true;
-		while (cont) {
-			try (Transaction tx = service.beginTx()) {
-				ResourceIterator<Node> nodes = GlobalGraphOperations.at(service)
-								.getAllNodes().iterator();
-				for (int i = 0; nodes.hasNext() && i < TRANSACTION_SIZE; i++) {
-					nodes.next().delete();
-				}
-				cont = nodes.hasNext();
-				tx.success();
-			}
-		}
-	}
-
-	@Override
-	public void addEdge(Edge<String> edge) {
-		try (Transaction tx = service.beginTx()) {
-			Node source = service.findNode(nodeLabel, PropertyTypes.ID.name(), edge.getSource());
-			Node dest   = service.findNode(nodeLabel, PropertyTypes.ID.name(), edge.getDest());
-			source.createRelationshipTo(dest, RelTypes.NEXT);
-
-			tx.success();
-		}
-	}
-
-	@Override
-	public void addNode(SequenceNode s) {
-		try (Transaction tx = service.beginTx()) {
-			Node node = service.createNode(nodeLabel);
-			node.setProperty(PropertyTypes.ID.name(), s.getId());
-			node.setProperty(PropertyTypes.STARTREF.name(), s.getStartRef());
-			node.setProperty(PropertyTypes.ENDREF.name(), s.getEndRef());
-			node.setProperty(PropertyTypes.SEQUENCE.name(), s.getSequence());
-			node.setProperty(PropertyTypes.RANK.name(), 0);
-			node.setProperty(PropertyTypes.SCORE.name(), s.getSequence().length());
-
-			s.getSources().forEach(e -> {
-				Node source = service.findNode(sourceLabel, PropertyTypes.SOURCE.name(), e);
-				if (source == null) {
-					source = service.createNode(sourceLabel);
-					source.setProperty(PropertyTypes.SOURCE.name(), e);
-				}
-				node.createRelationshipTo(source, RelTypes.SOURCE);
-			});
-
-			tx.success();
-		}
-	}
-
-	@Override
-	public void constructGraph(NodeParser np, EdgeParser ep)
-			throws IOException, ParseException {
-		while (np.hasNext()) {
-			try (Transaction tx = service.beginTx()) {
-				for (int i = 0; i < TRANSACTION_SIZE && np.hasNext(); i++) {
-					addNode(np.next());
-				}
-				tx.success();
-			}
-			System.out.println("node batch!");
-		}
-
-		try (Transaction tx = service.beginTx()) {
-			while (ep.hasNext()) {
-				addEdge(ep.next());
-			}
-			execute(new RankCommand(rootIterator()));
-
-			tx.success();
-		}
 	}
 
 	/**
