@@ -3,6 +3,8 @@ package nl.tudelft.dnainator.ui.drawables.strains;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.ui.ColorServer;
@@ -31,7 +33,9 @@ public class ClusterDrawableTest {
 	 */
 	@Before
 	public void setup() {
-		Mockito.when(node.getSource()).thenReturn("1");
+		Set<String> sources = new HashSet<>();
+		sources.add("1");
+		Mockito.when(node.getSources()).thenReturn(sources);
 	}
 	
 	/**
