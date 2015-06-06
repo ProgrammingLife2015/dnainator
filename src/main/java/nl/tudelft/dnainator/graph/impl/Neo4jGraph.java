@@ -14,7 +14,6 @@ import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.command.Command;
-import nl.tudelft.dnainator.graph.impl.command.IndexCommand;
 import nl.tudelft.dnainator.graph.impl.command.RankCommand;
 import nl.tudelft.dnainator.graph.impl.query.AllClustersQuery;
 import nl.tudelft.dnainator.graph.impl.query.ClusterQuery;
@@ -48,8 +47,8 @@ public final class Neo4jGraph implements Graph {
 	private static final int TRANSACTION_SIZE = 10000;
 
 	private GraphDatabaseService service;
-	private Label nodeLabel;
-	private Label sourceLabel;
+	protected static final Label NODELABEL = DynamicLabel.label(PropertyTypes.NODELABEL.name());
+	protected static final Label SOURCELABEL = DynamicLabel.label(PropertyTypes.SOURCE.name());
 
 	/**
 	 * Constructs a Neo4j database on the specified path.
@@ -65,11 +64,8 @@ public final class Neo4jGraph implements Graph {
 			}
 		});
 
-		// Assign a label to our nodes
-		nodeLabel = DynamicLabel.label(PropertyTypes.NODELABEL.name());
-		sourceLabel = DynamicLabel.label(PropertyTypes.SOURCE.name());
-		// Recreate our indices
-		execute(new IndexCommand(nodeLabel, sourceLabel));
+		// Rank the graph.
+		execute(e -> new RankCommand(rootIterator()).execute(e));
 	}
 
 	/**
@@ -186,13 +182,13 @@ public final class Neo4jGraph implements Graph {
 
 	@Override
 	public SequenceNode getNode(String s) {
-		return query(e -> createSequenceNode(e.findNode(nodeLabel, PropertyTypes.ID.name(), s)));
+		return query(e -> createSequenceNode(e.findNode(NODELABEL, PropertyTypes.ID.name(), s)));
 	}
 
 	@Override
 	public List<SequenceNode> getRank(int rank) {
 		return query(e -> {
-			ResourceIterator<Node> res = e.findNodes(nodeLabel, PropertyTypes.RANK.name(), rank);
+			ResourceIterator<Node> res = e.findNodes(NODELABEL, PropertyTypes.RANK.name(), rank);
 			List<SequenceNode> nodes = new LinkedList<>();
 			res.forEachRemaining(n -> nodes.add(createSequenceNode(n)));
 
