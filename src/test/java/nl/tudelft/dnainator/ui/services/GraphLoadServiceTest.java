@@ -14,10 +14,10 @@ import java.util.concurrent.TimeoutException;
 
 import javafx.concurrent.Service;
 import nl.tudelft.dnainator.graph.Graph;
-import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
+import nl.tudelft.dnainator.graph.impl.Neo4jGraph;
 
-import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.neo4j.io.fs.FileUtils;
@@ -33,13 +33,17 @@ import de.saxsys.javafx.test.JfxRunner;
  */
 @RunWith(JfxRunner.class)
 public class GraphLoadServiceTest {
-	private static final String DB_PATH = "target/neo4j-junit";
+	private static final String DB_PATH = "target/neo4j-junit-graphload";
 	private static final int DELAY = 20000;
 	private GraphLoadService loadService;
 	private File nodeFile;
 	private File edgeFile;
 
-	static {
+	/**
+	 * Setup the database and construct the graph.
+	 */
+	@BeforeClass
+	public static void setUp() {
 		try {
 			FileUtils.deleteRecursively(new File(DB_PATH));
 		} catch (IOException e) {
@@ -162,6 +166,7 @@ public class GraphLoadServiceTest {
 		Graph graph = completableFuture.get(DELAY, TimeUnit.MILLISECONDS);
 
 		assertNotNull(graph);
+		((Neo4jGraph) graph).shutdown();
 	}
 
 	/**
@@ -209,14 +214,5 @@ public class GraphLoadServiceTest {
 		}
 
 		doTest();
-	}
-
-	/**
-	 * Clean up after ourselves.
-	 * @throws IOException when the database could not be deleted
-	 */
-	@AfterClass
-	public static void cleanUp() throws IOException {
-		Neo4jSingleton.getInstance().stopDatabase(DB_PATH);
 	}
 }

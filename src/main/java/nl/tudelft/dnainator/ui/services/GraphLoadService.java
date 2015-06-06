@@ -3,8 +3,6 @@ package nl.tudelft.dnainator.ui.services;
 import java.io.File;
 import java.io.IOException;
 
-import org.neo4j.io.fs.FileUtils;
-
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Service;
@@ -12,7 +10,7 @@ import javafx.concurrent.Task;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.GraphBuilder;
 import nl.tudelft.dnainator.graph.impl.Neo4jBatchBuilder;
-import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
+import nl.tudelft.dnainator.graph.impl.Neo4jGraph;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
@@ -27,9 +25,18 @@ import nl.tudelft.dnainator.parser.impl.NodeParserImpl;
  * </p>
  */
 public class GraphLoadService extends Service<Graph> {
+	private static final String DB_PATH = "target/dna-graph-db";
+	
 	private ObjectProperty<File> nodeFile = new SimpleObjectProperty<>(this, "nodeFile");
 	private ObjectProperty<File> edgeFile = new SimpleObjectProperty<>(this, "edgeFile");
 	private ObjectProperty<String> database = new SimpleObjectProperty<>(this, "database");
+
+	/**
+	 * Construct a GraphLoadService with a default database path.
+	 */
+	public GraphLoadService() {
+		database.set(DB_PATH);
+	}
 
 	/**
 	 * @param f The node file to load.
@@ -100,22 +107,16 @@ public class GraphLoadService extends Service<Graph> {
 			@Override
 			protected Graph call() throws IOException, ParseException {
 				GraphBuilder gb;
-				if (database.get() == null) {
-					FileUtils.deleteRecursively(new File(Neo4jSingleton.DB_PATH));
-					gb = new Neo4jBatchBuilder(Neo4jSingleton.DB_PATH);
-				} else {
-					FileUtils.deleteRecursively(new File(database.get()));
-					gb = new Neo4jBatchBuilder(database.get());
-				}
+				gb = new Neo4jBatchBuilder(database.get());
+
 				EdgeParser ep = new EdgeParserImpl(getEdgeFile());
 				NodeParser np = new NodeParserImpl(getNodeFile());
-
 				gb.constructGraph(np, ep);
 
 				ep.close();
 				np.close();
 
-				return null;
+				return new Neo4jGraph(database.get());
 			}
 		};
 	}

@@ -39,8 +39,6 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 	@Override
 	public void constructGraph(NodeParser np, EdgeParser ep)
 			throws IOException, ParseException {
-		System.out.println("Started");
-		long start = System.nanoTime();
 		GraphBuilder.super.constructGraph(np, ep);
 		// Create the indices and constraints.
 		batchInserter.createDeferredConstraint(Neo4jGraph.NODELABEL)
@@ -53,7 +51,6 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 			.assertPropertyIsUnique(PropertyTypes.SOURCE.name())
 			.create();
 		batchInserter.shutdown();
-		System.out.println("Took " + (System.nanoTime() - start) * 1e-6 + " ms.");
 	}
 
 	@Override

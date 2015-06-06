@@ -22,32 +22,33 @@ public class WindowController {
 	@SuppressWarnings("unused") @FXML
 	private BorderPane root;
 	@SuppressWarnings("unused") @FXML
-	private FileOpenController fileOpenerController;
+	private FileOpenController fileOpenController;
 	@SuppressWarnings("unused") @FXML
 	private WelcomeController welcomeController;
 	private StrainView strainView;
+	private PhylogeneticView phyloView;
 
 	@SuppressWarnings("unused") @FXML
 	private void initialize() {
+		ColorServer colorServer = new ColorServer();
+		fileOpenController.graphProperty().addListener((obj, oldV, newV) -> {
+			strainView = new StrainView(colorServer, newV);
+		});
+		fileOpenController.treeProperty().addListener((obj, oldV, newV) -> {
+			phyloView = new PhylogeneticView(colorServer);
+			phyloView.rootProperty().set(newV);
+		});
 		welcomeController.doneProperty().addListener((obj, oldV, newV) -> {
-			createViews();
+			SplitPane splitPane = new SplitPane(strainView, phyloView);
+			splitPane.setOrientation(Orientation.VERTICAL);
+			root.setCenter(splitPane);
 			welcomeController.doneProperty().unbind();
 		});
 	}
 
-	private void createViews() {
-		ColorServer colorServer = new ColorServer();
-		strainView = new StrainView(colorServer);
-		PhylogeneticView phyloView = new PhylogeneticView(colorServer);
-		phyloView.rootProperty().bind(fileOpenerController.treeProperty());
-		SplitPane splitPane = new SplitPane(strainView, phyloView);
-		splitPane.setOrientation(Orientation.VERTICAL);
-		root.setCenter(splitPane);
-	}
-
 	@SuppressWarnings("unused") @FXML
 	private void openButtonAction() {
-		fileOpenerController.toggle();
+		fileOpenController.toggle();
 	}
 
 	@SuppressWarnings("unused") @FXML
