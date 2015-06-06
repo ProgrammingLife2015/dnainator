@@ -12,6 +12,10 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
 
+/**
+ * A {@link SequenceNode} which delegates to a Neo4j Node containing
+ * the information.
+ */
 public class Neo4jSequenceNode implements SequenceNode {
 	private GraphDatabaseService service;
 	private Node node;
@@ -26,6 +30,12 @@ public class Neo4jSequenceNode implements SequenceNode {
 
 	private boolean loaded;
 
+	/**
+	 * Construct a new {@link Neo4jSequenceNode} which wraps the given
+	 * Neo4j {@link Node}.
+	 * @param service The Neo4j service, for accessing the database.
+	 * @param node The Neo4j node.
+	 */
 	public Neo4jSequenceNode(GraphDatabaseService service, Node node) {
 		loaded = false;
 
