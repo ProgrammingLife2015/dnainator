@@ -18,9 +18,7 @@ import nl.tudelft.dnainator.graph.impl.query.ClustersFromQuery;
 import nl.tudelft.dnainator.graph.impl.query.Query;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 
-import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.ResourceIterator;
 import org.neo4j.graphdb.Result;
@@ -33,13 +31,11 @@ import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 public final class Neo4jGraph implements Graph {
 	private static final String GET_MAX_RANK = "MATCH n RETURN MAX(n."
 			+ PropertyTypes.RANK.name() + ")";
-	private static final String GET_ROOT = "MATCH (s:" + PropertyTypes.NODELABEL.name() + ") "
-			+ "WHERE NOT (s)<-[:NEXT]-(:" + PropertyTypes.NODELABEL.name() + ") "
+	private static final String GET_ROOT = "MATCH (s:" + NodeLabels.NODE.name() + ") "
+			+ "WHERE NOT (s)<-[:NEXT]-(:" + NodeLabels.NODE.name() + ") "
 			+ "RETURN s";
 
 	private GraphDatabaseService service;
-	protected static final Label NODELABEL = DynamicLabel.label(PropertyTypes.NODELABEL.name());
-	protected static final Label SOURCELABEL = DynamicLabel.label(PropertyTypes.SOURCE.name());
 
 	/**
 	 * Constructs a Neo4j database on the specified path.
@@ -82,13 +78,15 @@ public final class Neo4jGraph implements Graph {
 
 	@Override
 	public SequenceNode getNode(String s) {
-		return query(e -> createSequenceNode(e.findNode(NODELABEL, PropertyTypes.ID.name(), s)));
+		return query(e -> createSequenceNode(e.findNode(NodeLabels.NODE,
+				PropertyTypes.ID.name(), s)));
 	}
 
 	@Override
 	public List<SequenceNode> getRank(int rank) {
 		return query(e -> {
-			ResourceIterator<Node> res = e.findNodes(NODELABEL, PropertyTypes.RANK.name(), rank);
+			ResourceIterator<Node> res = e.findNodes(NodeLabels.NODE,
+					PropertyTypes.RANK.name(), rank);
 			List<SequenceNode> nodes = new LinkedList<>();
 			res.forEachRemaining(n -> nodes.add(createSequenceNode(n)));
 

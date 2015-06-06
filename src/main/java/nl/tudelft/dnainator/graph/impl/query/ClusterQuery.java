@@ -1,7 +1,6 @@
 package nl.tudelft.dnainator.graph.impl.query;
 
 import static nl.tudelft.dnainator.graph.impl.PropertyTypes.ID;
-import static nl.tudelft.dnainator.graph.impl.PropertyTypes.NODELABEL;
 import static nl.tudelft.dnainator.graph.impl.PropertyTypes.RANK;
 
 import java.util.ArrayList;
@@ -12,12 +11,11 @@ import java.util.stream.Collectors;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.graph.impl.Neo4jSequenceNode;
+import nl.tudelft.dnainator.graph.impl.NodeLabels;
 import nl.tudelft.dnainator.graph.impl.RelTypes;
 
 import org.neo4j.graphdb.Direction;
-import org.neo4j.graphdb.DynamicLabel;
 import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.traversal.TraversalDescription;
 
@@ -49,8 +47,7 @@ public class ClusterQuery implements Query<Cluster> {
 	@Override
 	public Cluster execute(GraphDatabaseService service) {
 		Cluster cluster = null;
-		Label nodeLabel = DynamicLabel.label(NODELABEL.name());
-		Node startNode = service.findNode(nodeLabel, ID.name(), start);
+		Node startNode = service.findNode(NodeLabels.NODE, ID.name(), start);
 		List<Node> result = new ArrayList<>();
 
 		// A depth first traversal traveling along both incoming and outgoing edges.

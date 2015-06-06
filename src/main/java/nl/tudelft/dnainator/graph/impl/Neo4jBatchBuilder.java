@@ -41,13 +41,13 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 			throws IOException, ParseException {
 		GraphBuilder.super.constructGraph(np, ep);
 		// Create the indices and constraints.
-		batchInserter.createDeferredConstraint(Neo4jGraph.NODELABEL)
+		batchInserter.createDeferredConstraint(NodeLabels.NODE)
 			.assertPropertyIsUnique(PropertyTypes.ID.name())
 			.create();
-		batchInserter.createDeferredSchemaIndex(Neo4jGraph.NODELABEL)
+		batchInserter.createDeferredSchemaIndex(NodeLabels.NODE)
 			.on(PropertyTypes.RANK.name())
 			.create();
-		batchInserter.createDeferredConstraint(Neo4jGraph.SOURCELABEL)
+		batchInserter.createDeferredConstraint(NodeLabels.SOURCE)
 			.assertPropertyIsUnique(PropertyTypes.SOURCE.name())
 			.create();
 		batchInserter.shutdown();
@@ -84,12 +84,12 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 		nodeProperties.put(PropertyTypes.SEQUENCE.name(), s.getSequence());
 		nodeProperties.put(PropertyTypes.RANK.name(), 0);
 		nodeProperties.put(PropertyTypes.SCORE.name(), s.getSequence().length());
-		return batchInserter.createNode(nodeProperties, Neo4jGraph.NODELABEL);
+		return batchInserter.createNode(nodeProperties, NodeLabels.NODE);
 	}
 
 	private long createSource(String source) {
 		return batchInserter.createNode(
 				Collections.singletonMap(PropertyTypes.SOURCE.name(), source),
-				Neo4jGraph.SOURCELABEL);
+				NodeLabels.SOURCE);
 	}
 }
