@@ -1,7 +1,6 @@
 package nl.tudelft.dnainator.ui.services;
 
 import de.saxsys.javafx.test.JfxRunner;
-import javafx.concurrent.Service;
 import nl.tudelft.dnainator.tree.TreeNode;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +17,8 @@ import java.util.concurrent.TimeoutException;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
+
+import static nl.tudelft.dnainator.ui.services.LoadServiceTestUtils.registerListeners;
 
 /**
  * Test class for the {@link NewickLoadService}.
@@ -75,19 +76,6 @@ public class NewickLoadServiceTest {
 	@Test
 	public void testNewickFileProperty() {
 		assertNotNull(loadService.newickFileProperty());
-	}
-
-	/**
-	 * Registers a listener on the service to update the completableFuture.
-	 * @param service           The service.
-	 * @param completableFuture The future.
-	 * @param <T>               The expected type.
-	 */
-	public <T> void registerListeners(Service<T> service, CompletableFuture<T> completableFuture) {
-		service.setOnSucceeded(e -> completableFuture.complete(service.getValue()));
-		service.setOnFailed(e ->
-				completableFuture.completeExceptionally(service.getException()));
-		service.setOnCancelled(e -> completableFuture.cancel(true));
 	}
 
 	/**

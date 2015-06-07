@@ -7,6 +7,9 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
+import nl.tudelft.dnainator.annotation.AnnotationCollection;
+import nl.tudelft.dnainator.annotation.AnnotationCollectionFactory;
+import nl.tudelft.dnainator.annotation.impl.AnnotationCollectionFactoryImpl;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.graph.Graph;
@@ -34,14 +37,24 @@ public final class Neo4jGraph implements Graph {
 	private static final String GET_ROOT = "MATCH (s:" + NodeLabels.NODE.name() + ") "
 			+ "WHERE NOT (s)<-[:NEXT]-(:" + NodeLabels.NODE.name() + ") "
 			+ "RETURN s";
-
 	private GraphDatabaseService service;
+	private AnnotationCollection annotations;
 
 	/**
-	 * Constructs a Neo4j database on the specified path.
+	 * Constructs a Neo4j database on the specified path, using
+	 * the default annotation collection factory ({@link AnnotationCollectionFactory}).
 	 * @param path			specified path
 	 */
 	public Neo4jGraph(String path) {
+		this(new AnnotationCollectionFactoryImpl(), path);
+	}
+
+	/**
+	 * Constructs a Neo4j database on the specified path.
+	 * @param fact			the factory for building the {@link AnnotationCollection}.
+	 * @param path			specified path
+	 */
+	public Neo4jGraph(AnnotationCollectionFactory fact, String path) {
 		// Create our database and register a shutdown hook
 		service = new GraphDatabaseFactory().newEmbeddedDatabase(path);
 		Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -53,6 +66,7 @@ public final class Neo4jGraph implements Graph {
 
 		// Rank the graph.
 		execute(e -> new RankCommand(rootIterator()).execute(e));
+		this.annotations = fact.build();
 	}
 
 	/**
@@ -80,6 +94,11 @@ public final class Neo4jGraph implements Graph {
 	public SequenceNode getNode(String s) {
 		return query(e -> createSequenceNode(e.findNode(NodeLabels.NODE,
 				PropertyTypes.ID.name(), s)));
+	}
+
+	@Override
+	public AnnotationCollection getAnnotations() {
+		return annotations;
 	}
 
 	@Override
