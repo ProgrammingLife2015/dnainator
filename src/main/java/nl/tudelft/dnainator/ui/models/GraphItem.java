@@ -12,7 +12,6 @@ import javafx.scene.shape.Rectangle;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.graph.Graph;
-import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
 import nl.tudelft.dnainator.ui.ColorServer;
 import nl.tudelft.dnainator.ui.drawables.strains.ClusterDrawable;
 import nl.tudelft.dnainator.ui.drawables.strains.Edge;
@@ -34,14 +33,6 @@ public class GraphItem extends Group {
 	private Map<String, ClusterDrawable> clusters;
 	private Group content;
 	private Group childContent;
-
-	/**
-	 * Construct a new top level {@link GraphItem} using the default graph.
-	 * @param colorServer The {@link ColorServer} to bind to.
-	 */
-	public GraphItem(ColorServer colorServer) {
-		this(colorServer, Neo4jSingleton.getInstance().getDatabase(), new Group(), new Group());
-	}
 
 	/**
 	 * Construct a new top level {@link GraphItem} using the specified graph.

@@ -90,6 +90,6 @@
       <fx:include fx:id="welcome" source="welcome.fxml"/>
    </center>
    <left>
-      <fx:include fx:id="fileOpener" source="openpane.fxml"/>
+      <fx:include fx:id="fileOpen" source="openpane.fxml"/>
    </left>
 </BorderPane>

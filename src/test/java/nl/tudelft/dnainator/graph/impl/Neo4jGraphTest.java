@@ -36,6 +36,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.neo4j.graphdb.Node;
+import org.neo4j.io.fs.FileUtils;
 
 /**
  * Test Neo4j graph implementation.
@@ -52,7 +53,7 @@ public class Neo4jGraphTest {
 	@BeforeClass
 	public static void setUp() {
 		try {
-			db = Neo4jSingleton.getInstance().getDatabase(DB_PATH);
+			FileUtils.deleteRecursively(new File(DB_PATH));
 			nodeFile
 				= new File(Neo4jGraphTest.class.getResource("/strains/topo.node.graph").toURI());
 			edgeFile
@@ -62,7 +63,8 @@ public class Neo4jGraphTest {
 			NodeParser np = new NodeParserImpl(new SequenceNodeFactoryImpl(),
 					new BufferedReader(new FileReader(nodeFile)));
 			EdgeParser ep = new EdgeParserImpl(new BufferedReader(new FileReader(edgeFile)));
-			db.constructGraph(np, ep);
+			new Neo4jBatchBuilder(DB_PATH).constructGraph(np, ep);
+			db = new Neo4jGraph(DB_PATH);
 		} catch (IOException e) {
 			fail("Couldn't initialize DB");
 		} catch (ParseException e) {
@@ -234,6 +236,6 @@ public class Neo4jGraphTest {
 	 */
 	@AfterClass
 	public static void cleanUp() throws IOException {
-		Neo4jSingleton.getInstance().stopDatabase(DB_PATH);
+		db.shutdown();
 	}
 }

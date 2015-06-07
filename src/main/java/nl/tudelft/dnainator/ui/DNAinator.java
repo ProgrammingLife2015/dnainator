@@ -1,22 +1,17 @@
 package nl.tudelft.dnainator.ui;
 
+import java.io.IOException;
+
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.application.Preloader;
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.concurrent.Task;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import nl.tudelft.dnainator.graph.Graph;
-import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
 import nl.tudelft.dnainator.ui.widgets.dialogs.ExceptionDialog;
-
-import java.io.IOException;
 
 /**
  * DNAinator's main window, from which all interaction will occur.
@@ -33,53 +28,24 @@ public class DNAinator extends Application {
 	private static final int MIN_WIDTH = 300;
 	private static final int MIN_HEIGHT = 150;
 
-	private BooleanProperty ready = new SimpleBooleanProperty(false);
-
-	private void loadDB() {
-		Task<Graph> task = new Task<Graph>() {
-			@Override
-			protected Graph call() throws Exception {
-				Graph db = Neo4jSingleton.getInstance().getDatabase();
-				ready.set(true);
-				return db;
-			}
-		};
-
-		task.setOnFailed(event -> {
-			Exception e = new RuntimeException(
-						"Could not launch the application. Please make sure only\n"
-								+ "one instance of the application exists at all times.");
-			notifyPreloader(new Preloader.ErrorNotification("DNAinator",
-					"Could not launch the application!", e));
-		});
-		new Thread(task).start();
-	}
-
-	@Override
-	public void init() {
-		loadDB();
-	}
-
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		ready.addListener(event -> {
-			Platform.runLater(() -> {
-				primaryStage.setTitle(DNAINATOR);
-				primaryStage.getIcons().add(new Image(getClass().getResourceAsStream(ICON)));
-				primaryStage.setMinWidth(MIN_WIDTH);
-				primaryStage.setMinHeight(MIN_HEIGHT);
+		Platform.runLater(() -> {
+			primaryStage.setTitle(DNAINATOR);
+			primaryStage.getIcons().add(new Image(getClass().getResourceAsStream(ICON)));
+			primaryStage.setMinWidth(MIN_WIDTH);
+			primaryStage.setMinHeight(MIN_HEIGHT);
 
-				notifyPreloader(new Preloader.ProgressNotification(1));
+			notifyPreloader(new Preloader.ProgressNotification(1));
 
-				try {
-					BorderPane rootLayout = FXMLLoader.load(getClass().getResource(FXML));
-					Scene scene = new Scene(rootLayout, getScreenWidth(), getScreenHeight());
-					primaryStage.setScene(scene);
-					primaryStage.show();
-				} catch (IOException e) {
-					new ExceptionDialog(null, e, "Could not launch the Application!");
-				}
-			});
+			try {
+				BorderPane rootLayout = FXMLLoader.load(getClass().getResource(FXML));
+				Scene scene = new Scene(rootLayout, getScreenWidth(), getScreenHeight());
+				primaryStage.setScene(scene);
+				primaryStage.show();
+			} catch (IOException e) {
+				new ExceptionDialog(null, e, "Could not launch the Application!");
+			}
 		});
 	}
 

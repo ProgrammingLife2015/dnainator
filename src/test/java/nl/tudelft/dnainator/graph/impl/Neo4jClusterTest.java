@@ -25,6 +25,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.internal.util.collections.Sets;
+import org.neo4j.io.fs.FileUtils;
 
 /**
  * Test clustering in a DNA sequence graph.
@@ -41,7 +42,7 @@ public class Neo4jClusterTest {
 	@BeforeClass
 	public static void setUp() {
 		try {
-			db = Neo4jSingleton.getInstance().getDatabase(DB_PATH);
+			FileUtils.deleteRecursively(new File(DB_PATH));
 			nodeFile
 				= new File(Neo4jGraphTest.class.getResource("/strains/cluster.node.graph").toURI());
 			edgeFile
@@ -51,7 +52,8 @@ public class Neo4jClusterTest {
 			NodeParser np = new NodeParserImpl(new SequenceNodeFactoryImpl(),
 					new BufferedReader(new FileReader(nodeFile)));
 			EdgeParser ep = new EdgeParserImpl(new BufferedReader(new FileReader(edgeFile)));
-			db.constructGraph(np, ep);
+			new Neo4jBatchBuilder(DB_PATH).constructGraph(np, ep);
+			db = new Neo4jGraph(DB_PATH);
 		} catch (IOException | URISyntaxException | ParseException e) {
 			e.printStackTrace();
 		}
@@ -93,6 +95,6 @@ public class Neo4jClusterTest {
 	 */
 	@AfterClass
 	public static void cleanUp() throws IOException {
-		Neo4jSingleton.getInstance().stopDatabase(DB_PATH);
+		db.shutdown();
 	}
 }

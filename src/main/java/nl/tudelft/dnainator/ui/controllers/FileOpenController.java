@@ -1,5 +1,9 @@
 package nl.tudelft.dnainator.ui.controllers;
 
+import java.io.File;
+
+import org.neo4j.io.fs.FileUtils;
+
 import javafx.beans.binding.Binding;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
@@ -11,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
+import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.tree.TreeNode;
 import nl.tudelft.dnainator.ui.services.GraphLoadService;
 import nl.tudelft.dnainator.ui.services.NewickLoadService;
@@ -19,8 +24,6 @@ import nl.tudelft.dnainator.ui.widgets.animations.SlidingAnimation;
 import nl.tudelft.dnainator.ui.widgets.animations.TransitionAnimation.Position;
 import nl.tudelft.dnainator.ui.widgets.dialogs.ExceptionDialog;
 import nl.tudelft.dnainator.ui.widgets.dialogs.ProgressDialog;
-
-import java.io.File;
 
 /**
  * Controls the file open pane on the left side of the application. It offers options
@@ -48,6 +51,7 @@ public class FileOpenController {
 	private FileChooser fileChooser;
 	private ProgressDialog progressDialog;
 	private ObjectProperty<TreeNode> treeProperty;
+	private ObjectProperty<Graph> graphProperty;
 	private SlidingAnimation animation;
 
 	/*
@@ -56,6 +60,7 @@ public class FileOpenController {
 	@SuppressWarnings("unused") @FXML
 	private void initialize() {
 		fileChooser = new FileChooser();
+		graphProperty = new SimpleObjectProperty<>(this, "graph");
 		treeProperty = new SimpleObjectProperty<>(this, "tree");
 
 		graphLoadService = new GraphLoadService();
@@ -64,7 +69,10 @@ public class FileOpenController {
 				new ExceptionDialog(fileOpenPane.getParent(), graphLoadService.getException(),
 						"Error loading graph files!"));
 		graphLoadService.setOnRunning(e -> progressDialog.show());
-		graphLoadService.setOnSucceeded(e -> progressDialog.close());
+		graphLoadService.setOnSucceeded(e -> {
+			graphProperty.setValue(graphLoadService.getValue());
+			progressDialog.close();
+		});
 
 		newickLoadService = new NewickLoadService();
 		newickLoadService.setOnFailed(e ->
@@ -139,6 +147,13 @@ public class FileOpenController {
 		animation.toggle();
 
 		if (graphLoadService.getNodeFile() != null && graphLoadService.getEdgeFile() != null) {
+			// TODO: replace this with the ability to specify a db path and
+			//       a check whether this path is already in use by Neo4j.
+			try {
+				FileUtils.deleteRecursively(new File(graphLoadService.getDatabase()));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			graphLoadService.restart();
 			curNodeLabel.setText(graphLoadService.getNodeFile().getAbsolutePath());
 			curEdgeLabel.setText(graphLoadService.getEdgeFile().getAbsolutePath());
@@ -207,6 +222,13 @@ public class FileOpenController {
 	 */
 	public ObjectProperty<TreeNode> treeProperty() {
 		return treeProperty;
+	}
+	
+	/**
+	 * @return The {@link Graph} property.
+	 */
+	public ObjectProperty<Graph> graphProperty() {
+		return graphProperty;
 	}
 
 	/**
