@@ -7,7 +7,10 @@ import org.neo4j.io.fs.FileUtils;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.concurrent.Service;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -171,7 +174,6 @@ public class FileOpenController {
 		progressDialog = new ProgressDialog(fileOpenPane.getParent());
 		resetTextFields();
 		animation.toggle();
-
 		if (graphLoadService.getNodeFile() != null && graphLoadService.getEdgeFile() != null) {
 			// TODO: replace this with the ability to specify a db path and
 			//       a check whether this path is already in use by Neo4j.
@@ -184,16 +186,27 @@ public class FileOpenController {
 			curNodeLabel.setText(graphLoadService.getNodeFile().getAbsolutePath());
 			curEdgeLabel.setText(graphLoadService.getEdgeFile().getAbsolutePath());
 		}
-
 		if (newickLoadService.getNewickFile() != null) {
 			newickLoadService.restart();
 			curNewickLabel.setText(newickLoadService.getNewickFile().getAbsolutePath());
 		}
-
 		if (gffLoadService.getGffFilePath() != null) {
-			gffLoadService.restart();
+			if (graphProperty.isNull().get()) {
+				addOnSucceeded(graphLoadService, event -> gffLoadService.restart());
+			} else {
+				gffLoadService.restart();
+			}
 			curGffLabel.setText(gffLoadService.getGffFilePath());
 		}
+	}
+
+	/** Add an extra event handler in addition to the previous one. */
+	private <T> void addOnSucceeded(Service<T> s, EventHandler<WorkerStateEvent> e) {
+		EventHandler<WorkerStateEvent> success = s.getOnSucceeded();
+		s.setOnSucceeded(event -> {
+			success.handle(event);
+			e.handle(event);
+		});
 	}
 
 	/* Clears the files, textfields and hides the pane. */
