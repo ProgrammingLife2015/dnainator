@@ -7,7 +7,6 @@ import javafx.concurrent.Task;
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
 import nl.tudelft.dnainator.annotation.AnnotationSource;
 import nl.tudelft.dnainator.graph.Graph;
-import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
 import nl.tudelft.dnainator.parser.impl.GFF3AnnotationParser;
 
 import java.io.IOException;
@@ -18,7 +17,7 @@ import java.io.IOException;
 public class GFFLoadService extends Service<AnnotationCollection> {
 	private ObjectProperty<String> gffFilePath =
 			new SimpleObjectProperty<>(this, "gffFilePath");
-	private ObjectProperty<String> database = new SimpleObjectProperty<>(this, "database");
+	private ObjectProperty<Graph> graph = new SimpleObjectProperty<>(this, "graph");
 
 	/**
 	 * Sets the GFF filename to the specified value.
@@ -46,8 +45,8 @@ public class GFFLoadService extends Service<AnnotationCollection> {
 	 * @return The database path. Needed for supporting multiple databases, and this property
 	 * is bound to the database property in {@link GraphLoadService}.
 	 */
-	public ObjectProperty<String> getDatabase() {
-		return database;
+	public ObjectProperty<Graph> graphProperty() {
+		return graph;
 	}
 
 	@Override
@@ -56,18 +55,12 @@ public class GFFLoadService extends Service<AnnotationCollection> {
 			@Override
 			protected AnnotationCollection call() {
 				AnnotationSource as;
-				Graph gb;
-
-				if (database.get() == null) {
-					gb = Neo4jSingleton.getInstance().getDatabase();
-				} else {
-					gb = Neo4jSingleton.getInstance().getDatabase(database.get());
-				}
+				Graph g = graph.get();
 
 				try {
 					as = new GFF3AnnotationParser(gffFilePath.get());
-					gb.getAnnotations().addAnnotations(as);
-					return gb.getAnnotations();
+					g.getAnnotations().addAnnotations(as);
+					return g.getAnnotations();
 				} catch (IOException e) {
 					e.printStackTrace();
 					return null;

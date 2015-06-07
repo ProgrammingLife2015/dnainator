@@ -13,12 +13,18 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
-import nl.tudelft.dnainator.graph.impl.Neo4jSingleton;
+import nl.tudelft.dnainator.graph.Graph;
+import nl.tudelft.dnainator.graph.impl.Neo4jBatchBuilder;
+import nl.tudelft.dnainator.graph.impl.Neo4jGraph;
+import nl.tudelft.dnainator.parser.exceptions.ParseException;
+import nl.tudelft.dnainator.parser.impl.EdgeParserImpl;
+import nl.tudelft.dnainator.parser.impl.NodeParserImpl;
 
-import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.neo4j.io.fs.FileUtils;
 
 import de.saxsys.javafx.test.JfxRunner;
 
@@ -27,16 +33,37 @@ import de.saxsys.javafx.test.JfxRunner;
  */
 @RunWith(JfxRunner.class)
 public class GFFLoadServiceTest {
+	private static final String DB_PATH = "target/neo4j-junit-gffload";
+	private Graph graph;
 	private GFFLoadService loadService;
 	private String gffFilePath;
 	private static final int DELAY = 20000;
 
 	/**
+	 * Setup the database and construct the graph.
+	 */
+	@BeforeClass
+	public static void setUp() {
+		try {
+			FileUtils.deleteRecursively(new File(DB_PATH));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
 	 * Creates test node and edge files.
 	 * @throws URISyntaxException 
+	 * @throws ParseException 
+	 * @throws IOException 
 	 */
 	@Before
-	public void setup() throws URISyntaxException {
+	public void setup() throws URISyntaxException, IOException, ParseException {
+		File nodeFile = new File(getClass().getResource("/strains/test.node.graph").toURI());
+		File edgeFile = new File(getClass().getResource("/strains/test.edge.graph").toURI());
+		new Neo4jBatchBuilder(DB_PATH).constructGraph(new NodeParserImpl(nodeFile),
+				new EdgeParserImpl(edgeFile));
+		graph = new Neo4jGraph(DB_PATH);
 		loadService = new GFFLoadService();
 		gffFilePath = new File(getClass().getResource("/annotations/test.gff").toURI()).toString();
 		loadService.setGffFilePath(gffFilePath);
@@ -68,7 +95,7 @@ public class GFFLoadServiceTest {
 		// Act on the loadService's interesting states.
 		registerListeners(loadService, completableFuture);
 
-		loadService.getDatabase().set(GraphLoadServiceTest.DB_PATH);
+		loadService.graphProperty().set(graph);
 		loadService.start();
 
 		// This call blocks the test thread until the completableFuture's complete() method is
@@ -78,15 +105,6 @@ public class GFFLoadServiceTest {
 
 		assertNotNull(ac);
 		assertEquals(2, ac.getAll().size());
-	}
-
-	/**
-	 * Clean up after ourselves.
-	 * @throws IOException when the database could not be deleted
-	 */
-	@AfterClass
-	public static void cleanUp() throws IOException {
-		Neo4jSingleton.getInstance().stopDatabase(GraphLoadServiceTest.DB_PATH);
 	}
 
 }

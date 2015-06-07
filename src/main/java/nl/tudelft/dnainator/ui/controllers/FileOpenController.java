@@ -69,7 +69,6 @@ public class FileOpenController {
 		treeProperty = new SimpleObjectProperty<>(this, "tree");
 
 		graphLoadService = new GraphLoadService();
-
 		graphLoadService.setOnFailed(e ->
 				new ExceptionDialog(fileOpenPane.getParent(), graphLoadService.getException(),
 						"Error loading graph files!"));
@@ -89,7 +88,7 @@ public class FileOpenController {
 		gffLoadService.setOnFailed(e ->
 				new ExceptionDialog(fileOpenPane.getParent(), gffLoadService.getException(),
 						"Error loading annotations file!"));
-		gffLoadService.getDatabase().bind(graphLoadService.databaseProperty());
+		gffLoadService.graphProperty().bind(graphProperty);
 
 		animation = new LeftSlideAnimation(fileOpenPane, WIDTH, ANIM_DURATION, Position.LEFT);
 
