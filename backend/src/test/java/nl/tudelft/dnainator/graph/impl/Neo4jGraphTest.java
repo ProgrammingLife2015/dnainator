@@ -20,9 +20,9 @@ import org.neo4j.io.fs.FileUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.net.URISyntaxException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -43,8 +43,8 @@ import static org.junit.Assert.fail;
 public class Neo4jGraphTest {
 	private static final String DB_PATH = "target/neo4j-junit";
 	private static Neo4jGraph db;
-	private static File nodeFile;
-	private static File edgeFile;
+	private static InputStream nodeFile;
+	private static InputStream edgeFile;
 
 	/**
 	 * Setup the database and construct the graph.
@@ -53,23 +53,20 @@ public class Neo4jGraphTest {
 	public static void setUp() {
 		try {
 			FileUtils.deleteRecursively(new File(DB_PATH));
-			nodeFile
-				= new File(Neo4jGraphTest.class.getResource("/strains/topo.node.graph").toURI());
-			edgeFile
-				= new File(Neo4jGraphTest.class.getResource("/strains/topo.edge.graph").toURI());
+			nodeFile = Neo4jGraphTest.class.getResourceAsStream("/strains/topo.node.graph");
+			edgeFile = Neo4jGraphTest.class.getResourceAsStream("/strains/topo.edge.graph");
 			//nodeFile = new File("10_strains_graph/simple_graph.node.graph");
 			//edgeFile = new File("10_strains_graph/simple_graph.edge.graph");
 			NodeParser np = new NodeParserImpl(new SequenceNodeFactoryImpl(),
-					new BufferedReader(new FileReader(nodeFile)));
-			EdgeParser ep = new EdgeParserImpl(new BufferedReader(new FileReader(edgeFile)));
+					new BufferedReader(new InputStreamReader(nodeFile, "UTF-8")));
+			EdgeParser ep = new EdgeParserImpl(new BufferedReader(
+							new InputStreamReader(edgeFile, "UTF-8")));
 			new Neo4jBatchBuilder(DB_PATH).constructGraph(np, ep);
 			db = new Neo4jGraph(DB_PATH);
 		} catch (IOException e) {
 			fail("Couldn't initialize DB");
 		} catch (ParseException e) {
 			fail("Couldn't parse file: " + e.getMessage());
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
 		}
 	}
 
@@ -106,7 +103,8 @@ public class Neo4jGraphTest {
 	public void testTopologicalOrder() {
 		LinkedList<Integer> order = new LinkedList<>();
 		try {
-			EdgeParser ep = new EdgeParserImpl(new BufferedReader(new FileReader(edgeFile)));
+			EdgeParser ep = new EdgeParserImpl(new BufferedReader(
+							new InputStreamReader(edgeFile, "UTF-8")));
 
 			db.execute(e -> {
 				for (Node n : new RankCommand(db.rootIterator()).topologicalOrder(e)) {

@@ -15,9 +15,9 @@ import org.neo4j.io.fs.FileUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.net.URISyntaxException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -32,8 +32,8 @@ import static org.junit.Assert.assertEquals;
 public class Neo4jClusterTest {
 	private static final String DB_PATH = "target/neo4j-junit";
 	private static Neo4jGraph db;
-	private static File nodeFile;
-	private static File edgeFile;
+	private static InputStream nodeFile;
+	private static InputStream edgeFile;
 
 	/**
 	 * Setup the database and construct the graph.
@@ -42,18 +42,17 @@ public class Neo4jClusterTest {
 	public static void setUp() {
 		try {
 			FileUtils.deleteRecursively(new File(DB_PATH));
-			nodeFile
-				= new File(Neo4jGraphTest.class.getResource("/strains/cluster.node.graph").toURI());
-			edgeFile
-				= new File(Neo4jGraphTest.class.getResource("/strains/cluster.edge.graph").toURI());
+			nodeFile = Neo4jGraphTest.class.getResourceAsStream("/strains/cluster.node.graph");
+			edgeFile = Neo4jGraphTest.class.getResourceAsStream("/strains/cluster.edge.graph");
 //			nodeFile = new File("10_strains_graph/simple_graph.node.graph");
 //			edgeFile = new File("10_strains_graph/simple_graph.edge.graph");
 			NodeParser np = new NodeParserImpl(new SequenceNodeFactoryImpl(),
-					new BufferedReader(new FileReader(nodeFile)));
-			EdgeParser ep = new EdgeParserImpl(new BufferedReader(new FileReader(edgeFile)));
+					new BufferedReader(new InputStreamReader(nodeFile, "UTF-8")));
+			EdgeParser ep = new EdgeParserImpl(new BufferedReader(
+							new InputStreamReader(edgeFile, "UTF-8")));
 			new Neo4jBatchBuilder(DB_PATH).constructGraph(np, ep);
 			db = new Neo4jGraph(DB_PATH);
-		} catch (IOException | URISyntaxException | ParseException e) {
+		} catch (IOException | ParseException e) {
 			e.printStackTrace();
 		}
 	}
