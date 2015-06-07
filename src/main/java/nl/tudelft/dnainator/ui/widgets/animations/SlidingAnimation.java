@@ -5,7 +5,7 @@ import javafx.util.Duration;
 
 /**
  * The {@link SlidingAnimation} class realises a sliding animation.
- * The animation is a {@link DirectionAnimation} in the sense that it may,
+ * The animation is a {@link TransitionAnimation} in the sense that it may,
  * slide either in a upward, downward or sideway fashion.
  */
 public abstract class SlidingAnimation extends TransitionAnimation {

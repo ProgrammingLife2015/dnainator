@@ -6,7 +6,6 @@ import javafx.scene.layout.Pane;
 /**
  * A {@link CustomAnimation} which animates a transition.
  * It applies the animation onto a {@link Pane}.
- * The animation is carried out in {@link Direction}.
  */
 public abstract class TransitionAnimation extends Transition implements CustomAnimation {
 	
