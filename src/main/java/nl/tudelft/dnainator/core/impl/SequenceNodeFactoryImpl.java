@@ -2,6 +2,7 @@ package nl.tudelft.dnainator.core.impl;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import nl.tudelft.dnainator.core.SequenceNode;
@@ -23,7 +24,7 @@ public class SequenceNodeFactoryImpl implements SequenceNodeFactory {
 	}
 
 	@Override
-	public SequenceNode build(String id, List<String> refs, int startPos,
+	public SequenceNode build(String id, Set<String> refs, int startPos,
 			int endPos, String sequence) {
 		return new SequenceNodeImpl(id, refs, startPos, endPos, sequence);
 	}

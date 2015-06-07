@@ -1,9 +1,9 @@
 package nl.tudelft.dnainator.core.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import nl.tudelft.dnainator.core.SequenceNode;
 
@@ -22,12 +22,24 @@ public class SequenceNodeImpl implements SequenceNode {
 	/**
 	 * Constructs a default sequence with all parameters specified.
 	 * @param id The ID of this sequence.
-	 * @param sources The sources of the sequence (from where it was sequenced).
+	 * @param sources The sources of the sequence (from where it was sequenced), as list.
 	 * @param start The start position of the sequence.
 	 * @param end The end position of the sequence.
 	 * @param sequence The sequence.
 	 */
 	public SequenceNodeImpl(String id, List<String> sources, int start, int end, String sequence) {
+		this(id, new HashSet<>(sources), start, end, sequence);
+	}
+
+	/**
+	 * Constructs a default sequence with all parameters specified.
+	 * @param id The ID of this sequence.
+	 * @param sources The sources of the sequence (from where it was sequenced).
+	 * @param start The start position of the sequence.
+	 * @param end The end position of the sequence.
+	 * @param sequence The sequence.
+	 */
+	public SequenceNodeImpl(String id, Set<String> sources, int start, int end, String sequence) {
 		this(id, sources, start, end, sequence, 0, new ArrayList<>());
 	}
 
@@ -41,10 +53,10 @@ public class SequenceNodeImpl implements SequenceNode {
 	 * @param rank The rank.
 	 * @param outgoing The neighbours
 	 */
-	public SequenceNodeImpl(String id, List<String> sources,
+	public SequenceNodeImpl(String id, Set<String> sources,
 			int start, int end, String sequence, int rank, List<String> outgoing) {
 		this.id = id;
-		this.sources = sources.stream().collect(Collectors.toSet());
+		this.sources = sources;
 		this.start = start;
 		this.end = end;
 		this.sequence = sequence;
