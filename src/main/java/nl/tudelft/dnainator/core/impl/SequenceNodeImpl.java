@@ -1,7 +1,9 @@
 package nl.tudelft.dnainator.core.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import nl.tudelft.dnainator.core.SequenceNode;
 
@@ -10,7 +12,7 @@ import nl.tudelft.dnainator.core.SequenceNode;
  */
 public class SequenceNodeImpl implements SequenceNode {
 	private String id;
-	private String source;
+	private Set<String> sources;
 	private int start;
 	private int end;
 	private String sequence;
@@ -20,29 +22,41 @@ public class SequenceNodeImpl implements SequenceNode {
 	/**
 	 * Constructs a default sequence with all parameters specified.
 	 * @param id The ID of this sequence.
-	 * @param source The sources of the sequence (from where it was sequenced).
+	 * @param sources The sources of the sequence (from where it was sequenced), as list.
 	 * @param start The start position of the sequence.
 	 * @param end The end position of the sequence.
 	 * @param sequence The sequence.
 	 */
-	public SequenceNodeImpl(String id, String source, int start, int end, String sequence) {
-		this(id, source, start, end, sequence, 0, new ArrayList<>());
+	public SequenceNodeImpl(String id, List<String> sources, int start, int end, String sequence) {
+		this(id, new HashSet<>(sources), start, end, sequence);
 	}
 
 	/**
 	 * Constructs a default sequence with all parameters specified.
 	 * @param id The ID of this sequence.
-	 * @param source The sources of the sequence (from where it was sequenced).
+	 * @param sources The sources of the sequence (from where it was sequenced).
+	 * @param start The start position of the sequence.
+	 * @param end The end position of the sequence.
+	 * @param sequence The sequence.
+	 */
+	public SequenceNodeImpl(String id, Set<String> sources, int start, int end, String sequence) {
+		this(id, sources, start, end, sequence, 0, new ArrayList<>());
+	}
+
+	/**
+	 * Constructs a default sequence with all parameters specified.
+	 * @param id The ID of this sequence.
+	 * @param sources The sources of the sequence (from where it was sequenced).
 	 * @param start The start position of the sequence.
 	 * @param end The end position of the sequence.
 	 * @param sequence The sequence.
 	 * @param rank The rank.
 	 * @param outgoing The neighbours
 	 */
-	public SequenceNodeImpl(String id, String source,
+	public SequenceNodeImpl(String id, Set<String> sources,
 			int start, int end, String sequence, int rank, List<String> outgoing) {
 		this.id = id;
-		this.source = source;
+		this.sources = sources;
 		this.start = start;
 		this.end = end;
 		this.sequence = sequence;
@@ -56,8 +70,8 @@ public class SequenceNodeImpl implements SequenceNode {
 	}
 
 	@Override
-	public String getSource() {
-		return source;
+	public Set<String> getSources() {
+		return sources;
 	}
 
 	@Override
@@ -82,14 +96,14 @@ public class SequenceNodeImpl implements SequenceNode {
 		}
 
 		SequenceNode other = (SequenceNode) obj;
-		return id.equals(other.getId()) && source.equals(other.getSource())
+		return id.equals(other.getId()) && sources.equals(other.getSources())
 				&& start == other.getStartRef() && end == other.getEndRef()
 				&& sequence.equals(other.getSequence());
 	}
 
 	@Override
 	public int hashCode() {
-		return id.hashCode() + source.hashCode() + sequence.hashCode()
+		return id.hashCode() + sources.hashCode() + sequence.hashCode()
 				+ Integer.hashCode(start) + Integer.hashCode(end);
 	}
 

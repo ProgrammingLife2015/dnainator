@@ -1,9 +1,8 @@
 package nl.tudelft.dnainator.graph.impl;
 
-import static org.neo4j.helpers.collection.IteratorUtil.loop;
-
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +19,6 @@ import nl.tudelft.dnainator.graph.impl.command.RankCommand;
 import nl.tudelft.dnainator.graph.impl.query.AllClustersQuery;
 import nl.tudelft.dnainator.graph.impl.query.ClusterQuery;
 import nl.tudelft.dnainator.graph.impl.query.ClustersFromQuery;
-import nl.tudelft.dnainator.graph.impl.query.NodeQuery;
 import nl.tudelft.dnainator.graph.impl.query.Query;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 import nl.tudelft.dnainator.parser.EdgeParser;
@@ -47,9 +45,11 @@ public final class Neo4jGraph implements Graph {
 	private static final String GET_ROOT = "MATCH (s:" + PropertyTypes.NODELABEL.name() + ") "
 			+ "WHERE NOT (s)<-[:NEXT]-(:" + PropertyTypes.NODELABEL.name() + ") "
 			+ "RETURN s";
+	private static final int TRANSACTION_SIZE = 10000;
 
 	private GraphDatabaseService service;
 	private Label nodeLabel;
+	private Label sourceLabel;
 
 	/**
 	 * Constructs a Neo4j database on the specified path.
@@ -67,22 +67,42 @@ public final class Neo4jGraph implements Graph {
 
 		// Assign a label to our nodes
 		nodeLabel = DynamicLabel.label(PropertyTypes.NODELABEL.name());
+		sourceLabel = DynamicLabel.label(PropertyTypes.SOURCE.name());
 		// Recreate our indices
-		execute(new IndexCommand(nodeLabel));
+		execute(new IndexCommand(nodeLabel, sourceLabel));
 	}
 
 	/**
 	 * Delete all nodes and relationships from this graph.
+	 * FIXME: Should be replaced by batchinserter code
 	 */
 	public void clear() {
-		execute(e -> {
-			for (Relationship r : GlobalGraphOperations.at(e).getAllRelationships()) {
-				r.delete();
+		boolean cont;
+
+		cont = true;
+		while (cont) {
+			try (Transaction tx = service.beginTx()) {
+				Iterator<Relationship> edges = GlobalGraphOperations.at(service)
+								.getAllRelationships().iterator();
+				for (int i = 0; edges.hasNext() && i < 2 * TRANSACTION_SIZE; i++) {
+					edges.next().delete();
+				}
+				cont = edges.hasNext();
+				tx.success();
 			}
-			for (Node n : GlobalGraphOperations.at(e).getAllNodes()) {
-				n.delete();
+		}
+		cont = true;
+		while (cont) {
+			try (Transaction tx = service.beginTx()) {
+				ResourceIterator<Node> nodes = GlobalGraphOperations.at(service)
+								.getAllNodes().iterator();
+				for (int i = 0; nodes.hasNext() && i < TRANSACTION_SIZE; i++) {
+					nodes.next().delete();
+				}
+				cont = nodes.hasNext();
+				tx.success();
 			}
-		});
+		}
 	}
 
 	@Override
@@ -104,8 +124,17 @@ public final class Neo4jGraph implements Graph {
 			node.setProperty(PropertyTypes.STARTREF.name(), s.getStartRef());
 			node.setProperty(PropertyTypes.ENDREF.name(), s.getEndRef());
 			node.setProperty(PropertyTypes.SEQUENCE.name(), s.getSequence());
-			node.setProperty(PropertyTypes.SOURCE.name(), s.getSource());
 			node.setProperty(PropertyTypes.RANK.name(), 0);
+			node.setProperty(PropertyTypes.SCORE.name(), s.getSequence().length());
+
+			s.getSources().forEach(e -> {
+				Node source = service.findNode(sourceLabel, PropertyTypes.SOURCE.name(), e);
+				if (source == null) {
+					source = service.createNode(sourceLabel);
+					source.setProperty(PropertyTypes.SOURCE.name(), e);
+				}
+				node.createRelationshipTo(source, RelTypes.SOURCE);
+			});
 
 			tx.success();
 		}
@@ -114,10 +143,17 @@ public final class Neo4jGraph implements Graph {
 	@Override
 	public void constructGraph(NodeParser np, EdgeParser ep)
 			throws IOException, ParseException {
-		try (Transaction tx = service.beginTx()) {
-			while (np.hasNext()) {
-				addNode(np.next());
+		while (np.hasNext()) {
+			try (Transaction tx = service.beginTx()) {
+				for (int i = 0; i < TRANSACTION_SIZE && np.hasNext(); i++) {
+					addNode(np.next());
+				}
+				tx.success();
 			}
+			System.out.println("node batch!");
+		}
+
+		try (Transaction tx = service.beginTx()) {
 			while (ep.hasNext()) {
 				addEdge(ep.next());
 			}
@@ -158,10 +194,7 @@ public final class Neo4jGraph implements Graph {
 		return query(e -> {
 			ResourceIterator<Node> res = e.findNodes(nodeLabel, PropertyTypes.RANK.name(), rank);
 			List<SequenceNode> nodes = new LinkedList<>();
-
-			for (Node n : loop(res)) {
-				nodes.add(createSequenceNode(n));
-			}
+			res.forEachRemaining(n -> nodes.add(createSequenceNode(n)));
 
 			return nodes;
 		});
@@ -174,7 +207,7 @@ public final class Neo4jGraph implements Graph {
 	 * @return a {@link SequenceNode} with the information of the given {@link Node}.
 	 */
 	public SequenceNode createSequenceNode(Node node) {
-		return new NodeQuery(node).execute(service);
+		return new Neo4jSequenceNode(service, node);
 	}
 
 	@Override

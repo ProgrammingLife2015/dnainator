@@ -2,6 +2,7 @@ package nl.tudelft.dnainator.graph.impl.command;
 
 import static nl.tudelft.dnainator.graph.impl.PropertyTypes.ID;
 import static nl.tudelft.dnainator.graph.impl.PropertyTypes.RANK;
+import static nl.tudelft.dnainator.graph.impl.PropertyTypes.SOURCE;
 
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
@@ -11,13 +12,16 @@ import org.neo4j.graphdb.Label;
  */
 public class IndexCommand implements Command {
 	private Label nodeLabel;
+	private Label sourceLabel;
 
 	/**
 	 * Create a new {@link IndexCommand} using the specified label.
 	 * @param nodeLabel	the label
+	 * @param sourceLabel	the label for source nodes
 	 */
-	public IndexCommand(Label nodeLabel) {
+	public IndexCommand(Label nodeLabel, Label sourceLabel) {
 		this.nodeLabel = nodeLabel;
+		this.sourceLabel = sourceLabel;
 	}
 	
 	@Override
@@ -34,5 +38,8 @@ public class IndexCommand implements Command {
 			.on(RANK.name())
 			.create();
 		
+		service.schema().constraintFor(sourceLabel)
+			.assertPropertyIsUnique(SOURCE.name())
+			.create();
 	}
 }

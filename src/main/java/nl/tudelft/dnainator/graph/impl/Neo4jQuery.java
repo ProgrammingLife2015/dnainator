@@ -12,7 +12,6 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import nl.tudelft.dnainator.core.SequenceNode;
-import nl.tudelft.dnainator.graph.impl.query.NodeQuery;
 import nl.tudelft.dnainator.graph.query.GraphQuery;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 import nl.tudelft.dnainator.graph.query.IDsFilter;
@@ -39,7 +38,7 @@ public final class Neo4jQuery implements GraphQuery {
 	private Predicate<SequenceNode> p;
 
 	private Neo4jQuery() {
-		this.sb = new StringBuilder("MATCH n\n");
+		this.sb = new StringBuilder("MATCH n-[" + SOURCE.name() + "]->p\n");
 	}
 
 	private void addCondition(String c) {
@@ -65,7 +64,7 @@ public final class Neo4jQuery implements GraphQuery {
 			Result r = db.execute(sb.toString(), parameters);
 			ResourceIterator<Node> it = r.columnAs("n");
 			result = IteratorUtil.asCollection(it).stream()
-				.map(e -> new NodeQuery(e).execute(db))
+				.map(e -> new Neo4jSequenceNode(db, e))
 				.filter(p)
 				.collect(Collectors.toList());
 			tx.success();
@@ -99,7 +98,7 @@ public final class Neo4jQuery implements GraphQuery {
 	public void compile(SourcesFilter sources) {
 		parameters.compute("sources", (k, v) -> {
 			if (v == null) {
-				addCondition("n." + SOURCE.name() + " IN {sources}\n");
+				addCondition("p." + SOURCE.name() + " IN {sources}\n");
 				return sources.getSources();
 			}
 			((Collection<String>) v).addAll(sources.getSources());

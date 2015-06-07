@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
+import nl.tudelft.dnainator.graph.impl.Neo4jSequenceNode;
 import nl.tudelft.dnainator.graph.impl.RelTypes;
 
 import org.neo4j.graphdb.Direction;
@@ -70,7 +71,7 @@ public class ClusterQuery implements Query<Cluster> {
 		}
 
 		// Might want to internally pass nodes.
-		List<SequenceNode> retrieve = result.stream().map(e -> new NodeQuery(e).execute(service))
+		List<SequenceNode> retrieve = result.stream().map(e -> new Neo4jSequenceNode(service, e))
 						.collect(Collectors.toList());
 		cluster = new Cluster(rankStart, retrieve);
 

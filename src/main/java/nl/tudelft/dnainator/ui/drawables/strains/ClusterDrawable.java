@@ -1,6 +1,5 @@
 package nl.tudelft.dnainator.ui.drawables.strains;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -38,7 +37,7 @@ public class ClusterDrawable extends Group implements Drawable {
 	public ClusterDrawable(ColorServer colorServer, List<SequenceNode> clustered) {
 		this.clustered = clustered;
 		this.sources = clustered.stream()
-				.flatMap(e -> Arrays.asList(e.getSource().split(",")).stream())
+				.flatMap(e -> e.getSources().stream())
 				.collect(Collectors.toSet());
 
 		label = new Text(Integer.toString(clustered.size()));
