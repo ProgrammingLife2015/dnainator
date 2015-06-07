@@ -4,11 +4,16 @@
 
   <groupId>nl.tudelft.dnainator</groupId>
   <artifactId>dnainator</artifactId>
-  <packaging>jar</packaging>
+  <packaging>pom</packaging>
   <version>0.7-SNAPSHOT</version>
   <name>DNAinator</name>
   <url>https://github.com/DNAinator/dnainator</url>
   <description>Visualize DNA</description>
+
+  <modules>
+    <module>backend</module>
+    <module>frontend</module>
+  </modules>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -27,31 +32,15 @@
       <version>1.3</version>
       <scope>test</scope>
     </dependency>
-    <!-- See: http://blog.buildpath.de/javafx-testrunner/ -->
     <dependency>
-      <groupId>de.saxsys</groupId>
-      <artifactId>jfx-testrunner</artifactId>
-      <version>1.0</version>
-    </dependency>
-   <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
       <version>1.10.19</version>
     </dependency>
     <dependency>
-      <groupId>net.sf.jfasta</groupId>
-      <artifactId>jfasta</artifactId>
-      <version>2.2.0</version>
-    </dependency>
-    <dependency>
       <groupId>org.neo4j</groupId>
       <artifactId>neo4j</artifactId>
       <version>2.2.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.biojava</groupId>
-      <artifactId>biojava-genome</artifactId>
-      <version>4.0.0</version>
     </dependency>
   </dependencies>
 
@@ -240,31 +229,7 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
-        <groupId>sh.tak.appbundler</groupId>
-        <artifactId>appbundle-maven-plugin</artifactId>
-        <version>1.0.2</version>
-        <configuration>
-          <mainClass>nl.tudelft.dnainator.Main</mainClass>
-          <iconFile>${basedir}/src/main/resources/ui/dnainator.icns</iconFile>
-        </configuration>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>bundle</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
-    <!-- Resources -->
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
   </build>
 
   <reporting>
