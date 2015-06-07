@@ -109,9 +109,6 @@ public class Neo4jSequenceNode implements SequenceNode {
 			end		= (int)    node.getProperty(PropertyTypes.ENDREF.name());
 			sequence	= (String) node.getProperty(PropertyTypes.SEQUENCE.name());
 			rank		= (int)    node.getProperty(PropertyTypes.RANK.name());
-			node.getRelationships(RelTypes.SOURCE).forEach(e -> {
-				sources.add((String) e.getEndNode().getProperty(PropertyTypes.SOURCE.name()));
-			});
 
 			tx.success();
 		}
@@ -136,6 +133,6 @@ public class Neo4jSequenceNode implements SequenceNode {
 
 	@Override
 	public String toString() {
-		return "SequenceNode<" + getId() + "," + sequence.length() + ">";
+		return "SequenceNode<" + getId() + "," + getSequence().length() + ">";
 	}
 }
