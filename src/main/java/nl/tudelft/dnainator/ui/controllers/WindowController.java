@@ -60,6 +60,11 @@ public class WindowController {
 	private void exitAction(ActionEvent e) {
 		Platform.exit();
 	}
+	
+	@SuppressWarnings("unused") @FXML
+	private void toRankAction(ActionEvent e) {
+		strainView.setPan(-160000, 25);
+	}
 
 	@SuppressWarnings("unused") @FXML
 	private void zoomInAction(ActionEvent e) {

@@ -68,7 +68,12 @@
             <Menu mnemonicParsing="false" text="Navigate">
               <items>
                 <MenuItem mnemonicParsing="false" text="Jump to node..." />
-                  <MenuItem mnemonicParsing="false" text="Jump to sequence..." />
+                <MenuItem mnemonicParsing="false" text="Jump to sequence..." />
+                <MenuItem mnemonicParsing="false" onAction="#toRankAction" text="Jump to rank...">
+                  <accelerator>
+                    <KeyCodeCombination alt="UP" code="R" control="DOWN" meta="UP" shift="UP" shortcut="DOWN" />
+                  </accelerator>
+                </MenuItem>
               </items>
             </Menu>
           <Menu mnemonicParsing="false" text="Filter">
