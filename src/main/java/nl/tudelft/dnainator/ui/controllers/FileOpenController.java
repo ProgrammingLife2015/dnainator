@@ -4,8 +4,7 @@ import java.io.File;
 
 import org.neo4j.io.fs.FileUtils;
 
-import javafx.beans.binding.Binding;
-import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
@@ -91,18 +90,20 @@ public class FileOpenController {
 		gffLoadService.graphProperty().bind(graphProperty);
 
 		animation = new LeftSlideAnimation(fileOpenPane, WIDTH, ANIM_DURATION, Position.LEFT);
-
-		bindOpenButtonDisabling();
+		bindDisabledFieldsAndButtons();
 	}
 
 	/*
 	 * Disables the openbutton when either no newick file or no node file is selected.
 	 */
-	private void bindOpenButtonDisabling() {
-		/* At least one of the three major files need to be filled. */
-		Binding<Boolean> isFilesFilled = Bindings.and(nodeField.textProperty().isEmpty(),
-				newickField.textProperty().isEmpty()).and(gffField.textProperty().isEmpty());
-		openButton.disableProperty().bind(isFilesFilled);
+	private void bindDisabledFieldsAndButtons() {
+		BooleanBinding emptyGraphFile = nodeField.textProperty().isEmpty()
+				.or(edgeField.textProperty().isEmpty());
+		gffField.disableProperty().bind(graphProperty.isNull().and(emptyGraphFile));
+		// At least both graph files or the newick file must be filled.
+		openButton.disableProperty().bind(emptyGraphFile
+				.and(newickField.textProperty().isEmpty())
+				.and(gffField.disableProperty()));
 	}
 
 	/*
