@@ -2,6 +2,8 @@ package nl.tudelft.dnainator.annotation;
 
 import java.util.Collection;
 
+import nl.tudelft.dnainator.parser.AnnotationParser;
+
 /**
  * An abstract interface for storing annotations.
  */
@@ -11,7 +13,7 @@ public interface AnnotationCollection {
 	 * Add annotations from a given source.
 	 * @param source The source of the annotations.
 	 */
-	default void addAnnotations(AnnotationSource source) {
+	default void addAnnotations(AnnotationParser source) {
 		while (source.hasNext()) {
 			addAnnotation(source.next());
 		}

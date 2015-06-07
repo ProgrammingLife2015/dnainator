@@ -5,8 +5,8 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
-import nl.tudelft.dnainator.annotation.AnnotationSource;
 import nl.tudelft.dnainator.graph.Graph;
+import nl.tudelft.dnainator.parser.AnnotationParser;
 import nl.tudelft.dnainator.parser.impl.GFF3AnnotationParser;
 
 import java.io.IOException;
@@ -54,7 +54,7 @@ public class GFFLoadService extends Service<AnnotationCollection> {
 		return new Task<AnnotationCollection>() {
 			@Override
 			protected AnnotationCollection call() {
-				AnnotationSource as;
+				AnnotationParser as;
 				Graph g = graph.get();
 
 				try {

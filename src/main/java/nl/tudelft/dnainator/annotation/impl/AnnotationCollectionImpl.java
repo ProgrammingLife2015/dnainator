@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 
 import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
-import nl.tudelft.dnainator.annotation.AnnotationSource;
 import nl.tudelft.dnainator.annotation.Range;
+import nl.tudelft.dnainator.parser.AnnotationParser;
 
 /**
  * A default implementation of an {@link AnnotationCollection}, which can
@@ -31,7 +31,7 @@ public class AnnotationCollectionImpl implements AnnotationCollection {
 	 * using addAnnotations.
 	 * @param source The source for getting the annotations.
 	 */
-	public AnnotationCollectionImpl(AnnotationSource source) {
+	public AnnotationCollectionImpl(AnnotationParser source) {
 		this();
 		addAnnotations(source);
 	}
