@@ -44,26 +44,6 @@
     </dependencies>
 
     <build>
-        <plugins>
-            <plugin>
-                <groupId>sh.tak.appbundler</groupId>
-                <artifactId>appbundle-maven-plugin</artifactId>
-                <version>1.0.2</version>
-                <configuration>
-                    <mainClass>nl.tudelft.dnainator.Main</mainClass>
-                    <bundleName>DNAinator</bundleName>
-                    <iconFile>${basedir}/src/main/resources/dnainator.icns</iconFile>
-                </configuration>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>bundle</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
         <resources>
             <resource>
                 <directory>${basedir}/src/main/resources</directory>
