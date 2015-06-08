@@ -11,8 +11,8 @@
   <description>Visualize DNA</description>
 
   <modules>
-    <module>backend</module>
-    <module>frontend</module>
+    <module>dnainator-core</module>
+    <module>dnainator-javafx</module>
   </modules>
 
   <properties>
