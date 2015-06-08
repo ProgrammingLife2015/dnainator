@@ -6,14 +6,11 @@
         <groupId>nl.tudelft.dnainator</groupId>
         <artifactId>dnainator</artifactId>
         <version>0.7-SNAPSHOT</version>
+        <relativePath>../</relativePath>
     </parent>
     <artifactId>dnainator-core</artifactId>
     <packaging>jar</packaging>
     <name>DNAinator's core</name>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
 
     <dependencies>
         <dependency>
@@ -25,6 +22,23 @@
             <groupId>org.biojava</groupId>
             <artifactId>biojava-genome</artifactId>
             <version>4.0.0</version>
+        </dependency>
+        <!-- From here on, all plugins are inherited from parent -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-all</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.neo4j</groupId>
+            <artifactId>neo4j</artifactId>
         </dependency>
     </dependencies>
 </project>
