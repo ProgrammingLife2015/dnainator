@@ -1,22 +1,35 @@
 package nl.tudelft.dnainator.graph.impl.query;
 
+import nl.tudelft.dnainator.annotation.Annotation;
+import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
+import nl.tudelft.dnainator.graph.impl.Neo4jSequenceNode;
+import nl.tudelft.dnainator.graph.impl.NodeLabels;
+import nl.tudelft.dnainator.graph.impl.PropertyTypes;
+import nl.tudelft.dnainator.graph.impl.RelTypes;
+
+import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.traversal.TraversalDescription;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * The {@link AllClustersQuery} creates {@link Cluster}s from all nodes,
  * starting at the startNodes, and ending when the maximum specified start rank is reached.
  */
 public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
+	private Set<String> visited;
 	private List<String> startNodes;
 	private int threshold;
 	private int maxRank;
@@ -34,6 +47,7 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 		this.startNodes = startNodes;
 		this.maxRank = maxRank;
 		this.threshold = threshold;
+		this.visited = new HashSet<>();
 	}
 
 	@Override
@@ -41,12 +55,9 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 		Queue<Cluster> rootClusters = new PriorityQueue<>((e1, e2) -> 
 			e1.getStartRank() - e2.getStartRank()
 		);
-		Set<String> visited = new HashSet<>();
 		Map<Integer, List<Cluster>> result = new HashMap<Integer, List<Cluster>>();
 	
-		// Retrieve the root clusters starting from the startNodes and add them to the queue
-		ClustersFromQuery clusterFrom = new ClustersFromQuery(visited, startNodes, threshold);
-		rootClusters.addAll(clusterFrom.execute(service));
+		rootClusters.addAll(clustersFrom(service, startNodes));
 
 		// Find adjacent clusters as long as there are root clusters in the queue
 		int minrank = rootClusters.stream().mapToInt(e -> e.getStartRank()).min().orElse(0);
@@ -59,12 +70,57 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 			result.get(c.getStartRank()).add(c);
 
 			c.getNodes().forEach(sn -> {
-				ClustersFromQuery cfq = new ClustersFromQuery(visited,
-										sn.getOutgoing(), threshold);
-				rootClusters.addAll(cfq.execute(service));
+				rootClusters.addAll(clustersFrom(service, sn.getOutgoing()));
 			});
 		}
 
 		return result;
+	}
+
+	private Queue<Cluster> clustersFrom(GraphDatabaseService service, List<String> startNodes) {
+		Queue<Cluster> rootClusters = new LinkedList<Cluster>();
+
+		for (String sn : startNodes) {
+			// Continue if this startNode was consumed by another cluster
+			if (visited.contains(sn)) {
+				continue;
+			}
+
+			// Otherwise get the cluster starting from this startNode
+			rootClusters.add(cluster(service, sn));
+		}
+
+		return rootClusters;
+	}
+
+	private Cluster cluster(GraphDatabaseService service, String start) {
+		Cluster cluster = null;
+		Node startNode = service.findNode(NodeLabels.NODE, PropertyTypes.ID.name(), start);
+		List<Node> result = new ArrayList<>();
+
+		// A depth first traversal traveling along both incoming and outgoing edges.
+		TraversalDescription clusterDesc = service.traversalDescription()
+						.depthFirst()
+						.relationships(RelTypes.NEXT, Direction.BOTH)
+						.evaluator(new ClusterEvaluator(threshold, visited));
+		// Traverse the cluster starting from the startNode.
+		int rankStart = (int) startNode.getProperty(PropertyTypes.RANK.name());
+		for (Node end : clusterDesc.traverse(startNode).nodes()) {
+			result.add(end);
+
+			// Update this cluster's start rank according to the lowest node rank.
+			int endRank = (int) startNode.getProperty(PropertyTypes.RANK.name());
+			if (endRank < rankStart) {
+				rankStart = endRank;
+			}
+		}
+
+		// Might want to internally pass nodes.
+		List<SequenceNode> retrieve = result.stream().map(e -> new Neo4jSequenceNode(service, e))
+						.collect(Collectors.toList());
+		List<Annotation> annotations = retrieve.stream().flatMap(e -> e.getAnnotations().stream())
+						.collect(Collectors.toList());
+		cluster = new Cluster(rankStart, retrieve, annotations);
+		return cluster;
 	}
 }

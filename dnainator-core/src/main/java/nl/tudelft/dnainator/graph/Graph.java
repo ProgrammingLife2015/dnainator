@@ -10,8 +10,6 @@ import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
 
 /**
  * Interface for backend agnostic interaction with a graph.
@@ -48,15 +46,6 @@ public interface Graph extends AnnotationCollection {
 	 * @return	a list of all nodes, per rank
 	 */
 	List<List<SequenceNode>> getRanks();
-
-	/**
-	 * Return a list of nodes that belong to the same cluster as the given startId.
-	 * @param visited	nodes that were already visited
-	 * @param startNodes	the start nodes
-	 * @param threshold		the clustering threshold
-	 * @return		a list representing the cluster
-	 */
-	Queue<Cluster> getClustersFrom(Set<String> visited, List<String> startNodes, int threshold);
 
 	/**
 	 * Return a list of nodes that belong to the same cluster as the given startId.
