@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.ui.models;
+package nl.tudelft.dnainator.ui.drawables.strains;
 
 /**
  * This enum holds zooming thresholds for the various zooming levels.

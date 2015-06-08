@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.ui.models;
+package nl.tudelft.dnainator.ui.drawables.strains;
 
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
@@ -8,8 +8,6 @@ import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.ui.ColorServer;
-import nl.tudelft.dnainator.ui.drawables.strains.ClusterDrawable;
-import nl.tudelft.dnainator.ui.drawables.strains.Edge;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,10 +15,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * The {@link GraphItem} class represents the graph that contains the DNA strain.
+ * The {@link Strain} class represents the graph that contains the DNA strain.
  * It holds both content and children, and toggles what to load and display based on the zoom level.
  */
-public class GraphItem extends Group {
+public class Strain extends Group {
 	private static final int RANK_WIDTH = 10;
 	private static final int NO_CLUSTERS = 33000;
 	/* JavaFX scene graph cannot handle rectangles larger than 10k pixels, so we split a 30k
@@ -35,23 +33,23 @@ public class GraphItem extends Group {
 	private Group childContent;
 
 	/**
-	 * Construct a new top level {@link GraphItem} using the specified graph.
+	 * Construct a new top level {@link Strain} using the specified graph.
 	 * @param colorServer The {@link ColorServer} to bind to.
 	 * @param graph	The specified graph.
 	 */
-	public GraphItem(ColorServer colorServer, Graph graph) {
+	public Strain(ColorServer colorServer, Graph graph) {
 		this(colorServer, graph, new Group(), new Group());
 	}
 
 	/**
-	 * Construct a new top level {@link GraphItem} using the specified graph, content and child
+	 * Construct a new top level {@link Strain} using the specified graph, content and child
 	 * content.
 	 * @param colorServer The {@link ColorServer} to bind to.
 	 * @param graph	The specified graph.
 	 * @param content The specified graph content.
 	 * @param childContent The specified child content.
 	 */
-	public GraphItem(ColorServer colorServer, Graph graph, Group content, Group childContent) {
+	public Strain(ColorServer colorServer, Graph graph, Group content, Group childContent) {
 		this.colorServer = colorServer;
 		this.graph = graph;
 		this.clusters = new HashMap<>();

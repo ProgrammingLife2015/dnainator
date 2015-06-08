@@ -3,14 +3,14 @@ package nl.tudelft.dnainator.ui.views;
 import javafx.geometry.Point2D;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.ui.ColorServer;
-import nl.tudelft.dnainator.ui.models.GraphItem;
+import nl.tudelft.dnainator.ui.drawables.strains.Strain;
 import nl.tudelft.dnainator.ui.widgets.contexts.ViewContext;
 
 /**
  * An implementation of {@link AbstractView} for displaying DNA strains.
  */
 public class StrainView extends AbstractView {
-	private GraphItem gi;
+	private Strain strain;
 
 	/**
 	 * Creates a new strain view instance.
@@ -25,20 +25,20 @@ public class StrainView extends AbstractView {
 			e.consume();
 		});
 
-		gi = new GraphItem(colorServer, graph);
-		setTransforms(gi);
-		getChildren().add(gi);
+		strain = new Strain(colorServer, graph);
+		setTransforms(strain);
+		getChildren().add(strain);
 	}
 
 	@Override
 	public void pan(Point2D delta) {
 		super.pan(delta);
-		gi.update(cameraToWorld(getLayoutBounds()));
+		strain.update(cameraToWorld(getLayoutBounds()));
 	}
 
 	@Override
 	public void zoom(double delta, Point2D center) {
 		super.zoom(delta, center);
-		gi.update(cameraToWorld(getLayoutBounds()));
+		strain.update(cameraToWorld(getLayoutBounds()));
 	}
 }

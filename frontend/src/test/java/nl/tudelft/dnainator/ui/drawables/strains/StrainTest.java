@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.ui.models;
+package nl.tudelft.dnainator.ui.drawables.strains;
 
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
@@ -21,15 +21,15 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 /**
- * Test the GraphItem of the model.
+ * Test the {@link Strain} of the model.
  * Also test its abstract base classes.
  */
 @RunWith(MockitoJUnitRunner.class)
-public class GraphItemTest {
+public class StrainTest {
 	@Mock private Graph graph;
 	@Mock private Node node;
 	@Mock private Group child, content;
-	private GraphItem gi;
+	private Strain strain;
 
 	/**
 	 * Initialize the graphitem.
@@ -38,7 +38,7 @@ public class GraphItemTest {
 	public void setup() {
 		child = new Group();
 		content = new Group();
-		gi = new GraphItem(new ColorServer(), graph, content, child);
+		strain = new Strain(new ColorServer(), graph, content, child);
 	}
 
 	/**
@@ -59,27 +59,27 @@ public class GraphItemTest {
 	public void testInViewPort() {
 		// CHECKSTYLE.OFF: MagicNumber
 		Bounds viewport = new Rectangle(640, 480).getBoundsInLocal();
-		assertEquals(true, gi.isInViewport(viewport));
+		assertEquals(true, strain.isInViewport(viewport));
 
 		content.setTranslateX(0);
 		content.setTranslateY(-1);
-		assertEquals(false, gi.isInViewport(viewport));
+		assertEquals(false, strain.isInViewport(viewport));
 
 		content.setTranslateX(0);
 		content.setTranslateY(480);
-		assertEquals(true, gi.isInViewport(viewport));
+		assertEquals(true, strain.isInViewport(viewport));
 
 		content.setTranslateX(0);
 		content.setTranslateY(481);
-		assertEquals(false, gi.isInViewport(viewport));
+		assertEquals(false, strain.isInViewport(viewport));
 
 		content.setTranslateX(640);
 		content.setTranslateY(0);
-		assertEquals(true, gi.isInViewport(viewport));
+		assertEquals(true, strain.isInViewport(viewport));
 
 		content.setTranslateX(641);
 		content.setTranslateY(0);
-		assertEquals(false, gi.isInViewport(viewport));
+		assertEquals(false, strain.isInViewport(viewport));
 		// CHECKSTYLE.ON: MagicNumber
 	}
 
@@ -100,19 +100,19 @@ public class GraphItemTest {
 	@Test
 	public void testUpdate() {
 		// CHECKSTYLE.OFF: MagicNumber
-		gi.update(new Rectangle(20000, 10000).getBoundsInLocal());
+		strain.update(new Rectangle(20000, 10000).getBoundsInLocal());
 		assertTrue(content.isVisible());
 		verify(graph, never()).getRank(anyInt());
 
-		gi.update(new Rectangle(5000, 2500).getBoundsInLocal());
+		strain.update(new Rectangle(5000, 2500).getBoundsInLocal());
 		assertFalse(content.isVisible());
 		verify(graph, Mockito.atLeastOnce()).getRank(anyInt());
 
-		gi.update(new Rectangle(1000, 500).getBoundsInLocal());
+		strain.update(new Rectangle(1000, 500).getBoundsInLocal());
 		assertFalse(content.isVisible());
 		verify(graph, Mockito.atLeastOnce()).getRank(anyInt());
 
-		gi.update(new Rectangle(20000, 10000).getBoundsInLocal());
+		strain.update(new Rectangle(20000, 10000).getBoundsInLocal());
 		assertTrue(content.isVisible());
 		verify(graph, Mockito.atLeastOnce()).getRank(anyInt());
 		// CHECKSTYLE.ON: MagicNumber
