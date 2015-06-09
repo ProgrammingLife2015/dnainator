@@ -15,12 +15,14 @@ import nl.tudelft.dnainator.graph.impl.query.ClustersFromQuery;
 import nl.tudelft.dnainator.graph.impl.query.Query;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 
+
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.ResourceIterator;
 import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
+
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -42,9 +44,9 @@ public final class Neo4jGraph implements Graph, AnnotationCollection {
 			+ "RETURN s";
 	private static final String GET_RANGE =
 			"MATCH (n:" + NodeLabels.NODE.name() + ")-[r:" + NodeLabels.SOURCE.name() + "]->s "
-			+ "WHERE s." + PropertyTypes.SOURCE.name() + " = \"TKK_REF\""
+			+ "WHERE s." + PropertyTypes.SOURCE.name() + " = \"TKK_REF\" "
 			+ "AND n." + PropertyTypes.STARTREF.name() + " <= {to} "
-			+ "AND n." + PropertyTypes.ENDREF.name() + " >= {from}) RETURN n";
+			+ "AND n." + PropertyTypes.ENDREF.name() + " >= {from} RETURN n";
 	private GraphDatabaseService service;
 
 	/**
@@ -198,11 +200,14 @@ public final class Neo4jGraph implements Graph, AnnotationCollection {
 
 	@Override
 	public void addAnnotation(Annotation a) {
-		Map<String, Object> parameters = new HashMap<>(2);
-		parameters.put("from", a.getStart());
-		parameters.put("to", a.getEnd());
-		Result r = service.execute(GET_RANGE, parameters);
-		ResourceIterator<Node> toAnnotate = r.columnAs("n");
+		execute(e -> {
+			Map<String, Object> parameters = new HashMap<>(2);
+			parameters.put("from", a.getStart());
+			parameters.put("to", a.getEnd());
+			Result r = service.execute(GET_RANGE, parameters);
+			r.forEachRemaining(f -> System.out.println(f));
+			ResourceIterator<Node> toAnnotate = r.columnAs("n");
+		});
 	}
 
 	@Override
