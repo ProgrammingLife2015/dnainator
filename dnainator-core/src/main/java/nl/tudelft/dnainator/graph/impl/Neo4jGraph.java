@@ -46,6 +46,11 @@ public final class Neo4jGraph implements Graph, AnnotationCollection {
 			+ "WHERE s." + PropertyTypes.SOURCE.name() + " = \"TKK_REF\" "
 			+ "AND n." + PropertyTypes.STARTREF.name() + " <= {to} "
 			+ "AND n." + PropertyTypes.ENDREF.name() + " >= {from} RETURN n";
+	private static final String GET_SUB_RANGE =
+			"MATCH (a:" + NodeLabels.ANNOTATION.name() + ") "
+			+ "WHERE a." + PropertyTypes.STARTREF.name() + " <= {to} "
+			+ "AND a." + PropertyTypes.ENDREF.name() + " > {from} RETURN a";
+
 	private GraphDatabaseService service;
 
 	/**
@@ -205,14 +210,14 @@ public final class Neo4jGraph implements Graph, AnnotationCollection {
 	@Override
 	public void addAnnotation(Annotation a) {
 		Map<String, Object> parameters = new HashMap<>(2);
+		parameters.put("from", a.getStart());
+		parameters.put("to", a.getEnd());
 		execute(e -> {
 			Node annotation = e.createNode(NodeLabels.ANNOTATION);
 			annotation.setProperty(PropertyTypes.ID.name(), a.getGeneName());
 			annotation.setProperty(PropertyTypes.STARTREF.name(), a.getStart());
 			annotation.setProperty(PropertyTypes.ENDREF.name(), a.getEnd());
-
-			parameters.put("from", a.getStart());
-			parameters.put("to", a.getEnd());
+			annotation.setProperty(PropertyTypes.SENSE.name(), a.isSense());
 
 			ResourceIterator<Node> nodes = service.execute(GET_RANGE, parameters).columnAs("n");
 			nodes.forEachRemaining(n -> n.createRelationshipTo(annotation, RelTypes.ANNOTATED));
@@ -221,7 +226,14 @@ public final class Neo4jGraph implements Graph, AnnotationCollection {
 
 	@Override
 	public Collection<Annotation> getSubrange(Range r) {
-		// TODO
-		return null;
+		Map<String, Object> parameters = new HashMap<>(2);
+		List<Annotation> result = new LinkedList<Annotation>();
+		parameters.put("from", r.getX());
+		parameters.put("to", r.getY());
+		ResourceIterator<Node> annotations = query(service -> {
+			return service.execute(GET_SUB_RANGE, parameters);
+		}).columnAs("a");
+		annotations.forEachRemaining(a -> result.add(new Neo4jAnnotation(service, a)));
+		return result;
 	}
 }
