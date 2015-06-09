@@ -57,6 +57,7 @@ public class AbstractViewController {
 		KeyCode key = e.getCode();
 
 		if (key.isArrowKey()) {
+			e.consume();
 			scrollTo(key);
 		} else if (key == KeyCode.PLUS || key == KeyCode.EQUALS) {
 			view.zoomIn();
