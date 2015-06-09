@@ -19,6 +19,14 @@ public class NewickLoadService extends Service<TreeNode> {
 	private StringProperty newickPath = new SimpleStringProperty(this, "newickPath");
 
 	/**
+	 * Creates the service storing the file path stored and parsing the file belonging to it,
+	 * if it exists.
+	 */
+	public NewickLoadService() {
+		newickPath.set(AppConfig.getInstance().getNewickPath());
+	}
+
+	/**
 	 * @param path The newick path to load.
 	 */
 	public final void setNewickPath(String path) {

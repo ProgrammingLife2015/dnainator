@@ -49,6 +49,9 @@ public class GraphLoadService extends Service<Graph> {
 	 */
 	public GraphLoadService() {
 		setDatabase(DB_PATH);
+		nodePathProperty().setValue(AppConfig.getInstance().getNodePath());
+		edgePathProperty().set(AppConfig.getInstance().getEdgePath());
+		gffPathProperty().set(AppConfig.getInstance().getGffPath());
 	}
 
 	/**
@@ -177,12 +180,6 @@ public class GraphLoadService extends Service<Graph> {
 					.build();
 			}
 		};
-	}
-
-	@Override
-	protected void ready() {
-		super.ready();
-		edgePathProperty().setValue(AppConfig.getInstance().getEdgePath());
 	}
 
 	@Override

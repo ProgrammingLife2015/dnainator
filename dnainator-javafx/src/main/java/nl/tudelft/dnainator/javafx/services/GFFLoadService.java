@@ -2,6 +2,8 @@ package nl.tudelft.dnainator.javafx.services;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
@@ -16,9 +18,15 @@ import java.io.IOException;
  * This class enables mutation loading to be executed in the background.
  */
 public class GFFLoadService extends Service<AnnotationCollection> {
-	private ObjectProperty<String> gffFilePath =
-			new SimpleObjectProperty<>(this, "gffFilePath");
+	private StringProperty gffFilePath = new SimpleStringProperty(this, "gffFilePath");
 	private ObjectProperty<Graph> graph = new SimpleObjectProperty<>(this, "graph");
+
+	/**
+	 * Creates a GFFLoadService and sets the file path to the stored path, if it exists.
+	 */
+	public GFFLoadService() {
+		gffFilePath.set(AppConfig.getInstance().getGffPath());
+	}
 
 	/**
 	 * Sets the GFF filename to the specified value.
@@ -38,7 +46,7 @@ public class GFFLoadService extends Service<AnnotationCollection> {
 	/**
 	 * @return The GFF filename property.
 	 */
-	public ObjectProperty<String> gffFilePathProperty() {
+	public StringProperty gffFilePathProperty() {
 		return gffFilePath;
 	}
 
