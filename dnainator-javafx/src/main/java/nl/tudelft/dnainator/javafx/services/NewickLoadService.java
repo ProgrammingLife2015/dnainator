@@ -62,6 +62,5 @@ public class NewickLoadService extends Service<TreeNode> {
 	public void restart() {
 		super.restart();
 		AppConfig.getInstance().setNewickPath(newickPath.get());
-		AppConfig.getInstance().flush();
 	}
 }

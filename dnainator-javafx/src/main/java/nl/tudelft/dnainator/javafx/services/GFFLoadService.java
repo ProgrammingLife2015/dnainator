@@ -82,6 +82,5 @@ public class GFFLoadService extends Service<AnnotationCollection> {
 	public void restart() {
 		super.restart();
 		AppConfig.getInstance().setGffPath(getGffFilePath());
-		AppConfig.getInstance().flush();
 	}
 }

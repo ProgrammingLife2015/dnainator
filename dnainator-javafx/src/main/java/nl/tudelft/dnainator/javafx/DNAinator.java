@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import nl.tudelft.dnainator.javafx.utils.AppConfig;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.ExceptionDialog;
 
 import java.io.IOException;
@@ -34,6 +35,7 @@ public class DNAinator extends Application {
 			primaryStage.getIcons().add(new Image(getClass().getResourceAsStream(ICON)));
 			primaryStage.setMinWidth(MIN_WIDTH);
 			primaryStage.setMinHeight(MIN_HEIGHT);
+			primaryStage.setOnCloseRequest(e -> AppConfig.getInstance().flush());
 
 			try {
 				BorderPane rootLayout = FXMLLoader.load(getClass().getResource(FXML));

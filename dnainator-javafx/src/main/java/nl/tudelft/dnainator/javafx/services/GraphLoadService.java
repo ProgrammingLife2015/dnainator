@@ -188,6 +188,5 @@ public class GraphLoadService extends Service<Graph> {
 		AppConfig.getInstance().setNodePath(nodePath.get());
 		AppConfig.getInstance().setEdgePath(edgePath.get());
 		AppConfig.getInstance().setGffPath(gffPath.get());
-		AppConfig.getInstance().flush();
 	}
 }
