@@ -48,8 +48,8 @@ public final class Neo4jGraph implements Graph, AnnotationCollection {
 			+ "AND n." + PropertyTypes.ENDREF.name() + " >= {from} RETURN n";
 	private static final String GET_SUB_RANGE =
 			"MATCH (a:" + NodeLabels.ANNOTATION.name() + ") "
-			+ "WHERE a." + PropertyTypes.STARTREF.name() + " <= {to} "
-			+ "AND a." + PropertyTypes.ENDREF.name() + " > {from} RETURN a";
+			+ "WHERE a." + PropertyTypes.STARTREF.name() + " < {to} "
+			+ "AND a." + PropertyTypes.ENDREF.name() + " >= {from} RETURN a";
 
 	private GraphDatabaseService service;
 
@@ -230,10 +230,13 @@ public final class Neo4jGraph implements Graph, AnnotationCollection {
 		List<Annotation> result = new LinkedList<Annotation>();
 		parameters.put("from", r.getX());
 		parameters.put("to", r.getY());
-		ResourceIterator<Node> annotations = query(service -> {
-			return service.execute(GET_SUB_RANGE, parameters);
-		}).columnAs("a");
-		annotations.forEachRemaining(a -> result.add(new Neo4jAnnotation(service, a)));
-		return result;
+		return query(service -> {
+			ResourceIterator<Node> annotations = service.execute(GET_SUB_RANGE, parameters)
+					.columnAs("a");
+			while (annotations.hasNext()) {
+				result.add(new Neo4jAnnotation(service, annotations.next()));
+			}
+			return result;
+		});
 	}
 }

@@ -1,5 +1,7 @@
 package nl.tudelft.dnainator.graph.impl;
 
+import nl.tudelft.dnainator.annotation.Annotation;
+import nl.tudelft.dnainator.annotation.impl.AnnotationImpl;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.core.impl.SequenceNodeFactoryImpl;
@@ -12,6 +14,7 @@ import nl.tudelft.dnainator.parser.exceptions.InvalidEdgeFormatException;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
 import nl.tudelft.dnainator.parser.impl.EdgeParserImpl;
 import nl.tudelft.dnainator.parser.impl.NodeParserImpl;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,7 +37,9 @@ import java.util.stream.Collectors;
 import static nl.tudelft.dnainator.graph.impl.PropertyTypes.ID;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
@@ -45,6 +50,9 @@ public class Neo4jGraphTest {
 	private static Neo4jGraph db;
 	private static InputStream nodeFile;
 	private static InputStream edgeFile;
+	private static AnnotationImpl first;
+	private static AnnotationImpl middle;
+	private static AnnotationImpl last;
 
 	/**
 	 * Setup the database and construct the graph.
@@ -68,6 +76,14 @@ public class Neo4jGraphTest {
 		} catch (ParseException e) {
 			fail("Couldn't parse file: " + e.getMessage());
 		}
+		//CHECKSTYLE.OFF: MagicNumber
+		first = new AnnotationImpl("first", 0, 10, true);
+		middle = new AnnotationImpl("middle", 5, 25, true);
+		last = new AnnotationImpl("last", 20, 30, true);
+		//CHECKSTYLE.ON: MagicNumber
+		db.addAnnotation(first);
+		db.addAnnotation(middle);
+		db.addAnnotation(last);
 	}
 
 	/**
@@ -221,6 +237,33 @@ public class Neo4jGraphTest {
 		expect = new HashSet<>();
 		assertUnorderedIDEquals(expect, db.queryNodes(qd));
 	}
+
+	/**
+	 * Test whether the end of the range is exclusive.
+	 */
+	@Test
+	public void testGetAnnotationsRangeExclusive() {
+		//CHECKSTYLE.OFF: MagicNumber
+		Collection<Annotation> as = db.getSubrange(1, 20);
+		//CHECKSTYLE.ON: MagicNumber
+		assertTrue(as.contains(first));
+		assertTrue(as.contains(middle));
+		assertFalse(as.contains(last));
+	}
+
+	/**
+	 * Test whether the start of the range is inclusive.
+	 */
+	@Test
+	public void testGetAnnotationsRangeInclusive() {
+		//CHECKSTYLE.OFF: MagicNumber
+		Collection<Annotation> as = db.getSubrange(0, 21);
+		//CHECKSTYLE.ON: MagicNumber
+		assertTrue(as.contains(first));
+		assertTrue(as.contains(middle));
+		assertTrue(as.contains(last));
+	}
+
 
 	private static void assertUnorderedIDEquals(Collection<String> expected,
 			Collection<SequenceNode> actual) {

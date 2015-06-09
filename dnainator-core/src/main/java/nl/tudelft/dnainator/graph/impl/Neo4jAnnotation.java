@@ -26,6 +26,7 @@ public class Neo4jAnnotation implements Annotation {
 			this.range = new Range((Integer) delegate.getProperty(PropertyTypes.STARTREF.name()),
 					(Integer) delegate.getProperty(PropertyTypes.ENDREF.name()));
 			this.isSense = (Boolean) delegate.getProperty(PropertyTypes.SENSE.name());
+			tx.success();
 		}
 	}
 
@@ -42,6 +43,21 @@ public class Neo4jAnnotation implements Annotation {
 	@Override
 	public boolean isSense() {
 		return isSense;
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (!(other instanceof Annotation)) {
+			return false;
+		}
+		Annotation a = (Annotation) other;
+		return a.getGeneName().equals(this.getGeneName()) && a.getStart() == this.getStart()
+				&& a.getEnd() == this.getEnd() && a.isSense() == this.isSense();
+	}
+
+	@Override
+	public int hashCode() {
+		return getGeneName().hashCode() + getStart() + getEnd() + ((Boolean) isSense()).hashCode();
 	}
 
 }
