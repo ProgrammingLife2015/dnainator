@@ -1,6 +1,7 @@
 package nl.tudelft.dnainator.graph.impl;
 
 import nl.tudelft.dnainator.core.SequenceNode;
+
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
@@ -24,6 +25,7 @@ public class Neo4jSequenceNode implements SequenceNode {
 	private int end;
 	private String sequence;
 	private int rank;
+	private List<String> annotations;
 	private Set<String> sources;
 	private List<String> outgoing;
 
@@ -40,12 +42,16 @@ public class Neo4jSequenceNode implements SequenceNode {
 
 		this.service = service;
 		this.node = node;
+		this.annotations = new ArrayList<>();
 		this.outgoing = new ArrayList<>();
 		this.sources = new HashSet<>();
 
 		try (Transaction tx = service.beginTx()) {
 			this.id = (String) node.getProperty(PropertyTypes.ID.name());
 
+			node.getRelationships(RelTypes.ANNOTATED, Direction.OUTGOING).forEach(e -> {
+				annotations.add((String) e.getEndNode().getProperty(PropertyTypes.ID.name()));
+			});
 			node.getRelationships(RelTypes.NEXT, Direction.OUTGOING).forEach(e -> {
 				outgoing.add((String) e.getEndNode().getProperty(PropertyTypes.ID.name()));
 			});
@@ -60,6 +66,11 @@ public class Neo4jSequenceNode implements SequenceNode {
 	@Override
 	public String getId() {
 		return id;
+	}
+
+	@Override
+	public List<String> getAnnotations() {
+		return annotations;
 	}
 
 	@Override

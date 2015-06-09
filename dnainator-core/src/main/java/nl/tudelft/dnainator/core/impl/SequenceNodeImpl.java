@@ -12,6 +12,7 @@ import java.util.Set;
  */
 public class SequenceNodeImpl implements SequenceNode {
 	private String id;
+	private List<String> annotations;
 	private Set<String> sources;
 	private int start;
 	private int end;
@@ -67,6 +68,11 @@ public class SequenceNodeImpl implements SequenceNode {
 	@Override
 	public String getId() {
 		return id;
+	}
+
+	@Override
+	public List<String> getAnnotations() {
+		return annotations;
 	}
 
 	@Override

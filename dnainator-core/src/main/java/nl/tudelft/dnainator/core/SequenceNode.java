@@ -14,6 +14,12 @@ public interface SequenceNode {
 	String getId();
 
 	/**
+	 * The associated annotations.
+	 * @return	the annotations
+	 */
+	List<String> getAnnotations();
+
+	/**
 	 * The associated source strains.
 	 * @return	the sources
 	 */
