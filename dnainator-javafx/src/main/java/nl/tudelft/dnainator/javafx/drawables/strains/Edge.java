@@ -1,9 +1,11 @@
 package nl.tudelft.dnainator.javafx.drawables.strains;
 
+import javafx.geometry.Pos;
 import javafx.scene.Group;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Text;
 import nl.tudelft.dnainator.javafx.widgets.contexts.EdgeContext;
 
 /**
@@ -21,7 +23,6 @@ public class Edge extends Group {
 		edge = new Line();
 		edge.startXProperty().bind(src.translateXProperty());
 		edge.startYProperty().bind(src.translateYProperty());
-		edge.getStyleClass().add("drawable-edge");
 		edge.setOnContextMenuRequested(e -> {
 			EdgeContext.getInstance().show(Edge.this, e.getScreenX(), e.getScreenY());
 			e.consume();
@@ -50,9 +51,10 @@ public class Edge extends Group {
 		edge.endXProperty().bind(src.translateXProperty());
 		edge.endYProperty().bind(src.translateYProperty().subtract(Y_OFFSET));
 
-		Circle hidden = new Circle(2, Color.GREY);
-		hidden.centerXProperty().bind(edge.endXProperty());
-		hidden.centerYProperty().bind(edge.endYProperty());
-		getChildren().add(hidden);
+		VBox box = new VBox(new Text(destid), new Circle(2));
+		box.setAlignment(Pos.CENTER);
+		box.translateXProperty().bind(edge.endXProperty().subtract(box.widthProperty().divide(2)));
+		box.translateYProperty().bind(edge.endYProperty().subtract(box.heightProperty()));
+		getChildren().add(box);
 	}
 }

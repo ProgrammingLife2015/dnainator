@@ -42,8 +42,6 @@ public class ClusterDrawable extends Group implements Drawable {
 				.collect(Collectors.toSet());
 
 		label = new Text(Integer.toString(cluster.getNodes().size()));
-		label.setStyle("-fx-font-size: 2pt");
-
 		draw(colorServer);
 	}
 
