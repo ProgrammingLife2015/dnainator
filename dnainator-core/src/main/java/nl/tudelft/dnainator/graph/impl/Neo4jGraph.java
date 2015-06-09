@@ -14,7 +14,7 @@ import nl.tudelft.dnainator.graph.impl.query.ClusterQuery;
 import nl.tudelft.dnainator.graph.impl.query.ClustersFromQuery;
 import nl.tudelft.dnainator.graph.impl.query.Query;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
-
+import nl.tudelft.dnainator.parser.AnnotationParser;
 
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
@@ -22,7 +22,6 @@ import org.neo4j.graphdb.ResourceIterator;
 import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
-
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -199,14 +198,19 @@ public final class Neo4jGraph implements Graph, AnnotationCollection {
 	}
 
 	@Override
+	public void addAnnotations(AnnotationParser source) {
+		execute(e -> AnnotationCollection.super.addAnnotations(source));
+	}
+
+	@Override
 	public void addAnnotation(Annotation a) {
+		Map<String, Object> parameters = new HashMap<>(2);
 		execute(e -> {
 			Node annotation = e.createNode(NodeLabels.ANNOTATION);
 			annotation.setProperty(PropertyTypes.ID.name(), a.getGeneName());
 			annotation.setProperty(PropertyTypes.STARTREF.name(), a.getStart());
 			annotation.setProperty(PropertyTypes.ENDREF.name(), a.getEnd());
 
-			Map<String, Object> parameters = new HashMap<>(2);
 			parameters.put("from", a.getStart());
 			parameters.put("to", a.getEnd());
 
