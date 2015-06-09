@@ -1,5 +1,6 @@
 package nl.tudelft.dnainator.core.impl;
 
+import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.core.SequenceNode;
 
 import java.util.ArrayList;
@@ -12,12 +13,12 @@ import java.util.Set;
  */
 public class SequenceNodeImpl implements SequenceNode {
 	private String id;
-	private List<String> annotations;
-	private Set<String> sources;
 	private int start;
 	private int end;
 	private String sequence;
 	private int rank;
+	private List<Annotation> annotations;
+	private Set<String> sources;
 	private List<String> outgoing;
 
 	/**
@@ -57,11 +58,12 @@ public class SequenceNodeImpl implements SequenceNode {
 	public SequenceNodeImpl(String id, Set<String> sources,
 			int start, int end, String sequence, int rank, List<String> outgoing) {
 		this.id = id;
-		this.sources = sources;
 		this.start = start;
 		this.end = end;
 		this.sequence = sequence;
 		this.rank = rank;
+		this.annotations = new ArrayList<>();
+		this.sources = sources;
 		this.outgoing = outgoing;
 	}
 
@@ -71,7 +73,7 @@ public class SequenceNodeImpl implements SequenceNode {
 	}
 
 	@Override
-	public List<String> getAnnotations() {
+	public List<Annotation> getAnnotations() {
 		return annotations;
 	}
 

@@ -11,7 +11,7 @@ import java.util.List;
 public class Cluster {
 	private List<SequenceNode> nodes;
 	private int rankStart;
-	private List<String> annotations;
+	private List<Annotation> annotations;
 
 	/**
 	 * Create a new {@link Cluster} using a list of {@link SequenceNode}s.
@@ -21,13 +21,17 @@ public class Cluster {
 	 * @param annotations	the annotations associated with this cluster
 	 * @param list		the list of {@link SequenceNode}s
 	 */
-	public Cluster(int rankStart, List<SequenceNode> list, List<String> annotations) {
+	public Cluster(int rankStart, List<SequenceNode> list, List<Annotation> annotations) {
 		this.rankStart = rankStart;
 		this.annotations = annotations;
 		this.nodes = list;
 	}
 
-	public List<String> getAnnotations() {
+	/**
+	 * Return the {@link Annotation}s associated with the nodes in this {@link Cluster}.
+	 * @return	the associated {@link Annotation}s
+	 */
+	public List<Annotation> getAnnotations() {
 		return annotations;
 	}
 

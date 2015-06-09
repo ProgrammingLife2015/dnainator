@@ -71,10 +71,9 @@ public class ClusterQuery implements Query<Cluster> {
 		// Might want to internally pass nodes.
 		List<SequenceNode> retrieve = result.stream().map(e -> new Neo4jSequenceNode(service, e))
 						.collect(Collectors.toList());
-		List<String> annotations = retrieve.stream().flatMap(e -> e.getAnnotations().stream())
+		List<Annotation> annotations = retrieve.stream().flatMap(e -> e.getAnnotations().stream())
 						.collect(Collectors.toList());
 		cluster = new Cluster(rankStart, retrieve, annotations);
-
 		return cluster;
 	}
 }
