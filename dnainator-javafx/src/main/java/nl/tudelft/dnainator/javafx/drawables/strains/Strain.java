@@ -87,7 +87,7 @@ public class Strain extends Group {
 	 */
 	private void loadChildren(Bounds bounds) {
 		int minRank = (int) (Math.max(bounds.getMinX() / RANK_WIDTH, 0));
-		int maxRank = (int) (bounds.getMaxX() / RANK_WIDTH);
+		int maxRank = (int) (RANK_WIDTH + bounds.getMaxX() / RANK_WIDTH);
 
 		System.out.println("load iteration: " + minRank + " -> " + maxRank);
 		List<String> roots = graph.getRank(minRank).stream()
@@ -106,12 +106,18 @@ public class Strain extends Group {
 	 * Load the drawable content of the edges for all displayed clusters.
 	 */
 	private void loadEdges(ClusterDrawable cluster) {
-		childContent.getChildren().addAll(
-				cluster.getCluster().getNodes().stream().flatMap(e -> e.getOutgoing().stream())
-						.filter(clusters::containsKey)
-						.filter(i -> clusters.get(i) != cluster)
-						.map(o -> new Edge(cluster, clusters.get(o)))
-						.collect(Collectors.toList()));
+		childContent.getChildren().addAll(cluster.getCluster().getNodes().stream()
+				.flatMap(e -> e.getOutgoing().stream())
+				.filter(destid -> clusters.get(destid) != cluster)
+				.map(destid -> {
+					ClusterDrawable dest = clusters.get(destid);
+					if (dest == null) {
+						return new Edge(cluster, destid);
+					} else {
+						return new Edge(cluster, dest);
+					}
+				})
+				.collect(Collectors.toList()));
 	}
 
 	private void loadRank(Integer key, List<Cluster> value) {
