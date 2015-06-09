@@ -7,7 +7,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -16,8 +15,8 @@ import java.util.concurrent.TimeoutException;
 
 import static nl.tudelft.dnainator.javafx.services.LoadServiceTestUtils.registerListeners;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Test class for the {@link NewickLoadService}.
@@ -30,7 +29,7 @@ import static org.junit.Assert.fail;
 public class NewickLoadServiceTest {
 	private static final int DELAY = 20000;
 	private NewickLoadService loadService;
-	private File newickFile;
+	private String newickPath;
 
 	/**
 	 * Creates test newick file.
@@ -38,12 +37,8 @@ public class NewickLoadServiceTest {
 	@Before
 	public void setup() {
 		loadService = new NewickLoadService();
-		try {
-			newickFile = new File(getClass().getResource("/strains/test.nwk").toURI());
-		} catch (URISyntaxException e) {
-			fail(e.getMessage());
-		}
-		loadService.setNewickFile(newickFile);
+		newickPath = getClass().getResource("/strains/test.nwk").getFile();
+		loadService.setNewickPath(newickPath);
 	}
 
 	/**
@@ -51,14 +46,9 @@ public class NewickLoadServiceTest {
 	 */
 	@Test
 	public void testSetNewickFile() {
-		try {
-			File foo = File.createTempFile("foo", ".bar");
-			loadService.setNewickFile(foo);
-			assertEquals(foo, loadService.getNewickFile());
-			foo.delete();
-		} catch (IOException e) {
-			fail(e.getMessage());
-		}
+		String foo = "foo.bar";
+		loadService.setNewickPath(foo);
+		assertEquals(foo, loadService.getNewickPath());
 	}
 
 	/**
@@ -66,7 +56,7 @@ public class NewickLoadServiceTest {
 	 */
 	@Test
 	public void testGetNewickFile() {
-		assertEquals(newickFile, loadService.getNewickFile());
+		assertEquals(newickPath, loadService.getNewickPath());
 	}
 
 	/**
@@ -74,7 +64,7 @@ public class NewickLoadServiceTest {
 	 */
 	@Test
 	public void testNewickFileProperty() {
-		assertNotNull(loadService.newickFileProperty());
+		assertNotNull(loadService.newickPathProperty());
 	}
 
 	/**
@@ -123,7 +113,7 @@ public class NewickLoadServiceTest {
 	public void notANewickFile() throws InterruptedException, ExecutionException, TimeoutException {
 		try {
 			File wrongFile = new File(getClass().getResource("/strains/wrong.nwk").toURI());
-			loadService.setNewickFile(wrongFile);
+			loadService.setNewickPath(wrongFile.getPath());
 		} catch (URISyntaxException e) {
 			fail(e.getMessage());
 		}

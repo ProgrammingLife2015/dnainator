@@ -1,14 +1,12 @@
 package nl.tudelft.dnainator.javafx.services;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import nl.tudelft.dnainator.javafx.utils.AppConfig;
 import nl.tudelft.dnainator.parser.TreeParser;
 import nl.tudelft.dnainator.tree.TreeNode;
-
-import java.io.File;
 
 /**
  * A JavaFX background service to load files into trees.
@@ -18,27 +16,27 @@ import java.io.File;
  * </p>
  */
 public class NewickLoadService extends Service<TreeNode> {
-	private ObjectProperty<File> newickFile = new SimpleObjectProperty<>(this, "newickFile");
+	private StringProperty newickPath = new SimpleStringProperty(this, "newickPath");
 
 	/**
-	 * @param f The newick file to load.
+	 * @param path The newick path to load.
 	 */
-	public final void setNewickFile(File f) {
-		newickFile.set(f);
+	public final void setNewickPath(String path) {
+		newickPath.set(path);
 	}
 
 	/**
-	 * @return The newick file to load, if any.
+	 * @return The newick path to load, if any.
 	 */
-	public final File getNewickFile() {
-		return newickFile.get();
+	public final String getNewickPath() {
+		return newickPath.get();
 	}
 
 	/**
-	 * @return The newick file property.
+	 * @return The newick file path property.
 	 */
-	public ObjectProperty<File> newickFileProperty() {
-		return newickFile;
+	public StringProperty newickPathProperty() {
+		return newickPath;
 	}
 
 	@Override
@@ -46,8 +44,8 @@ public class NewickLoadService extends Service<TreeNode> {
 		return new Task<TreeNode>() {
 			@Override
 			protected TreeNode call() throws Exception {
-				TreeParser tp = new TreeParser(getNewickFile());
-				return tp.parse();
+				TreeParser tp = new TreeParser();
+				return tp.parse(getNewickPath());
 			}
 		};
 	}
@@ -55,7 +53,7 @@ public class NewickLoadService extends Service<TreeNode> {
 	@Override
 	public void restart() {
 		super.restart();
-		AppConfig.getInstance().setNewickPath(newickFile.get().getPath());
+		AppConfig.getInstance().setNewickPath(newickPath.get());
 		AppConfig.getInstance().flush();
 	}
 }

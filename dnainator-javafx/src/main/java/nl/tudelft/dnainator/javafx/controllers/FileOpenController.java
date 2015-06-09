@@ -115,10 +115,10 @@ public class FileOpenController {
 	private void onNodeFieldClicked() {
 		File nodeFile = selectFile("Node file", NODE);
 		if (nodeFile != null) {
-			graphLoadService.setNodeFile(nodeFile);
-			nodeField.setText(graphLoadService.getNodeFile().getAbsolutePath());
-			graphLoadService.setEdgeFile(openEdgeFile(nodeFile.getPath()));
-			edgeField.setText(graphLoadService.getEdgeFile().getAbsolutePath());
+			graphLoadService.setNodePath(nodeFile.getPath());
+			nodeField.setText(graphLoadService.getNodePath());
+			graphLoadService.setEdgePath(genEdgePath(nodeFile.getPath()));
+			edgeField.setText(graphLoadService.getEdgePath());
 		}
 	}
 
@@ -130,10 +130,10 @@ public class FileOpenController {
 	private void onEdgeFieldClicked() {
 		File edgeFile = selectFile("Edge file", EDGE);
 		if (edgeFile != null) {
-			graphLoadService.setEdgeFile(edgeFile);
-			edgeField.setText(graphLoadService.getEdgeFile().getAbsolutePath());
-			graphLoadService.setNodeFile(openNodeFile(edgeFile.getPath()));
-			nodeField.setText(graphLoadService.getNodeFile().getAbsolutePath());
+			graphLoadService.setEdgePath(edgeFile.getPath());
+			edgeField.setText(graphLoadService.getEdgePath());
+			graphLoadService.setNodePath(genNodePath(edgeFile.getPath()));
+			nodeField.setText(graphLoadService.getNodePath());
 		}
 	}
 
@@ -145,8 +145,8 @@ public class FileOpenController {
 	private void onNewickFieldClicked() {
 		File newickFile = selectFile("Newick file", NEWICK);
 		if (newickFile != null) {
-			newickLoadService.setNewickFile(newickFile);
-			newickField.setText(newickLoadService.getNewickFile().getAbsolutePath());
+			newickLoadService.setNewickPath(newickFile.getPath());
+			newickField.setText(newickLoadService.getNewickPath());
 		}
 	}
 
@@ -158,8 +158,8 @@ public class FileOpenController {
 	private void onGFFFieldClicked() {
 		File gffFile = selectFile("GFF file", GFF);
 		if (gffFile != null) {
-			graphLoadService.setGffFilePath(gffFile.getAbsolutePath());
-			gffField.setText(graphLoadService.getGffFilePath());
+			graphLoadService.setGffPath(gffFile.getAbsolutePath());
+			gffField.setText(graphLoadService.getGffPath());
 		}
 	}
 
@@ -172,10 +172,10 @@ public class FileOpenController {
 		progressDialog = new ProgressDialog(fileOpenPane.getParent());
 		resetTextFields();
 		animation.toggle();
-		if (graphLoadService.getGffFilePath() != null
-				&& graphLoadService.getNodeFile() != null
-				&& graphLoadService.getEdgeFile() != null
-				&& newickLoadService.getNewickFile() != null) {
+		if (graphLoadService.getGffPath() != null
+				&& graphLoadService.getNodePath() != null
+				&& graphLoadService.getEdgePath() != null
+				&& newickLoadService.getNewickPath() != null) {
 			graphLoadService.setDatabase(graphLoadService.getNewPath(dbPathProperty.getValue()));
 			EventHandler<WorkerStateEvent> oldHandler = newickLoadService.getOnSucceeded();
 			newickLoadService.setOnSucceeded(e -> {
@@ -185,10 +185,10 @@ public class FileOpenController {
 			});
 
 			newickLoadService.restart();
-			curNewickLabel.setText(newickLoadService.getNewickFile().getAbsolutePath());
-			curGffLabel.setText(graphLoadService.getGffFilePath());
-			curNodeLabel.setText(graphLoadService.getNodeFile().getAbsolutePath());
-			curEdgeLabel.setText(graphLoadService.getEdgeFile().getAbsolutePath());
+			curNewickLabel.setText(newickLoadService.getNewickPath());
+			curNodeLabel.setText(graphLoadService.getNodePath());
+			curEdgeLabel.setText(graphLoadService.getEdgePath());
+			curGffLabel.setText(graphLoadService.getGffPath());
 		}
 	}
 
@@ -196,10 +196,11 @@ public class FileOpenController {
 	@SuppressWarnings("unused") @FXML
 	private void onCancelAction(ActionEvent actionEvent) {
 		animation.toggle();
-		graphLoadService.setGffFilePath(null);
-		graphLoadService.setNodeFile(null);
-		graphLoadService.setEdgeFile(null);
-		newickLoadService.setNewickFile(null);
+
+		graphLoadService.setNodePath(null);
+		graphLoadService.setEdgePath(null);
+		newickLoadService.setNewickPath(null);
+		graphLoadService.setGffPath(null);
 		resetTextFields();
 	}
 
@@ -227,23 +228,23 @@ public class FileOpenController {
 	}
 
 	/**
-	 * @param path Creates an edge file from the path of a node file. This requires
+	 * @param path Creates an edge file path from the path of a node file. This requires
 	 *             the edge file to be in the same directory and to have the same name
 	 *             as the node file.
-	 * @return The edge file.
+	 * @return The edge file path.
 	 */
-	private File openEdgeFile(String path) {
-		return new File(path.substring(0, path.length() - NODE.length()).concat(EDGE));
+	private String genEdgePath(String path) {
+		return path.substring(0, path.length() - NODE.length()).concat(EDGE);
 	}
 
 	/**
-	 * @param path Creates a node file from the path of an edge file. This requires
+	 * @param path Creates a node file path from the path of an edge file. This requires
 	 *             the node file to be in the same directory and to have the same name
 	 *             as the edge file.
-	 * @return The edge file.
+	 * @return The edge file path.
 	 */
-	private File openNodeFile(String path) {
-		return new File(path.substring(0, path.length() - EDGE.length()).concat(NODE));
+	private String genNodePath(String path) {
+		return path.substring(0, path.length() - EDGE.length()).concat(NODE);
 	}
 
 	/**

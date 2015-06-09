@@ -35,8 +35,8 @@ public class GraphLoadServiceTest {
 	private static final String DB_PATH = "target/neo4j-junit-graphload";
 	private static final int DELAY = 20000;
 	private GraphLoadService loadService;
-	private File nodeFile;
-	private File edgeFile;
+	private String nodePath;
+	private String edgePath;
 
 	/**
 	 * Setup the database and construct the graph.
@@ -56,84 +56,70 @@ public class GraphLoadServiceTest {
 	@Before
 	public void setup() {
 		loadService = new GraphLoadService();
-		try {
-			nodeFile = new File(getClass().getResource("/strains/test.node.graph").toURI());
-			edgeFile = new File(getClass().getResource("/strains/test.edge.graph").toURI());
-		} catch (URISyntaxException e) {
-			fail(e.getMessage());
-		}
-		loadService.setNodeFile(nodeFile);
-		loadService.setEdgeFile(edgeFile);
+		nodePath = getClass().getResource("/strains/test.node.graph").getFile();
+		edgePath = getClass().getResource("/strains/test.edge.graph").getFile();
+		loadService.setNodePath(nodePath);
+		loadService.setEdgePath(edgePath);
 	}
 
 	/**
-	 * Tests setNodeFile().
+	 * Tests setNodePath().
 	 */
 	@Test
 	public void testSetNodeFile() {
-		try {
-			File foo = File.createTempFile("foo", ".bar");
-			loadService.setNodeFile(foo);
-			assertEquals(foo, loadService.getNodeFile());
-			foo.delete();
-		} catch (IOException e) {
-			fail(e.getMessage());
-		}
+		String foo = "foo.bar";
+		loadService.setNodePath(foo);
+		assertEquals(foo, loadService.getNodePath());
 	}
 
 	/**
-	 * Tests getNodeFile().
+	 * Tests getNodePath().
 	 */
 	@Test
 	public void testGetNodeFile() {
-		assertEquals(nodeFile, loadService.getNodeFile());
+		assertEquals(nodePath, loadService.getNodePath());
 	}
 
 	/**
-	 * Tests nodeFileProperty().
+	 * Tests nodePathProperty().
 	 */
 	@Test
 	public void testNodeFileProperty() {
-		assertNotNull(loadService.nodeFileProperty());
+		assertNotNull(loadService.nodePathProperty());
 	}
 
 	/**
-	 * Tests setEdgeFile().
+	 * Tests setEdgePath().
 	 */
 	@Test
 	public void testSetEdgeFile() {
-		try {
-			File foo = File.createTempFile("foo", ".bar");
-			loadService.setEdgeFile(foo);
-			assertEquals(foo, loadService.getEdgeFile());
-			foo.delete();
-		} catch (IOException e) {
-			fail(e.getMessage());
-		}
+		String foo = "foo.bar";
+		loadService.setEdgePath(foo);
+		assertEquals(foo, loadService.getEdgePath());
 	}
 
 	/**
-	 * Tests getEdgeFile().
+	 * Tests getEdgePath().
 	 */
 	@Test
 	public void testGetEdgeFile() {
-		assertEquals(edgeFile, loadService.getEdgeFile());
+		assertEquals(edgePath, loadService.getEdgePath());
 	}
 
 	/**
-	 * Tests edgeFileProperty().
+	 * Tests edgePathProperty().
 	 */
 	@Test
 	public void testEdgeFileProperty() {
-		assertNotNull(loadService.edgeFileProperty());
+		assertNotNull(loadService.edgePathProperty());
 	}
 
 	/**
 	 * Performs the actual test, in that it initializes the CompletableFuture,
 	 * attaches the listeners and does the assertions.
-	 * @throws InterruptedException 
-	 * @throws ExecutionException 
-	 * @throws TimeoutException 
+	 * @throws TimeoutException Thrown on timeout.
+	 * @throws ExecutionException Thrown when an exception occurs when trying to execute.
+	 * @throws InterruptedException Thrown when the service is interrupted.
 	 */
 	public void doTest() throws InterruptedException, ExecutionException, TimeoutException {
 		// Create a completableFuture to test the background task of the service. This
@@ -157,9 +143,9 @@ public class GraphLoadServiceTest {
 
 	/**
 	 * Tests loading a file properly.
-	 * @throws TimeoutException 
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
+	 * @throws TimeoutException Thrown on timeout.
+	 * @throws ExecutionException Thrown when an exception occurs when trying to execute.
+	 * @throws InterruptedException Thrown when the service is interrupted.
 	 */
 	@Test
 	public void testProperFile() throws InterruptedException, ExecutionException, TimeoutException {
@@ -168,15 +154,15 @@ public class GraphLoadServiceTest {
 
 	/**
 	 * Tests loading a file that is not a node file.
-	 * @throws TimeoutException 
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
+	 * @throws TimeoutException Thrown on timeout.
+	 * @throws ExecutionException Thrown when an exception occurs when trying to execute.
+	 * @throws InterruptedException Thrown when the service is interrupted.
 	 */
 	@Test(expected = ExecutionException.class)
 	public void notANodeFile() throws InterruptedException, ExecutionException, TimeoutException {
 		try {
 			File wrongFile = new File(getClass().getResource("/strains/wrong.node.graph").toURI());
-			loadService.setNodeFile(wrongFile);
+			loadService.setNodePath(wrongFile.getPath());
 		} catch (URISyntaxException e) {
 			fail(e.getMessage());
 		}
@@ -186,15 +172,15 @@ public class GraphLoadServiceTest {
 
 	/**
 	 * Tests loading a file that is not an edge file.
-	 * @throws TimeoutException 
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
+	 * @throws TimeoutException Thrown on timeout.
+	 * @throws ExecutionException Thrown when an exception occurs when trying to execute.
+	 * @throws InterruptedException Thrown when the service is interrupted.
 	 */
 	@Test(expected = ExecutionException.class)
 	public void notAnEdgeFile() throws InterruptedException, ExecutionException, TimeoutException {
 		try {
 			File wrongFile = new File(getClass().getResource("/strains/wrong.edge.graph").toURI());
-			loadService.setEdgeFile(wrongFile);
+			loadService.setEdgePath(wrongFile.getPath());
 		} catch (URISyntaxException e) {
 			fail(e.getMessage());
 		}

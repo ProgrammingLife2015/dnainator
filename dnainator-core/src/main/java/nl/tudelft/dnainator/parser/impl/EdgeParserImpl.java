@@ -5,7 +5,6 @@ import nl.tudelft.dnainator.parser.BufferedEdgeParser;
 import nl.tudelft.dnainator.parser.exceptions.InvalidEdgeFormatException;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -29,19 +28,17 @@ public class EdgeParserImpl extends BufferedEdgeParser {
 	}
 
 	/**
-	 * Constructs a {@link EdgeParserImpl}, which reads from
-	 * the given {@link File}.
-	 * @param f	The {@link File} to read from.
+	 * Constructs a {@link EdgeParserImpl}, which reads from the given path.
+	 * @param path	The path to read from.
 	 * @throws IOException	when file is not found or encoding is invalid
 	 */
-	public EdgeParserImpl(File f) throws IOException {
-		this(new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8")));
+	public EdgeParserImpl(String path) throws IOException {
+		this(new BufferedReader(new InputStreamReader(new FileInputStream(path), "UTF-8")));
 	}
 
 	/**
 	 * Constructs a {@link EdgeParserImpl}, which reads from
 	 * the given {@link BufferedReader}.
-	 *
 	 * @param br The {@link BufferedReader} to read from.
 	 */
 	public EdgeParserImpl(BufferedReader br) {
@@ -61,7 +58,6 @@ public class EdgeParserImpl extends BufferedEdgeParser {
 	/**
 	 * Creates an Edge from the next line of input. Reads the first
 	 * character and checks if it is valid.
-	 *
 	 * @return The parsed edge, containing a source and a destination or null if
 	 * the first character marked the end of the file.
 	 * @throws IOException Thrown when the reader fails.
@@ -77,8 +73,6 @@ public class EdgeParserImpl extends BufferedEdgeParser {
 
 	/**
 	 * Parses the source part of the input line.
-	 *
-	 * @param first The first character of the input line. Always >= 0.
 	 * @return The source id, as an int.
 	 * @throws IOException Thrown when the reader fails.
 	 */

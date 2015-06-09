@@ -3,7 +3,6 @@ package nl.tudelft.dnainator.parser;
 import nl.tudelft.dnainator.tree.TreeNode;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -20,32 +19,22 @@ public class TreeParser {
 	private static final String REGEX = "(((?<=;)|(?=;))|((?<=\\()|(?=\\())|((?<=\\))|(?=\\)))"
 			+ "|((?<=:)|(?=:))|((?<=,)|(?=,)))";
 
-	private File treeFile;
 	private TreeNode root;
 	private TreeNode current;
 	private TreeNode child;
 
 	/**
-	 * Creates a new TreeParser, that will parse the passed file.
-	 * @param treeFile The file to parse.
-	 * @throws IOException Thrown if parsing throws an exception.
-	 */
-	public TreeParser(File treeFile) throws IOException {
-		this.treeFile = treeFile;
-		parse();
-	}
-
-	/**
 	 * Parses the newick file to a {@link TreeNode} that represents a phylogenetic tree.
+	 * @param path The file path pointing to the file to parse.
 	 * @return The root of the phylogenetic tree.
 	 * @throws IOException Thrown if the file is invalid.
 	 */
-	public TreeNode parse() throws IOException {
+	public TreeNode parse(String path) throws IOException {
 		root = new TreeNode(null);
 		current = root;
 
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(
-				new FileInputStream(treeFile), "UTF-8"))) {
+				new FileInputStream(path), "UTF-8"))) {
 			return build(br.readLine());
 		}
 	}
