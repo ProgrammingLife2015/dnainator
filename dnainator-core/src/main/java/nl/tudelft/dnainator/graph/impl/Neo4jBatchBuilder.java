@@ -43,11 +43,17 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 		batchInserter.createDeferredConstraint(NodeLabels.NODE)
 			.assertPropertyIsUnique(PropertyTypes.ID.name())
 			.create();
+		batchInserter.createDeferredConstraint(NodeLabels.SOURCE)
+			.assertPropertyIsUnique(PropertyTypes.SOURCE.name())
+			.create();
 		batchInserter.createDeferredSchemaIndex(NodeLabels.NODE)
 			.on(PropertyTypes.RANK.name())
 			.create();
-		batchInserter.createDeferredConstraint(NodeLabels.SOURCE)
-			.assertPropertyIsUnique(PropertyTypes.SOURCE.name())
+		batchInserter.createDeferredSchemaIndex(NodeLabels.NODE)
+			.on(PropertyTypes.STARTREF.name())
+			.create();
+		batchInserter.createDeferredSchemaIndex(NodeLabels.NODE)
+			.on(PropertyTypes.ENDREF.name())
 			.create();
 		batchInserter.shutdown();
 	}

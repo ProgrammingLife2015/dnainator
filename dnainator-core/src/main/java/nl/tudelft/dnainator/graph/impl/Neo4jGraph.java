@@ -39,6 +39,11 @@ public final class Neo4jGraph implements Graph, AnnotationCollection {
 	private static final String GET_ROOT = "MATCH (s:" + NodeLabels.NODE.name() + ") "
 			+ "WHERE NOT (s)<-[:NEXT]-(:" + NodeLabels.NODE.name() + ") "
 			+ "RETURN s";
+	private static final String GET_RANGE =
+			"MATCH (n:" + NodeLabels.NODE.name() + ")-[r:" + NodeLabels.SOURCE.name() + "]->s "
+			+ "WHERE s." + PropertyTypes.SOURCE.name() + " = \"TKK_REF\""
+			+ "AND n." + PropertyTypes.STARTREF.name() + " <= {to} "
+			+ "AND n." + PropertyTypes.ENDREF.name() + " >= {from}) RETURN n";
 	private GraphDatabaseService service;
 
 	/**
@@ -192,7 +197,7 @@ public final class Neo4jGraph implements Graph, AnnotationCollection {
 
 	@Override
 	public void addAnnotation(Annotation a) {
-		// TODO
+		
 	}
 
 	@Override
