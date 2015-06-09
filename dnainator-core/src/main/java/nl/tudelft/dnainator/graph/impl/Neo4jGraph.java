@@ -1,8 +1,9 @@
 package nl.tudelft.dnainator.graph.impl;
 
+import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
 import nl.tudelft.dnainator.annotation.AnnotationCollectionFactory;
-import nl.tudelft.dnainator.annotation.impl.AnnotationCollectionFactoryImpl;
+import nl.tudelft.dnainator.annotation.Range;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.graph.Graph;
@@ -13,6 +14,7 @@ import nl.tudelft.dnainator.graph.impl.query.ClusterQuery;
 import nl.tudelft.dnainator.graph.impl.query.ClustersFromQuery;
 import nl.tudelft.dnainator.graph.impl.query.Query;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
+
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.ResourceIterator;
@@ -20,6 +22,7 @@ import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,14 +33,13 @@ import java.util.Set;
 /**
  * This class realizes a graphfactory using Neo4j as it's backend.
  */
-public final class Neo4jGraph implements Graph {
+public final class Neo4jGraph implements Graph, AnnotationCollection {
 	private static final String GET_MAX_RANK = "MATCH n RETURN MAX(n."
 			+ PropertyTypes.RANK.name() + ")";
 	private static final String GET_ROOT = "MATCH (s:" + NodeLabels.NODE.name() + ") "
 			+ "WHERE NOT (s)<-[:NEXT]-(:" + NodeLabels.NODE.name() + ") "
 			+ "RETURN s";
 	private GraphDatabaseService service;
-	private AnnotationCollection annotations;
 
 	/**
 	 * Constructs a Neo4j database on the specified path, using
@@ -45,15 +47,6 @@ public final class Neo4jGraph implements Graph {
 	 * @param path			specified path
 	 */
 	public Neo4jGraph(String path) {
-		this(new AnnotationCollectionFactoryImpl(), path);
-	}
-
-	/**
-	 * Constructs a Neo4j database on the specified path.
-	 * @param fact			the factory for building the {@link AnnotationCollection}.
-	 * @param path			specified path
-	 */
-	public Neo4jGraph(AnnotationCollectionFactory fact, String path) {
 		// Create our database and register a shutdown hook
 		service = new GraphDatabaseFactory().newEmbeddedDatabase(path);
 		Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -65,7 +58,6 @@ public final class Neo4jGraph implements Graph {
 
 		// Rank the graph.
 		execute(e -> new RankCommand(rootIterator()).execute(e));
-		this.annotations = fact.build();
 	}
 
 	/**
@@ -97,7 +89,7 @@ public final class Neo4jGraph implements Graph {
 
 	@Override
 	public AnnotationCollection getAnnotations() {
-		return annotations;
+		return this;
 	}
 
 	@Override
@@ -196,5 +188,16 @@ public final class Neo4jGraph implements Graph {
 	 */
 	public void shutdown() {
 		service.shutdown();
+	}
+
+	@Override
+	public void addAnnotation(Annotation a) {
+		// TODO
+	}
+
+	@Override
+	public Collection<Annotation> getSubrange(Range r) {
+		// TODO
+		return null;
 	}
 }
