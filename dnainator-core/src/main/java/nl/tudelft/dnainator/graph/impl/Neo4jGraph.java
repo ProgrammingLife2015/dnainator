@@ -201,12 +201,17 @@ public final class Neo4jGraph implements Graph, AnnotationCollection {
 	@Override
 	public void addAnnotation(Annotation a) {
 		execute(e -> {
+			Node annotation = e.createNode(NodeLabels.ANNOTATION);
+			annotation.setProperty(PropertyTypes.ID.name(), a.getGeneName());
+			annotation.setProperty(PropertyTypes.STARTREF.name(), a.getStart());
+			annotation.setProperty(PropertyTypes.ENDREF.name(), a.getEnd());
+
 			Map<String, Object> parameters = new HashMap<>(2);
 			parameters.put("from", a.getStart());
 			parameters.put("to", a.getEnd());
-			Result r = service.execute(GET_RANGE, parameters);
-			r.forEachRemaining(f -> System.out.println(f));
-			ResourceIterator<Node> toAnnotate = r.columnAs("n");
+
+			ResourceIterator<Node> nodes = service.execute(GET_RANGE, parameters).columnAs("n");
+			nodes.forEachRemaining(n -> n.createRelationshipTo(annotation, RelTypes.ANNOTATED));
 		});
 	}
 
