@@ -9,6 +9,7 @@ import nl.tudelft.dnainator.annotation.impl.AnnotationCollectionFactoryImpl;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.Neo4jBatchBuilder;
 import nl.tudelft.dnainator.parser.AnnotationParser;
+import nl.tudelft.dnainator.javafx.utils.AppConfig;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
@@ -175,5 +176,13 @@ public class GraphLoadService extends Service<Graph> {
 					.build();
 			}
 		};
+	}
+
+	@Override
+	public void restart() {
+		super.restart();
+		AppConfig.getInstance().setNodePath(nodeFile.get().getPath());
+		AppConfig.getInstance().setEdgePath(edgeFile.get().getPath());
+		AppConfig.getInstance().flush();
 	}
 }

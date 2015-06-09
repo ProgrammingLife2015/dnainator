@@ -4,6 +4,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import nl.tudelft.dnainator.javafx.utils.AppConfig;
 import nl.tudelft.dnainator.parser.TreeParser;
 import nl.tudelft.dnainator.tree.TreeNode;
 
@@ -49,5 +50,12 @@ public class NewickLoadService extends Service<TreeNode> {
 				return tp.parse();
 			}
 		};
+	}
+
+	@Override
+	public void restart() {
+		super.restart();
+		AppConfig.getInstance().setNewickPath(newickFile.get().getPath());
+		AppConfig.getInstance().flush();
 	}
 }
