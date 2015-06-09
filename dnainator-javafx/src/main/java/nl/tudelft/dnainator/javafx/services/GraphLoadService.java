@@ -35,7 +35,8 @@ public class GraphLoadService extends Service<Graph> {
 	 * Construct a GraphLoadService with a default database path.
 	 */
 	public GraphLoadService() {
-		database.set(DB_PATH);
+		// TODO this should set the database provided by user input.
+		setDatabase(DB_PATH);
 	}
 
 	/**
