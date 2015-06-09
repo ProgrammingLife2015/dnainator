@@ -23,6 +23,7 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -197,7 +198,11 @@ public final class Neo4jGraph implements Graph, AnnotationCollection {
 
 	@Override
 	public void addAnnotation(Annotation a) {
-		
+		Map<String, Object> parameters = new HashMap<>(2);
+		parameters.put("from", a.getStart());
+		parameters.put("to", a.getEnd());
+		Result r = service.execute(GET_RANGE, parameters);
+		ResourceIterator<Node> toAnnotate = r.columnAs("n");
 	}
 
 	@Override
