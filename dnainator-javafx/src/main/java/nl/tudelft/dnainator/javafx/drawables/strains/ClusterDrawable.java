@@ -2,7 +2,6 @@ package nl.tudelft.dnainator.javafx.drawables.strains;
 
 import javafx.collections.MapChangeListener;
 import javafx.scene.Group;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import nl.tudelft.dnainator.core.SequenceNode;
@@ -64,12 +63,6 @@ public class ClusterDrawable extends Group implements Drawable {
 			getChildren().add(pie);
 		}
 		getChildren().add(label);
-		cluster.getAnnotations().forEach(e -> {
-			Text text = new Text(e.getGeneName());
-			text.setStroke(Color.RED);
-			text.setStyle("-fx-font-size: 4px");
-			getChildren().add(text);
-		});
 	}
 
 	/**

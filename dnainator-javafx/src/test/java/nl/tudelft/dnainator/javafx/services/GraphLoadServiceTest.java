@@ -1,8 +1,10 @@
 package nl.tudelft.dnainator.javafx.services;
 
 import de.saxsys.javafx.test.JfxRunner;
+import nl.tudelft.dnainator.annotation.impl.AnnotationCollectionImpl;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.Neo4jGraph;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -55,6 +57,7 @@ public class GraphLoadServiceTest {
 	@Before
 	public void setup() {
 		loadService = new GraphLoadService();
+		loadService.setAnnotations(new AnnotationCollectionImpl());
 		try {
 			nodeFile = new File(getClass().getResource("/strains/test.node.graph").toURI());
 			edgeFile = new File(getClass().getResource("/strains/test.edge.graph").toURI());

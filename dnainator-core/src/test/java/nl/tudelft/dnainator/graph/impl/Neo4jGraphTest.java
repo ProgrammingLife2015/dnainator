@@ -1,6 +1,7 @@
 package nl.tudelft.dnainator.graph.impl;
 
 import nl.tudelft.dnainator.annotation.Annotation;
+import nl.tudelft.dnainator.annotation.impl.AnnotationCollectionImpl;
 import nl.tudelft.dnainator.annotation.impl.AnnotationImpl;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Edge;
@@ -69,7 +70,7 @@ public class Neo4jGraphTest {
 					new BufferedReader(new InputStreamReader(nodeFile, "UTF-8")));
 			EdgeParser ep = new EdgeParserImpl(new BufferedReader(
 							new InputStreamReader(edgeFile, "UTF-8")));
-			new Neo4jBatchBuilder(DB_PATH).constructGraph(np, ep);
+			new Neo4jBatchBuilder(DB_PATH, new AnnotationCollectionImpl()).constructGraph(np, ep);
 			db = new Neo4jGraph(DB_PATH);
 		} catch (IOException e) {
 			fail("Couldn't initialize DB");

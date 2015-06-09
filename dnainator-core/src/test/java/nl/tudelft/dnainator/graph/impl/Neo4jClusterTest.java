@@ -1,5 +1,6 @@
 package nl.tudelft.dnainator.graph.impl;
 
+import nl.tudelft.dnainator.annotation.impl.AnnotationCollectionImpl;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.core.impl.SequenceNodeFactoryImpl;
 import nl.tudelft.dnainator.parser.EdgeParser;
@@ -7,6 +8,7 @@ import nl.tudelft.dnainator.parser.NodeParser;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
 import nl.tudelft.dnainator.parser.impl.EdgeParserImpl;
 import nl.tudelft.dnainator.parser.impl.NodeParserImpl;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -50,7 +52,7 @@ public class Neo4jClusterTest {
 					new BufferedReader(new InputStreamReader(nodeFile, "UTF-8")));
 			EdgeParser ep = new EdgeParserImpl(new BufferedReader(
 							new InputStreamReader(edgeFile, "UTF-8")));
-			new Neo4jBatchBuilder(DB_PATH).constructGraph(np, ep);
+			new Neo4jBatchBuilder(DB_PATH, new AnnotationCollectionImpl()).constructGraph(np, ep);
 			db = new Neo4jGraph(DB_PATH);
 		} catch (IOException | ParseException e) {
 			e.printStackTrace();
