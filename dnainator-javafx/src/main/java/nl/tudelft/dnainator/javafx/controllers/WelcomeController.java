@@ -6,9 +6,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import org.neo4j.io.fs.FileUtils;
-
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.javafx.services.DBLoadService;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.ExceptionDialog;
@@ -73,14 +71,19 @@ public class WelcomeController {
 
 	@SuppressWarnings("unused") @FXML
 	private void onMouseClicked(MouseEvent e) {
-		if (e.getClickCount() == 2 && dbpath == SELECT_OPTION) {
-			File dir = selectDirectory();
-			if (dir == null) {
-				return;
+		if (e.getClickCount() == 2) {
+			if (dbpath == SELECT_OPTION) {
+				File dir = selectDirectory();
+				if (dir == null) {
+					return;
+				}
+				dbload.setDatabase(dir.getAbsolutePath());
+				items.add(dir.getAbsolutePath());
+				list.getSelectionModel().select(getDBPath());
+			} else {
+				progressDialog = new ProgressDialog(list.getParent());
+				dbload.restart();
 			}
-			dbload.setDatabase(dir.getAbsolutePath());
-			items.add(dir.getAbsolutePath());
-			list.getSelectionModel().select(getDBPath());
 		}
 	}
 	
@@ -88,17 +91,18 @@ public class WelcomeController {
 	private void initialize() throws IOException {
 		dirChooser = new DirectoryChooser();
 		dbload = new DBLoadService();
+		
 		dbload.setOnFailed(e -> {
 			new ExceptionDialog(list.getParent(), dbload.getException(),
 					"Database is already in use, please choose another.");
 		});
-		
+		dbload.setOnRunning(e -> progressDialog.show());
 		dbload.setOnSucceeded(e -> {
 			dbProperty.setValue(dbload.getValue());
 			startButton.setDisable(false);
 			progressDialog.close();
 		});
-		dbload.setOnRunning(e -> progressDialog.show());
+
 		dbProperty = new SimpleObjectProperty<>(this, "graph");
 		items = FXCollections.observableArrayList(SELECT_OPTION);
 		scanDirectory();
