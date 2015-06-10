@@ -31,11 +31,10 @@ public class WelcomeController {
 	private static final String SELECT_OPTION = "Select new database...";
 	private ObservableList<String> items;
 	private ObjectProperty<Graph> dbProperty;
-	private BooleanProperty done = new SimpleBooleanProperty(false, "done");;
+	private BooleanProperty done = new SimpleBooleanProperty(false, "done");
 	private DBLoadService dbload;
 	private DirectoryChooser dirChooser;
 	private ProgressDialog progressDialog;
-	private String dbpath;
 	private static final String DEFAULT_DB_PATH = "target/db";
 	@SuppressWarnings("unused") @FXML private Button startButton;
 	@SuppressWarnings("unused") @FXML private Button deleteButton;
@@ -60,11 +59,8 @@ public class WelcomeController {
 	@SuppressWarnings("unused") @FXML
 	private void loadButtonAction(ActionEvent e) {
 		progressDialog = new ProgressDialog(list.getParent());
-		if (dbpath == SELECT_OPTION) {
-			File dir = selectDirectory();
-			if (dir == null) {
-				return;
-			}
+		if (getDBPath() == SELECT_OPTION && selectDirectory() == null) {
+			return;
 		}
 		dbload.restart();
 	}
@@ -72,7 +68,7 @@ public class WelcomeController {
 	@SuppressWarnings("unused") @FXML
 	private void onMouseClicked(MouseEvent e) {
 		if (e.getClickCount() == 2) {
-			if (dbpath == SELECT_OPTION) {
+			if (getDBPath() == SELECT_OPTION) {
 				File dir = selectDirectory();
 				if (dir == null) {
 					return;
@@ -114,13 +110,8 @@ public class WelcomeController {
 				deleteButton.setDisable(false);
 			}
 			dbload.setDatabase(newV);
-			setDBPath();
-			System.out.println(this.dbpath);
+			System.out.println(this.getDBPath());
 		});
-	}
-	
-	private void setDBPath(){
-		this.dbpath = getDBPath();
 	}
 	
 	private String getDBPath() {

@@ -13,7 +13,7 @@ import nl.tudelft.dnainator.parser.exceptions.ParseException;
  * A JavaFX service that loads an existing neo4j database based on its directory path.
  */
 public class DBLoadService extends Service<Graph> {
-	private static final String DEFAULT_DB_PATH = "target/db";
+	private static final String DEFAULT_DB_PATH = "target\\db";
 	private ObjectProperty<String> database = new SimpleObjectProperty<>(this, "database");
 
 	/**

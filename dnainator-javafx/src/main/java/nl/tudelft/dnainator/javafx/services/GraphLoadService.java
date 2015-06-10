@@ -41,6 +41,7 @@ public class GraphLoadService extends Service<Graph> {
 	/**
 	 * Checks what paths are already in use and constructs an unique path,
 	 * that does not collide with existing ones.
+	 * @param paths the existing database paths.
 	 * @return unique path for the database.
 	 */
 	public String getNewPath(List<String> paths) {

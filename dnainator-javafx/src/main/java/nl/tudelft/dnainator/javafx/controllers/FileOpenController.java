@@ -1,10 +1,10 @@
 package nl.tudelft.dnainator.javafx.controllers;
 
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.WorkerStateEvent;
@@ -61,6 +61,7 @@ public class FileOpenController {
 	private ObjectProperty<TreeNode> treeProperty;
 	private ObjectProperty<Graph> graphProperty;
 	private ObjectProperty<ObservableList<String>> dbPathProperty;
+	private BooleanProperty done = new SimpleBooleanProperty(false, "done");
 	private SlidingAnimation animation;
 
 	/*
@@ -72,7 +73,16 @@ public class FileOpenController {
 		graphProperty = new SimpleObjectProperty<>(this, "graph");
 		treeProperty = new SimpleObjectProperty<>(this, "tree");
 		dbPathProperty = new SimpleObjectProperty<>(this, "dbpath");
-
+		setupServices();
+		
+		animation = new LeftSlideAnimation(fileOpenPane, WIDTH, ANIM_DURATION, Position.LEFT);
+		bindDisabledFieldsAndButtons();
+	}
+	
+	/**
+	 * Setup the {@link GraphLoadService}, {@link NewickLoadService} and {@link GFFLoadService}.
+	 */
+	private void setupServices() {
 		graphLoadService = new GraphLoadService();
 		graphLoadService.setOnFailed(e ->
 				new ExceptionDialog(fileOpenPane.getParent(), graphLoadService.getException(),
@@ -80,6 +90,7 @@ public class FileOpenController {
 		graphLoadService.setOnRunning(e -> progressDialog.show());
 		graphLoadService.setOnSucceeded(e -> {
 			graphProperty.setValue(graphLoadService.getValue());
+			done.setValue(true);
 			progressDialog.close();
 		});
 
@@ -95,8 +106,6 @@ public class FileOpenController {
 						"Error loading annotations file!"));
 		gffLoadService.graphProperty().bind(graphProperty);
 
-		animation = new LeftSlideAnimation(fileOpenPane, WIDTH, ANIM_DURATION, Position.LEFT);
-		bindDisabledFieldsAndButtons();
 	}
 
 	/*
@@ -279,6 +288,13 @@ public class FileOpenController {
 	 */
 	public ObjectProperty<ObservableList<String>> dbPathProperty() {
 		return dbPathProperty;
+	}
+	
+	/**
+	 * @return the dbPathProperty
+	 */
+	public BooleanProperty doneProperty() {
+		return done;
 	}
 	
 	/**

@@ -32,6 +32,8 @@ public class WindowController {
 	private void initialize() {
 		ColorServer colorServer = new ColorServer();
 		fileOpenController.dbPathProperty().set(welcomeController.getListedPaths());
+		fileOpenController.doneProperty().addListener((obj, oldV, newV) -> 
+			welcomeController.doneProperty().setValue(true));
 		fileOpenController.graphProperty().addListener((obj, oldV, newV) -> {
 			strainView = new StrainView(colorServer, newV);
 		});
@@ -43,7 +45,6 @@ public class WindowController {
 			SplitPane splitPane = new SplitPane(strainView, phyloView);
 			splitPane.setOrientation(Orientation.VERTICAL);
 			root.setCenter(splitPane);
-			welcomeController.doneProperty().unbind();
 		});
 		welcomeController.dbProperty().addListener((obj, oldV, newV) -> {
 			strainView = new StrainView(colorServer, newV);
