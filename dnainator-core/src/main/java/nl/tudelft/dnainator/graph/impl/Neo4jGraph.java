@@ -50,7 +50,7 @@ public final class Neo4jGraph implements Graph {
 	private static final String GET_ANNOTATION_BY_RANK =
 			"MATCH (n:" + NodeLabels.NODE.name() + ")-[r:" + RelTypes.ANNOTATED.name() + "]->a "
 			+ "WHERE n." + PropertyTypes.RANK.name() + " >= {from} "
-			+   "AND n." + PropertyTypes.RANK.name() + " <= {to} RETURN a";
+			+   "AND n." + PropertyTypes.RANK.name() + " <= {to} RETURN DISTINCT a";
 
 	private GraphDatabaseService service;
 	private InterestingnessStrategy is;
