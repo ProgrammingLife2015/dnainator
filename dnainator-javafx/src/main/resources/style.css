@@ -64,3 +64,11 @@ Strain Edge Line {
 	-fx-stroke: #000000;
 	-fx-stroke-width: .2;
 }
+
+Gene {
+	-fx-font-size: 4px;
+	-fx-background-color: #DEDEDE;
+	-fx-border-color: #4E4E4E;
+	-fx-border-style: solid;
+	-fx-border-width: 2;
+}
