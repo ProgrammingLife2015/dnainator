@@ -1,5 +1,9 @@
 package nl.tudelft.dnainator.graph.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
+import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
@@ -14,6 +18,7 @@ public class Neo4jAnnotation implements Annotation {
 	private String geneName;
 	private Range range;
 	private boolean isSense;
+	private Collection<String> annotatedNodes;
 
 	/**
 	 * Constructs a new Neo4jAnnotation.
@@ -26,6 +31,10 @@ public class Neo4jAnnotation implements Annotation {
 			this.range = new Range((Integer) delegate.getProperty(PropertyTypes.STARTREF.name()),
 					(Integer) delegate.getProperty(PropertyTypes.ENDREF.name()));
 			this.isSense = (Boolean) delegate.getProperty(PropertyTypes.SENSE.name());
+			this.annotatedNodes = new ArrayList<>();
+			delegate.getRelationships(Direction.INCOMING, RelTypes.ANNOTATED).forEach(e -> {
+				annotatedNodes.add((String) e.getStartNode().getProperty(PropertyTypes.ID.name()));
+			});
 			tx.success();
 		}
 	}
@@ -43,6 +52,11 @@ public class Neo4jAnnotation implements Annotation {
 	@Override
 	public boolean isSense() {
 		return isSense;
+	}
+
+	@Override
+	public Collection<String> getAnnotatedNodes() {
+		return annotatedNodes;
 	}
 
 	@Override

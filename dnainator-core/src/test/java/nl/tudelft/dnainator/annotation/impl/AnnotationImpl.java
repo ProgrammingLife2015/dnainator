@@ -1,5 +1,8 @@
 package nl.tudelft.dnainator.annotation.impl;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.annotation.Range;
 
@@ -67,5 +70,10 @@ public class AnnotationImpl implements Annotation {
 	@Override
 	public int hashCode() {
 		return getGeneName().hashCode() + getStart() + getEnd() + ((Boolean) isSense()).hashCode();
+	}
+
+	@Override
+	public Collection<String> getAnnotatedNodes() {
+		return Collections.emptyList();
 	}
 }

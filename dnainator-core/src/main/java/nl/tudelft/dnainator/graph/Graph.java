@@ -1,10 +1,13 @@
 package nl.tudelft.dnainator.graph;
 
+import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
+import nl.tudelft.dnainator.annotation.Range;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -13,7 +16,7 @@ import java.util.Set;
 /**
  * Interface for backend agnostic interaction with a graph.
  */
-public interface Graph {
+public interface Graph extends AnnotationCollection {
 	/**
 	 * Get the root node of this graph.
 	 * FIXME: This is the node that has no incoming edges.
@@ -70,4 +73,11 @@ public interface Graph {
 	 * @return the result of the query.
 	 */
 	List<SequenceNode> queryNodes(GraphQueryDescription q);
+
+	/**
+	 * Return all annotations covered by the given range of ranks.
+	 * @param r The range
+	 * @return all annotations covered.
+	 */
+	Collection<Annotation> getAnnotationByRank(Range r);
 }

@@ -35,7 +35,7 @@ import java.util.Set;
 /**
  * This class realizes a graphfactory using Neo4j as it's backend.
  */
-public final class Neo4jGraph implements Graph, AnnotationCollection {
+public final class Neo4jGraph implements Graph {
 	private static final String GET_MAX_RANK = "MATCH n RETURN MAX(n."
 			+ PropertyTypes.RANK.name() + ")";
 	private static final String GET_ROOT = "MATCH (s:" + NodeLabels.NODE.name() + ") "
@@ -50,6 +50,10 @@ public final class Neo4jGraph implements Graph, AnnotationCollection {
 			"MATCH (a:" + NodeLabels.ANNOTATION.name() + ") "
 			+ "WHERE a." + PropertyTypes.STARTREF.name() + " < {to} "
 			+ "AND a." + PropertyTypes.ENDREF.name() + " >= {from} RETURN a";
+	private static final String GET_ANNOTATION_BY_RANK =
+			"MATCH (n:" + NodeLabels.NODE.name() + ")-[r:" + RelTypes.ANNOTATED.name() + "]->a "
+			+ "WHERE n." + PropertyTypes.RANK.name() + " >= {from} "
+			+   "AND n." + PropertyTypes.RANK.name() + " <= {to} RETURN a";
 
 	private GraphDatabaseService service;
 
@@ -204,7 +208,7 @@ public final class Neo4jGraph implements Graph, AnnotationCollection {
 
 	@Override
 	public void addAnnotations(AnnotationParser source) {
-		execute(e -> AnnotationCollection.super.addAnnotations(source));
+		execute(e -> addAnnotations(source));
 	}
 
 	@Override
@@ -224,19 +228,28 @@ public final class Neo4jGraph implements Graph, AnnotationCollection {
 		});
 	}
 
-	@Override
-	public Collection<Annotation> getSubrange(Range r) {
+	private Collection<Annotation> getAnnotationRange(Range r, String query) {
 		Map<String, Object> parameters = new HashMap<>(2);
 		List<Annotation> result = new LinkedList<Annotation>();
 		parameters.put("from", r.getX());
 		parameters.put("to", r.getY());
 		return query(service -> {
-			ResourceIterator<Node> annotations = service.execute(GET_SUB_RANGE, parameters)
+			ResourceIterator<Node> annotations = service.execute(query, parameters)
 					.columnAs("a");
 			while (annotations.hasNext()) {
 				result.add(new Neo4jAnnotation(service, annotations.next()));
 			}
 			return result;
 		});
+	}
+
+	@Override
+	public Collection<Annotation> getSubrange(Range r) {
+		return getAnnotationRange(r, GET_SUB_RANGE);
+	}
+
+	@Override
+	public Collection<Annotation> getAnnotationByRank(Range r) {
+		return getAnnotationRange(r, GET_ANNOTATION_BY_RANK);
 	}
 }
