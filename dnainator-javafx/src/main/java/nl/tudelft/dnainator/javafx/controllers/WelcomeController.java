@@ -4,6 +4,7 @@ import java.io.File;
 
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.javafx.services.DBLoadService;
+import nl.tudelft.dnainator.javafx.widgets.dialogs.ExceptionDialog;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -22,8 +23,7 @@ import javafx.stage.DirectoryChooser;
 public class WelcomeController {
 	private static final String DEFAULT_DB_PATH = "db";
 	private ObservableList<String> items;
-	private BooleanProperty done = new SimpleBooleanProperty(false, "done");
-	private ObjectProperty<Graph> graphProperty;
+	private ObjectProperty<Graph> dbProperty;
 	private DBLoadService dbload;
 	private DirectoryChooser dirChooser;
 	@SuppressWarnings("unused") @FXML
@@ -34,7 +34,6 @@ public class WelcomeController {
 			selectDirectory("Select new database...");
 		}
 		dbload.restart();
-		done.setValue(true);
 	}
 	private String DBPath;
 
@@ -42,9 +41,12 @@ public class WelcomeController {
 	private void onMouseClicked(MouseEvent e) {
 		if (e.getClickCount() == 2 && DBPath == "Select new database...") {
 			File dir = selectDirectory("Select new database...");
+			if (dir == null) {
+				return;
+			}
 			dbload.setDatabase(dir.getAbsolutePath());
 			items.add(dir.getAbsolutePath());
-			
+			list.getSelectionModel().select(getDBPath());
 			System.out.println(this.DBPath);
 		}
 	}
@@ -53,35 +55,37 @@ public class WelcomeController {
 	private void initialize() {
 		dirChooser = new DirectoryChooser();
 		dbload = new DBLoadService();
+		dbload.setOnFailed(e ->
+			new ExceptionDialog(list.getParent(), dbload.getException(),
+					"Database is already in use, please choose another."));
+		dbload.setOnSucceeded(e -> dbProperty.setValue(dbload.getValue()));
 		
-		dbload.setOnSucceeded(e -> graphProperty.setValue(dbload.getValue()));
-		
-		graphProperty = new SimpleObjectProperty<>(this, "graph");
+		dbProperty = new SimpleObjectProperty<>(this, "graph");
 		items = FXCollections.observableArrayList(
 				"Select new database...",
-				"nl/tudelft/DNAinator/db/10_strains",
-				"nl/tudelft/DNAinator/db/38_strains",
-				"nl/tudelft/DNAinator/db/100_strains");
+				getDBPath());
 		list.setItems(items);
+		list.getSelectionModel().select(getDBPath());
 		list.getSelectionModel().selectedItemProperty().addListener((obj, oldV, newV) -> {
-			dbload.setDatabase((String) newV);
+			dbload.setDatabase(newV);
+			setDBPath();
 			System.out.println(this.DBPath);
 		});
-		//System.out.println(list.getSelectionModel().getSelectedItem().toString());
+	}
+	
+	private void setDBPath() {
+		this.DBPath = getDBPath();
+	}
+	
+	private String getDBPath() {
+		return dbload.getDatabase();
 	}
 	
 	/**
-	 * @return The BooleanProperty used to indicate if the welcome screen is done.
+	 * @return The {@link ObjectProperty} used to indicate if the welcome screen is done.
 	 */
-	public BooleanProperty doneProperty() {
-		return done;
-	}
-	
-	/**
-	 * @return The BooleanProperty used to indicate if the welcome screen is done.
-	 */
-	public ObjectProperty<Graph> graphProperty() {
-		return graphProperty;
+	public ObjectProperty<Graph> dbProperty() {
+		return dbProperty;
 	}
 	
 	/**

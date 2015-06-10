@@ -176,11 +176,11 @@ public class FileOpenController {
 		if (graphLoadService.getNodeFile() != null && graphLoadService.getEdgeFile() != null) {
 			// TODO: replace this with the ability to specify a db path and
 			//       a check whether this path is already in use by Neo4j.
-			try {
-				FileUtils.deleteRecursively(new File(graphLoadService.getDatabase()));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+//			try {
+//				FileUtils.deleteRecursively(new File(graphLoadService.getDatabase()));
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
 			graphLoadService.restart();
 			curNodeLabel.setText(graphLoadService.getNodeFile().getAbsolutePath());
 			curEdgeLabel.setText(graphLoadService.getEdgeFile().getAbsolutePath());

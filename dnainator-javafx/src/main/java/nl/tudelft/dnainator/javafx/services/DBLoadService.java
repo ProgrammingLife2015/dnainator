@@ -1,6 +1,5 @@
 package nl.tudelft.dnainator.javafx.services;
 
-import java.io.File;
 import java.io.IOException;
 
 import javafx.beans.property.ObjectProperty;
@@ -8,9 +7,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import nl.tudelft.dnainator.graph.Graph;
-
 import nl.tudelft.dnainator.graph.impl.Neo4jGraph;
-
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
 
 
