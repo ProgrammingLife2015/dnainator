@@ -33,8 +33,8 @@ import java.util.Map;
  * This class realizes a graphfactory using Neo4j as it's backend.
  */
 public final class Neo4jGraph implements Graph {
-	private static final String GET_MAX_RANK = "MATCH n RETURN MAX(n."
-			+ PropertyTypes.RANK.name() + ")";
+	private static final String GET_MAX_RANK = "MATCH (n:" + NodeLabels.NODE.name() + ") "
+			+ "RETURN MAX(n." + PropertyTypes.RANK.name() + ") AS max";
 	private static final String GET_ROOT = "MATCH (s:" + NodeLabels.NODE.name() + ") "
 			+ "WHERE NOT (s)<-[:NEXT]-(:" + NodeLabels.NODE.name() + ") "
 			+ "RETURN s";
@@ -132,7 +132,7 @@ public final class Neo4jGraph implements Graph {
 	@Override
 	public List<List<SequenceNode>> getRanks() {
 		return query(e -> {
-			int maxrank = (int) e.execute(GET_MAX_RANK).columnAs("s").next();
+			int maxrank = (int) e.execute(GET_MAX_RANK).columnAs("max").next();
 			List<List<SequenceNode>> nodes = new LinkedList<>();
 
 			for (int i = 0; i < maxrank; i++) {
