@@ -1,7 +1,6 @@
 package nl.tudelft.dnainator.javafx.services;
 
 import java.io.IOException;
-
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Service;
@@ -10,13 +9,15 @@ import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.Neo4jGraph;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
 
-
+/**
+ * A JavaFX service that loads an existing neo4j database based on its directory path.
+ */
 public class DBLoadService extends Service<Graph> {
 	private static final String DEFAULT_DB_PATH = "target/dna-graph-db";
 	private ObjectProperty<String> database = new SimpleObjectProperty<>(this, "database");
 
 	/**
-	 * Construct a GraphLoadService with a default database path.
+	 * Construct a DBLoadService with a default database path.
 	 */
 	public DBLoadService() {
 		setDatabase(DEFAULT_DB_PATH);
@@ -48,7 +49,6 @@ public class DBLoadService extends Service<Graph> {
 		return new Task<Graph>() {
 			@Override
 			protected Graph call() throws IOException, ParseException {
-				System.out.println(database.get());
 				return new Neo4jGraph(database.get());
 			}
 		};

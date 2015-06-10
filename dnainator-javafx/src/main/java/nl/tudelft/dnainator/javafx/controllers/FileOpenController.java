@@ -23,13 +23,12 @@ import nl.tudelft.dnainator.javafx.widgets.animations.SlidingAnimation;
 import nl.tudelft.dnainator.javafx.widgets.animations.TransitionAnimation.Position;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.ExceptionDialog;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.ProgressDialog;
-import org.neo4j.io.fs.FileUtils;
 
 import java.io.File;
 
 /**
  * Controls the file open pane on the left side of the application. It offers options
- * to open node, edge and newick files. FIXME: will be sliding in on command.
+ * to open node, edge and newick files.
  */
 public class FileOpenController {
 	private static final String EDGE = ".edge.graph";
@@ -174,13 +173,6 @@ public class FileOpenController {
 		resetTextFields();
 		animation.toggle();
 		if (graphLoadService.getNodeFile() != null && graphLoadService.getEdgeFile() != null) {
-			// TODO: replace this with the ability to specify a db path and
-			//       a check whether this path is already in use by Neo4j.
-//			try {
-//				FileUtils.deleteRecursively(new File(graphLoadService.getDatabase()));
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
 			graphLoadService.restart();
 			curNodeLabel.setText(graphLoadService.getNodeFile().getAbsolutePath());
 			curEdgeLabel.setText(graphLoadService.getEdgeFile().getAbsolutePath());

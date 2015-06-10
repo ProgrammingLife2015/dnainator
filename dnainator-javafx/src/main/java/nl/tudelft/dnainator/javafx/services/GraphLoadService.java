@@ -25,6 +25,7 @@ import java.io.IOException;
  * </p>
  */
 public class GraphLoadService extends Service<Graph> {
+	//TODO Use unique DB_PATH based on existing DB_PATHS
 	private static final String DB_PATH = "target/dna-graph-db";
 	
 	private ObjectProperty<File> nodeFile = new SimpleObjectProperty<>(this, "nodeFile");
@@ -35,7 +36,6 @@ public class GraphLoadService extends Service<Graph> {
 	 * Construct a GraphLoadService with a default database path.
 	 */
 	public GraphLoadService() {
-		// TODO this should set the database provided by user input.
 		setDatabase(DB_PATH);
 	}
 

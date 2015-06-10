@@ -38,21 +38,16 @@ public class WindowController {
 			phyloView = new PhylogeneticView(colorServer);
 			phyloView.rootProperty().set(newV);
 		});
-		welcomeController.dbProperty().addListener((obj, oldV, newV) -> {
-			
-			strainView = new StrainView(colorServer, newV);
-			phyloView = new PhylogeneticView(colorServer);
-
+		welcomeController.doneProperty().addListener((obj, oldV, newV) -> {
 			SplitPane splitPane = new SplitPane(strainView, phyloView);
 			splitPane.setOrientation(Orientation.VERTICAL);
 			root.setCenter(splitPane);
-//			welcomeController.doneProperty().unbind();
+			welcomeController.doneProperty().unbind();
 		});
-//		welcomeController.doneProperty().addListener((obj, oldV, newV) -> {
-////			strainView = new StrainView(colorServer, null);
-////			phyloView = new PhylogeneticView(colorServer);
-//			
-//		});
+		welcomeController.dbProperty().addListener((obj, oldV, newV) -> {
+			strainView = new StrainView(colorServer, newV);
+			phyloView = new PhylogeneticView(colorServer);
+		});
 	}
 
 	@SuppressWarnings("unused") @FXML

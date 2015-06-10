@@ -13,7 +13,9 @@
 <AnchorPane xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.dnainator.javafx.controllers.WelcomeController">
    <children>
       <ListView fx:id="list" onMouseClicked="#onMouseClicked" prefHeight="200.0" prefWidth="400.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="100.0" />
-        <Button onAction="#startButtonAction" text="Start" AnchorPane.bottomAnchor="20.0" AnchorPane.rightAnchor="20.0" />
+      <Button fx:id="loadButton" layoutX="424.0" layoutY="343.0" onAction="#loadButtonAction" text="Load" AnchorPane.bottomAnchor="32.0" AnchorPane.rightAnchor="132.0" />
+        <Button fx:id="deleteButton" disable="true" layoutX="475.0" layoutY="343.0" onAction="#deleteButtonAction" text="Delete" AnchorPane.bottomAnchor="32.0" AnchorPane.rightAnchor="71.0" />
+      <Button fx:id="startButton" disable="true" layoutX="538.0" layoutY="343.0" onAction="#startButtonAction" text="Start" AnchorPane.bottomAnchor="32.0" AnchorPane.rightAnchor="21.0" />
         <Label alignment="CENTER" text="Welcome" textAlignment="CENTER" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="20.0">
             <font>
                 <Font size="32.0" />
