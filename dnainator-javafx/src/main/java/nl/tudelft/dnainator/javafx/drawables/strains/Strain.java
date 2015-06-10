@@ -23,9 +23,9 @@ public class Strain extends SemanticDrawable {
 	/* JavaFX scene graph cannot handle rectangles larger than 10k pixels, so we split a 30k
 	* rectangle into 4 slices. */
 	private static final int SLICES = 4;
+	private static final int MAX = 10000;
 	private static final int Y_OFFSET = 10;
 	private static final int RANK_WIDTH = 10;
-	private static final int NO_CLUSTERS = 33000;
 	private static final int CLUSTER_DIVIDER = 100;
 
 	private ColorServer colorServer;
@@ -62,8 +62,12 @@ public class Strain extends SemanticDrawable {
 	 */
 	@Override
 	protected void loadContent() {
+		int width = graph.getRanks().size() * RANK_WIDTH;
+		if (width > MAX) {
+			width /= SLICES;
+		}
+
 		for (int i = 0; i < SLICES; i++) {
-			int width = NO_CLUSTERS * RANK_WIDTH / SLICES;
 			Rectangle rectangle = new Rectangle(width, RANK_WIDTH, Color.BLACK);
 			rectangle.setTranslateX(i * width);
 			content.getChildren().add(rectangle);
