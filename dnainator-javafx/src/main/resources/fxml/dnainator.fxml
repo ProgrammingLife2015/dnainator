@@ -35,7 +35,7 @@
                   </MenuItem>
                   <MenuItem mnemonicParsing="false" text="Restore session">
                      <accelerator>
-                        <KeyCodeCombination alt="UP" code="L" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
+                        <KeyCodeCombination alt="UP" code="O" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
                      </accelerator></MenuItem>
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" onAction="#exitAction" text="Exit" />
@@ -53,10 +53,20 @@
                         <KeyCodeCombination alt="UP" code="MINUS" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                      </accelerator>
                   </MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#resetZoomAction" text="Reset zoom level">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="R" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
+                     </accelerator>
+                  </MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#resetPositionAction" text="Reset position">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="T" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
+                     </accelerator>
+                  </MenuItem>
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <CheckMenuItem mnemonicParsing="false" selected="true" text="Show stepper">
                      <accelerator>
-                        <KeyCodeCombination alt="UP" code="T" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
+                        <KeyCodeCombination alt="UP" code="L" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                      </accelerator>
                   </CheckMenuItem>
                   <CheckMenuItem mnemonicParsing="false" selected="true" text="Show minimap">
