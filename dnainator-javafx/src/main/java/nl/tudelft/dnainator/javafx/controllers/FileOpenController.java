@@ -3,6 +3,9 @@ package nl.tudelft.dnainator.javafx.controllers;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
+import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
@@ -57,6 +60,7 @@ public class FileOpenController {
 	private ProgressDialog progressDialog;
 	private ObjectProperty<TreeNode> treeProperty;
 	private ObjectProperty<Graph> graphProperty;
+	private ObjectProperty<ObservableList<String>> dbPathProperty;
 	private SlidingAnimation animation;
 
 	/*
@@ -67,6 +71,7 @@ public class FileOpenController {
 		fileChooser = new FileChooser();
 		graphProperty = new SimpleObjectProperty<>(this, "graph");
 		treeProperty = new SimpleObjectProperty<>(this, "tree");
+		dbPathProperty = new SimpleObjectProperty<>(this, "dbpath");
 
 		graphLoadService = new GraphLoadService();
 		graphLoadService.setOnFailed(e ->
@@ -173,6 +178,7 @@ public class FileOpenController {
 		resetTextFields();
 		animation.toggle();
 		if (graphLoadService.getNodeFile() != null && graphLoadService.getEdgeFile() != null) {
+			graphLoadService.setDatabase(graphLoadService.getNewPath(dbPathProperty.getValue()));
 			graphLoadService.restart();
 			curNodeLabel.setText(graphLoadService.getNodeFile().getAbsolutePath());
 			curEdgeLabel.setText(graphLoadService.getEdgeFile().getAbsolutePath());
@@ -268,6 +274,13 @@ public class FileOpenController {
 		return graphProperty;
 	}
 
+	/**
+	 * @return the dbPathProperty
+	 */
+	public ObjectProperty<ObservableList<String>> dbPathProperty() {
+		return dbPathProperty;
+	}
+	
 	/**
 	 * Toggles the pane, showing or hiding it with a sliding animation.
 	 */

@@ -1,6 +1,11 @@
 package nl.tudelft.dnainator.javafx.controllers;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import org.neo4j.io.fs.FileUtils;
 
@@ -33,6 +38,7 @@ public class WelcomeController {
 	private DirectoryChooser dirChooser;
 	private ProgressDialog progressDialog;
 	private String dbpath;
+	private static final String DEFAULT_DB_PATH = "target/db";
 	@SuppressWarnings("unused") @FXML private Button startButton;
 	@SuppressWarnings("unused") @FXML private Button deleteButton;
 	@SuppressWarnings("unused") @FXML private Button loadButton;
@@ -57,19 +63,18 @@ public class WelcomeController {
 	private void loadButtonAction(ActionEvent e) {
 		progressDialog = new ProgressDialog(list.getParent());
 		if (dbpath == SELECT_OPTION) {
-			File dir = selectDirectory(SELECT_OPTION);
+			File dir = selectDirectory();
 			if (dir == null) {
 				return;
 			}
 		}
 		dbload.restart();
-		startButton.setDisable(false);
 	}
 
 	@SuppressWarnings("unused") @FXML
 	private void onMouseClicked(MouseEvent e) {
 		if (e.getClickCount() == 2 && dbpath == SELECT_OPTION) {
-			File dir = selectDirectory(SELECT_OPTION);
+			File dir = selectDirectory();
 			if (dir == null) {
 				return;
 			}
@@ -80,23 +85,23 @@ public class WelcomeController {
 	}
 	
 	@SuppressWarnings("unused") @FXML
-	private void initialize() {
+	private void initialize() throws IOException {
 		dirChooser = new DirectoryChooser();
 		dbload = new DBLoadService();
 		dbload.setOnFailed(e -> {
 			new ExceptionDialog(list.getParent(), dbload.getException(),
 					"Database is already in use, please choose another.");
-			startButton.setDisable(true);
 		});
+		
 		dbload.setOnSucceeded(e -> {
 			dbProperty.setValue(dbload.getValue());
+			startButton.setDisable(false);
 			progressDialog.close();
 		});
 		dbload.setOnRunning(e -> progressDialog.show());
 		dbProperty = new SimpleObjectProperty<>(this, "graph");
-		items = FXCollections.observableArrayList(
-				SELECT_OPTION,
-				getDBPath());
+		items = FXCollections.observableArrayList(SELECT_OPTION);
+		scanDirectory();
 		list.setItems(items);
 		list.getSelectionModel().select(getDBPath());
 		list.getSelectionModel().selectedItemProperty().addListener((obj, oldV, newV) -> {
@@ -110,12 +115,34 @@ public class WelcomeController {
 		});
 	}
 	
-	private void setDBPath() {
+	private void setDBPath(){
 		this.dbpath = getDBPath();
 	}
 	
 	private String getDBPath() {
 		return dbload.getDatabase();
+	}
+	
+	/**
+	 * @return the list of database paths of the welcome screen.
+	 */
+	public ObservableList<String> getListedPaths() {
+		return items;
+	}
+	
+	/**
+	 * Scan the directory containing the default location of databases.
+	 * Adds all the directories found to the welcomescreen's list of selectables.
+	 * @throws IOException
+	 */
+	private void scanDirectory() throws IOException {
+		try (DirectoryStream<Path> ds = Files.newDirectoryStream(Paths.get(DEFAULT_DB_PATH))) {
+	        for (Path path : ds) {
+	            if (Files.isDirectory(path)) {
+	                items.add(path.toString());
+	            }
+	        }
+	    }
 	}
 	
 	/**
@@ -134,12 +161,10 @@ public class WelcomeController {
 	
 	/**
 	 * Sets up the {@link DirectoryChooser}.
-	 *
-	 * @param title     The title of the {@link DirectoryChooser}.
 	 * @return The selected directory, or null if none is chosen.
 	 */
-	private File selectDirectory(String title) {
-		dirChooser.setTitle(title);
+	private File selectDirectory() {
+		dirChooser.setTitle(SELECT_OPTION);
 		return dirChooser.showDialog(list.getScene().getWindow());
 	}
 }

@@ -31,6 +31,7 @@ public class WindowController {
 	@SuppressWarnings("unused") @FXML
 	private void initialize() {
 		ColorServer colorServer = new ColorServer();
+		fileOpenController.dbPathProperty().set(welcomeController.getListedPaths());
 		fileOpenController.graphProperty().addListener((obj, oldV, newV) -> {
 			strainView = new StrainView(colorServer, newV);
 		});

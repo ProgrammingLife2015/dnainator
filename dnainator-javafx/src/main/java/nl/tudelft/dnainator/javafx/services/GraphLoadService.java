@@ -16,6 +16,7 @@ import nl.tudelft.dnainator.parser.impl.NodeParserImpl;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * A JavaFX background service to load files into graphs.
@@ -25,9 +26,7 @@ import java.io.IOException;
  * </p>
  */
 public class GraphLoadService extends Service<Graph> {
-	//TODO Use unique DB_PATH based on existing DB_PATHS
-	private static final String DB_PATH = "target/dna-graph-db";
-	
+	private static final String DB_PATH = "target\\db\\db";
 	private ObjectProperty<File> nodeFile = new SimpleObjectProperty<>(this, "nodeFile");
 	private ObjectProperty<File> edgeFile = new SimpleObjectProperty<>(this, "edgeFile");
 	private ObjectProperty<String> database = new SimpleObjectProperty<>(this, "database");
@@ -39,6 +38,21 @@ public class GraphLoadService extends Service<Graph> {
 		setDatabase(DB_PATH);
 	}
 
+	/**
+	 * Checks what paths are already in use and constructs an unique path,
+	 * that does not collide with existing ones.
+	 * @return unique path for the database.
+	 */
+	public String getNewPath(List<String> paths) {
+		int i = 0;
+		String newPath = DB_PATH;
+		while (paths.contains(newPath)) {
+			newPath = DB_PATH + (i++);
+		}
+		paths.add(newPath);
+		return newPath;
+	}
+	
 	/**
 	 * @param f The node file to load.
 	 */
