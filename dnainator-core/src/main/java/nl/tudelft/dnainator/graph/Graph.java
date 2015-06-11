@@ -5,6 +5,7 @@ import nl.tudelft.dnainator.annotation.AnnotationCollection;
 import nl.tudelft.dnainator.annotation.Range;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
+import nl.tudelft.dnainator.graph.interestingness.InterestingnessStrategy;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 
 import java.util.Collection;
@@ -55,6 +56,13 @@ public interface Graph extends AnnotationCollection {
 	 * @return		a list representing the cluster
 	 */
 	Map<Integer, List<Cluster>> getAllClusters(List<String> startNodes, int end, int threshold);
+
+	/**
+	 * Sets the interestingness strategy which calculates the interestingness when
+	 * clustering.
+	 * @param is the interestingness strategy.
+	 */
+	void setInterestingnessStrategy(InterestingnessStrategy is);
 
 	/**
 	 * Find the nodes satisfying the given query.

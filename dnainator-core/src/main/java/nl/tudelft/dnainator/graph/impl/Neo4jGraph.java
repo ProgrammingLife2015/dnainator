@@ -11,6 +11,8 @@ import nl.tudelft.dnainator.graph.impl.command.Command;
 import nl.tudelft.dnainator.graph.impl.command.RankCommand;
 import nl.tudelft.dnainator.graph.impl.query.AllClustersQuery;
 import nl.tudelft.dnainator.graph.impl.query.Query;
+import nl.tudelft.dnainator.graph.interestingness.InterestingnessStrategy;
+import nl.tudelft.dnainator.graph.interestingness.impl.SummingScoresStrategy;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 import nl.tudelft.dnainator.parser.AnnotationParser;
 
@@ -51,6 +53,7 @@ public final class Neo4jGraph implements Graph {
 			+   "AND n." + PropertyTypes.RANK.name() + " <= {to} RETURN a";
 
 	private GraphDatabaseService service;
+	private InterestingnessStrategy is;
 
 	/**
 	 * Constructs a Neo4j database on the specified path, using
@@ -69,6 +72,7 @@ public final class Neo4jGraph implements Graph {
 
 		// Rank the graph.
 		execute(e -> new RankCommand(rootIterator()).execute(e));
+		this.is = new SummingScoresStrategy();
 	}
 
 	/**
@@ -142,7 +146,7 @@ public final class Neo4jGraph implements Graph {
 	@Override
 	public Map<Integer, List<Cluster>> getAllClusters(List<String> startNodes,
 							int end, int threshold) {
-		return query(new AllClustersQuery(startNodes, end, threshold));
+		return query(new AllClustersQuery(startNodes, end, threshold, is));
 	}
 
 	@Override
@@ -230,5 +234,10 @@ public final class Neo4jGraph implements Graph {
 	@Override
 	public Collection<Annotation> getAnnotationByRank(Range r) {
 		return getAnnotationRange(r, GET_ANNOTATION_BY_RANK);
+	}
+
+	@Override
+	public void setInterestingnessStrategy(InterestingnessStrategy is) {
+		this.is = is;
 	}
 }

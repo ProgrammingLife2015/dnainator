@@ -7,6 +7,7 @@ import nl.tudelft.dnainator.graph.impl.Neo4jSequenceNode;
 import nl.tudelft.dnainator.graph.impl.NodeLabels;
 import nl.tudelft.dnainator.graph.impl.PropertyTypes;
 import nl.tudelft.dnainator.graph.impl.RelTypes;
+import nl.tudelft.dnainator.graph.interestingness.InterestingnessStrategy;
 
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -33,6 +34,7 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 	private List<String> startNodes;
 	private int threshold;
 	private int maxRank;
+	private InterestingnessStrategy is;
 
 	/**
 	 * Create a new {@link AllClustersQuery}, which will:.
@@ -42,12 +44,16 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 	 * @param startNodes	the start nodes
 	 * @param maxRank	the maximum rank
 	 * @param threshold	the clustering threshold
+	 * @param is the interestingness strategy, which determines how the
+	 * interestingness score is calculated.
 	 */
-	public AllClustersQuery(List<String> startNodes, int maxRank, int threshold) {
+	public AllClustersQuery(List<String> startNodes, int maxRank, int threshold,
+			InterestingnessStrategy is) {
 		this.startNodes = startNodes;
 		this.maxRank = maxRank;
 		this.threshold = threshold;
 		this.visited = new HashSet<>();
+		this.is = is;
 	}
 
 	@Override
@@ -102,7 +108,7 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 		TraversalDescription clusterDesc = service.traversalDescription()
 						.depthFirst()
 						.relationships(RelTypes.NEXT, Direction.BOTH)
-						.evaluator(new ClusterEvaluator(threshold, visited));
+						.evaluator(new ClusterEvaluator(threshold, visited, is));
 		// Traverse the cluster starting from the startNode.
 		int rankStart = (int) startNode.getProperty(PropertyTypes.RANK.name());
 		for (Node end : clusterDesc.traverse(startNode).nodes()) {

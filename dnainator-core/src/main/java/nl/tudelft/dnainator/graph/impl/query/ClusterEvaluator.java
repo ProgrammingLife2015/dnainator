@@ -1,5 +1,8 @@
 package nl.tudelft.dnainator.graph.impl.query;
 
+import nl.tudelft.dnainator.graph.impl.Neo4jScoreContainer;
+import nl.tudelft.dnainator.graph.interestingness.InterestingnessStrategy;
+
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.traversal.Evaluation;
@@ -8,7 +11,6 @@ import org.neo4j.graphdb.traversal.Evaluator;
 import java.util.Set;
 
 import static nl.tudelft.dnainator.graph.impl.PropertyTypes.ID;
-import static nl.tudelft.dnainator.graph.impl.PropertyTypes.SCORE;
 
 /**
  * Evaluates whether a node is part of a cluster based on the given threshold.
@@ -16,6 +18,7 @@ import static nl.tudelft.dnainator.graph.impl.PropertyTypes.SCORE;
 public class ClusterEvaluator implements Evaluator {
 	private int threshold;
 	private Set<String> visited;
+	private InterestingnessStrategy is;
 
 	/**
 	 * Create a new {@link ClusterEvaluator}, which will:.
@@ -25,10 +28,12 @@ public class ClusterEvaluator implements Evaluator {
 	 * </ul>
 	 * @param threshold	the clustering threshold
 	 * @param visited	the visited nodes
+	 * @param is the strategy for calculating the interestingness score.
 	 */
-	public ClusterEvaluator(int threshold, Set<String> visited) {
+	public ClusterEvaluator(int threshold, Set<String> visited, InterestingnessStrategy is) {
 		this.threshold = threshold;
 		this.visited = visited;
+		this.is = is;
 	}
 
 	/**
@@ -45,7 +50,7 @@ public class ClusterEvaluator implements Evaluator {
 	@Override
 	public Evaluation evaluate(Path path) {
 		Node end = path.endNode();
-		int score = (int) end.getProperty(SCORE.name());
+		int score = is.compute(new Neo4jScoreContainer(end));
 		String id = (String) end.getProperty(ID.name());
 
 		if (!visited.contains(id)
