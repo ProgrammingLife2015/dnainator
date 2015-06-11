@@ -7,7 +7,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
@@ -111,16 +110,14 @@ public class FileOpenController {
 	}
 
 	/*
-	 * Disables the openbutton when either no newick file or no node file is selected.
+	 * Disables the openbutton as long as no newick file and no node file is selected.
 	 */
 	private void bindDisabledFieldsAndButtons() {
 		BooleanBinding emptyGraphFile = nodeField.textProperty().isEmpty()
-				.or(edgeField.textProperty().isEmpty());
+				.or(edgeField.textProperty().isEmpty()).or(newickField.textProperty().isEmpty());
 		gffField.disableProperty().bind(graphProperty.isNull().and(emptyGraphFile));
-		// At least both graph files or the newick file must be filled.
-		openButton.disableProperty().bind(emptyGraphFile
-				.and(newickField.textProperty().isEmpty())
-				.and(gffField.disableProperty()));
+		// At least both graph files and the newick file must be filled.
+		openButton.disableProperty().bind(emptyGraphFile.and(gffField.disableProperty()));
 	}
 
 	/*
