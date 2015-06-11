@@ -33,16 +33,11 @@ public class WelcomeController {
 	private DirectoryChooser dirChooser;
 	private ProgressDialog progressDialog;
 	private ObservableList<String> items;
-	private static final String DEFAULT_DB_PATH = "target\\db";
-	@SuppressWarnings("unused") @FXML private Button startButton;
+	private static final String DEFAULT_DB_PATH = "target" + File.separator + "db";
 	@SuppressWarnings("unused") @FXML private Button deleteButton;
 	@SuppressWarnings("unused") @FXML private Button loadButton;
 	@SuppressWarnings("unused") @FXML private ListView<String> list;
 	@SuppressWarnings("unused") @FXML private String selectDB;
-	@SuppressWarnings("unused") @FXML 
-	private void startButtonAction(ActionEvent a) {
-		done.setValue(true);
-	}
 	
 	@SuppressWarnings("unused") @FXML 
 	private void deleteButtonAction(ActionEvent a) {
@@ -56,28 +51,13 @@ public class WelcomeController {
 	
 	@SuppressWarnings("unused") @FXML
 	private void loadButtonAction(ActionEvent e) {
-		progressDialog = new ProgressDialog(list.getParent());
-		if (getDBPath().equals(selectDB) && selectDirectory() == null) {
-			return;
-		}
-		dbload.restart();
+		loadDB();
 	}
 
 	@SuppressWarnings("unused") @FXML
 	private void onMouseClicked(MouseEvent e) {
 		if (e.getClickCount() == 2) {
-			if (getDBPath().equals(selectDB)) {
-				File dir = selectDirectory();
-				if (dir == null) {
-					return;
-				}
-				dbload.setDatabase(dir.getAbsolutePath());
-				items.add(dir.getAbsolutePath());
-				list.getSelectionModel().select(getDBPath());
-			} else {
-				progressDialog = new ProgressDialog(list.getParent());
-				dbload.restart();
-			}
+			loadDB();
 		}
 	}
 	
@@ -93,12 +73,12 @@ public class WelcomeController {
 		dbload.setOnRunning(e -> progressDialog.show());
 		dbload.setOnSucceeded(e -> {
 			dbProperty.setValue(dbload.getValue());
-			startButton.setDisable(false);
+			done.setValue(true);
 			progressDialog.close();
 		});
 		items = list.getItems();
 		dbProperty = new SimpleObjectProperty<>(this, "graph");
-		scanDirectory();
+		scanDirectory(DEFAULT_DB_PATH);
 		list.setItems(items);
 		list.getSelectionModel().select(getDBPath());
 		list.getSelectionModel().selectedItemProperty().addListener((obj, oldV, newV) -> {
@@ -126,11 +106,11 @@ public class WelcomeController {
 	 * If the default directory does not exist, create it.
 	 * Adds all the directories found to the welcomescreen's list of selectables.
 	 */
-	private void scanDirectory() {
-		if (!Files.exists(Paths.get(DEFAULT_DB_PATH)) && new File(DEFAULT_DB_PATH).mkdir()) {
+	private void scanDirectory(String dbpath) {
+		if (!Files.exists(Paths.get(dbpath)) && new File(dbpath).mkdir()) {
 			return;
 		} else {
-			try (DirectoryStream<Path> ds = Files.newDirectoryStream(Paths.get(DEFAULT_DB_PATH))) {
+			try (DirectoryStream<Path> ds = Files.newDirectoryStream(Paths.get(dbpath))) {
 				for (Path path : ds) {
 					if (Files.isDirectory(path)) {
 						items.add(path.toString());
@@ -154,6 +134,24 @@ public class WelcomeController {
 	 */
 	public BooleanProperty doneProperty() {
 		return done;
+	}
+	
+	/**
+	 * Handle loading the database based on the selection in the list.
+	 * Shows a {@link ProgressDialog} when loading the db.
+	 */
+	private void loadDB() {
+		if (getDBPath().equals(selectDB)) {
+			File dir = selectDirectory();
+			if (dir == null) {
+				return;
+			}
+			items.removeIf(item -> !item.equals(selectDB));
+			scanDirectory(dir.getAbsolutePath());
+		} else {
+			progressDialog = new ProgressDialog(list.getParent());
+			dbload.restart();
+		}
 	}
 	
 	/**

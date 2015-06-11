@@ -1,5 +1,6 @@
 package nl.tudelft.dnainator.javafx.services;
 
+import java.io.File;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Service;
@@ -11,7 +12,7 @@ import nl.tudelft.dnainator.graph.impl.Neo4jGraph;
  * A JavaFX service that loads an existing neo4j database based on its directory path.
  */
 public class DBLoadService extends Service<Graph> {
-	private static final String DEFAULT_DB_PATH = "target\\db";
+	private static final String DEFAULT_DB_PATH = "target" + File.separator + "db";
 	private ObjectProperty<String> database = new SimpleObjectProperty<>(this, "database");
 
 	/**

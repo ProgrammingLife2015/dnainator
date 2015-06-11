@@ -32,7 +32,7 @@ import de.saxsys.javafx.test.JfxRunner;
 public class DBLoadServiceTest {
 	private DBLoadService loadService;
 	private static final int DELAY = 20000;
-	private static final String DEFAULT_DB_PATH = "target\\db";
+	private static final String DEFAULT_DB_PATH = "target" + File.separator + "db";
 	private static final String DB_PATH = "target/neo4j-junit-dbload";
 	
 	/**

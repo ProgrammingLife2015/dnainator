@@ -26,7 +26,7 @@ import java.util.List;
  * </p>
  */
 public class GraphLoadService extends Service<Graph> {
-	private static final String DB_PATH = "target\\db\\db";
+	private static final String DB_PATH = "target" + File.separator + "db" + File.separator + "db";
 	private ObjectProperty<File> nodeFile = new SimpleObjectProperty<>(this, "nodeFile");
 	private ObjectProperty<File> edgeFile = new SimpleObjectProperty<>(this, "edgeFile");
 	private ObjectProperty<String> database = new SimpleObjectProperty<>(this, "database");

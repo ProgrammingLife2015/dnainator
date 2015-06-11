@@ -91,7 +91,7 @@ public class FileOpenController {
 		graphLoadService.setOnRunning(e -> progressDialog.show());
 		graphLoadService.setOnSucceeded(e -> {
 			graphProperty.setValue(graphLoadService.getValue());
-			done.setValue(true);
+			done.setValue(!done.getValue());
 			progressDialog.close();
 		});
 

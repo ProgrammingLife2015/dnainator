@@ -33,7 +33,7 @@ public class WindowController {
 		ColorServer colorServer = new ColorServer();
 		fileOpenController.dbPathProperty().set(welcomeController.getListedPaths());
 		fileOpenController.doneProperty().addListener((obj, oldV, newV) -> 
-			welcomeController.doneProperty().setValue(true));
+			welcomeController.doneProperty().setValue(newV));
 		fileOpenController.graphProperty().addListener((obj, oldV, newV) -> {
 			strainView = new StrainView(colorServer, newV);
 		});
