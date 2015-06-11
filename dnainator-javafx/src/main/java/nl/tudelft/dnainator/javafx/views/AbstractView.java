@@ -134,6 +134,25 @@ public abstract class AbstractView extends Pane {
 	}
 
 	/**
+	 * Resets the zoom level to the default value.
+	 */
+	public void resetZoom() {
+		scale.setToTransform(getScale());
+		worldToCamera();
+	}
+
+	/**
+	 * Resets the translation of the view to the default value.
+	 */
+	public void resetTranslate() {
+		translate.setX(0);
+		translate.setY(0);
+		scale.setTx(0);
+		scale.setTy(0);
+		worldToCamera();
+	}
+
+	/**
 	 * @return The center {@link Point2D} of the view.
 	 */
 	public final Point2D getCenter() {

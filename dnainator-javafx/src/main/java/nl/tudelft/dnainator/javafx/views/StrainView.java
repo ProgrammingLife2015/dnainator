@@ -41,4 +41,16 @@ public class StrainView extends AbstractView {
 		super.zoom(delta, center);
 		strain.update(cameraToWorld(getLayoutBounds()));
 	}
+
+	@Override
+	public void resetZoom() {
+		super.resetZoom();
+		strain.update(cameraToWorld(getLayoutBounds()));
+	}
+
+	@Override
+	public void resetTranslate() {
+		super.resetTranslate();
+		strain.update(cameraToWorld(getLayoutBounds()));
+	}
 }

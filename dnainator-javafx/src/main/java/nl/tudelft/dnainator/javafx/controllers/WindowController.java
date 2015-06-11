@@ -71,4 +71,14 @@ public class WindowController {
 	private void zoomOutAction(ActionEvent e) {
 		strainView.zoomOut();
 	}
+
+	@SuppressWarnings("unused") @FXML
+	private void resetZoomAction(ActionEvent e) {
+		strainView.resetZoom();
+	}
+
+	@SuppressWarnings("unused") @FXML
+	private void resetPositionAction(ActionEvent e) {
+		strainView.resetTranslate();
+	}
 }
