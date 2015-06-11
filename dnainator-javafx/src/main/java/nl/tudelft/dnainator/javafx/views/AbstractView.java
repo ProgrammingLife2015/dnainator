@@ -19,10 +19,10 @@ import java.io.IOException;
  */
 public abstract class AbstractView extends Pane {
 	private static final String FXML = "/fxml/view.fxml";
-	private static final double SCALE = 1;
+	private static final double SCALE = 0.8;
 	protected static final double ZOOM_FACTOR = 1e-3;
-	protected static final int ZOOM_IN_STEP = 55;
-	protected static final int ZOOM_OUT_STEP = -150;
+	protected static final int ZOOM_IN_STEP = 40;
+	protected static final int ZOOM_OUT_STEP = -80;
 	protected static final double ZOOM_IN_BOUND = 15;
 	protected static final double ZOOM_OUT_BOUND = .1;
 	protected Affine scale;
@@ -109,7 +109,7 @@ public abstract class AbstractView extends Pane {
 	 * @param delta		the amount to zoom in
 	 * @param center	the center of the zoom, in camera space
 	 */
-	public void zoom(double delta, Point2D center) {
+	protected void zoom(double delta, Point2D center) {
 		Point2D world;
 		double zoom = 1 + delta * ZOOM_FACTOR;
 		try {
@@ -126,6 +126,24 @@ public abstract class AbstractView extends Pane {
 	}
 
 	/**
+	 * Zoom in for scrolling with the mouse.
+	 * @param x the x position of the cursor.
+	 * @param y the y position of the cursor.
+	 */
+	public void zoomInScroll(double x, double y) {
+		zoom(ZOOM_IN_STEP, new Point2D(x, y));
+	}
+	
+	/**
+	 * Zoom out for scrolling with the mouse.
+	 * @param x the x position of the cursor.
+	 * @param y the y position of the cursor.
+	 */
+	public void zoomOutScroll(double x, double y) {
+		zoom(ZOOM_OUT_STEP, new Point2D(x, y));
+	}
+	
+	/**
 	 * Default zoom method. Zooms in the camera by a default amount and to the center of the view.
 	 */
 	public void zoomIn() {
@@ -140,6 +158,7 @@ public abstract class AbstractView extends Pane {
 	}
 
 	/**
+	 * Resets the zoom level to the default value.
 	 */
 	public void resetZoom() {
 		scale.setToTransform(getScale());

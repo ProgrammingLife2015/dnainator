@@ -5,7 +5,7 @@ package nl.tudelft.dnainator.javafx.drawables.strains;
  * The amount corresponds to the level of scaling.
  */
 public enum Thresholds {
-	GRAPH(2.4),
+	GRAPH(1.7),
 	CLUSTER(4.0);
 	
 	private final double threshold;

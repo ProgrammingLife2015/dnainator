@@ -100,11 +100,11 @@ public class StrainTest {
 	@Test
 	public void testUpdate() {
 		// CHECKSTYLE.OFF: MagicNumber
-		strain.update(new Rectangle(20000, 10000).getBoundsInLocal(), 2.0);
+		strain.update(new Rectangle(20000, 10000).getBoundsInLocal(), 1.0);
 		assertTrue(content.isVisible());
 		verify(graph, never()).getRank(anyInt());
 
-		strain.update(new Rectangle(5000, 2500).getBoundsInLocal(), 2.4);
+		strain.update(new Rectangle(5000, 2500).getBoundsInLocal(), 1.7);
 		assertFalse(content.isVisible());
 		verify(graph, Mockito.atLeastOnce()).getRank(anyInt());
 
@@ -112,7 +112,7 @@ public class StrainTest {
 		assertFalse(content.isVisible());
 		verify(graph, Mockito.atLeastOnce()).getRank(anyInt());
 
-		strain.update(new Rectangle(20000, 10000).getBoundsInLocal(), 2.0);
+		strain.update(new Rectangle(20000, 10000).getBoundsInLocal(), 1.4);
 		assertTrue(content.isVisible());
 		verify(graph, Mockito.atLeastOnce()).getRank(anyInt());
 		// CHECKSTYLE.ON: MagicNumber
