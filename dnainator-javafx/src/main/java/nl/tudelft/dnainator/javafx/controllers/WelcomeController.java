@@ -6,7 +6,9 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
 import org.neo4j.io.fs.FileUtils;
+
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.javafx.services.DBLoadService;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.ExceptionDialog;
@@ -18,6 +20,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
 
@@ -55,6 +59,13 @@ public class WelcomeController {
 	@SuppressWarnings("unused") @FXML
 	private void onMouseClicked(MouseEvent e) {
 		if (e.getClickCount() == 2) {
+			loadDB();
+		}
+	}
+	
+	@SuppressWarnings("unused") @FXML
+	private void onKeyPressed(KeyEvent e) {
+		if (e.getCode() == KeyCode.ENTER) {
 			loadDB();
 		}
 	}

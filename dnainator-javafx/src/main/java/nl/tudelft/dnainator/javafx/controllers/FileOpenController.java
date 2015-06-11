@@ -20,7 +20,7 @@ import nl.tudelft.dnainator.tree.TreeNode;
 import nl.tudelft.dnainator.javafx.services.GFFLoadService;
 import nl.tudelft.dnainator.javafx.services.GraphLoadService;
 import nl.tudelft.dnainator.javafx.services.NewickLoadService;
-import nl.tudelft.dnainator.javafx.widgets.animations.LeftSlideAnimation;
+import nl.tudelft.dnainator.javafx.widgets.animations.RightSlideAnimation;
 import nl.tudelft.dnainator.javafx.widgets.animations.SlidingAnimation;
 import nl.tudelft.dnainator.javafx.widgets.animations.TransitionAnimation.Position;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.ExceptionDialog;
@@ -73,7 +73,7 @@ public class FileOpenController {
 		dbPathProperty = new SimpleListProperty<>(this, "dbpath");
 		setupServices();
 		
-		animation = new LeftSlideAnimation(fileOpenPane, WIDTH, ANIM_DURATION, Position.LEFT);
+		animation = new RightSlideAnimation(fileOpenPane, WIDTH, ANIM_DURATION, Position.LEFT);
 		bindDisabledFieldsAndButtons();
 	}
 	
