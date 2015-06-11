@@ -10,9 +10,9 @@ import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.command.Command;
 import nl.tudelft.dnainator.graph.impl.command.RankCommand;
 import nl.tudelft.dnainator.graph.impl.query.AllClustersQuery;
-import nl.tudelft.dnainator.graph.impl.query.ClusterQuery;
-import nl.tudelft.dnainator.graph.impl.query.ClustersFromQuery;
 import nl.tudelft.dnainator.graph.impl.query.Query;
+import nl.tudelft.dnainator.graph.interestingness.InterestingnessStrategy;
+import nl.tudelft.dnainator.graph.interestingness.impl.SummingScoresStrategy;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 import nl.tudelft.dnainator.parser.AnnotationParser;
 
@@ -25,12 +25,9 @@ import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
 
 /**
  * This class realizes a graphfactory using Neo4j as it's backend.
@@ -56,6 +53,7 @@ public final class Neo4jGraph implements Graph {
 			+   "AND n." + PropertyTypes.RANK.name() + " <= {to} RETURN a";
 
 	private GraphDatabaseService service;
+	private InterestingnessStrategy is;
 
 	/**
 	 * Constructs a Neo4j database on the specified path, using
@@ -74,6 +72,7 @@ public final class Neo4jGraph implements Graph {
 
 		// Rank the graph.
 		execute(e -> new RankCommand(rootIterator()).execute(e));
+		this.is = new SummingScoresStrategy();
 	}
 
 	/**
@@ -144,26 +143,10 @@ public final class Neo4jGraph implements Graph {
 		});
 	}
 
-	/**
-	 * Return a single cluster using the specified values.
-	 * @param start		the start node
-	 * @param threshold	the cluster threshold
-	 * @return		a list of sequence nodes
-	 */
-	protected List<SequenceNode> getCluster(String start, int threshold) {
-		return query(new ClusterQuery(new HashSet<String>(), start, threshold)).getNodes();
-	}
-
-	@Override
-	public Queue<Cluster> getClustersFrom(Set<String> visited,
-						List<String> startNodes, int threshold) {
-		return query(new ClustersFromQuery(visited, startNodes, threshold));
-	}
-
 	@Override
 	public Map<Integer, List<Cluster>> getAllClusters(List<String> startNodes,
 							int end, int threshold) {
-		return query(new AllClustersQuery(startNodes, end, threshold));
+		return query(new AllClustersQuery(startNodes, end, threshold, is));
 	}
 
 	@Override
@@ -251,5 +234,10 @@ public final class Neo4jGraph implements Graph {
 	@Override
 	public Collection<Annotation> getAnnotationByRank(Range r) {
 		return getAnnotationRange(r, GET_ANNOTATION_BY_RANK);
+	}
+
+	@Override
+	public void setInterestingnessStrategy(InterestingnessStrategy is) {
+		this.is = is;
 	}
 }

@@ -5,6 +5,7 @@ import nl.tudelft.dnainator.annotation.AnnotationCollection;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.graph.GraphBuilder;
+import nl.tudelft.dnainator.graph.interestingness.Scores;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
@@ -124,7 +125,7 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 		nodeProperties.put(PropertyTypes.ENDREF.name(), s.getEndRef());
 		nodeProperties.put(PropertyTypes.SEQUENCE.name(), s.getSequence());
 		nodeProperties.put(PropertyTypes.RANK.name(), 0);
-		nodeProperties.put(PropertyTypes.SCORE.name(), s.getSequence().length());
+		nodeProperties.put(Scores.SEQ_LENGTH.getName(), s.getSequence().length());
 		return batchInserter.createNode(nodeProperties, NodeLabels.NODE);
 	}
 

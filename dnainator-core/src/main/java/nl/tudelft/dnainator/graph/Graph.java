@@ -5,13 +5,12 @@ import nl.tudelft.dnainator.annotation.AnnotationCollection;
 import nl.tudelft.dnainator.annotation.Range;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
+import nl.tudelft.dnainator.graph.interestingness.InterestingnessStrategy;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
-import java.util.Set;
 
 /**
  * Interface for backend agnostic interaction with a graph.
@@ -51,21 +50,19 @@ public interface Graph extends AnnotationCollection {
 
 	/**
 	 * Return a list of nodes that belong to the same cluster as the given startId.
-	 * @param visited	nodes that were already visited
-	 * @param startNodes	the start nodes
-	 * @param threshold		the clustering threshold
-	 * @return		a list representing the cluster
-	 */
-	Queue<Cluster> getClustersFrom(Set<String> visited, List<String> startNodes, int threshold);
-
-	/**
-	 * Return a list of nodes that belong to the same cluster as the given startId.
 	 * @param startNodes	the start nodes
 	 * @param end		the maximum rank of the cluster
 	 * @param threshold	the clustering threshold
 	 * @return		a list representing the cluster
 	 */
 	Map<Integer, List<Cluster>> getAllClusters(List<String> startNodes, int end, int threshold);
+
+	/**
+	 * Sets the interestingness strategy which calculates the interestingness when
+	 * clustering.
+	 * @param is the interestingness strategy.
+	 */
+	void setInterestingnessStrategy(InterestingnessStrategy is);
 
 	/**
 	 * Find the nodes satisfying the given query.
