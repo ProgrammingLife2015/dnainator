@@ -16,6 +16,8 @@ import nl.tudelft.dnainator.parser.impl.NodeParserImpl;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
@@ -26,7 +28,8 @@ import java.util.List;
  * </p>
  */
 public class GraphLoadService extends Service<Graph> {
-	private static final String DB_PATH = "target" + File.separator + "db" + File.separator + "db";
+	private static final String DB_PATH = "target" + File.separator + "db" 
+			+ File.separator + "dna-graph-";
 	private ObjectProperty<File> nodeFile = new SimpleObjectProperty<>(this, "nodeFile");
 	private ObjectProperty<File> edgeFile = new SimpleObjectProperty<>(this, "edgeFile");
 	private ObjectProperty<String> database = new SimpleObjectProperty<>(this, "database");
@@ -45,11 +48,8 @@ public class GraphLoadService extends Service<Graph> {
 	 * @return unique path for the database.
 	 */
 	public String getNewPath(List<String> paths) {
-		int i = 0;
-		String newPath = DB_PATH;
-		while (paths.contains(newPath)) {
-			newPath = DB_PATH + (i++);
-		}
+		DateTimeFormatter format = DateTimeFormatter.ofPattern("YYYYMMdd-HHmmss");
+		String newPath = DB_PATH + (LocalDateTime.now().format(format));
 		paths.add(newPath);
 		return newPath;
 	}

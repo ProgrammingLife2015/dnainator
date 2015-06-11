@@ -11,9 +11,7 @@ import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.javafx.services.DBLoadService;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.ExceptionDialog;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.ProgressDialog;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -28,12 +26,12 @@ import javafx.stage.DirectoryChooser;
  */
 public class WelcomeController {
 	private ObjectProperty<Graph> dbProperty;
-	private BooleanProperty done = new SimpleBooleanProperty(false, "done");
 	private DBLoadService dbload;
 	private DirectoryChooser dirChooser;
 	private ProgressDialog progressDialog;
 	private ObservableList<String> items;
 	private static final String DEFAULT_DB_PATH = "target" + File.separator + "db";
+	private static final String CORE = "neostore";
 	@SuppressWarnings("unused") @FXML private Button deleteButton;
 	@SuppressWarnings("unused") @FXML private Button loadButton;
 	@SuppressWarnings("unused") @FXML private ListView<String> list;
@@ -69,11 +67,11 @@ public class WelcomeController {
 		dbload.setOnFailed(e -> {
 			new ExceptionDialog(list.getParent(), dbload.getException(),
 					"Database is already in use, please choose another.");
+			progressDialog.close();
 		});
 		dbload.setOnRunning(e -> progressDialog.show());
 		dbload.setOnSucceeded(e -> {
 			dbProperty.setValue(dbload.getValue());
-			done.setValue(true);
 			progressDialog.close();
 		});
 		items = list.getItems();
@@ -112,7 +110,8 @@ public class WelcomeController {
 		} else {
 			try (DirectoryStream<Path> ds = Files.newDirectoryStream(Paths.get(dbpath))) {
 				for (Path path : ds) {
-					if (Files.isDirectory(path)) {
+					if (Files.isDirectory(path) 
+							&& Files.exists(Paths.get(path.toString() + File.separator + CORE))) {
 						items.add(path.toString());
 					}
 				}
@@ -127,13 +126,6 @@ public class WelcomeController {
 	 */
 	public ObjectProperty<Graph> dbProperty() {
 		return dbProperty;
-	}
-	
-	/**
-	 * @return The BooleanProperty used to indicate if the welcome screen is done.
-	 */
-	public BooleanProperty doneProperty() {
-		return done;
 	}
 	
 	/**

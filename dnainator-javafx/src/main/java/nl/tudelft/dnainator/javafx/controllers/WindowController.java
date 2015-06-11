@@ -32,24 +32,25 @@ public class WindowController {
 	private void initialize() {
 		ColorServer colorServer = new ColorServer();
 		fileOpenController.dbPathProperty().set(welcomeController.getListedPaths());
-		fileOpenController.doneProperty().addListener((obj, oldV, newV) -> 
-			welcomeController.doneProperty().setValue(newV));
 		fileOpenController.graphProperty().addListener((obj, oldV, newV) -> {
 			strainView = new StrainView(colorServer, newV);
+			constructView();
 		});
 		fileOpenController.treeProperty().addListener((obj, oldV, newV) -> {
 			phyloView = new PhylogeneticView(colorServer);
 			phyloView.rootProperty().set(newV);
 		});
-		welcomeController.doneProperty().addListener((obj, oldV, newV) -> {
-			SplitPane splitPane = new SplitPane(strainView, phyloView);
-			splitPane.setOrientation(Orientation.VERTICAL);
-			root.setCenter(splitPane);
-		});
 		welcomeController.dbProperty().addListener((obj, oldV, newV) -> {
 			strainView = new StrainView(colorServer, newV);
 			phyloView = new PhylogeneticView(colorServer);
+			constructView();
 		});
+	}
+	
+	private void constructView() {
+		SplitPane splitPane = new SplitPane(strainView, phyloView);
+		splitPane.setOrientation(Orientation.VERTICAL);
+		root.setCenter(splitPane);
 	}
 
 	@SuppressWarnings("unused") @FXML

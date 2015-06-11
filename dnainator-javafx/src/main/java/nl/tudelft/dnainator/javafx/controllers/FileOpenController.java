@@ -1,10 +1,8 @@
 package nl.tudelft.dnainator.javafx.controllers;
 
 import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Service;
@@ -62,7 +60,6 @@ public class FileOpenController {
 	private ObjectProperty<TreeNode> treeProperty;
 	private ObjectProperty<Graph> graphProperty;
 	private ListProperty<String> dbPathProperty;
-	private BooleanProperty done = new SimpleBooleanProperty(false, "done");
 	private SlidingAnimation animation;
 
 	/*
@@ -85,13 +82,14 @@ public class FileOpenController {
 	 */
 	private void setupServices() {
 		graphLoadService = new GraphLoadService();
-		graphLoadService.setOnFailed(e ->
+		graphLoadService.setOnFailed(e -> {
 				new ExceptionDialog(fileOpenPane.getParent(), graphLoadService.getException(),
-						"Error loading graph files!"));
+						"Error loading graph files!");
+				progressDialog.close();
+			});
 		graphLoadService.setOnRunning(e -> progressDialog.show());
 		graphLoadService.setOnSucceeded(e -> {
 			graphProperty.setValue(graphLoadService.getValue());
-			done.setValue(!done.getValue());
 			progressDialog.close();
 		});
 
@@ -110,14 +108,13 @@ public class FileOpenController {
 	}
 
 	/*
-	 * Disables the openbutton as long as no newick file and no node file is selected.
+	 * Disables the openbutton as long as not all field are filled in.
 	 */
 	private void bindDisabledFieldsAndButtons() {
 		BooleanBinding emptyGraphFile = nodeField.textProperty().isEmpty()
-				.or(edgeField.textProperty().isEmpty()).or(newickField.textProperty().isEmpty());
-		gffField.disableProperty().bind(graphProperty.isNull().and(emptyGraphFile));
-		// At least both graph files and the newick file must be filled.
-		openButton.disableProperty().bind(emptyGraphFile.and(gffField.disableProperty()));
+				.or(edgeField.textProperty().isEmpty()).or(newickField.textProperty().isEmpty()
+						.or(gffField.textProperty().isEmpty()));
+		openButton.disableProperty().bind(emptyGraphFile);
 	}
 
 	/*
@@ -287,13 +284,6 @@ public class FileOpenController {
 	 */
 	public ListProperty<String> dbPathProperty() {
 		return dbPathProperty;
-	}
-	
-	/**
-	 * @return the doneProperty.
-	 */
-	public BooleanProperty doneProperty() {
-		return done;
 	}
 	
 	/**
