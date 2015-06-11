@@ -1,10 +1,12 @@
 package nl.tudelft.dnainator.graph.impl.query;
 
+import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.graph.impl.Neo4jSequenceNode;
 import nl.tudelft.dnainator.graph.impl.NodeLabels;
 import nl.tudelft.dnainator.graph.impl.RelTypes;
+
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
@@ -69,8 +71,9 @@ public class ClusterQuery implements Query<Cluster> {
 		// Might want to internally pass nodes.
 		List<SequenceNode> retrieve = result.stream().map(e -> new Neo4jSequenceNode(service, e))
 						.collect(Collectors.toList());
-		cluster = new Cluster(rankStart, retrieve);
-
+		List<Annotation> annotations = retrieve.stream().flatMap(e -> e.getAnnotations().stream())
+						.collect(Collectors.toList());
+		cluster = new Cluster(rankStart, retrieve, annotations);
 		return cluster;
 	}
 }

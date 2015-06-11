@@ -5,10 +5,7 @@ import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.concurrent.Service;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -20,6 +17,7 @@ import nl.tudelft.dnainator.tree.TreeNode;
 import nl.tudelft.dnainator.javafx.services.GFFLoadService;
 import nl.tudelft.dnainator.javafx.services.GraphLoadService;
 import nl.tudelft.dnainator.javafx.services.NewickLoadService;
+import nl.tudelft.dnainator.javafx.widgets.animations.LeftSlideAnimation;
 import nl.tudelft.dnainator.javafx.widgets.animations.RightSlideAnimation;
 import nl.tudelft.dnainator.javafx.widgets.animations.SlidingAnimation;
 import nl.tudelft.dnainator.javafx.widgets.animations.TransitionAnimation.Position;
@@ -52,15 +50,17 @@ public class FileOpenController {
 	@SuppressWarnings("unused") @FXML private Label curGffLabel;
 	@SuppressWarnings("unused") @FXML private Button openButton;
 
+	private FileChooser fileChooser;
+	private ProgressDialog progressDialog;
+	private SlidingAnimation animation;
+
 	private GraphLoadService graphLoadService;
 	private NewickLoadService newickLoadService;
 	private GFFLoadService gffLoadService;
-	private FileChooser fileChooser;
-	private ProgressDialog progressDialog;
-	private ObjectProperty<TreeNode> treeProperty;
-	private ObjectProperty<Graph> graphProperty;
+
 	private ListProperty<String> dbPathProperty;
-	private SlidingAnimation animation;
+	private ObjectProperty<Graph> graphProperty;
+	private ObjectProperty<TreeNode> treeProperty;
 
 	/*
 	 * Sets up the services, filechooser and treeproperty.
@@ -68,9 +68,9 @@ public class FileOpenController {
 	@SuppressWarnings("unused") @FXML
 	private void initialize() {
 		fileChooser = new FileChooser();
+		dbPathProperty = new SimpleListProperty<>(this, "dbpath");
 		graphProperty = new SimpleObjectProperty<>(this, "graph");
 		treeProperty = new SimpleObjectProperty<>(this, "tree");
-		dbPathProperty = new SimpleListProperty<>(this, "dbpath");
 		setupServices();
 		
 		animation = new RightSlideAnimation(fileOpenPane, WIDTH, ANIM_DURATION, Position.LEFT);
@@ -81,30 +81,34 @@ public class FileOpenController {
 	 * Setup the {@link GraphLoadService}, {@link NewickLoadService} and {@link GFFLoadService}.
 	 */
 	private void setupServices() {
-		graphLoadService = new GraphLoadService();
-		graphLoadService.setOnFailed(e -> {
-				new ExceptionDialog(fileOpenPane.getParent(), graphLoadService.getException(),
-						"Error loading graph files!");
-				progressDialog.close();
-			});
-		graphLoadService.setOnRunning(e -> progressDialog.show());
-		graphLoadService.setOnSucceeded(e -> {
-			graphProperty.setValue(graphLoadService.getValue());
+		gffLoadService = new GFFLoadService();
+		gffLoadService.setOnFailed(e -> {
 			progressDialog.close();
+			new ExceptionDialog(fileOpenPane.getParent(), gffLoadService.getException(),
+					"Error loading annotations file!");
+		});
+		gffLoadService.setOnRunning(e -> progressDialog.show());
+		gffLoadService.setOnSucceeded(e -> {
+			graphLoadService.setAnnotations(gffLoadService.getValue());
+			graphLoadService.restart();
 		});
 
+		graphLoadService = new GraphLoadService();
+		graphLoadService.setOnFailed(e -> {
+			progressDialog.close();
+			new ExceptionDialog(fileOpenPane.getParent(), graphLoadService.getException(),
+					"Error loading graph files!");
+		});
+		graphLoadService.setOnSucceeded(e -> {
+			progressDialog.close();
+			graphProperty.setValue(graphLoadService.getValue());
+		});
 		newickLoadService = new NewickLoadService();
-		newickLoadService.setOnFailed(e ->
-				new ExceptionDialog(fileOpenPane.getParent(), newickLoadService.getException(),
-						"Error loading newick file!"));
+		newickLoadService.setOnFailed(e -> new ExceptionDialog(fileOpenPane.getParent(),
+						newickLoadService.getException(), "Error loading newick file!"));
 		newickLoadService.setOnSucceeded(e -> treeProperty.setValue(newickLoadService.getValue()));
-
-		gffLoadService = new GFFLoadService();
-		gffLoadService.setOnFailed(e ->
-				new ExceptionDialog(fileOpenPane.getParent(), gffLoadService.getException(),
-						"Error loading annotations file!"));
-		gffLoadService.graphProperty().bind(graphProperty);
-
+		animation = new LeftSlideAnimation(fileOpenPane, WIDTH, ANIM_DURATION, Position.LEFT);
+		bindDisabledFieldsAndButtons();
 	}
 
 	/*
@@ -182,9 +186,11 @@ public class FileOpenController {
 		progressDialog = new ProgressDialog(fileOpenPane.getParent());
 		resetTextFields();
 		animation.toggle();
-		if (graphLoadService.getNodeFile() != null && graphLoadService.getEdgeFile() != null) {
+		if (gffLoadService.getGffFilePath() != null
+				&& graphLoadService.getNodeFile() != null
+				&& graphLoadService.getEdgeFile() != null) {
 			graphLoadService.setDatabase(graphLoadService.getNewPath(dbPathProperty.getValue()));
-			graphLoadService.restart();
+			curGffLabel.setText(gffLoadService.getGffFilePath());
 			curNodeLabel.setText(graphLoadService.getNodeFile().getAbsolutePath());
 			curEdgeLabel.setText(graphLoadService.getEdgeFile().getAbsolutePath());
 		}
@@ -192,23 +198,6 @@ public class FileOpenController {
 			newickLoadService.restart();
 			curNewickLabel.setText(newickLoadService.getNewickFile().getAbsolutePath());
 		}
-		if (gffLoadService.getGffFilePath() != null) {
-			if (graphProperty.isNull().get()) {
-				addOnSucceeded(graphLoadService, event -> gffLoadService.restart());
-			} else {
-				gffLoadService.restart();
-			}
-			curGffLabel.setText(gffLoadService.getGffFilePath());
-		}
-	}
-
-	/** Add an extra event handler in addition to the previous one. */
-	private <T> void addOnSucceeded(Service<T> s, EventHandler<WorkerStateEvent> e) {
-		EventHandler<WorkerStateEvent> success = s.getOnSucceeded();
-		s.setOnSucceeded(event -> {
-			success.handle(event);
-			e.handle(event);
-		});
 	}
 
 	/* Clears the files, textfields and hides the pane. */

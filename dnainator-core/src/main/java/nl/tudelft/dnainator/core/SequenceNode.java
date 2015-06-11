@@ -3,6 +3,8 @@ package nl.tudelft.dnainator.core;
 import java.util.List;
 import java.util.Set;
 
+import nl.tudelft.dnainator.annotation.Annotation;
+
 /**
  * Interface that all sequences should implement.
  */
@@ -12,6 +14,12 @@ public interface SequenceNode {
 	 * @return	the id of this sequence
 	 */
 	String getId();
+
+	/**
+	 * The associated annotations.
+	 * @return	the annotations
+	 */
+	List<Annotation> getAnnotations();
 
 	/**
 	 * The associated source strains.

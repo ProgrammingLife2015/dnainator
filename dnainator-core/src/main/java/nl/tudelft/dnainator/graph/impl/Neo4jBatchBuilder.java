@@ -1,11 +1,14 @@
 package nl.tudelft.dnainator.graph.impl;
 
+import nl.tudelft.dnainator.annotation.Annotation;
+import nl.tudelft.dnainator.annotation.AnnotationCollection;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.graph.GraphBuilder;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
+
 import org.neo4j.unsafe.batchinsert.BatchInserter;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
 
@@ -19,20 +22,32 @@ import java.util.Map;
  */
 public class Neo4jBatchBuilder implements GraphBuilder {
 	private BatchInserter batchInserter;
+	private Map<String, Long> annotationIDToNodeID;
 	private Map<String, Long> sequenceIDToNodeID;
 	private Map<String, Long> sourceNodeIDs;
+	private Map<String, Object> annotationProperties;
 	private Map<String, Object> nodeProperties;
+	private AnnotationCollection annotations;
 
 	/**
 	 * Create a new {@link Neo4jBatchBuilder}, which batch inserts to
 	 * the specified database path.
 	 * @param storeDir the path where the database is stored.
+	 * @param annotations the {@link AnnotationCollection} to connect the nodes with.
 	 */
-	public Neo4jBatchBuilder(String storeDir) {
+	public Neo4jBatchBuilder(String storeDir, AnnotationCollection annotations) {
+		this.annotations = annotations;
+
 		batchInserter = BatchInserters.inserter(storeDir);
+		annotationIDToNodeID = new HashMap<>();
 		sequenceIDToNodeID = new HashMap<>();
 		sourceNodeIDs = new HashMap<>();
+		annotationProperties = new HashMap<>();
 		nodeProperties = new HashMap<>();
+
+		annotations.getAll().forEach(e -> {
+			annotationIDToNodeID.put(e.getGeneName(), createAnnotation(e));
+		});
 	}
 
 	@Override
@@ -43,11 +58,17 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 		batchInserter.createDeferredConstraint(NodeLabels.NODE)
 			.assertPropertyIsUnique(PropertyTypes.ID.name())
 			.create();
+		batchInserter.createDeferredConstraint(NodeLabels.SOURCE)
+			.assertPropertyIsUnique(PropertyTypes.SOURCE.name())
+			.create();
 		batchInserter.createDeferredSchemaIndex(NodeLabels.NODE)
 			.on(PropertyTypes.RANK.name())
 			.create();
-		batchInserter.createDeferredConstraint(NodeLabels.SOURCE)
-			.assertPropertyIsUnique(PropertyTypes.SOURCE.name())
+		batchInserter.createDeferredSchemaIndex(NodeLabels.NODE)
+			.on(PropertyTypes.STARTREF.name())
+			.create();
+		batchInserter.createDeferredSchemaIndex(NodeLabels.NODE)
+			.on(PropertyTypes.ENDREF.name())
 			.create();
 		batchInserter.shutdown();
 	}
@@ -64,16 +85,37 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 		long nodeId = createNode(s);
 		sequenceIDToNodeID.put(s.getId(), nodeId);
 
-		s.getSources().forEach(e -> {
-			long source;
-			if (!sourceNodeIDs.containsKey(e)) {
-				source = createSource(e);
-				sourceNodeIDs.put(e, source);
-			} else {
-				source = sourceNodeIDs.get(e);
+		s.getSources().forEach(source -> {
+			connectSource(nodeId, source);
+			if (source.equals("TKK_REF")) {
+				annotations.getSubrange(s.getStartRef(), s.getEndRef())
+					.forEach(a -> connectAnnotation(nodeId, a));
 			}
-			batchInserter.createRelationship(nodeId, source, RelTypes.SOURCE, null);
 		});
+	}
+
+	private void connectAnnotation(long nodeId, Annotation annotation) {
+		long annotationId = annotationIDToNodeID.get(annotation.getGeneName());
+		batchInserter.createRelationship(nodeId, annotationId, RelTypes.ANNOTATED, null);
+	}
+
+	private void connectSource(long nodeId, String source) {
+		long sourceId;
+		if (!sourceNodeIDs.containsKey(source)) {
+			sourceId = createSource(source);
+			sourceNodeIDs.put(source, sourceId);
+		} else {
+			sourceId = sourceNodeIDs.get(source);
+		}
+		batchInserter.createRelationship(nodeId, sourceId, RelTypes.SOURCE, null);
+	}
+
+	private long createAnnotation(Annotation a) {
+		annotationProperties.put(PropertyTypes.ID.name(), a.getGeneName());
+		annotationProperties.put(PropertyTypes.STARTREF.name(), a.getStart());
+		annotationProperties.put(PropertyTypes.ENDREF.name(), a.getEnd());
+		annotationProperties.put(PropertyTypes.SENSE.name(), a.isSense());
+		return batchInserter.createNode(annotationProperties, NodeLabels.ANNOTATION);
 	}
 
 	private long createNode(SequenceNode s) {

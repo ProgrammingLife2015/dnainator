@@ -4,6 +4,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import nl.tudelft.dnainator.annotation.AnnotationCollection;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.GraphBuilder;
 import nl.tudelft.dnainator.graph.impl.Neo4jBatchBuilder;
@@ -30,6 +31,9 @@ import java.util.List;
 public class GraphLoadService extends Service<Graph> {
 	private static final String DB_PATH = "target" + File.separator + "db" 
 			+ File.separator + "dna-graph-";
+	
+	private ObjectProperty<AnnotationCollection> annotations
+		= new SimpleObjectProperty<>(this, "annotations");
 	private ObjectProperty<File> nodeFile = new SimpleObjectProperty<>(this, "nodeFile");
 	private ObjectProperty<File> edgeFile = new SimpleObjectProperty<>(this, "edgeFile");
 	private ObjectProperty<String> database = new SimpleObjectProperty<>(this, "database");
@@ -97,6 +101,27 @@ public class GraphLoadService extends Service<Graph> {
 	}
 
 	/**
+	 * @return The annotation collection to load, if any.
+	 */
+	public AnnotationCollection getAnnotations() {
+		return annotations.get();
+	}
+
+	/**
+	 * @param annotations The annotation collection.
+	 */
+	public void setAnnotations(AnnotationCollection annotations) {
+		this.annotations.set(annotations);
+	}
+
+	/**
+	 * @return The annotation collection property.
+	 */
+	public ObjectProperty<AnnotationCollection> annotationProperty() {
+		return annotations;
+	}
+
+	/**
 	 * @param g	The database to use.
 	 */
 	public final void setDatabase(String g) {
@@ -123,7 +148,7 @@ public class GraphLoadService extends Service<Graph> {
 			@Override
 			protected Graph call() throws IOException, ParseException {
 				GraphBuilder gb;
-				gb = new Neo4jBatchBuilder(database.get());
+				gb = new Neo4jBatchBuilder(database.get(), annotations.get());
 
 				EdgeParser ep = new EdgeParserImpl(getEdgeFile());
 				NodeParser np = new NodeParserImpl(getNodeFile());

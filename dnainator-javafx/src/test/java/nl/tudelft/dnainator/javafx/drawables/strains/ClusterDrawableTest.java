@@ -1,7 +1,9 @@
 package nl.tudelft.dnainator.javafx.drawables.strains;
 
 import nl.tudelft.dnainator.core.SequenceNode;
+import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.javafx.ColorServer;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,6 +12,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -42,12 +45,13 @@ public class ClusterDrawableTest {
 	 */
 	@Test
 	public void testCreate() {
-		cluster = new ClusterDrawable(colorserver, Arrays.asList(node));
+		Cluster c = new Cluster(0, Arrays.asList(node), Collections.emptyList());
+		cluster = new ClusterDrawable(colorserver, c);
 		
 		// CHECKSTYLE.OFF: MagicNumber
 		Mockito.verify(colorserver, Mockito.times(1)).getColor("1");
 		assertEquals(ClusterDrawable.SINGLE_RADIUS, cluster.getRadius(), .001);
-		assertEquals(1, cluster.getClustered().size());
+		assertEquals(1, cluster.getCluster().getNodes().size());
 		// CHECKSTYLE.ON: MagicNumber
 	}
 	
@@ -56,12 +60,13 @@ public class ClusterDrawableTest {
 	 */
 	@Test
 	public void testCreateSmall() {
-		cluster = new ClusterDrawable(colorserver, Arrays.asList(node, node, node));
+		Cluster c = new Cluster(0, Arrays.asList(node, node, node), Collections.emptyList());
+		cluster = new ClusterDrawable(colorserver, c);
 		
 		// CHECKSTYLE.OFF: MagicNumber
 		Mockito.verify(colorserver, Mockito.times(1)).getColor("1");
 		assertEquals(ClusterDrawable.SMALL_RADIUS, cluster.getRadius(), .001);
-		assertEquals(3, cluster.getClustered().size());
+		assertEquals(3, cluster.getCluster().getNodes().size());
 		// CHECKSTYLE.ON: MagicNumber
 	}
 	
@@ -70,12 +75,13 @@ public class ClusterDrawableTest {
 	 */
 	@Test
 	public void testCreateMedium() {
-		cluster = new ClusterDrawable(colorserver, Arrays.asList(node, node, node, node));
+		Cluster c = new Cluster(0, Arrays.asList(node, node, node, node), Collections.emptyList());
+		cluster = new ClusterDrawable(colorserver, c);
 		
 		// CHECKSTYLE.OFF: MagicNumber
 		Mockito.verify(colorserver, Mockito.times(1)).getColor("1");
 		assertEquals(ClusterDrawable.MEDIUM_RADIUS, cluster.getRadius(), .001);
-		assertEquals(4, cluster.getClustered().size());
+		assertEquals(4, cluster.getCluster().getNodes().size());
 		// CHECKSTYLE.ON: MagicNumber
 	}
 	
@@ -84,13 +90,14 @@ public class ClusterDrawableTest {
 	 */
 	@Test
 	public void testCreateLarge() {
-		cluster = new ClusterDrawable(colorserver, Arrays.asList(node, node, node, node, node,
-									node, node, node, node, node, node));
+		Cluster c = new Cluster(0, Arrays.asList(node, node, node, node, node,
+							node, node, node, node, node, node), Collections.emptyList());
+		cluster = new ClusterDrawable(colorserver, c);
 		
 		// CHECKSTYLE.OFF: MagicNumber
 		Mockito.verify(colorserver, Mockito.times(1)).getColor("1");
 		assertEquals(ClusterDrawable.LARGE_RADIUS, cluster.getRadius(), .001);
-		assertEquals(11, cluster.getClustered().size());
+		assertEquals(11, cluster.getCluster().getNodes().size());
 		// CHECKSTYLE.ON: MagicNumber
 	}
 }

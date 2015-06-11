@@ -1,7 +1,11 @@
 package nl.tudelft.dnainator.annotation.impl;
 
+import java.util.Collection;
+import java.util.Collections;
+
 import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.annotation.Range;
+
 import org.biojava.nbio.genome.parsers.gff.Feature;
 
 /**
@@ -47,6 +51,11 @@ public class BioJavaAnnotation implements Annotation {
 	@Override
 	public boolean isSense() {
 		return delegate.location().bioStrand() == '+';
+	}
+
+	@Override
+	public Collection<String> getAnnotatedNodes() {
+		return Collections.emptyList();
 	}
 
 	@Override
