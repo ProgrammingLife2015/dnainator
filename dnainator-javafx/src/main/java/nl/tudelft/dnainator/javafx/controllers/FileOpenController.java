@@ -1,7 +1,9 @@
 package nl.tudelft.dnainator.javafx.controllers;
 
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -12,21 +14,19 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.tree.TreeNode;
-import nl.tudelft.dnainator.javafx.services.GFFLoadService;
 import nl.tudelft.dnainator.javafx.services.GraphLoadService;
 import nl.tudelft.dnainator.javafx.services.NewickLoadService;
-import nl.tudelft.dnainator.javafx.widgets.animations.LeftSlideAnimation;
+import nl.tudelft.dnainator.javafx.widgets.animations.RightSlideAnimation;
 import nl.tudelft.dnainator.javafx.widgets.animations.SlidingAnimation;
 import nl.tudelft.dnainator.javafx.widgets.animations.TransitionAnimation.Position;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.ExceptionDialog;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.ProgressDialog;
-import org.neo4j.io.fs.FileUtils;
 
 import java.io.File;
 
 /**
  * Controls the file open pane on the left side of the application. It offers options
- * to open node, edge and newick files. FIXME: will be sliding in on command.
+ * to open node, edge and newick files.
  */
 public class FileOpenController {
 	private static final String EDGE = ".edge.graph";
@@ -54,8 +54,8 @@ public class FileOpenController {
 
 	private GraphLoadService graphLoadService;
 	private NewickLoadService newickLoadService;
-	private GFFLoadService gffLoadService;
 
+	private ListProperty<String> dbPathProperty;
 	private ObjectProperty<Graph> graphProperty;
 	private ObjectProperty<TreeNode> treeProperty;
 
@@ -65,46 +65,44 @@ public class FileOpenController {
 	@SuppressWarnings("unused") @FXML
 	private void initialize() {
 		fileChooser = new FileChooser();
+		dbPathProperty = new SimpleListProperty<>(this, "dbpath");
 		graphProperty = new SimpleObjectProperty<>(this, "graph");
 		treeProperty = new SimpleObjectProperty<>(this, "tree");
-
-		gffLoadService = new GFFLoadService();
-		gffLoadService.setOnFailed(e -> new ExceptionDialog(fileOpenPane.getParent(),
-						gffLoadService.getException(), "Error loading annotations file!"));
-		gffLoadService.setOnRunning(e -> progressDialog.show());
-		gffLoadService.setOnSucceeded(e -> {
-			graphLoadService.setAnnotations(gffLoadService.getValue());
-			graphLoadService.restart();
-		});
-
+		setupServices();
+		
+		animation = new RightSlideAnimation(fileOpenPane, WIDTH, ANIM_DURATION, Position.LEFT);
+		bindDisabledFieldsAndButtons();
+	}
+	
+	/**
+	 * Setup the {@link GraphLoadService} and {@link NewickLoadService}.
+	 */
+	private void setupServices() {
 		graphLoadService = new GraphLoadService();
-		graphLoadService.setOnFailed(e -> new ExceptionDialog(fileOpenPane.getParent(),
-						graphLoadService.getException(), "Error loading graph files!"));
-		graphLoadService.setOnSucceeded(e -> {
-			graphProperty.setValue(graphLoadService.getValue());
+		graphLoadService.setOnFailed(e -> {
 			progressDialog.close();
+			new ExceptionDialog(fileOpenPane.getParent(), graphLoadService.getException(),
+					"Error loading graph files!");
 		});
-
+		graphLoadService.setOnRunning(e -> progressDialog.show());
+		graphLoadService.setOnSucceeded(e -> {
+			progressDialog.close();
+			graphProperty.setValue(graphLoadService.getValue());
+		});
 		newickLoadService = new NewickLoadService();
 		newickLoadService.setOnFailed(e -> new ExceptionDialog(fileOpenPane.getParent(),
 						newickLoadService.getException(), "Error loading newick file!"));
 		newickLoadService.setOnSucceeded(e -> treeProperty.setValue(newickLoadService.getValue()));
-
-		animation = new LeftSlideAnimation(fileOpenPane, WIDTH, ANIM_DURATION, Position.LEFT);
-		bindDisabledFieldsAndButtons();
 	}
 
 	/*
-	 * Disables the openbutton when either no newick file or no node file is selected.
+	 * Disables the openbutton as long as not all field are filled in.
 	 */
 	private void bindDisabledFieldsAndButtons() {
 		BooleanBinding emptyGraphFile = nodeField.textProperty().isEmpty()
-				.or(edgeField.textProperty().isEmpty());
-		gffField.disableProperty().bind(graphProperty.isNull().and(emptyGraphFile));
-		// At least both graph files or the newick file must be filled.
-		openButton.disableProperty().bind(emptyGraphFile
-				.and(newickField.textProperty().isEmpty())
-				.and(gffField.disableProperty()));
+				.or(edgeField.textProperty().isEmpty()).or(newickField.textProperty().isEmpty()
+						.or(gffField.textProperty().isEmpty()));
+		openButton.disableProperty().bind(emptyGraphFile);
 	}
 
 	/*
@@ -158,8 +156,8 @@ public class FileOpenController {
 	private void onGFFFieldClicked() {
 		File gffFile = selectFile("GFF file", GFF);
 		if (gffFile != null) {
-			gffLoadService.setGffFilePath(gffFile.getAbsolutePath());
-			gffField.setText(gffLoadService.getGffFilePath());
+			graphLoadService.setGffFilePath(gffFile.getAbsolutePath());
+			gffField.setText(graphLoadService.getGffFilePath());
 		}
 	}
 
@@ -172,18 +170,13 @@ public class FileOpenController {
 		progressDialog = new ProgressDialog(fileOpenPane.getParent());
 		resetTextFields();
 		animation.toggle();
-		if (gffLoadService.getGffFilePath() != null
+		if (graphLoadService.getGffFilePath() != null
 				&& graphLoadService.getNodeFile() != null
 				&& graphLoadService.getEdgeFile() != null) {
-			// TODO: replace this with the ability to specify a db path and
-			//       a check whether this path is already in use by Neo4j.
-			try {
-				FileUtils.deleteRecursively(new File(graphLoadService.getDatabase()));
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			gffLoadService.restart();
-			curGffLabel.setText(gffLoadService.getGffFilePath());
+			graphLoadService.setDatabase(graphLoadService.getNewPath(dbPathProperty.getValue()));
+			graphLoadService.restart();
+
+			curGffLabel.setText(graphLoadService.getGffFilePath());
 			curNodeLabel.setText(graphLoadService.getNodeFile().getAbsolutePath());
 			curEdgeLabel.setText(graphLoadService.getEdgeFile().getAbsolutePath());
 		}
@@ -197,10 +190,10 @@ public class FileOpenController {
 	@SuppressWarnings("unused") @FXML
 	private void onCancelAction(ActionEvent actionEvent) {
 		animation.toggle();
+		graphLoadService.setGffFilePath(null);
 		graphLoadService.setNodeFile(null);
 		graphLoadService.setEdgeFile(null);
 		newickLoadService.setNewickFile(null);
-		gffLoadService.setGffFilePath(null);
 		resetTextFields();
 	}
 
@@ -261,6 +254,13 @@ public class FileOpenController {
 		return graphProperty;
 	}
 
+	/**
+	 * @return the dbPathProperty.
+	 */
+	public ListProperty<String> dbPathProperty() {
+		return dbPathProperty;
+	}
+	
 	/**
 	 * Toggles the pane, showing or hiding it with a sliding animation.
 	 */
