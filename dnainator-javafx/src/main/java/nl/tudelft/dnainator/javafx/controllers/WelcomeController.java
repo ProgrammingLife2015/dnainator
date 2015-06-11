@@ -76,14 +76,14 @@ public class WelcomeController {
 		dbload = new DBLoadService();
 		
 		dbload.setOnFailed(e -> {
+			progressDialog.close();
 			new ExceptionDialog(list.getParent(), dbload.getException(),
 					"Database is already in use, please choose another.");
-			progressDialog.close();
 		});
 		dbload.setOnRunning(e -> progressDialog.show());
 		dbload.setOnSucceeded(e -> {
-			dbProperty.setValue(dbload.getValue());
 			progressDialog.close();
+			dbProperty.setValue(dbload.getValue());
 		});
 		items = list.getItems();
 		dbProperty = new SimpleObjectProperty<>(this, "graph");
