@@ -2,12 +2,12 @@ package nl.tudelft.dnainator.javafx.services;
 
 import de.saxsys.javafx.test.JfxRunner;
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
-import nl.tudelft.dnainator.graph.Graph;
+import nl.tudelft.dnainator.annotation.impl.AnnotationCollectionImpl;
 import nl.tudelft.dnainator.graph.impl.Neo4jBatchBuilder;
-import nl.tudelft.dnainator.graph.impl.Neo4jGraph;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
 import nl.tudelft.dnainator.parser.impl.EdgeParserImpl;
 import nl.tudelft.dnainator.parser.impl.NodeParserImpl;
+
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -32,7 +32,6 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(JfxRunner.class)
 public class GFFLoadServiceTest {
 	private static final String DB_PATH = "target/neo4j-junit-gffload";
-	private Graph graph;
 	private GFFLoadService loadService;
 	private String gffFilePath;
 	private static final int DELAY = 20000;
@@ -59,9 +58,8 @@ public class GFFLoadServiceTest {
 	public void setup() throws URISyntaxException, IOException, ParseException {
 		File nodeFile = new File(getClass().getResource("/strains/test.node.graph").toURI());
 		File edgeFile = new File(getClass().getResource("/strains/test.edge.graph").toURI());
-		new Neo4jBatchBuilder(DB_PATH).constructGraph(new NodeParserImpl(nodeFile),
-				new EdgeParserImpl(edgeFile));
-		graph = new Neo4jGraph(DB_PATH);
+		new Neo4jBatchBuilder(DB_PATH, new AnnotationCollectionImpl())
+				.constructGraph(new NodeParserImpl(nodeFile), new EdgeParserImpl(edgeFile));
 		loadService = new GFFLoadService();
 		gffFilePath = new File(getClass().getResource("/annotations/test.gff").toURI()).toString();
 		loadService.setGffFilePath(gffFilePath);
@@ -93,7 +91,6 @@ public class GFFLoadServiceTest {
 		// Act on the loadService's interesting states.
 		registerListeners(loadService, completableFuture);
 
-		loadService.graphProperty().set(graph);
 		loadService.start();
 
 		// This call blocks the test thread until the completableFuture's complete() method is

@@ -107,7 +107,7 @@ public class Strain extends Group {
 	 */
 	private void loadEdges(ClusterDrawable cluster) {
 		childContent.getChildren().addAll(
-				cluster.getClustered().stream().flatMap(e -> e.getOutgoing().stream())
+				cluster.getCluster().getNodes().stream().flatMap(e -> e.getOutgoing().stream())
 						.filter(clusters::containsKey)
 						.filter(i -> clusters.get(i) != cluster)
 						.map(o -> new Edge(cluster, clusters.get(o)))
@@ -116,8 +116,8 @@ public class Strain extends Group {
 
 	private void loadRank(Integer key, List<Cluster> value) {
 		for (int i = 0; i < value.size(); i++) {
-			ClusterDrawable cluster = new ClusterDrawable(colorServer, value.get(i).getNodes());
-			cluster.getClustered().forEach(e -> clusters.put(e.getId(), cluster));
+			ClusterDrawable cluster = new ClusterDrawable(colorServer, value.get(i));
+			cluster.getCluster().getNodes().forEach(e -> clusters.put(e.getId(), cluster));
 			cluster.setTranslateX(key * RANK_WIDTH);
 			cluster.setTranslateY(i * RANK_WIDTH - value.size() * RANK_WIDTH / 2);
 			childContent.getChildren().add(cluster);

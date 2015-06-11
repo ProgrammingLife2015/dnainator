@@ -1,5 +1,7 @@
 package nl.tudelft.dnainator.annotation;
 
+import java.util.Collection;
+
 /**
  * An interface for gene annotations.
  */
@@ -33,5 +35,10 @@ public interface Annotation {
 	 * @return whether this gene is sense or note (positive or negative)
 	 */
 	boolean isSense();
+
+	/**
+	 * @return the nodes that are annotated by this annotation.
+	 */
+	Collection<String> getAnnotatedNodes();
 
 }

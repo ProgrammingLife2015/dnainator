@@ -5,6 +5,7 @@ import javafx.scene.Group;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import nl.tudelft.dnainator.core.SequenceNode;
+import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.javafx.ColorServer;
 import nl.tudelft.dnainator.javafx.drawables.Drawable;
 
@@ -24,7 +25,7 @@ public class ClusterDrawable extends Group implements Drawable {
 	protected static final double MEDIUM_RADIUS = 5;
 	protected static final double LARGE_RADIUS = 6;
 	protected static final int PIETHRESHOLD = 20;
-	private List<SequenceNode> clustered;
+	private Cluster cluster;
 	private Set<String> sources;
 	private Text label;
 	private Pie pie;
@@ -32,15 +33,15 @@ public class ClusterDrawable extends Group implements Drawable {
 	/**
 	 * Construct a new mid level {@link ClusterDrawable} using the default graph.
 	 * @param colorServer the {@link ColorServer} to bind to.
-	 * @param clustered	the clustered {@link SequenceNode}s in this cluster.
+	 * @param cluster	the {@link Cluster} containing a list of {@link SequenceNode}s.
 	 */
-	public ClusterDrawable(ColorServer colorServer, List<SequenceNode> clustered) {
-		this.clustered = clustered;
-		this.sources = clustered.stream()
+	public ClusterDrawable(ColorServer colorServer, Cluster cluster) {
+		this.cluster = cluster;
+		this.sources = cluster.getNodes().stream()
 				.flatMap(e -> e.getSources().stream())
 				.collect(Collectors.toSet());
 
-		label = new Text(Integer.toString(clustered.size()));
+		label = new Text(Integer.toString(cluster.getNodes().size()));
 		label.setStyle("-fx-font-size: 2pt");
 
 		draw(colorServer);
@@ -69,7 +70,7 @@ public class ClusterDrawable extends Group implements Drawable {
 	 * @return	the radius
 	 */
 	protected double getRadius() {
-		int nChildren = clustered.size();
+		int nChildren = cluster.getNodes().size();
 
 		if (nChildren == SINGLE) {
 			return SINGLE_RADIUS;
@@ -104,9 +105,9 @@ public class ClusterDrawable extends Group implements Drawable {
 	}
 
 	/**
-	 * @return the {@link SequenceNode}s in this cluster.
+	 * @return the {@link Cluster}s in this drawable.
 	 */
-	public List<SequenceNode> getClustered() {
-		return clustered;
+	public Cluster getCluster() {
+		return cluster;
 	}
 }

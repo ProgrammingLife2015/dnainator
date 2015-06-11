@@ -5,7 +5,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
-import nl.tudelft.dnainator.graph.Graph;
+import nl.tudelft.dnainator.annotation.impl.AnnotationCollectionFactoryImpl;
 import nl.tudelft.dnainator.parser.AnnotationParser;
 import nl.tudelft.dnainator.parser.impl.GFF3AnnotationParser;
 
@@ -17,7 +17,6 @@ import java.io.IOException;
 public class GFFLoadService extends Service<AnnotationCollection> {
 	private ObjectProperty<String> gffFilePath =
 			new SimpleObjectProperty<>(this, "gffFilePath");
-	private ObjectProperty<Graph> graph = new SimpleObjectProperty<>(this, "graph");
 
 	/**
 	 * Sets the GFF filename to the specified value.
@@ -41,30 +40,19 @@ public class GFFLoadService extends Service<AnnotationCollection> {
 		return gffFilePath;
 	}
 
-	/**
-	 * @return The database path. Needed for supporting multiple databases, and this property
-	 * is bound to the database property in {@link GraphLoadService}.
-	 */
-	public ObjectProperty<Graph> graphProperty() {
-		return graph;
-	}
-
 	@Override
 	protected Task<AnnotationCollection> createTask() {
 		return new Task<AnnotationCollection>() {
 			@Override
 			protected AnnotationCollection call() {
-				AnnotationParser as;
-				Graph g = graph.get();
-
+				AnnotationCollection annotations = null;
 				try {
-					as = new GFF3AnnotationParser(gffFilePath.get());
-					g.getAnnotations().addAnnotations(as);
-					return g.getAnnotations();
+					AnnotationParser as = new GFF3AnnotationParser(gffFilePath.get());
+					annotations = new AnnotationCollectionFactoryImpl().build(as);
 				} catch (IOException e) {
 					e.printStackTrace();
-					return null;
 				}
+				return annotations;
 			}
 		};
 	}

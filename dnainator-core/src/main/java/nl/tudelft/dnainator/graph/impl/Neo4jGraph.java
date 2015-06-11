@@ -1,8 +1,9 @@
 package nl.tudelft.dnainator.graph.impl;
 
+import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
 import nl.tudelft.dnainator.annotation.AnnotationCollectionFactory;
-import nl.tudelft.dnainator.annotation.impl.AnnotationCollectionFactoryImpl;
+import nl.tudelft.dnainator.annotation.Range;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.graph.Graph;
@@ -13,6 +14,8 @@ import nl.tudelft.dnainator.graph.impl.query.ClusterQuery;
 import nl.tudelft.dnainator.graph.impl.query.ClustersFromQuery;
 import nl.tudelft.dnainator.graph.impl.query.Query;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
+import nl.tudelft.dnainator.parser.AnnotationParser;
+
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.ResourceIterator;
@@ -20,6 +23,8 @@ import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,8 +41,21 @@ public final class Neo4jGraph implements Graph {
 	private static final String GET_ROOT = "MATCH (s:" + NodeLabels.NODE.name() + ") "
 			+ "WHERE NOT (s)<-[:NEXT]-(:" + NodeLabels.NODE.name() + ") "
 			+ "RETURN s";
+	private static final String GET_RANGE =
+			"MATCH (n:" + NodeLabels.NODE.name() + ")-[r:" + NodeLabels.SOURCE.name() + "]->s "
+			+ "WHERE s." + PropertyTypes.SOURCE.name() + " = \"TKK_REF\" "
+			+ "AND n." + PropertyTypes.STARTREF.name() + " <= {to} "
+			+ "AND n." + PropertyTypes.ENDREF.name() + " >= {from} RETURN n";
+	private static final String GET_SUB_RANGE =
+			"MATCH (a:" + NodeLabels.ANNOTATION.name() + ") "
+			+ "WHERE a." + PropertyTypes.STARTREF.name() + " < {to} "
+			+ "AND a." + PropertyTypes.ENDREF.name() + " >= {from} RETURN a";
+	private static final String GET_ANNOTATION_BY_RANK =
+			"MATCH (n:" + NodeLabels.NODE.name() + ")-[r:" + RelTypes.ANNOTATED.name() + "]->a "
+			+ "WHERE n." + PropertyTypes.RANK.name() + " >= {from} "
+			+   "AND n." + PropertyTypes.RANK.name() + " <= {to} RETURN a";
+
 	private GraphDatabaseService service;
-	private AnnotationCollection annotations;
 
 	/**
 	 * Constructs a Neo4j database on the specified path, using
@@ -45,15 +63,6 @@ public final class Neo4jGraph implements Graph {
 	 * @param path			specified path
 	 */
 	public Neo4jGraph(String path) {
-		this(new AnnotationCollectionFactoryImpl(), path);
-	}
-
-	/**
-	 * Constructs a Neo4j database on the specified path.
-	 * @param fact			the factory for building the {@link AnnotationCollection}.
-	 * @param path			specified path
-	 */
-	public Neo4jGraph(AnnotationCollectionFactory fact, String path) {
 		// Create our database and register a shutdown hook
 		service = new GraphDatabaseFactory().newEmbeddedDatabase(path);
 		Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -65,7 +74,6 @@ public final class Neo4jGraph implements Graph {
 
 		// Rank the graph.
 		execute(e -> new RankCommand(rootIterator()).execute(e));
-		this.annotations = fact.build();
 	}
 
 	/**
@@ -97,7 +105,7 @@ public final class Neo4jGraph implements Graph {
 
 	@Override
 	public AnnotationCollection getAnnotations() {
-		return annotations;
+		return this;
 	}
 
 	@Override
@@ -196,5 +204,52 @@ public final class Neo4jGraph implements Graph {
 	 */
 	public void shutdown() {
 		service.shutdown();
+	}
+
+	@Override
+	public void addAnnotations(AnnotationParser source) {
+		execute(e -> addAnnotations(source));
+	}
+
+	@Override
+	public void addAnnotation(Annotation a) {
+		Map<String, Object> parameters = new HashMap<>(2);
+		parameters.put("from", a.getStart());
+		parameters.put("to", a.getEnd());
+		execute(e -> {
+			Node annotation = e.createNode(NodeLabels.ANNOTATION);
+			annotation.setProperty(PropertyTypes.ID.name(), a.getGeneName());
+			annotation.setProperty(PropertyTypes.STARTREF.name(), a.getStart());
+			annotation.setProperty(PropertyTypes.ENDREF.name(), a.getEnd());
+			annotation.setProperty(PropertyTypes.SENSE.name(), a.isSense());
+
+			ResourceIterator<Node> nodes = service.execute(GET_RANGE, parameters).columnAs("n");
+			nodes.forEachRemaining(n -> n.createRelationshipTo(annotation, RelTypes.ANNOTATED));
+		});
+	}
+
+	private Collection<Annotation> getAnnotationRange(Range r, String query) {
+		Map<String, Object> parameters = new HashMap<>(2);
+		List<Annotation> result = new LinkedList<Annotation>();
+		parameters.put("from", r.getX());
+		parameters.put("to", r.getY());
+		return query(service -> {
+			ResourceIterator<Node> annotations = service.execute(query, parameters)
+					.columnAs("a");
+			while (annotations.hasNext()) {
+				result.add(new Neo4jAnnotation(service, annotations.next()));
+			}
+			return result;
+		});
+	}
+
+	@Override
+	public Collection<Annotation> getSubrange(Range r) {
+		return getAnnotationRange(r, GET_SUB_RANGE);
+	}
+
+	@Override
+	public Collection<Annotation> getAnnotationByRank(Range r) {
+		return getAnnotationRange(r, GET_ANNOTATION_BY_RANK);
 	}
 }

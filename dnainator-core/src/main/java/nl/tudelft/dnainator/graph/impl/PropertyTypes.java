@@ -10,5 +10,6 @@ public enum PropertyTypes {
 	ENDREF,
 	SEQUENCE,
 	RANK,
-	SCORE
+	SCORE,
+	SENSE
 }
