@@ -15,7 +15,6 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -28,19 +27,18 @@ import javafx.stage.DirectoryChooser;
  * Controller for the welcome screen.
  */
 public class WelcomeController {
-	private static final String SELECT_OPTION = "Select new database...";
-	private ObservableList<String> items;
 	private ObjectProperty<Graph> dbProperty;
 	private BooleanProperty done = new SimpleBooleanProperty(false, "done");
 	private DBLoadService dbload;
 	private DirectoryChooser dirChooser;
 	private ProgressDialog progressDialog;
-	private static final String DEFAULT_DB_PATH = "target/db";
+	private ObservableList<String> items;
+	private static final String DEFAULT_DB_PATH = "target\\db";
 	@SuppressWarnings("unused") @FXML private Button startButton;
 	@SuppressWarnings("unused") @FXML private Button deleteButton;
 	@SuppressWarnings("unused") @FXML private Button loadButton;
 	@SuppressWarnings("unused") @FXML private ListView<String> list;
-	
+	@SuppressWarnings("unused") @FXML private String selectDB;
 	@SuppressWarnings("unused") @FXML 
 	private void startButtonAction(ActionEvent a) {
 		done.setValue(true);
@@ -52,14 +50,14 @@ public class WelcomeController {
 			FileUtils.deleteRecursively(new File(getDBPath()));
 			items.remove(getDBPath());
 		} catch (Exception e) {
-			e.printStackTrace();
+			new ExceptionDialog(list.getParent(), e, "Failed to delete database.");
 		}
 	}
 	
 	@SuppressWarnings("unused") @FXML
 	private void loadButtonAction(ActionEvent e) {
 		progressDialog = new ProgressDialog(list.getParent());
-		if (getDBPath() == SELECT_OPTION && selectDirectory() == null) {
+		if (getDBPath().equals(selectDB) && selectDirectory() == null) {
 			return;
 		}
 		dbload.restart();
@@ -68,7 +66,7 @@ public class WelcomeController {
 	@SuppressWarnings("unused") @FXML
 	private void onMouseClicked(MouseEvent e) {
 		if (e.getClickCount() == 2) {
-			if (getDBPath() == SELECT_OPTION) {
+			if (getDBPath().equals(selectDB)) {
 				File dir = selectDirectory();
 				if (dir == null) {
 					return;
@@ -84,7 +82,7 @@ public class WelcomeController {
 	}
 	
 	@SuppressWarnings("unused") @FXML
-	private void initialize() throws IOException {
+	private void initialize() {
 		dirChooser = new DirectoryChooser();
 		dbload = new DBLoadService();
 		
@@ -98,19 +96,17 @@ public class WelcomeController {
 			startButton.setDisable(false);
 			progressDialog.close();
 		});
-
+		items = list.getItems();
 		dbProperty = new SimpleObjectProperty<>(this, "graph");
-		items = FXCollections.observableArrayList(SELECT_OPTION);
 		scanDirectory();
 		list.setItems(items);
 		list.getSelectionModel().select(getDBPath());
 		list.getSelectionModel().selectedItemProperty().addListener((obj, oldV, newV) -> {
 			deleteButton.setDisable(true);
-			if (newV != SELECT_OPTION) {
+			if (newV != selectDB) {
 				deleteButton.setDisable(false);
 			}
 			dbload.setDatabase(newV);
-			System.out.println(this.getDBPath());
 		});
 	}
 	
@@ -127,17 +123,23 @@ public class WelcomeController {
 	
 	/**
 	 * Scan the directory containing the default location of databases.
+	 * If the default directory does not exist, create it.
 	 * Adds all the directories found to the welcomescreen's list of selectables.
-	 * @throws IOException
 	 */
-	private void scanDirectory() throws IOException {
-		try (DirectoryStream<Path> ds = Files.newDirectoryStream(Paths.get(DEFAULT_DB_PATH))) {
-	        for (Path path : ds) {
-	            if (Files.isDirectory(path)) {
-	                items.add(path.toString());
-	            }
-	        }
-	    }
+	private void scanDirectory() {
+		if (!Files.exists(Paths.get(DEFAULT_DB_PATH)) && new File(DEFAULT_DB_PATH).mkdir()) {
+			return;
+		} else {
+			try (DirectoryStream<Path> ds = Files.newDirectoryStream(Paths.get(DEFAULT_DB_PATH))) {
+				for (Path path : ds) {
+					if (Files.isDirectory(path)) {
+						items.add(path.toString());
+					}
+				}
+			} catch (IOException e) {
+				new ExceptionDialog(list.getParent(), e, "Failed to retrieve databases.");
+			}
+		}
 	}
 	
 	/**
@@ -159,7 +161,7 @@ public class WelcomeController {
 	 * @return The selected directory, or null if none is chosen.
 	 */
 	private File selectDirectory() {
-		dirChooser.setTitle(SELECT_OPTION);
+		dirChooser.setTitle(selectDB);
 		return dirChooser.showDialog(list.getScene().getWindow());
 	}
 }

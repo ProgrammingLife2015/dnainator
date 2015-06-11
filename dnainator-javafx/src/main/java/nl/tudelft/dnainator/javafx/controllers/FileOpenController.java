@@ -2,8 +2,10 @@ package nl.tudelft.dnainator.javafx.controllers;
 
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
@@ -60,7 +62,7 @@ public class FileOpenController {
 	private ProgressDialog progressDialog;
 	private ObjectProperty<TreeNode> treeProperty;
 	private ObjectProperty<Graph> graphProperty;
-	private ObjectProperty<ObservableList<String>> dbPathProperty;
+	private ListProperty<String> dbPathProperty;
 	private BooleanProperty done = new SimpleBooleanProperty(false, "done");
 	private SlidingAnimation animation;
 
@@ -72,7 +74,7 @@ public class FileOpenController {
 		fileChooser = new FileChooser();
 		graphProperty = new SimpleObjectProperty<>(this, "graph");
 		treeProperty = new SimpleObjectProperty<>(this, "tree");
-		dbPathProperty = new SimpleObjectProperty<>(this, "dbpath");
+		dbPathProperty = new SimpleListProperty<>(this, "dbpath");
 		setupServices();
 		
 		animation = new LeftSlideAnimation(fileOpenPane, WIDTH, ANIM_DURATION, Position.LEFT);
@@ -284,14 +286,14 @@ public class FileOpenController {
 	}
 
 	/**
-	 * @return the dbPathProperty
+	 * @return the dbPathProperty.
 	 */
-	public ObjectProperty<ObservableList<String>> dbPathProperty() {
+	public ListProperty<String> dbPathProperty() {
 		return dbPathProperty;
 	}
 	
 	/**
-	 * @return the dbPathProperty
+	 * @return the doneProperty.
 	 */
 	public BooleanProperty doneProperty() {
 		return done;

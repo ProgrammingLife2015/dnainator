@@ -1,13 +1,11 @@
 package nl.tudelft.dnainator.javafx.services;
 
-import java.io.IOException;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.Neo4jGraph;
-import nl.tudelft.dnainator.parser.exceptions.ParseException;
 
 /**
  * A JavaFX service that loads an existing neo4j database based on its directory path.
@@ -48,7 +46,7 @@ public class DBLoadService extends Service<Graph> {
 	protected Task<Graph> createTask() {
 		return new Task<Graph>() {
 			@Override
-			protected Graph call() throws IOException, ParseException {
+			protected Graph call() {
 				return new Neo4jGraph(database.get());
 			}
 		};
