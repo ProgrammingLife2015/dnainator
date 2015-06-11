@@ -190,6 +190,8 @@ public class FileOpenController {
 				&& graphLoadService.getNodeFile() != null
 				&& graphLoadService.getEdgeFile() != null) {
 			graphLoadService.setDatabase(graphLoadService.getNewPath(dbPathProperty.getValue()));
+			gffLoadService.restart();
+
 			curGffLabel.setText(gffLoadService.getGffFilePath());
 			curNodeLabel.setText(graphLoadService.getNodeFile().getAbsolutePath());
 			curEdgeLabel.setText(graphLoadService.getEdgeFile().getAbsolutePath());
