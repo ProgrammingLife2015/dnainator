@@ -35,20 +35,32 @@
 	-fx-text-fill: #a8a8a8;
 }
 
-ClusterDrawable {
+AbstractNode {
 	-fx-font-size: 4px;
 }
 
-ClusterDrawable Circle {
-	-fx-fill: #4C4C4C;
-}
-
-Edge {
-	-fx-font-size: 4px;
-	-fx-stroke: #A8A8A8;
+AbstractNode Edge {
+	-fx-stroke: #000000;
 	-fx-stroke-width: .2;
 }
 
-Edge Circle {
-	-fx-fill: #A8A8A8;
+Strain ClusterDrawable {
+	-fx-font-size: 4px;
+}
+
+Strain ClusterDrawable Circle {
+	-fx-fill: #4C4C4C;
+}
+
+Strain Edge {
+	-fx-font-size: 4px;
+}
+
+Strain Edge Circle {
+	-fx-fill: #4C4C4C;
+}
+
+Strain Edge Line {
+	-fx-stroke: #000000;
+	-fx-stroke-width: .2;
 }

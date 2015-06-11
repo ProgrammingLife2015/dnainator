@@ -27,7 +27,5 @@ public class Edge extends Path {
 		// Add the vertical line, starting at the horizontal line's end point.
 		VLineTo vline = new VLineTo();
 		getElements().add(vline);
-
-		getStyleClass().add("phylogenetic-edge");
 	}
 }
