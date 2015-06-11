@@ -5,14 +5,17 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
+import nl.tudelft.dnainator.annotation.impl.AnnotationCollectionFactoryImpl;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.GraphBuilder;
 import nl.tudelft.dnainator.graph.impl.Neo4jBatchBuilder;
 import nl.tudelft.dnainator.graph.impl.Neo4jGraph;
+import nl.tudelft.dnainator.parser.AnnotationParser;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
 import nl.tudelft.dnainator.parser.impl.EdgeParserImpl;
+import nl.tudelft.dnainator.parser.impl.GFF3AnnotationParser;
 import nl.tudelft.dnainator.parser.impl.NodeParserImpl;
 
 import java.io.File;
@@ -32,11 +35,11 @@ public class GraphLoadService extends Service<Graph> {
 	private static final String DB_PATH = "target" + File.separator + "db" 
 			+ File.separator + "dna-graph-";
 	
-	private ObjectProperty<AnnotationCollection> annotations
-		= new SimpleObjectProperty<>(this, "annotations");
+	private ObjectProperty<String> database = new SimpleObjectProperty<>(this, "database");
+	private ObjectProperty<String> gffFilePath =
+			new SimpleObjectProperty<>(this, "gffFilePath");
 	private ObjectProperty<File> nodeFile = new SimpleObjectProperty<>(this, "nodeFile");
 	private ObjectProperty<File> edgeFile = new SimpleObjectProperty<>(this, "edgeFile");
-	private ObjectProperty<String> database = new SimpleObjectProperty<>(this, "database");
 
 	/**
 	 * Construct a GraphLoadService with a default database path.
@@ -56,6 +59,28 @@ public class GraphLoadService extends Service<Graph> {
 		String newPath = DB_PATH + (LocalDateTime.now().format(format));
 		paths.add(newPath);
 		return newPath;
+	}
+
+	/**
+	 * Sets the GFF filename to the specified value.
+	 * @param fileName The new filename.
+	 */
+	public final void setGffFilePath(String fileName) {
+		gffFilePath.set(fileName);
+	}
+
+	/**
+	 * @return The filename of the GFF file.
+	 */
+	public final String getGffFilePath() {
+		return gffFilePath.get();
+	}
+
+	/**
+	 * @return The GFF filename property.
+	 */
+	public ObjectProperty<String> gffFilePathProperty() {
+		return gffFilePath;
 	}
 	
 	/**
@@ -101,27 +126,6 @@ public class GraphLoadService extends Service<Graph> {
 	}
 
 	/**
-	 * @return The annotation collection to load, if any.
-	 */
-	public AnnotationCollection getAnnotations() {
-		return annotations.get();
-	}
-
-	/**
-	 * @param annotations The annotation collection.
-	 */
-	public void setAnnotations(AnnotationCollection annotations) {
-		this.annotations.set(annotations);
-	}
-
-	/**
-	 * @return The annotation collection property.
-	 */
-	public ObjectProperty<AnnotationCollection> annotationProperty() {
-		return annotations;
-	}
-
-	/**
 	 * @param g	The database to use.
 	 */
 	public final void setDatabase(String g) {
@@ -147,8 +151,16 @@ public class GraphLoadService extends Service<Graph> {
 		return new Task<Graph>() {
 			@Override
 			protected Graph call() throws IOException, ParseException {
+				AnnotationCollection annotations;
+				if (gffFilePath.getValue() == null) {
+					annotations = new AnnotationCollectionFactoryImpl().build();
+				} else {
+					AnnotationParser as = new GFF3AnnotationParser(gffFilePath.get());
+					annotations = new AnnotationCollectionFactoryImpl().build(as);
+				}
+
 				GraphBuilder gb;
-				gb = new Neo4jBatchBuilder(database.get(), annotations.get());
+				gb = new Neo4jBatchBuilder(database.get(), annotations);
 
 				EdgeParser ep = new EdgeParserImpl(getEdgeFile());
 				NodeParser np = new NodeParserImpl(getNodeFile());

@@ -14,10 +14,8 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.tree.TreeNode;
-import nl.tudelft.dnainator.javafx.services.GFFLoadService;
 import nl.tudelft.dnainator.javafx.services.GraphLoadService;
 import nl.tudelft.dnainator.javafx.services.NewickLoadService;
-import nl.tudelft.dnainator.javafx.widgets.animations.LeftSlideAnimation;
 import nl.tudelft.dnainator.javafx.widgets.animations.RightSlideAnimation;
 import nl.tudelft.dnainator.javafx.widgets.animations.SlidingAnimation;
 import nl.tudelft.dnainator.javafx.widgets.animations.TransitionAnimation.Position;
@@ -56,7 +54,6 @@ public class FileOpenController {
 
 	private GraphLoadService graphLoadService;
 	private NewickLoadService newickLoadService;
-	private GFFLoadService gffLoadService;
 
 	private ListProperty<String> dbPathProperty;
 	private ObjectProperty<Graph> graphProperty;
@@ -78,27 +75,16 @@ public class FileOpenController {
 	}
 	
 	/**
-	 * Setup the {@link GraphLoadService}, {@link NewickLoadService} and {@link GFFLoadService}.
+	 * Setup the {@link GraphLoadService} and {@link NewickLoadService}.
 	 */
 	private void setupServices() {
-		gffLoadService = new GFFLoadService();
-		gffLoadService.setOnFailed(e -> {
-			progressDialog.close();
-			new ExceptionDialog(fileOpenPane.getParent(), gffLoadService.getException(),
-					"Error loading annotations file!");
-		});
-		gffLoadService.setOnRunning(e -> progressDialog.show());
-		gffLoadService.setOnSucceeded(e -> {
-			graphLoadService.setAnnotations(gffLoadService.getValue());
-			graphLoadService.restart();
-		});
-
 		graphLoadService = new GraphLoadService();
 		graphLoadService.setOnFailed(e -> {
 			progressDialog.close();
 			new ExceptionDialog(fileOpenPane.getParent(), graphLoadService.getException(),
 					"Error loading graph files!");
 		});
+		graphLoadService.setOnRunning(e -> progressDialog.show());
 		graphLoadService.setOnSucceeded(e -> {
 			progressDialog.close();
 			graphProperty.setValue(graphLoadService.getValue());
@@ -107,8 +93,6 @@ public class FileOpenController {
 		newickLoadService.setOnFailed(e -> new ExceptionDialog(fileOpenPane.getParent(),
 						newickLoadService.getException(), "Error loading newick file!"));
 		newickLoadService.setOnSucceeded(e -> treeProperty.setValue(newickLoadService.getValue()));
-		animation = new LeftSlideAnimation(fileOpenPane, WIDTH, ANIM_DURATION, Position.LEFT);
-		bindDisabledFieldsAndButtons();
 	}
 
 	/*
@@ -172,8 +156,8 @@ public class FileOpenController {
 	private void onGFFFieldClicked() {
 		File gffFile = selectFile("GFF file", GFF);
 		if (gffFile != null) {
-			gffLoadService.setGffFilePath(gffFile.getAbsolutePath());
-			gffField.setText(gffLoadService.getGffFilePath());
+			graphLoadService.setGffFilePath(gffFile.getAbsolutePath());
+			gffField.setText(graphLoadService.getGffFilePath());
 		}
 	}
 
@@ -186,13 +170,13 @@ public class FileOpenController {
 		progressDialog = new ProgressDialog(fileOpenPane.getParent());
 		resetTextFields();
 		animation.toggle();
-		if (gffLoadService.getGffFilePath() != null
+		if (graphLoadService.getGffFilePath() != null
 				&& graphLoadService.getNodeFile() != null
 				&& graphLoadService.getEdgeFile() != null) {
 			graphLoadService.setDatabase(graphLoadService.getNewPath(dbPathProperty.getValue()));
-			gffLoadService.restart();
+			graphLoadService.restart();
 
-			curGffLabel.setText(gffLoadService.getGffFilePath());
+			curGffLabel.setText(graphLoadService.getGffFilePath());
 			curNodeLabel.setText(graphLoadService.getNodeFile().getAbsolutePath());
 			curEdgeLabel.setText(graphLoadService.getEdgeFile().getAbsolutePath());
 		}
@@ -206,10 +190,10 @@ public class FileOpenController {
 	@SuppressWarnings("unused") @FXML
 	private void onCancelAction(ActionEvent actionEvent) {
 		animation.toggle();
+		graphLoadService.setGffFilePath(null);
 		graphLoadService.setNodeFile(null);
 		graphLoadService.setEdgeFile(null);
 		newickLoadService.setNewickFile(null);
-		gffLoadService.setGffFilePath(null);
 		resetTextFields();
 	}
 
