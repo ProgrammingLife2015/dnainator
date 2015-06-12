@@ -48,18 +48,18 @@ public class WindowController {
 		ColorServer colorServer = new ColorServer();
 		fileOpenController.dbPathProperty().set(welcomeController.getListedPaths());
 		fileOpenController.graphProperty().addListener((obj, oldV, newV) -> {
-			createStrainView(colorServer, newV);
+			Pane strainView = createStrainView(colorServer, newV);
 			phyloView = new PhylogeneticView(colorServer, newV.getTree());
-			constructView();
+			constructView(strainView, phyloView);
 		});
 		welcomeController.dbProperty().addListener((obj, oldV, newV) -> {
-			createStrainView(colorServer, newV);
+			Pane strainView = createStrainView(colorServer, newV);
 			phyloView = new PhylogeneticView(colorServer, newV.getTree());
-			constructView();
+			constructView(strainView, phyloView);
 		});
 	}
 	
-	private void constructView() {
+	private void constructView(Pane strainView, Pane phyloView) {
 		SplitPane splitPane = new SplitPane(strainView, phyloView);
 		splitPane.setOrientation(Orientation.VERTICAL);
 		root.setCenter(splitPane);
