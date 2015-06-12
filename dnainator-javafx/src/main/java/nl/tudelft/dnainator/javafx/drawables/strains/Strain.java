@@ -3,8 +3,7 @@ package nl.tudelft.dnainator.javafx.drawables.strains;
 import javafx.beans.binding.Bindings;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.layout.HBox;
 import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.annotation.Range;
 import nl.tudelft.dnainator.core.SequenceNode;
@@ -27,11 +26,7 @@ import java.util.stream.Collectors;
  * It holds both content and children, and toggles what to load and display based on the zoom level.
  */
 public class Strain extends SemanticDrawable {
-	/* JavaFX scene graph cannot handle rectangles larger than 10k pixels, so we split a 30k
-	* rectangle into 4 slices. */
-	private static final int SLICES = 4;
-	private static final int MAX = 10000;
-	private static final int Y_OFFSET = 10;
+	private static final int OFFSET = 10;
 	private static final double ANNOTATION_HEIGHT = 50;
 	private static final int RANK_WIDTH = 10;
 	private static final int CLUSTER_DIVIDER = 100;
@@ -62,36 +57,30 @@ public class Strain extends SemanticDrawable {
 		this.colorServer = colorServer;
 		this.graph = graph;
 		this.clusters = new HashMap<>();
-		loadContent();
-	}
-
-	/*
-	 * Load the drawable content of the graph itself.
-	 */
-	@Override
-	protected void loadContent() {
-		int width = graph.getRanks().size() * RANK_WIDTH;
-		if (width > MAX) {
-			width /= SLICES;
-		}
-
-		for (int i = 0; i < SLICES; i++) {
-			Rectangle rectangle = new Rectangle(width, RANK_WIDTH, Color.BLACK);
-			rectangle.setTranslateX(i * width);
-			content.getChildren().add(rectangle);
-		}
+		// FIXME: bounds are incorrect
+		loadContent(getBoundsInParent());
 	}
 
 	@Override
-	protected void loadChildren(Bounds bounds) {
-		int minRank = (int) (Math.max(bounds.getMinX() / RANK_WIDTH, 0));
-		int maxRank = (int) (RANK_WIDTH + bounds.getMaxX() / RANK_WIDTH);
+	protected void loadContent(Bounds bounds) {
+		content.getChildren().clear();
+		HBox hbox = new HBox();
+		Range ranks = getRange(bounds);
 
-		System.out.println("load iteration: " + minRank + " -> " + maxRank);
-		List<String> roots = graph.getRank(minRank).stream()
+		List<Annotation> annotations = getSortedAnnotations(ranks);
+		annotations.forEach(a -> hbox.getChildren().add(new Gene(a)));
+		content.getChildren().add(hbox);
+	}
+
+	@Override
+	public void loadChildren(Bounds bounds) {
+		Range ranks = getRange(bounds);
+
+		System.out.println("load iteration: " + ranks.getX() + " -> " + ranks.getY());
+		List<String> roots = graph.getRank(ranks.getX()).stream()
 				.map(SequenceNode::getId).collect(Collectors.toList());
-		Collection<Annotation> annotations = graph.getAnnotationByRank(new Range(minRank, maxRank));
-		Map<Integer, List<Cluster>> result = graph.getAllClusters(roots, maxRank,
+		List<Annotation> annotations = getSortedAnnotations(ranks);
+		Map<Integer, List<Cluster>> result = graph.getAllClusters(roots, ranks.getY(),
 				(int) (bounds.getWidth() / CLUSTER_DIVIDER));
 		clusters.clear();
 		childContent.getChildren().clear();
@@ -99,6 +88,24 @@ public class Strain extends SemanticDrawable {
 		result.forEach(this::loadRank);
 		clusters.values().forEach(e -> loadEdges(bounds, e));
 		drawAnnotations(annotations);
+	}
+
+	private Range getRange(Bounds bounds) {
+		int minRank = (int) (Math.max(bounds.getMinX() / RANK_WIDTH, 0));
+		int maxRank = (int) (RANK_WIDTH + bounds.getMaxX() / RANK_WIDTH);
+		return new Range(minRank, maxRank);
+	}
+
+	private List<Annotation> getSortedAnnotations(Range ranks) {
+		return graph.getAnnotationByRank(ranks).stream()
+				.sorted((a1, a2) -> {
+					if (a1.getStart() < a2.getStart()) {
+						return -1;
+					} else {
+						return 1;
+					}
+				})
+				.collect(Collectors.toList());
 	}
 
 	private void drawAnnotations(Collection<Annotation> annotations) {
@@ -165,7 +172,7 @@ public class Strain extends SemanticDrawable {
 					ClusterDrawable dest = clusters.get(destid);
 					if (dest == null) {
 						Edge e = new Edge(cluster, destid);
-						e.getEdge().endYProperty().setValue(bounds.getMinY() + Y_OFFSET);
+						e.getEdge().endYProperty().setValue(bounds.getMinY() + OFFSET);
 						return e;
 					} else {
 						return new Edge(cluster, dest);
