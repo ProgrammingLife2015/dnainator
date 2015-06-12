@@ -182,4 +182,27 @@ public class Strain extends SemanticDrawable {
 			childContent.getChildren().add(cluster);
 		}
 	}
+	
+	/**
+	 * @return the clusters in the view.
+	 */
+	public Map<String, ClusterDrawable> getClusters() {
+		return clusters;
+	}
+	
+	/**
+	 * Get the internal {@link Graph} representing the Strain.
+	 * @return the graph of the strain.
+	 */
+	public Graph getGraph() {
+		return graph;
+	}
+	
+	/**
+	 * Get the rank width.
+	 * @return the rank width.
+	 */
+	public int getRankWidth() {
+		return RANK_WIDTH;
+	}
 }

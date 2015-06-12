@@ -45,21 +45,21 @@ public class WindowController {
 		ColorServer colorServer = new ColorServer();
 		fileOpenController.dbPathProperty().set(welcomeController.getListedPaths());
 		fileOpenController.graphProperty().addListener((obj, oldV, newV) -> {
-			createStrainView(colorServer, newV);
-			constructView();
+			Pane strainView = createStrainView(colorServer, newV);
+			constructView(strainView, phyloView);
 		});
 		fileOpenController.treeProperty().addListener((obj, oldV, newV) -> {
 			phyloView = new PhylogeneticView(colorServer);
 			phyloView.rootProperty().set(newV);
 		});
 		welcomeController.dbProperty().addListener((obj, oldV, newV) -> {
-			createStrainView(colorServer, newV);
+			Pane strainView = createStrainView(colorServer, newV);
 			phyloView = new PhylogeneticView(colorServer);
-			constructView();
+			constructView(strainView, phyloView);
 		});
 	}
 	
-	private void constructView() {
+	private void constructView(Pane strainView, Pane phyloView) {
 		SplitPane splitPane = new SplitPane(strainView, phyloView);
 		splitPane.setOrientation(Orientation.VERTICAL);
 		root.setCenter(splitPane);

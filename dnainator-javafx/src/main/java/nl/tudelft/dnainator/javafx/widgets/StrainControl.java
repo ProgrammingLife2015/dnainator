@@ -5,6 +5,8 @@ import javafx.scene.control.Control;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
+import nl.tudelft.dnainator.core.EnrichedSequenceNode;
+import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.javafx.views.StrainView;
 
 /**
@@ -13,8 +15,9 @@ import nl.tudelft.dnainator.javafx.views.StrainView;
 public class StrainControl extends VBox {
 	private static final double PADDING = 10;
 	private static final double WIDTH = 200;
-	private static final String SEQUENCE = "Jump to sequence...";
+	private static final String SEQUENCE = "Jump to node...";
 	private StrainView strainView;
+	double x = 0.0;
 
 	/**
 	 * Instantiates a new {@link StrainControl}.
@@ -33,11 +36,17 @@ public class StrainControl extends VBox {
 
 	private TextField createJumpToSequence() {
 		TextField jumpToSequenceEntry = new TextField();
+		
 		jumpToSequenceEntry.setPrefColumnCount(SEQUENCE.length());
 		jumpToSequenceEntry.setPromptText(SEQUENCE);
 		jumpToSequenceEntry.setOnAction(e -> {
-			double x = Double.parseDouble(jumpToSequenceEntry.getCharacters().toString());
-			strainView.setPan(-x, 25);
+			Graph curGraph = strainView.getStrain().getGraph();
+			String inputText = jumpToSequenceEntry.getCharacters().toString();
+			if (isInteger(inputText)) {
+				EnrichedSequenceNode reqNode = curGraph.getNode(inputText);
+				strainView.setPan(-reqNode.getRank() * strainView.getStrain().getRankWidth() 
+						- strainView.getTranslateX(), 0);
+			}
 		});
 		return jumpToSequenceEntry;
 	}
@@ -60,5 +69,14 @@ public class StrainControl extends VBox {
 			}
 		});
 		return slider;
+	}
+	
+	private boolean isInteger(String s) {
+		try {
+			Integer.parseInt(s);
+		} catch (NumberFormatException nfe) {
+			return false;
+		}
+		return true;
 	}
 }

@@ -57,9 +57,22 @@ public class StrainView extends AbstractView {
 		updateStrain();
 	}
 	
+	/**
+	 * Sets the panning of the {@link StrainView}.
+	 * @param x the amount to pan on the x axis.
+	 * @param y the amount to pan on the y axis.
+	 */
 	public void setPan(double x, double y) {
 		scale.setToIdentity();
 		translate.setX(x);
 		translate.setY(y);
+	}
+	
+	/**
+	 * Get the {@link Strain} of the {@link StrainView}.
+	 * @return the strain.
+	 */
+	public Strain getStrain() {
+		return strain;
 	}
 }
