@@ -15,9 +15,8 @@ import nl.tudelft.dnainator.javafx.views.StrainView;
 public class StrainControl extends VBox {
 	private static final double PADDING = 10;
 	private static final double WIDTH = 200;
-	private static final String SEQUENCE = "Jump to node...";
+	private static final String NODE = "Jump to node...";
 	private StrainView strainView;
-	double x = 0.0;
 
 	/**
 	 * Instantiates a new {@link StrainControl}.
@@ -34,25 +33,33 @@ public class StrainControl extends VBox {
 				createSlider());
 	}
 
+	/**
+	 * Setup the jump to node {@link TextField}.
+	 * @return the text field of the jump to node.
+	 */
 	private TextField createJumpToSequence() {
-		TextField jumpToSequenceEntry = new TextField();
+		TextField jumpToNodeEntry = new TextField();
 		
-		jumpToSequenceEntry.setPrefColumnCount(SEQUENCE.length());
-		jumpToSequenceEntry.setPromptText(SEQUENCE);
-		jumpToSequenceEntry.setOnAction(e -> {
+		jumpToNodeEntry.setPrefColumnCount(NODE.length());
+		jumpToNodeEntry.setPromptText(NODE);
+		jumpToNodeEntry.setOnAction(e -> {
 			Graph curGraph = strainView.getStrain().getGraph();
-			String inputText = jumpToSequenceEntry.getCharacters().toString();
-			if (isInteger(inputText)) {
+			String inputText = jumpToNodeEntry.getCharacters().toString();
+			if (isInteger(inputText) && curGraph.getNode(inputText) != null) {
 				EnrichedSequenceNode reqNode = curGraph.getNode(inputText);
 				strainView.setPan(-reqNode.getRank() * strainView.getStrain().getRankWidth() 
 						- strainView.getTranslateX(), 0);
+				strainView.zoomInMax();
+				strainView.setTranslateY(-strainView.getStrain().getClusters()
+						.get(inputText).getTranslateY() * strainView.getStrain().getRankWidth());
 			}
 		});
-		return jumpToSequenceEntry;
+		return jumpToNodeEntry;
 	}
 
 	private Slider createSlider() {
 		Slider slider = new Slider();
+		// CHECKSTYLE.OFF: MagicNumber
 		slider.setMin(0);
 		slider.setMax(100);
 		slider.setValue(0);
@@ -61,6 +68,7 @@ public class StrainControl extends VBox {
 		slider.setMajorTickUnit(50);
 		slider.setMinorTickCount(5);
 		slider.setBlockIncrement(10);
+		// CHECKSTYLE.ON: MagicNumber
 		slider.valueProperty().addListener((obj, oldV, newV) -> {
 			if (oldV.doubleValue() < newV.doubleValue()) {
 				strainView.zoom(newV.doubleValue());
@@ -70,6 +78,7 @@ public class StrainControl extends VBox {
 		});
 		return slider;
 	}
+	
 	
 	private boolean isInteger(String s) {
 		try {

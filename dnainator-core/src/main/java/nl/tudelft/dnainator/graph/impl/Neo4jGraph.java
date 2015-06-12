@@ -124,6 +124,9 @@ public final class Neo4jGraph implements Graph {
 	 * @return a {@link SequenceNode} with the information of the given {@link Node}.
 	 */
 	public EnrichedSequenceNode createSequenceNode(Node node) {
+		if (node == null) {
+			return null;
+		}
 		return new Neo4jSequenceNode(service, node);
 	}
 

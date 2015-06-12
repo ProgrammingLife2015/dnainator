@@ -82,7 +82,7 @@ public abstract class AbstractView extends Pane {
 	 * Returns the concatenated transform from world coordinates to camera coordinates.
 	 * @return	the concatenated transform
 	 */
-	private Transform worldToCamera() {
+	protected Transform worldToCamera() {
 		return toCenter.createConcatenation(translate).createConcatenation(scale);
 	}
 
