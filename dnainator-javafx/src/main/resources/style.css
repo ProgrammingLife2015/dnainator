@@ -18,15 +18,6 @@
 	-fx-background-color: #FFFFFF;
 }
 
-.drawable-node {
-	-fx-fill: #4C4C4C;
-}
-
-.drawable-edge {
-	-fx-stroke: #000000;
-	-fx-stroke-width: .4;
-}
-
 #about > .label {
 	-fx-graphic: url("/ui/dnainator.iconset/icon_16x16.png");
 	-fx-padding: 0 10 0 5;
@@ -42,4 +33,34 @@
 .gray-label {
 	-fx-font-size: 11px;
 	-fx-text-fill: #a8a8a8;
+}
+
+AbstractNode {
+	-fx-font-size: 4px;
+}
+
+AbstractNode Edge {
+	-fx-stroke: #000000;
+	-fx-stroke-width: .2;
+}
+
+Strain ClusterDrawable {
+	-fx-font-size: 4px;
+}
+
+Strain ClusterDrawable Circle {
+	-fx-fill: #4C4C4C;
+}
+
+Strain Edge {
+	-fx-font-size: 4px;
+}
+
+Strain Edge Circle {
+	-fx-fill: #4C4C4C;
+}
+
+Strain Edge Line {
+	-fx-stroke: #000000;
+	-fx-stroke-width: .2;
 }

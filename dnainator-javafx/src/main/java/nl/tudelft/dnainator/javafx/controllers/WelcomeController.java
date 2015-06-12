@@ -76,14 +76,14 @@ public class WelcomeController {
 		dbload = new DBLoadService();
 		
 		dbload.setOnFailed(e -> {
+			progressDialog.close();
 			new ExceptionDialog(list.getParent(), dbload.getException(),
 					"Database is already in use, please choose another.");
-			progressDialog.close();
 		});
 		dbload.setOnRunning(e -> progressDialog.show());
 		dbload.setOnSucceeded(e -> {
-			dbProperty.setValue(dbload.getValue());
 			progressDialog.close();
+			dbProperty.setValue(dbload.getValue());
 		});
 		items = list.getItems();
 		dbProperty = new SimpleObjectProperty<>(this, "graph");
@@ -116,7 +116,7 @@ public class WelcomeController {
 	 * Adds all the directories found to the welcomescreen's list of selectables.
 	 */
 	private void scanDirectory(String dbpath) {
-		if (!Files.exists(Paths.get(dbpath)) && new File(dbpath).mkdir()) {
+		if (!Files.exists(Paths.get(dbpath)) && new File(dbpath).mkdirs()) {
 			return;
 		} else {
 			try (DirectoryStream<Path> ds = Files.newDirectoryStream(Paths.get(dbpath))) {

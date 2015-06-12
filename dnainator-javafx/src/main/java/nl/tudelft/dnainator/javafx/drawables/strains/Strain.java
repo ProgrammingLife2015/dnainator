@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
  * It holds both content and children, and toggles what to load and display based on the zoom level.
  */
 public class Strain extends Group {
+	private static final int Y_OFFSET = 10;
 	private static final int RANK_WIDTH = 10;
 	private static final int NO_CLUSTERS = 33000;
 	/* JavaFX scene graph cannot handle rectangles larger than 10k pixels, so we split a 30k
@@ -87,7 +88,7 @@ public class Strain extends Group {
 	 */
 	private void loadChildren(Bounds bounds) {
 		int minRank = (int) (Math.max(bounds.getMinX() / RANK_WIDTH, 0));
-		int maxRank = (int) (bounds.getMaxX() / RANK_WIDTH);
+		int maxRank = (int) (RANK_WIDTH + bounds.getMaxX() / RANK_WIDTH);
 
 		System.out.println("load iteration: " + minRank + " -> " + maxRank);
 		List<String> roots = graph.getRank(minRank).stream()
@@ -98,19 +99,27 @@ public class Strain extends Group {
 		childContent.getChildren().clear();
 
 		result.forEach(this::loadRank);
-		clusters.values().forEach(this::loadEdges);
+		clusters.values().forEach(e -> loadEdges(bounds, e));
 	}
 
 	/*
 	 * Load the drawable content of the edges for all displayed clusters.
 	 */
-	private void loadEdges(ClusterDrawable cluster) {
-		childContent.getChildren().addAll(
-				cluster.getCluster().getNodes().stream().flatMap(e -> e.getOutgoing().stream())
-						.filter(clusters::containsKey)
-						.filter(i -> clusters.get(i) != cluster)
-						.map(o -> new Edge(cluster, clusters.get(o)))
-						.collect(Collectors.toList()));
+	private void loadEdges(Bounds bounds, ClusterDrawable cluster) {
+		childContent.getChildren().addAll(cluster.getCluster().getNodes().stream()
+				.flatMap(e -> e.getOutgoing().stream())
+				.filter(destid -> clusters.get(destid) != cluster)
+				.map(destid -> {
+					ClusterDrawable dest = clusters.get(destid);
+					if (dest == null) {
+						Edge e = new Edge(cluster, destid);
+						e.getEdge().endYProperty().setValue(bounds.getMinY() + Y_OFFSET);
+						return e;
+					} else {
+						return new Edge(cluster, dest);
+					}
+				})
+				.collect(Collectors.toList()));
 	}
 
 	private void loadRank(Integer key, List<Cluster> value) {
