@@ -1,37 +1,39 @@
 package nl.tudelft.dnainator.javafx.drawables.strains;
 
+import javafx.beans.binding.Bindings;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
+import javafx.scene.layout.HBox;
+import nl.tudelft.dnainator.annotation.Annotation;
+import nl.tudelft.dnainator.annotation.Range;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.javafx.ColorServer;
+import nl.tudelft.dnainator.javafx.drawables.annotations.Connection;
+import nl.tudelft.dnainator.javafx.drawables.SemanticDrawable;
+import nl.tudelft.dnainator.javafx.drawables.annotations.Gene;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 /**
  * The {@link Strain} class represents the graph that contains the DNA strain.
  * It holds both content and children, and toggles what to load and display based on the zoom level.
  */
-public class Strain extends Group {
-	private static final int Y_OFFSET = 10;
+public class Strain extends SemanticDrawable {
+	private static final int OFFSET = 10;
+	private static final double ANNOTATION_HEIGHT = 50;
 	private static final int RANK_WIDTH = 10;
-	private static final int NO_CLUSTERS = 33000;
-	/* JavaFX scene graph cannot handle rectangles larger than 10k pixels, so we split a 30k
-	* rectangle into 4 slices. */
-	private static final int SLICES = 4;
 	private static final int CLUSTER_DIVIDER = 100;
 
 	private ColorServer colorServer;
 	private Graph graph;
 	private Map<String, ClusterDrawable> clusters;
-	private Group content;
-	private Group childContent;
 
 	/**
 	 * Construct a new top level {@link Strain} using the specified graph.
@@ -51,60 +53,117 @@ public class Strain extends Group {
 	 * @param childContent The specified child content.
 	 */
 	public Strain(ColorServer colorServer, Graph graph, Group content, Group childContent) {
+		super(content, childContent);
 		this.colorServer = colorServer;
 		this.graph = graph;
 		this.clusters = new HashMap<>();
-		this.content = content;
-		this.childContent = childContent;
-
-		getChildren().add(content);
-		getChildren().add(childContent);
-		loadContent();
+		// FIXME: bounds are incorrect
+		loadContent(getBoundsInParent());
 	}
 
-	/**
-	 * Check whether this object intersects with the given viewport bounds.
-	 * @param bounds	The given viewport bounds.
-	 * @return	True if (partially) in viewport, false otherwise.
-	 */
-	public boolean isInViewport(Bounds bounds) {
-		return bounds.contains(content.localToParent(0, 0));
+	@Override
+	protected void loadContent(Bounds bounds) {
+		content.getChildren().clear();
+		HBox hbox = new HBox();
+		Range ranks = getRange(bounds);
+
+		List<Annotation> annotations = getSortedAnnotations(ranks);
+		annotations.forEach(a -> hbox.getChildren().add(new Gene(a)));
+		content.getChildren().add(hbox);
 	}
 
-	/*
-	 * Load the drawable content of the graph itself.
-	 */
-	private void loadContent() {
-		for (int i = 0; i < SLICES; i++) {
-			int width = NO_CLUSTERS * RANK_WIDTH / SLICES;
-			Rectangle rectangle = new Rectangle(width, RANK_WIDTH, Color.BLACK);
-			rectangle.setTranslateX(i * width);
-			content.getChildren().add(rectangle);
-		}
-	}
+	@Override
+	public void loadChildren(Bounds bounds) {
+		Range ranks = getRange(bounds);
 
-	/*
-	 * Load the drawable content of the graph's children, given the bounds of the viewing port.
-	 */
-	private void loadChildren(Bounds bounds) {
-		int minRank = (int) (Math.max(bounds.getMinX() / RANK_WIDTH, 0));
-		int maxRank = (int) (RANK_WIDTH + bounds.getMaxX() / RANK_WIDTH);
-
-		System.out.println("load iteration: " + minRank + " -> " + maxRank);
-		List<String> roots = graph.getRank(minRank).stream()
+		System.out.println("load iteration: " + ranks.getX() + " -> " + ranks.getY());
+		List<String> roots = graph.getRank(ranks.getX()).stream()
 				.map(SequenceNode::getId).collect(Collectors.toList());
-		Map<Integer, List<Cluster>> result = graph.getAllClusters(roots, maxRank,
+		List<Annotation> annotations = getSortedAnnotations(ranks);
+		Map<Integer, List<Cluster>> result = graph.getAllClusters(roots, ranks.getY(),
 				(int) (bounds.getWidth() / CLUSTER_DIVIDER));
 		clusters.clear();
 		childContent.getChildren().clear();
 
 		result.forEach(this::loadRank);
 		clusters.values().forEach(e -> loadEdges(bounds, e));
+		drawAnnotations(annotations);
 	}
 
-	/*
-	 * Load the drawable content of the edges for all displayed clusters.
-	 */
+	private Range getRange(Bounds bounds) {
+		int minRank = (int) (Math.max(bounds.getMinX() / RANK_WIDTH, 0));
+		int maxRank = (int) (RANK_WIDTH + bounds.getMaxX() / RANK_WIDTH);
+		return new Range(minRank, maxRank);
+	}
+
+	private List<Annotation> getSortedAnnotations(Range ranks) {
+		return graph.getAnnotationByRank(ranks).stream()
+				.sorted((a1, a2) -> {
+					if (a1.getStart() < a2.getStart()) {
+						return -1;
+					} else {
+						return 1;
+					}
+				})
+				.collect(Collectors.toList());
+	}
+
+	private void drawAnnotations(Collection<Annotation> annotations) {
+		Gene prev = null;
+		for (Annotation a : annotations) {
+			prev = loadAnnotations(a, prev);
+		}
+	}
+
+	private Gene loadAnnotations(Annotation annotation, Gene prev) {
+		Gene g = new Gene(annotation);
+		ClusterDrawable left = getClusterDrawable(annotation, Double.MAX_VALUE,
+				(x, acc) -> x <= acc);
+		ClusterDrawable right = getClusterDrawable(annotation, Double.MIN_VALUE,
+				(x, acc) -> x >= acc);
+		if (left != null) {
+			childContent.getChildren().add(new Connection(g.translateXProperty().add(0),
+					g.translateYProperty().add(0), left.translateXProperty().add(0),
+					left.translateYProperty().add(0)));
+		}
+		if (right != null) {
+			childContent.getChildren().add(new Connection(g.translateXProperty().add(
+					g.widthProperty()), g.translateYProperty().add(0),
+					right.translateXProperty().add(0), right.translateYProperty().add(0)));
+		}
+		if (left != null && right != null) {
+			g.translateXProperty().bind(Bindings.add(left.translateXProperty(), Bindings.subtract(
+					Bindings.divide(right.translateXProperty().subtract(left.translateXProperty()),
+							2), g.widthProperty().divide(2))));
+			if (prev != null && g.getLayoutBounds().intersects(prev.getLayoutBounds())) {
+				g.translateYProperty().bind(prev.translateYProperty().add(ANNOTATION_HEIGHT));
+			} else {
+				g.translateYProperty().bind(left.translateYProperty().add(ANNOTATION_HEIGHT));
+			}
+		}
+		childContent.getChildren().add(g);
+		return g;
+	}
+
+	private ClusterDrawable getClusterDrawable(Annotation annotation, double startValue,
+	                                           BiFunction<Double, Double, Boolean> function) {
+		Collection<String> ids = annotation.getAnnotatedNodes();
+		ClusterDrawable res = null;
+		double acc = startValue;
+
+		for (String id : ids) {
+			ClusterDrawable cluster = clusters.get(id);
+			if (cluster == null) {
+				continue;
+			}
+			if (function.apply(cluster.getTranslateX(), acc)) {
+				res = cluster;
+				acc = cluster.getTranslateX();
+			}
+		}
+		return res;
+	}
+
 	private void loadEdges(Bounds bounds, ClusterDrawable cluster) {
 		childContent.getChildren().addAll(cluster.getCluster().getNodes().stream()
 				.flatMap(e -> e.getOutgoing().stream())
@@ -113,7 +172,7 @@ public class Strain extends Group {
 					ClusterDrawable dest = clusters.get(destid);
 					if (dest == null) {
 						Edge e = new Edge(cluster, destid);
-						e.getEdge().endYProperty().setValue(bounds.getMinY() + Y_OFFSET);
+						e.getEdge().endYProperty().setValue(bounds.getMinY() + OFFSET);
 						return e;
 					} else {
 						return new Edge(cluster, dest);
@@ -129,38 +188,6 @@ public class Strain extends Group {
 			cluster.setTranslateX(key * RANK_WIDTH);
 			cluster.setTranslateY(i * RANK_WIDTH - value.size() * RANK_WIDTH / 2);
 			childContent.getChildren().add(cluster);
-		}
-	}
-
-	/**
-	 * Toggle between displaying own content or children.
-	 * @param bounds     The bounds of the viewport.
-	 * @param visible    True if the content needs to be visible, false otherwise.
-	 */
-	public void toggle(Bounds bounds, boolean visible) {
-		if (visible && !content.isVisible()) {
-			childContent.getChildren().clear();
-			content.setVisible(true);
-			loadContent();
-		}
-		if (!visible) {
-			content.setVisible(false);
-			loadChildren(bounds);
-		}
-	}
-
-	/**
-	 * Update method that should be called after scaling.
-	 * This method checks how zoomed in we are by transforming bounds to root coordinates,
-	 * and then dynamically adds and deletes items in the JavaFX scene graph.
-	 * @param bounds	The bounds of the viewport to update.
-	 * @param curZoom   The current zoom level.
-	 */
-	public void update(Bounds bounds, double curZoom) {
-		if (curZoom < Thresholds.GRAPH.get()) {
-			toggle(bounds, true);
-		} else {
-			toggle(bounds, false);
 		}
 	}
 }
