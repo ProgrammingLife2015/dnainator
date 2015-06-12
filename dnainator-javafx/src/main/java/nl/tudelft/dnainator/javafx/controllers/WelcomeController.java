@@ -144,16 +144,18 @@ public class WelcomeController {
 	 * Shows a {@link ProgressDialog} when loading the db.
 	 */
 	private void loadDB() {
-		if (getDBPath().equals(selectDB)) {
-			File dir = selectDirectory();
-			if (dir == null) {
-				return;
+		if (!getDBPath().equals(DEFAULT_DB_PATH)) {
+			if (getDBPath().equals(selectDB)) {
+				File dir = selectDirectory();
+				if (dir == null) {
+					return;
+				}
+				items.removeIf(item -> !item.equals(selectDB));
+				scanDirectory(dir.getAbsolutePath());
+			} else {
+				progressDialog = new ProgressDialog(list.getParent());
+				dbload.restart();
 			}
-			items.removeIf(item -> !item.equals(selectDB));
-			scanDirectory(dir.getAbsolutePath());
-		} else {
-			progressDialog = new ProgressDialog(list.getParent());
-			dbload.restart();
 		}
 	}
 	
