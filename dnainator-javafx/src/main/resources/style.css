@@ -23,13 +23,6 @@
 	-fx-padding: 0 10 0 5;
 }
 
-.splash-version {
-	-fx-font-size: 14px;
-	-fx-fill: #FFFFFF;
-	-fx-font-smoothing-type: lcd;
-	-fx-font-family: Kalinga;
-}
-
 .gray-label {
 	-fx-font-size: 11px;
 	-fx-text-fill: #a8a8a8;

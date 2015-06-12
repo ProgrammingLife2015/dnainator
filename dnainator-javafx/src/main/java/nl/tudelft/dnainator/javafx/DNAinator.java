@@ -2,7 +2,6 @@ package nl.tudelft.dnainator.javafx;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.application.Preloader;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -35,8 +34,6 @@ public class DNAinator extends Application {
 			primaryStage.getIcons().add(new Image(getClass().getResourceAsStream(ICON)));
 			primaryStage.setMinWidth(MIN_WIDTH);
 			primaryStage.setMinHeight(MIN_HEIGHT);
-
-			notifyPreloader(new Preloader.ProgressNotification(1));
 
 			try {
 				BorderPane rootLayout = FXMLLoader.load(getClass().getResource(FXML));
