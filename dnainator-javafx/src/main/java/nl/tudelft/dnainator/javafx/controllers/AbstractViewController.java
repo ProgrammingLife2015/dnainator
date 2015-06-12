@@ -49,7 +49,11 @@ public class AbstractViewController {
 
 	@SuppressWarnings("unused") @FXML
 	private void onScroll(ScrollEvent e) {
-		view.zoom(e.getDeltaY(), new Point2D(e.getX(), e.getY()));
+		if (e.getDeltaY() > 0) {
+			view.zoomInScroll(e.getX(), e.getY());
+		} else if (e.getDeltaY() < 0) {
+			view.zoomOutScroll(e.getX(), e.getY());
+		}
 	}
 
 	@SuppressWarnings("unused") @FXML
