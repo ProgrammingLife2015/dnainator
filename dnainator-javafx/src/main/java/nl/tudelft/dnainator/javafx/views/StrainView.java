@@ -4,7 +4,6 @@ import javafx.geometry.Point2D;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.javafx.ColorServer;
 import nl.tudelft.dnainator.javafx.drawables.strains.Strain;
-import nl.tudelft.dnainator.javafx.widgets.contexts.ViewContext;
 
 /**
  * An implementation of {@link AbstractView} for displaying DNA strains.
@@ -19,11 +18,6 @@ public class StrainView extends AbstractView {
 	 */
 	public StrainView(ColorServer colorServer, Graph graph) {
 		super();
-
-		setOnContextMenuRequested(e -> {
-			ViewContext.getInstance().show(StrainView.this, e.getScreenX(), e.getScreenY());
-			e.consume();
-		});
 
 		strain = new Strain(colorServer, graph);
 		setTransforms(strain);
