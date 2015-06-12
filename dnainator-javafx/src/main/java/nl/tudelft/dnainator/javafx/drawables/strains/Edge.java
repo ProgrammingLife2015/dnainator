@@ -6,7 +6,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
-import nl.tudelft.dnainator.javafx.widgets.contexts.EdgeContext;
 
 /**
  * The drawable edge is a line that can be bound to the a source and a destination cluster.
@@ -22,10 +21,6 @@ public class Edge extends Group {
 		edge = new Line();
 		edge.startXProperty().bind(src.translateXProperty());
 		edge.startYProperty().bind(src.translateYProperty());
-		edge.setOnContextMenuRequested(e -> {
-			EdgeContext.getInstance().show(Edge.this, e.getScreenX(), e.getScreenY());
-			e.consume();
-		});
 		getChildren().add(edge);
 	}
 
