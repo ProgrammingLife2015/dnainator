@@ -4,7 +4,6 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.RadioMenuItem?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.BorderPane?>
@@ -18,25 +17,6 @@
               <MenuItem onAction="#openButtonAction" text="Open...">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="O" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
-                     </accelerator></MenuItem>
-                  <Menu mnemonicParsing="false" text="Recently opened">
-                    <items>
-                      <MenuItem mnemonicParsing="false" text="10_strains.node.graph" />
-                    </items>
-                  </Menu>
-                  <SeparatorMenuItem mnemonicParsing="false" />
-                  <MenuItem mnemonicParsing="false" text="Save session">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="S" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
-                     </accelerator></MenuItem>
-                  <MenuItem mnemonicParsing="false" text="Save session as...">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="S" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
-                     </accelerator>
-                  </MenuItem>
-                  <MenuItem mnemonicParsing="false" text="Restore session">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="O" control="UP" meta="UP" shift="DOWN" shortcut="DOWN" />
                      </accelerator></MenuItem>
                   <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem mnemonicParsing="false" onAction="#exitAction" text="Exit" />
@@ -80,19 +60,6 @@
                      </accelerator></CheckMenuItem>
             </items>
           </Menu>
-            <Menu mnemonicParsing="false" text="Navigate">
-              <items>
-                <MenuItem mnemonicParsing="false" text="Jump to node..." />
-                  <MenuItem mnemonicParsing="false" text="Jump to sequence..." />
-              </items>
-            </Menu>
-          <Menu mnemonicParsing="false" text="Filter">
-               <items>
-                  <RadioMenuItem mnemonicParsing="false" text="Foo" />
-                  <RadioMenuItem mnemonicParsing="false" text="Bar" />
-                  <RadioMenuItem mnemonicParsing="false" text="Baz" />
-               </items>
-          </Menu>
             <Menu mnemonicParsing="false" text="Help">
               <items>
                 <MenuItem id="about" mnemonicParsing="false" onAction="#aboutUsAction" text="About DNAinator" />
@@ -102,9 +69,9 @@
       </MenuBar>
    </top>
    <center>
-      <fx:include fx:id="welcome" source="welcome.fxml"/>
+      <fx:include fx:id="welcome" source="welcome.fxml" />
    </center>
    <left>
-      <fx:include fx:id="fileOpen" source="openpane.fxml"/>
+      <fx:include fx:id="fileOpen" source="openpane.fxml" />
    </left>
 </BorderPane>
