@@ -116,7 +116,7 @@ public class WelcomeController {
 	 * Adds all the directories found to the welcomescreen's list of selectables.
 	 */
 	private void scanDirectory(String dbpath) {
-		if (!Files.exists(Paths.get(dbpath)) && new File(dbpath).mkdir()) {
+		if (!Files.exists(Paths.get(dbpath)) && new File(dbpath).mkdirs()) {
 			return;
 		} else {
 			try (DirectoryStream<Path> ds = Files.newDirectoryStream(Paths.get(dbpath))) {

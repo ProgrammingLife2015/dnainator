@@ -12,7 +12,6 @@ import nl.tudelft.dnainator.javafx.widgets.contexts.EdgeContext;
  * The drawable edge is a line that can be bound to the a source and a destination cluster.
  */
 public class Edge extends Group {
-	private static final int Y_OFFSET = 80;
 	private Line edge;
 
 	/**
@@ -49,12 +48,19 @@ public class Edge extends Group {
 	public Edge(ClusterDrawable src, String destid) {
 		this(src);
 		edge.endXProperty().bind(src.translateXProperty());
-		edge.endYProperty().bind(src.translateYProperty().subtract(Y_OFFSET));
 
 		VBox box = new VBox(new Text(destid), new Circle(2));
 		box.setAlignment(Pos.CENTER);
 		box.translateXProperty().bind(edge.endXProperty().subtract(box.widthProperty().divide(2)));
 		box.translateYProperty().bind(edge.endYProperty().subtract(box.heightProperty()));
 		getChildren().add(box);
+	}
+
+	/**
+	 * Return the line this Edge contains.
+	 * @return	the line
+	 */
+	public Line getEdge() {
+		return edge;
 	}
 }
