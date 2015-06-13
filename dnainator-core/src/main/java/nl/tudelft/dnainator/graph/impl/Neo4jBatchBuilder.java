@@ -7,6 +7,7 @@ import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.GraphBuilder;
 import nl.tudelft.dnainator.graph.interestingness.Scores;
+import nl.tudelft.dnainator.tree.TreeNode;
 
 import org.neo4j.unsafe.batchinsert.BatchInserter;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
@@ -23,10 +24,11 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 	private BatchInserter batchInserter;
 	private Map<String, Long> annotationIDToNodeID;
 	private Map<String, Long> sequenceIDToNodeID;
-	private Map<String, Long> sourceNodeIDs;
+	private Map<String, Long> sourceToNodeID;
 	private Map<String, Object> annotationProperties;
 	private Map<String, Object> nodeProperties;
 	private AnnotationCollection annotations;
+	private TreeNode phylogeny;
 
 	/**
 	 * Create a new {@link Neo4jBatchBuilder}, which batch inserts to
@@ -35,13 +37,26 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 	 * @param annotations the {@link AnnotationCollection} to connect the nodes with.
 	 */
 	public Neo4jBatchBuilder(String storeDir, AnnotationCollection annotations) {
+		this(storeDir, annotations, null);
+	}
+
+	/**
+	 * Create a new {@link Neo4jBatchBuilder}, which batch inserts to
+	 * the specified database path.
+	 * @param storeDir the path where the database is stored.
+	 * @param annotations the {@link AnnotationCollection} to connect the nodes with.
+	 * @param phylogeny the phylogenetic tree, for linking the source nodes together.
+	 */
+	public Neo4jBatchBuilder(String storeDir, AnnotationCollection annotations,
+			TreeNode phylogeny) {
 		this.annotations = annotations;
 		this.storeDir = storeDir;
+		this.phylogeny = phylogeny;
 
 		batchInserter = BatchInserters.inserter(storeDir);
 		annotationIDToNodeID = new HashMap<>();
 		sequenceIDToNodeID = new HashMap<>();
-		sourceNodeIDs = new HashMap<>();
+		sourceToNodeID = new HashMap<>();
 		annotationProperties = new HashMap<>();
 		nodeProperties = new HashMap<>();
 
@@ -75,6 +90,7 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 
 	@Override
 	public Graph build() {
+		linkSources();
 		createIndicesAndConstraints();
 		batchInserter.shutdown();
 
@@ -109,11 +125,11 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 
 	private void connectSource(long nodeId, String source) {
 		long sourceId;
-		if (!sourceNodeIDs.containsKey(source)) {
+		if (!sourceToNodeID.containsKey(source)) {
 			sourceId = createSource(source);
-			sourceNodeIDs.put(source, sourceId);
+			sourceToNodeID.put(source, sourceId);
 		} else {
-			sourceId = sourceNodeIDs.get(source);
+			sourceId = sourceToNodeID.get(source);
 		}
 		batchInserter.createRelationship(nodeId, sourceId, RelTypes.SOURCE, null);
 	}
@@ -140,5 +156,26 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 		return batchInserter.createNode(
 				Collections.singletonMap(PropertyTypes.SOURCE.name(), source),
 				NodeLabels.SOURCE);
+	}
+
+	private long createAncestor() {
+		return batchInserter.createNode(null, NodeLabels.ANCESTOR);
+	}
+
+	private void linkSources() {
+		if (phylogeny != null) {
+			linkSources(phylogeny);
+		}
+	}
+
+	private long linkSources(TreeNode current) {
+		if (current.getChildren().size() == 0) {
+			return sourceToNodeID.get(current.getName());
+		}
+		long anc = createAncestor();
+		current.getChildren().forEach(child ->
+			batchInserter.createRelationship(anc, linkSources(child), RelTypes.ANCESTOR_OF, null)
+		);
+		return anc;
 	}
 }

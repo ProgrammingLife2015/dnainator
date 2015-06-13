@@ -15,6 +15,7 @@ import nl.tudelft.dnainator.parser.exceptions.ParseException;
 import nl.tudelft.dnainator.parser.impl.EdgeParserImpl;
 import nl.tudelft.dnainator.parser.impl.GFF3AnnotationParser;
 import nl.tudelft.dnainator.parser.impl.NodeParserImpl;
+import nl.tudelft.dnainator.tree.TreeNode;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,6 +39,8 @@ public class GraphLoadService extends Service<Graph> {
 			new SimpleObjectProperty<>(this, "gffFilePath");
 	private ObjectProperty<File> nodeFile = new SimpleObjectProperty<>(this, "nodeFile");
 	private ObjectProperty<File> edgeFile = new SimpleObjectProperty<>(this, "edgeFile");
+	private ObjectProperty<TreeNode> phylogeneticTree =
+			new SimpleObjectProperty<>(this, "phylogeneticTree");
 
 	/**
 	 * Construct a GraphLoadService with a default database path.
@@ -144,6 +147,14 @@ public class GraphLoadService extends Service<Graph> {
 		return database;
 	}
 
+	/**
+	 * Sets the tree, needed for building the graph.
+	 * @param value the tree.
+	 */
+	public void setTree(TreeNode value) {
+		phylogeneticTree.setValue(value);
+	}
+
 	@Override
 	protected Task<Graph> createTask() {
 		return new Task<Graph>() {
@@ -159,7 +170,7 @@ public class GraphLoadService extends Service<Graph> {
 				EdgeParser ep = new EdgeParserImpl(getEdgeFile());
 				NodeParser np = new NodeParserImpl(getNodeFile());
 
-				return new Neo4jBatchBuilder(database.get(), annotations)
+				return new Neo4jBatchBuilder(database.get(), annotations, phylogeneticTree.get())
 					.constructGraph(np, ep)
 					.build();
 			}
