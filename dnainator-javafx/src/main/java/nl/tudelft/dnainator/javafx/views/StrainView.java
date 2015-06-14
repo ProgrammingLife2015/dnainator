@@ -4,6 +4,7 @@ import javafx.geometry.Point2D;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.javafx.ColorServer;
 import nl.tudelft.dnainator.javafx.drawables.strains.Strain;
+import nl.tudelft.dnainator.javafx.widgets.Minimap;
 
 /**
  * An implementation of {@link AbstractView} for displaying DNA strains.
@@ -21,8 +22,16 @@ public class StrainView extends AbstractView {
 
 		strain = new Strain(colorServer, graph);
 		setTransforms(strain);
-		getChildren().add(strain);
+		getChildren().addAll(strain, setupMinimap(strain, graph));
 		updateStrain();
+	}
+
+	private Minimap setupMinimap(Strain strain, Graph graph) {
+		Minimap minimap = new Minimap(strain, graph);
+		minimap.translateXProperty().bind(translateXProperty());
+		minimap.translateYProperty().bind(heightProperty().subtract(minimap.heightProperty()));
+		widthProperty().addListener((obj, oldV, newV) -> minimap.setPrefWidth(newV.doubleValue()));
+		return minimap;
 	}
 
 	private void updateStrain() {
