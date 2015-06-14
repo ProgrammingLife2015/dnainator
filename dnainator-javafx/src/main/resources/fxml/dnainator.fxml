@@ -11,7 +11,7 @@
 <?import nl.tudelft.dnainator.javafx.views.*?>
 <?import nl.tudelft.dnainator.javafx.widgets.*?>
 
-<BorderPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.dnainator.javafx.controllers.WindowController">
+<BorderPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.dnainator.javafx.controllers.WindowController">
    <top>
       <MenuBar useSystemMenuBar="true" BorderPane.alignment="CENTER">
         <menus>
@@ -48,7 +48,7 @@
                      </accelerator>
                   </MenuItem>
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <CheckMenuItem mnemonicParsing="false" selected="true" text="Show stepper">
+                  <CheckMenuItem mnemonicParsing="false" onAction="#toggleStepperAction" selected="true" text="Show stepper">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="L" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                      </accelerator>
@@ -63,10 +63,16 @@
                      </accelerator></CheckMenuItem>
             </items>
           </Menu>
-            <Menu mnemonicParsing="false" text="Help">
+            <Menu mnemonicParsing="false" text="Navigate">
               <items>
-                <MenuItem id="about" mnemonicParsing="false" onAction="#aboutUsAction" text="About DNAinator" />
+                <MenuItem id="about" mnemonicParsing="false" onAction="#jumpNodeAction" text="Jump to node..." />
+                  <MenuItem id="about" mnemonicParsing="false" onAction="#jumpRankAction" text="Jump to rank..." />
               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+               <items>
+                  <MenuItem id="about" mnemonicParsing="false" onAction="#aboutUsAction" text="About DNAinator" />
+               </items>
             </Menu>
         </menus>
       </MenuBar>
