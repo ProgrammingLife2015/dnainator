@@ -202,4 +202,12 @@ public class Strain extends SemanticDrawable {
 	public IntegerProperty maxRankProperty() {
 		return maxRank;
 	}
+
+	/**
+	 * Get the rank width.
+	 * @return the rank width.
+	 */
+	public int getRankWidth() {
+		return RANK_WIDTH;
+	}
 }

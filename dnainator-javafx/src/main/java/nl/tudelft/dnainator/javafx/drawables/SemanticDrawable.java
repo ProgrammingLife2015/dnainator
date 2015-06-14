@@ -2,7 +2,6 @@ package nl.tudelft.dnainator.javafx.drawables;
 
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
-import nl.tudelft.dnainator.javafx.drawables.strains.Thresholds;
 
 /**
  * An abstract drawable that enables a semantic display of data.

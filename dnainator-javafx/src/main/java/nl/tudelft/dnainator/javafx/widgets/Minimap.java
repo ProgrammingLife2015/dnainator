@@ -1,7 +1,9 @@
 package nl.tudelft.dnainator.javafx.widgets;
 
+import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import nl.tudelft.dnainator.graph.Graph;
@@ -19,21 +21,27 @@ public class Minimap extends Pane {
 	private static final double SPACER_HEIGHT = 7;
 	private Strain strain;
 	private Graph graph;
+	private StrainView strainView;
 	private DoubleProperty widthPerRank = new SimpleDoubleProperty(0, "widthPerRank");
 
 	/**
 	 * Instantiates a new {@link Minimap}.
 	 * @param strain The {@link Strain} to operate on.
 	 * @param graph The {@link Graph} that the {@link Strain} operates on.
+	 * @param strainView The {@link StrainView} that contains this minimap.
 	 */
-	public Minimap(Strain strain, Graph graph) {
+	public Minimap(Strain strain, Graph graph, StrainView strainView) {
 		this.strain = strain;
 		this.graph = graph;
+		this.strainView = strainView;
 		this.widthPerRank.bind(widthProperty().divide(graph.getMaxRank()));
 		setHeight(HEIGHT);
 
 		drawSpacer();
-		drawViewport();
+		// Wait for the Strain to update its properties.
+		Platform.runLater(this::drawViewport);
+
+		setOnMouseClicked(e -> onMouseClicked(e));
 	}
 
 	private void drawSpacer() {
@@ -54,5 +62,10 @@ public class Minimap extends Pane {
 		view.widthProperty().bind(widthPerRank.multiply(
 				strain.maxRankProperty().subtract(strain.minRankProperty())));
 		getChildren().add(view);
+	}
+
+	private void onMouseClicked(MouseEvent e) {
+		int rank = (int) (e.getX() / widthPerRank.get());
+		strainView.gotoRank(rank);
 	}
 }

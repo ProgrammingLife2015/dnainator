@@ -27,7 +27,7 @@ public class StrainView extends AbstractView {
 	}
 
 	private Minimap setupMinimap(Strain strain, Graph graph) {
-		Minimap minimap = new Minimap(strain, graph);
+		Minimap minimap = new Minimap(strain, graph, this);
 		minimap.translateXProperty().bind(translateXProperty());
 		minimap.translateYProperty().bind(heightProperty().subtract(minimap.heightProperty()));
 		widthProperty().addListener((obj, oldV, newV) -> minimap.setPrefWidth(newV.doubleValue()));
@@ -42,6 +42,27 @@ public class StrainView extends AbstractView {
 	public void pan(Point2D delta) {
 		super.pan(delta);
 		updateStrain();
+	}
+
+	/**
+	 * Sets the panning of the {@link StrainView}.
+	 * @param x the amount to pan on the x axis.
+	 * @param y the amount to pan on the y axis.
+	 */
+	public void setPan(double x, double y) {
+		scale.setTx(0);
+		scale.setTy(0);
+		translate.setX(x * scale.getMxx());
+		translate.setY(y * scale.getMxx());
+		updateStrain();
+	}
+
+	/**
+	 * Sets the panning to a specific rank in the {@link Strain}.
+	 * @param rank The rank to pan to.
+	 */
+	public void gotoRank(int rank) {
+		setPan(-rank * strain.getRankWidth(), 0);
 	}
 
 	@Override
