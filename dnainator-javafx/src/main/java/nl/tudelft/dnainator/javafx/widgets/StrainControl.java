@@ -4,6 +4,8 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Control;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.graph.Graph;
@@ -16,7 +18,14 @@ public class StrainControl extends VBox {
 	private static final double PADDING = 10;
 	private static final double WIDTH = 200;
 	private static final String NODE = "Jump to node...";
+	private static final String RANK = "Jump to rank...";
+	private static final String ERROR = "Invalid input!";
+	private static final String MAGGLASS = "magnifying-glass.png";
 	private StrainView strainView;
+	private Slider stepper;
+	private ImageView magGlass;
+	private TextField jumpTo;
+	private int numberInput;
 
 	/**
 	 * Instantiates a new {@link StrainControl}.
@@ -27,24 +36,26 @@ public class StrainControl extends VBox {
 		setPadding(new Insets(PADDING));
 		setSpacing(PADDING);
 		setMaxWidth(WIDTH);
-
-		getChildren().addAll(
-				createJumpToSequence(),
-				createSlider());
+		setPickOnBounds(false);
+		jumpTo = new TextField();
+		setupImage();
+		setupStepper();
+		
+		getChildren().add(stepper);
 	}
 
 	/**
 	 * Setup the jump to node {@link TextField}.
 	 * @return the text field of the jump to node.
 	 */
-	private TextField createJumpToSequence() {
-		TextField jumpToNodeEntry = new TextField();
-		
-		jumpToNodeEntry.setPrefColumnCount(NODE.length());
-		jumpToNodeEntry.setPromptText(NODE);
-		jumpToNodeEntry.setOnAction(e -> {
+	private void createJumpToNode() {
+		jumpTo.clear();
+		jumpTo.setStyle("");
+		jumpTo.setPrefColumnCount(NODE.length());
+		jumpTo.setPromptText(NODE);
+		jumpTo.setOnAction(e -> {
 			Graph curGraph = strainView.getStrain().getGraph();
-			String inputText = jumpToNodeEntry.getCharacters().toString();
+			String inputText = jumpTo.getCharacters().toString();
 			if (isInteger(inputText) && curGraph.getNode(inputText) != null) {
 				EnrichedSequenceNode reqNode = curGraph.getNode(inputText);
 				strainView.setPan(-reqNode.getRank() * strainView.getStrain().getRankWidth() 
@@ -52,40 +63,108 @@ public class StrainControl extends VBox {
 				strainView.zoomInMax();
 				strainView.setTranslateY(-strainView.getStrain().getClusters()
 						.get(inputText).getTranslateY() * strainView.getStrain().getRankWidth());
+			} else {
+				promptInvalid();
 			}
 		});
-		return jumpToNodeEntry;
+	}
+	
+	/**
+	 * Setup the jump to rank {@link TextField}.
+	 * @return the text field of the jump to rank.
+	 */
+	private void createJumpToRank() {
+		jumpTo.clear();
+		jumpTo.setStyle("");
+		jumpTo.setPrefColumnCount(RANK.length());
+		jumpTo.setPromptText(RANK);
+		jumpTo.setOnAction(e -> {
+			Graph curGraph = strainView.getStrain().getGraph();
+			if (isInteger(jumpTo.getCharacters().toString()) 
+					&& curGraph.getRank(numberInput).size() != 0) {
+				strainView.setPan(-numberInput * strainView.getStrain().getRankWidth() 
+						- strainView.getTranslateX(), 0);
+				strainView.zoomInMax();
+			} else {
+				promptInvalid();
+			}
+		});
+	}
+	
+	private void setupImage() {
+		Image image = new Image(MAGGLASS);
+		magGlass = new ImageView();
+		magGlass.setImage(image);
+		magGlass.setSmooth(true);
+		magGlass.setCache(true);
+		magGlass.setPreserveRatio(true);
+		// CHECKSTYLE.OFF: MagicNumber
+		magGlass.setFitWidth(20);
+		magGlass.setTranslateY(-33);
+		magGlass.setTranslateX(-29);
+		// CHECKSTYLE.ON: MagicNumber
 	}
 
-	private Slider createSlider() {
-		Slider slider = new Slider();
+	private void setupStepper() {
+		stepper = new Slider();
 		// CHECKSTYLE.OFF: MagicNumber
-		slider.setMin(0);
-		slider.setMax(100);
-		slider.setValue(0);
-		slider.setShowTickLabels(true);
-		slider.setShowTickMarks(true);
-		slider.setMajorTickUnit(50);
-		slider.setMinorTickCount(5);
-		slider.setBlockIncrement(10);
+		stepper.setMin(0);
+		stepper.setMax(100);
+		stepper.setValue(0);
+		stepper.setShowTickLabels(true);
+		stepper.setShowTickMarks(true);
+		stepper.setMajorTickUnit(50);
+		stepper.setMinorTickCount(5);
+		stepper.setBlockIncrement(10);
 		// CHECKSTYLE.ON: MagicNumber
-		slider.valueProperty().addListener((obj, oldV, newV) -> {
+		stepper.valueProperty().addListener((obj, oldV, newV) -> {
 			if (oldV.doubleValue() < newV.doubleValue()) {
 				strainView.zoom(newV.doubleValue());
 			} else {
-				strainView.zoom(-(oldV.doubleValue() - newV.doubleValue()));
+				strainView.zoom(-(oldV.doubleValue()));
 			}
 		});
-		return slider;
 	}
 	
+	private void promptInvalid() {
+		jumpTo.clear();
+		jumpTo.setPromptText(ERROR);
+		jumpTo.setStyle("-fx-prompt-text-fill: red;");
+	}
 	
 	private boolean isInteger(String s) {
 		try {
-			Integer.parseInt(s);
+			numberInput = Integer.parseInt(s);
 		} catch (NumberFormatException nfe) {
 			return false;
 		}
 		return true;
+	}
+	
+	/**
+	 * Toggles visibility of the stepper.
+	 */
+	public void toggleStepper() {
+		stepper.setVisible(!stepper.isVisible());
+	}
+	
+	/**
+	 * Toggle the jump to node text field.
+	 */
+	public void toggleJumpNode() {
+		getChildren().clear();
+		createJumpToNode();
+		getChildren().addAll(jumpTo, magGlass, stepper);
+		requestFocus();
+	}
+	
+	/**
+	 * Toggle the jump to rank text field.
+	 */
+	public void toggleJumpRank() {
+		getChildren().clear();
+		createJumpToRank();
+		getChildren().addAll(jumpTo, magGlass, stepper);
+		requestFocus();
 	}
 }

@@ -45,7 +45,7 @@
                      </accelerator>
                   </MenuItem>
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <CheckMenuItem mnemonicParsing="false" selected="true" text="Show stepper">
+                  <CheckMenuItem mnemonicParsing="false" onAction="#toggleStepperAction" selected="true" text="Show stepper">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="L" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                      </accelerator>
@@ -60,14 +60,20 @@
                      </accelerator></CheckMenuItem>
             </items>
           </Menu>
-            <Menu mnemonicParsing="false" text="Help">
+            <Menu mnemonicParsing="false" text="Navigate">
               <items>
-                <MenuItem mnemonicParsing="false" onAction="#hotkeyHelpAction" text="Hotkeys">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="F1" control="UP" meta="UP" shift="UP" shortcut="ANY" />
-                     </accelerator></MenuItem>
-                  <MenuItem mnemonicParsing="false" onAction="#aboutUsAction" text="About DNAinator" />
+                <MenuItem id="about" mnemonicParsing="false" onAction="#jumpNodeAction" text="Jump to node..." />
+                  <MenuItem id="about" mnemonicParsing="false" onAction="#jumpRankAction" text="Jump to rank..." />
               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+               <items>
+                   <MenuItem mnemonicParsing="false" onAction="#hotkeyHelpAction" text="Hotkeys">
+                       <accelerator>
+                           <KeyCodeCombination alt="UP" code="F1" control="UP" meta="UP" shift="UP" shortcut="ANY" />
+                       </accelerator></MenuItem>
+                  <MenuItem id="about" mnemonicParsing="false" onAction="#aboutUsAction" text="About DNAinator" />
+               </items>
             </Menu>
         </menus>
       </MenuBar>

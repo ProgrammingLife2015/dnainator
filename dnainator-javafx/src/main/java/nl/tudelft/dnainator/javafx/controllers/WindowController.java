@@ -33,15 +33,16 @@ public class WindowController {
 	private FileOpenController fileOpenController;
 	@SuppressWarnings("unused") @FXML
 	private WelcomeController welcomeController;
-	private StrainView strainView;
-	private PhylogeneticView phyloView;
-	@SuppressWarnings("unused") @FXML 
+	@SuppressWarnings("unused") @FXML
 	private PropertyPaneController propertyPaneController;
-	
 	@SuppressWarnings("unused") @FXML
 	private Menu menuFile;
 	@SuppressWarnings("unused") @FXML
 	private Menu menuView;
+
+	private StrainView strainView;
+	private PhylogeneticView phyloView;
+	private StrainControl strainControl;
 
 	@SuppressWarnings("unused") @FXML
 	private void initialize() {
@@ -70,7 +71,7 @@ public class WindowController {
 
 	private Pane createStrainView(ColorServer colorServer, Graph graph) {
 		strainView = new StrainView(colorServer, graph);
-		StrainControl strainControl = new StrainControl(strainView);
+		strainControl = new StrainControl(strainView);
 		StackPane.setAlignment(strainControl, Pos.TOP_RIGHT);
 		return new StackPane(strainView, /*minimap,*/ strainControl);
 	}
@@ -120,5 +121,20 @@ public class WindowController {
 	@SuppressWarnings("unused") @FXML
 	private void toggleProperties(ActionEvent e) {
 		propertyPaneController.toggle();
+	}
+	
+	@SuppressWarnings("unused") @FXML
+	private void toggleStepperAction(ActionEvent e) {
+		strainControl.toggleStepper();
+	}
+	
+	@SuppressWarnings("unused") @FXML
+	private void jumpNodeAction(ActionEvent e) {
+		strainControl.toggleJumpNode();
+	}
+	
+	@SuppressWarnings("unused") @FXML
+	private void jumpRankAction(ActionEvent e) {
+		strainControl.toggleJumpRank();
 	}
 }
