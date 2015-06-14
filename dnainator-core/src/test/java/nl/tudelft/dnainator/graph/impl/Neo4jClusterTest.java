@@ -52,8 +52,9 @@ public class Neo4jClusterTest {
 					new BufferedReader(new InputStreamReader(nodeFile, "UTF-8")));
 			EdgeParser ep = new EdgeParserImpl(new BufferedReader(
 							new InputStreamReader(edgeFile, "UTF-8")));
-			new Neo4jBatchBuilder(DB_PATH, new AnnotationCollectionImpl()).constructGraph(np, ep);
-			db = new Neo4jGraph(DB_PATH);
+			db = (Neo4jGraph) new Neo4jBatchBuilder(DB_PATH, new AnnotationCollectionImpl())
+				.constructGraph(np, ep)
+				.build();
 		} catch (IOException | ParseException e) {
 			e.printStackTrace();
 		}

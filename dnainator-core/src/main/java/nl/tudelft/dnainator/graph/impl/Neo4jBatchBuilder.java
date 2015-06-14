@@ -4,16 +4,13 @@ import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Edge;
+import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.GraphBuilder;
 import nl.tudelft.dnainator.graph.interestingness.Scores;
-import nl.tudelft.dnainator.parser.EdgeParser;
-import nl.tudelft.dnainator.parser.NodeParser;
-import nl.tudelft.dnainator.parser.exceptions.ParseException;
 
 import org.neo4j.unsafe.batchinsert.BatchInserter;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +19,7 @@ import java.util.Map;
  * A {@link GraphBuilder} which uses a BatchInserter.
  */
 public class Neo4jBatchBuilder implements GraphBuilder {
+	private String storeDir;
 	private BatchInserter batchInserter;
 	private Map<String, Long> annotationIDToNodeID;
 	private Map<String, Long> sequenceIDToNodeID;
@@ -38,6 +36,7 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 	 */
 	public Neo4jBatchBuilder(String storeDir, AnnotationCollection annotations) {
 		this.annotations = annotations;
+		this.storeDir = storeDir;
 
 		batchInserter = BatchInserters.inserter(storeDir);
 		annotationIDToNodeID = new HashMap<>();
@@ -52,10 +51,40 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 	}
 
 	@Override
-	public void constructGraph(NodeParser np, EdgeParser ep)
-			throws IOException, ParseException {
-		GraphBuilder.super.constructGraph(np, ep);
-		// Create the indices and constraints.
+	public GraphBuilder addEdge(Edge<String> edge) {
+		batchInserter.createRelationship(sequenceIDToNodeID.get(edge.getSource()),
+				sequenceIDToNodeID.get(edge.getDest()),
+				RelTypes.NEXT, null);
+		return this;
+	}
+
+	@Override
+	public GraphBuilder addNode(SequenceNode s) {
+		long nodeId = createNode(s);
+		sequenceIDToNodeID.put(s.getId(), nodeId);
+
+		s.getSources().forEach(source -> {
+			connectSource(nodeId, source);
+			if (source.equals("TKK_REF")) {
+				annotations.getSubrange(s.getStartRef(), s.getEndRef())
+					.forEach(a -> connectAnnotation(nodeId, a));
+			}
+		});
+		return this;
+	}
+
+	@Override
+	public Graph build() {
+		createIndicesAndConstraints();
+		batchInserter.shutdown();
+
+		// Initialize the graph.
+		Neo4jGraph g = new Neo4jGraph(storeDir);
+		g.analyze();
+		return g;
+	}
+
+	private void createIndicesAndConstraints() {
 		batchInserter.createDeferredConstraint(NodeLabels.NODE)
 			.assertPropertyIsUnique(PropertyTypes.ID.name())
 			.create();
@@ -71,28 +100,6 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 		batchInserter.createDeferredSchemaIndex(NodeLabels.NODE)
 			.on(PropertyTypes.ENDREF.name())
 			.create();
-		batchInserter.shutdown();
-	}
-
-	@Override
-	public void addEdge(Edge<String> edge) {
-		batchInserter.createRelationship(sequenceIDToNodeID.get(edge.getSource()),
-				sequenceIDToNodeID.get(edge.getDest()),
-				RelTypes.NEXT, null);
-	}
-
-	@Override
-	public void addNode(SequenceNode s) {
-		long nodeId = createNode(s);
-		sequenceIDToNodeID.put(s.getId(), nodeId);
-
-		s.getSources().forEach(source -> {
-			connectSource(nodeId, source);
-			if (source.equals("TKK_REF")) {
-				annotations.getSubrange(s.getStartRef(), s.getEndRef())
-					.forEach(a -> connectAnnotation(nodeId, a));
-			}
-		});
 	}
 
 	private void connectAnnotation(long nodeId, Annotation annotation) {
