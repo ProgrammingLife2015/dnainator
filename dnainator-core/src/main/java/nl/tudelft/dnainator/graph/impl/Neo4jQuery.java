@@ -1,5 +1,6 @@
 package nl.tudelft.dnainator.graph.impl;
 
+import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.graph.query.GraphQuery;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
@@ -8,6 +9,7 @@ import nl.tudelft.dnainator.graph.query.PredicateFilter;
 import nl.tudelft.dnainator.graph.query.RankEnd;
 import nl.tudelft.dnainator.graph.query.RankStart;
 import nl.tudelft.dnainator.graph.query.SourcesFilter;
+
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.ResourceIterator;
@@ -56,9 +58,9 @@ public final class Neo4jQuery implements GraphQuery {
 	 * @param db the database to execute the query on.
 	 * @return the query result.
 	 */
-	public List<SequenceNode> execute(GraphDatabaseService db) {
+	public List<EnrichedSequenceNode> execute(GraphDatabaseService db) {
 		sb.append("RETURN n");
-		List<SequenceNode> result;
+		List<EnrichedSequenceNode> result;
 		try (Transaction tx = db.beginTx()) {
 			Result r = db.execute(sb.toString(), parameters);
 			ResourceIterator<Node> it = r.columnAs("n");

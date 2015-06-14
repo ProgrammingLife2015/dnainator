@@ -3,7 +3,7 @@ package nl.tudelft.dnainator.graph;
 import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
 import nl.tudelft.dnainator.annotation.Range;
-import nl.tudelft.dnainator.core.SequenceNode;
+import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.graph.interestingness.InterestingnessStrategy;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
@@ -21,14 +21,14 @@ public interface Graph extends AnnotationCollection {
 	 * FIXME: This is the node that has no incoming edges.
 	 * @return	a SequenceNode
 	 */
-	SequenceNode getRootNode();
+	EnrichedSequenceNode getRootNode();
 
 	/**
 	 * Get the node with identifier n from this graph.
 	 * @param n	the identifier
 	 * @return	a SequenceNode
 	 */
-	SequenceNode getNode(String n);
+	EnrichedSequenceNode getNode(String n);
 
 	/**
 	 * @return The {@link AnnotationCollection} containing the annotations.
@@ -40,13 +40,13 @@ public interface Graph extends AnnotationCollection {
 	 * @param rank	the rank
 	 * @return		a list of sequence nodes
 	 */
-	List<SequenceNode> getRank(int rank);
+	List<EnrichedSequenceNode> getRank(int rank);
 
 	/**
 	 * Get a list of all nodes from this graph.
 	 * @return	a list of all nodes, per rank
 	 */
-	List<List<SequenceNode>> getRanks();
+	List<List<EnrichedSequenceNode>> getRanks();
 
 	/**
 	 * Return a list of nodes that belong to the same cluster as the given startId.
@@ -69,7 +69,7 @@ public interface Graph extends AnnotationCollection {
 	 * @param q the query for finding the nodes.
 	 * @return the result of the query.
 	 */
-	List<SequenceNode> queryNodes(GraphQueryDescription q);
+	List<EnrichedSequenceNode> queryNodes(GraphQueryDescription q);
 
 	/**
 	 * Return all annotations covered by the given range of ranks.

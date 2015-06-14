@@ -1,9 +1,7 @@
 package nl.tudelft.dnainator.core.impl;
 
-import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.core.SequenceNode;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -16,10 +14,7 @@ public class SequenceNodeImpl implements SequenceNode {
 	private int start;
 	private int end;
 	private String sequence;
-	private int rank;
-	private List<Annotation> annotations;
 	private Set<String> sources;
-	private List<String> outgoing;
 
 	/**
 	 * Constructs a default sequence with all parameters specified.
@@ -42,39 +37,16 @@ public class SequenceNodeImpl implements SequenceNode {
 	 * @param sequence The sequence.
 	 */
 	public SequenceNodeImpl(String id, Set<String> sources, int start, int end, String sequence) {
-		this(id, sources, start, end, sequence, 0, new ArrayList<>());
-	}
-
-	/**
-	 * Constructs a default sequence with all parameters specified.
-	 * @param id The ID of this sequence.
-	 * @param sources The sources of the sequence (from where it was sequenced).
-	 * @param start The start position of the sequence.
-	 * @param end The end position of the sequence.
-	 * @param sequence The sequence.
-	 * @param rank The rank.
-	 * @param outgoing The neighbours
-	 */
-	public SequenceNodeImpl(String id, Set<String> sources,
-			int start, int end, String sequence, int rank, List<String> outgoing) {
 		this.id = id;
 		this.start = start;
 		this.end = end;
 		this.sequence = sequence;
-		this.rank = rank;
-		this.annotations = new ArrayList<>();
 		this.sources = sources;
-		this.outgoing = outgoing;
 	}
 
 	@Override
 	public String getId() {
 		return id;
-	}
-
-	@Override
-	public List<Annotation> getAnnotations() {
-		return annotations;
 	}
 
 	@Override
@@ -118,15 +90,5 @@ public class SequenceNodeImpl implements SequenceNode {
 	@Override
 	public String toString() {
 		return "SequenceNode<" + getId() + "," + sequence.length() + ">";
-	}
-
-	@Override
-	public int getRank() {
-		return rank;
-	}
-
-	@Override
-	public List<String> getOutgoing() {
-		return outgoing;
 	}
 }

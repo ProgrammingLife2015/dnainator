@@ -4,6 +4,7 @@ import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
 import nl.tudelft.dnainator.annotation.AnnotationCollectionFactory;
 import nl.tudelft.dnainator.annotation.Range;
+import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.graph.Graph;
@@ -92,12 +93,12 @@ public final class Neo4jGraph implements Graph {
 	}
 
 	@Override
-	public SequenceNode getRootNode() {
+	public EnrichedSequenceNode getRootNode() {
 		return query(e -> createSequenceNode(getRoot()));
 	}
 
 	@Override
-	public SequenceNode getNode(String s) {
+	public EnrichedSequenceNode getNode(String s) {
 		return query(e -> createSequenceNode(e.findNode(NodeLabels.NODE,
 				PropertyTypes.ID.name(), s)));
 	}
@@ -108,11 +109,11 @@ public final class Neo4jGraph implements Graph {
 	}
 
 	@Override
-	public List<SequenceNode> getRank(int rank) {
+	public List<EnrichedSequenceNode> getRank(int rank) {
 		return query(e -> {
 			ResourceIterator<Node> res = e.findNodes(NodeLabels.NODE,
 					PropertyTypes.RANK.name(), rank);
-			List<SequenceNode> nodes = new LinkedList<>();
+			List<EnrichedSequenceNode> nodes = new LinkedList<>();
 			res.forEachRemaining(n -> nodes.add(createSequenceNode(n)));
 
 			return nodes;
@@ -125,15 +126,15 @@ public final class Neo4jGraph implements Graph {
 	 * @param node from the database.
 	 * @return a {@link SequenceNode} with the information of the given {@link Node}.
 	 */
-	public SequenceNode createSequenceNode(Node node) {
+	public EnrichedSequenceNode createSequenceNode(Node node) {
 		return new Neo4jSequenceNode(service, node);
 	}
 
 	@Override
-	public List<List<SequenceNode>> getRanks() {
+	public List<List<EnrichedSequenceNode>> getRanks() {
 		return query(e -> {
 			int maxrank = (int) e.execute(GET_MAX_RANK).columnAs("max").next();
-			List<List<SequenceNode>> nodes = new LinkedList<>();
+			List<List<EnrichedSequenceNode>> nodes = new LinkedList<>();
 
 			for (int i = 0; i < maxrank; i++) {
 				nodes.add(getRank(i));
@@ -150,7 +151,7 @@ public final class Neo4jGraph implements Graph {
 	}
 
 	@Override
-	public List<SequenceNode> queryNodes(GraphQueryDescription qd) {
+	public List<EnrichedSequenceNode> queryNodes(GraphQueryDescription qd) {
 		return Neo4jQuery.of(qd).execute(service);
 	}
 

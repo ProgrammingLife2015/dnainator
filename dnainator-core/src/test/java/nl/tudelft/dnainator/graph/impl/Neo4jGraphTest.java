@@ -3,6 +3,7 @@ package nl.tudelft.dnainator.graph.impl;
 import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.annotation.impl.AnnotationCollectionImpl;
 import nl.tudelft.dnainator.annotation.impl.AnnotationImpl;
+import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.core.impl.SequenceNodeFactoryImpl;
@@ -267,7 +268,7 @@ public class Neo4jGraphTest {
 
 
 	private static void assertUnorderedIDEquals(Collection<String> expected,
-			Collection<SequenceNode> actual) {
+			Collection<EnrichedSequenceNode> actual) {
 		assertEquals(expected.stream().collect(Collectors.toSet()),
 				actual.stream().map(sn -> sn.getId()).collect(Collectors.toSet()));
 	}
