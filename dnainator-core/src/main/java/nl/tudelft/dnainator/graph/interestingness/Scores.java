@@ -4,7 +4,8 @@ package nl.tudelft.dnainator.graph.interestingness;
  * All of the supported scores.
  */
 public enum Scores implements ScoreIdentifier {
-	SEQ_LENGTH("Sequence Length");
+	SEQ_LENGTH("seqLength"),
+	INDEP_MUT("independentMutation");
 
 	private String name;
 
