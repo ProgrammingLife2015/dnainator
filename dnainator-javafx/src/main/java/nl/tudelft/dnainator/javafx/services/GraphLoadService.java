@@ -7,9 +7,7 @@ import javafx.concurrent.Task;
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
 import nl.tudelft.dnainator.annotation.impl.AnnotationCollectionFactoryImpl;
 import nl.tudelft.dnainator.graph.Graph;
-import nl.tudelft.dnainator.graph.GraphBuilder;
 import nl.tudelft.dnainator.graph.impl.Neo4jBatchBuilder;
-import nl.tudelft.dnainator.graph.impl.Neo4jGraph;
 import nl.tudelft.dnainator.parser.AnnotationParser;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
@@ -158,20 +156,12 @@ public class GraphLoadService extends Service<Graph> {
 					AnnotationParser as = new GFF3AnnotationParser(gffFilePath.get());
 					annotations = new AnnotationCollectionFactoryImpl().build(as);
 				}
-
-				GraphBuilder gb;
-				gb = new Neo4jBatchBuilder(database.get(), annotations);
-
 				EdgeParser ep = new EdgeParserImpl(getEdgeFile());
 				NodeParser np = new NodeParserImpl(getNodeFile());
-				gb.constructGraph(np, ep);
 
-				ep.close();
-				np.close();
-
-				Neo4jGraph g = new Neo4jGraph(database.get());
-				g.analyze();
-				return g;
+				return new Neo4jBatchBuilder(database.get(), annotations)
+					.constructGraph(np, ep)
+					.build();
 			}
 		};
 	}

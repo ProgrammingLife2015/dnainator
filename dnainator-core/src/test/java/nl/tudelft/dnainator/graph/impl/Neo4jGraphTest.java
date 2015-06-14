@@ -62,16 +62,15 @@ public class Neo4jGraphTest {
 	public static void setUp() {
 		try {
 			FileUtils.deleteRecursively(new File(DB_PATH));
-			nodeFile = Neo4jGraphTest.class.getResourceAsStream("/strains/topo.node.graph");
-			edgeFile = Neo4jGraphTest.class.getResourceAsStream("/strains/topo.edge.graph");
-			//nodeFile = new File("10_strains_graph/simple_graph.node.graph");
-			//edgeFile = new File("10_strains_graph/simple_graph.edge.graph");
+			nodeFile = getNodeFile();
+			edgeFile = getEdgeFile();
 			NodeParser np = new NodeParserImpl(new SequenceNodeFactoryImpl(),
 					new BufferedReader(new InputStreamReader(nodeFile, "UTF-8")));
 			EdgeParser ep = new EdgeParserImpl(new BufferedReader(
 							new InputStreamReader(edgeFile, "UTF-8")));
-			new Neo4jBatchBuilder(DB_PATH, new AnnotationCollectionImpl()).constructGraph(np, ep);
-			db = new Neo4jGraph(DB_PATH);
+			db = (Neo4jGraph) new Neo4jBatchBuilder(DB_PATH, new AnnotationCollectionImpl())
+				.constructGraph(np, ep)
+				.build();
 		} catch (IOException e) {
 			fail("Couldn't initialize DB");
 		} catch (ParseException e) {
@@ -85,6 +84,14 @@ public class Neo4jGraphTest {
 		db.addAnnotation(first);
 		db.addAnnotation(middle);
 		db.addAnnotation(last);
+	}
+
+	private static InputStream getNodeFile() {
+		return Neo4jGraphTest.class.getResourceAsStream("/strains/topo.node.graph");
+	}
+
+	private static InputStream getEdgeFile() {
+		return Neo4jGraphTest.class.getResourceAsStream("/strains/topo.edge.graph");
 	}
 
 	/**
@@ -121,7 +128,7 @@ public class Neo4jGraphTest {
 		LinkedList<Integer> order = new LinkedList<>();
 		try {
 			EdgeParser ep = new EdgeParserImpl(new BufferedReader(
-							new InputStreamReader(edgeFile, "UTF-8")));
+							new InputStreamReader(getEdgeFile(), "UTF-8")));
 
 			db.execute(e -> {
 				for (Node n : new RankCommand(db.rootIterator()).topologicalOrder(e)) {
