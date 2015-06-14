@@ -1,7 +1,10 @@
 package nl.tudelft.dnainator.graph.impl;
 
 import nl.tudelft.dnainator.annotation.Annotation;
+import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.core.SequenceNode;
+import nl.tudelft.dnainator.graph.interestingness.ScoreIdentifier;
+import nl.tudelft.dnainator.graph.interestingness.Scores;
 
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -9,15 +12,17 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
  * A {@link SequenceNode} which delegates to a Neo4j Node containing
  * the information.
  */
-public class Neo4jSequenceNode implements SequenceNode {
+public class Neo4jSequenceNode implements EnrichedSequenceNode {
 	private GraphDatabaseService service;
 	private Node node;
 
@@ -29,6 +34,7 @@ public class Neo4jSequenceNode implements SequenceNode {
 	private List<Annotation> annotations;
 	private Set<String> sources;
 	private List<String> outgoing;
+	private Map<ScoreIdentifier, Integer> scores;
 
 	private boolean loaded;
 
@@ -46,6 +52,7 @@ public class Neo4jSequenceNode implements SequenceNode {
 		this.annotations = new ArrayList<>();
 		this.outgoing = new ArrayList<>();
 		this.sources = new HashSet<>();
+		this.scores = new HashMap<>();
 
 		try (Transaction tx = service.beginTx()) {
 			this.id = (String) node.getProperty(PropertyTypes.ID.name());
@@ -108,6 +115,18 @@ public class Neo4jSequenceNode implements SequenceNode {
 		return outgoing;
 	}
 
+	@Override
+	public int getScore(ScoreIdentifier id) {
+		load();
+		return scores.get(id);
+	}
+
+	@Override
+	public Map<ScoreIdentifier, Integer> getScores() {
+		load();
+		return scores;
+	}
+
 	private void load() {
 		if (loaded) {
 			return;
@@ -120,7 +139,9 @@ public class Neo4jSequenceNode implements SequenceNode {
 			end		= (int)    node.getProperty(PropertyTypes.ENDREF.name());
 			sequence	= (String) node.getProperty(PropertyTypes.SEQUENCE.name());
 			rank		= (int)    node.getProperty(PropertyTypes.RANK.name());
-
+			for (ScoreIdentifier id : Scores.values()) {
+				scores.put(id, (Integer) node.getProperty(id.getName(), 0));
+			}
 			tx.success();
 		}
 

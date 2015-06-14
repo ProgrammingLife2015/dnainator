@@ -1,6 +1,6 @@
 package nl.tudelft.dnainator.javafx.drawables.strains;
 
-import nl.tudelft.dnainator.core.SequenceNode;
+import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.javafx.ColorServer;
 
@@ -26,7 +26,7 @@ import static org.junit.Assert.assertEquals;
 @RunWith(MockitoJUnitRunner.class)
 public class ClusterDrawableTest {
 	@Mock private ColorServer colorserver;
-	@Mock private SequenceNode node;
+	@Mock private EnrichedSequenceNode node;
 	
 	private ClusterDrawable cluster;
 	
