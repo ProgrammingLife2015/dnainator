@@ -73,3 +73,11 @@ Gene {
 	-fx-border-style: solid;
 	-fx-border-width: 1;
 }
+
+Minimap .view {
+	-fx-fill: rgba(165, 42, 42, 0.7);
+}
+
+Minimap .spacer {
+	-fx-fill: #310C0C;
+}
