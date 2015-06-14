@@ -169,7 +169,9 @@ public class GraphLoadService extends Service<Graph> {
 				ep.close();
 				np.close();
 
-				return new Neo4jGraph(database.get());
+				Neo4jGraph g = new Neo4jGraph(database.get());
+				g.analyze();
+				return g;
 			}
 		};
 	}

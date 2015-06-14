@@ -69,9 +69,6 @@ public final class Neo4jGraph implements Graph {
 				service.shutdown();
 			}
 		});
-
-		// Rank the graph.
-		execute(e -> new RankCommand(rootIterator()).execute(e));
 		this.is = new SummingScoresStrategy();
 	}
 
@@ -239,5 +236,14 @@ public final class Neo4jGraph implements Graph {
 	@Override
 	public void setInterestingnessStrategy(InterestingnessStrategy is) {
 		this.is = is;
+	}
+
+	/**
+	 * Analyzes the graph by doing a pass over the entire graph in topological
+	 * order, to assign ranks and scores to nodes.
+	 */
+	public void analyze() {
+		// Rank the graph.
+		execute(e -> new RankCommand(rootIterator()).execute(e));
 	}
 }
