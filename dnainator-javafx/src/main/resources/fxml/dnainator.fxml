@@ -64,6 +64,7 @@
               <items>
                 <MenuItem id="about" mnemonicParsing="false" onAction="#jumpNodeAction" text="Jump to node..." />
                   <MenuItem id="about" mnemonicParsing="false" onAction="#jumpRankAction" text="Jump to rank..." />
+                  <MenuItem id="about" mnemonicParsing="false" onAction="#jumpAnnotationAction" text="Jump to annotation..." />
               </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Help">
