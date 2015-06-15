@@ -74,7 +74,11 @@ public class AnalyzeCommand implements Command {
 		}
 	}
 
-	private void rankDest(Node n) {
+	/**
+	 * Rank the destination nodes of the outgoing edges of the given node.
+	 * @param n the source node of the destination nodes to be ranked.
+	 */
+	protected void rankDest(Node n) {
 		int rankSource = (int) n.getProperty(RANK.name());
 		for (Relationship r : n.getRelationships(RelTypes.NEXT, Direction.OUTGOING)) {
 			Node dest = r.getEndNode();
@@ -84,15 +88,18 @@ public class AnalyzeCommand implements Command {
 		}
 	}
 
-	private void scoreIndependentMutation(Node n) {
+	/**
+	 * Scores the amount of independent mutations, using the phylogeny.
+	 * @param n the node representing the mutation.
+	 */
+	protected void scoreIndependentMutation(Node n) {
 		Set<Node> ancestors = new HashSet<>();
 		for (Relationship r : n.getRelationships(RelTypes.SOURCE)) {
-			Node ancestor = r.getEndNode()
-					.getSingleRelationship(RelTypes.ANCESTOR_OF, Direction.INCOMING)
-					.getStartNode();
-			ancestors.add(ancestor);
+			for (Relationship ancestorOf : r.getEndNode()
+					.getRelationships(RelTypes.ANCESTOR_OF, Direction.INCOMING)) {
+				ancestors.add(ancestorOf.getStartNode());
+			}
 		}
-		// TODO: check whether ancestors exist in separate branches of the phylogeny.
 		n.setProperty(Scores.INDEP_MUT.getName(), ancestors.size());
 	}
 }
