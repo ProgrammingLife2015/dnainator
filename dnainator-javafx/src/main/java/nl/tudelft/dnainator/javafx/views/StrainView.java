@@ -1,18 +1,17 @@
 package nl.tudelft.dnainator.javafx.views;
 
 import javafx.geometry.Point2D;
-import javafx.scene.transform.NonInvertibleTransformException;
-import javafx.scene.transform.Scale;
-import javafx.scene.transform.Transform;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.javafx.ColorServer;
 import nl.tudelft.dnainator.javafx.drawables.strains.Strain;
+import nl.tudelft.dnainator.javafx.widgets.StrainControl;
 
 /**
  * An implementation of {@link AbstractView} for displaying DNA strains.
  */
 public class StrainView extends AbstractView {
 	private Strain strain;
+	private StrainControl control;
 
 	/**
 	 * Creates a new strain view instance.
@@ -21,13 +20,19 @@ public class StrainView extends AbstractView {
 	 */
 	public StrainView(ColorServer colorServer, Graph graph) {
 		super();
-
 		strain = new Strain(colorServer, graph);
+
 		setTransforms(strain);
-		getChildren().add(strain);
+		setupStrainControl();
+		getChildren().addAll(strain, control);
 		updateStrain();
 	}
 
+	private void setupStrainControl() {
+		control = new StrainControl(this);
+		control.translateXProperty().bind(widthProperty().subtract(control.widthProperty()));
+	}
+	
 	private void updateStrain() {
 		strain.update(cameraToWorld(getLayoutBounds()), scale.getMxx());
 	}
@@ -70,8 +75,24 @@ public class StrainView extends AbstractView {
 	 * @param y the amount to pan on the y axis.
 	 */
 	public void setPan(double x, double y) {
-		scale.setToIdentity();
+		resetZoom();
+		translateX(x);
+		translateY(y);
+	}
+	
+	/**
+	 * Translate the {@link StrainView} on the x axis.
+	 * @param x the amount to translate horizontally.
+	 */
+	public void translateX(double x) {
 		translate.setX(x);
+	}
+	
+	/**
+	 * Translate the {@link StrainView} on the y axis.
+	 * @param y the amount to translate vertically.
+	 */
+	public void translateY(double y) {
 		translate.setY(y);
 	}
 	
@@ -79,19 +100,9 @@ public class StrainView extends AbstractView {
 	 * Zoom the maximum amount.
 	 */
 	public void zoomInMax() {
-		Point2D world;
-		try {
-			world = scale.inverseTransform(getCenter().getX() - toCenter.getX() - translate.getX(),
-					getCenter().getY() - toCenter.getY() - translate.getY());
-			Transform newScale = scale.createConcatenation(new Scale(ZOOM_IN_BOUND, ZOOM_IN_BOUND,
-										world.getX(), world.getY()));
-				scale.setToTransform(newScale);
-		} catch (NonInvertibleTransformException e) {
-			e.printStackTrace();
-		}
+		scale.setToTransform(computeZoom(ZOOM_IN_BOUND, getCenter()));
 		strain.update(cameraToWorld(getLayoutBounds()), scale.getMxx());
 	}
-	
 	
 	/**
 	 * Get the {@link Strain} of the {@link StrainView}.
@@ -99,5 +110,12 @@ public class StrainView extends AbstractView {
 	 */
 	public Strain getStrain() {
 		return strain;
+	}
+	
+	/**
+	 * @return the {@link StrainControl} of the {@link StrainView}.
+	 */
+	public StrainControl getStrainControl() {
+		return control;
 	}
 }

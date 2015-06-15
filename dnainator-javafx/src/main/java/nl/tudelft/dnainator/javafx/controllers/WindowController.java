@@ -4,18 +4,15 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
-import javafx.geometry.Pos;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.javafx.ColorServer;
 import nl.tudelft.dnainator.javafx.views.AbstractView;
 import nl.tudelft.dnainator.javafx.views.PhylogeneticView;
 import nl.tudelft.dnainator.javafx.views.StrainView;
-import nl.tudelft.dnainator.javafx.widgets.dialogs.AboutDialog;
 import nl.tudelft.dnainator.javafx.widgets.StrainControl;
+import nl.tudelft.dnainator.javafx.widgets.dialogs.AboutDialog;
 
 
 /**
@@ -43,7 +40,7 @@ public class WindowController {
 		ColorServer colorServer = new ColorServer();
 		fileOpenController.dbPathProperty().set(welcomeController.getListedPaths());
 		fileOpenController.graphProperty().addListener((obj, oldV, newV) -> {
-			Pane strainView = createStrainView(colorServer, newV);
+			strainView = new StrainView(colorServer, newV);
 			constructView(strainView, phyloView);
 		});
 		fileOpenController.treeProperty().addListener((obj, oldV, newV) -> {
@@ -51,7 +48,7 @@ public class WindowController {
 			phyloView.rootProperty().set(newV);
 		});
 		welcomeController.dbProperty().addListener((obj, oldV, newV) -> {
-			Pane strainView = createStrainView(colorServer, newV);
+			strainView = new StrainView(colorServer, newV);
 			phyloView = new PhylogeneticView(colorServer);
 			constructView(strainView, phyloView);
 		});
@@ -64,13 +61,6 @@ public class WindowController {
 		
 		AbstractView.lastClickedProperty().addListener(
 				(ob, ov, nv) -> propertyPaneController.update(nv));
-	}
-
-	private Pane createStrainView(ColorServer colorServer, Graph graph) {
-		strainView = new StrainView(colorServer, graph);
-		strainControl = new StrainControl(strainView);
-		StackPane.setAlignment(strainControl, Pos.TOP_RIGHT);
-		return new StackPane(strainView, /*minimap,*/ strainControl);
 	}
 
 	@SuppressWarnings("unused") @FXML
@@ -91,22 +81,30 @@ public class WindowController {
 
 	@SuppressWarnings("unused") @FXML
 	private void zoomInAction(ActionEvent e) {
-		strainView.zoomIn();
+		if (strainView != null) {
+			strainView.zoomIn();
+		}
 	}
 
 	@SuppressWarnings("unused") @FXML
 	private void zoomOutAction(ActionEvent e) {
-		strainView.zoomOut();
+		if (strainView != null) {
+			strainView.zoomOut();
+		}
 	}
 
 	@SuppressWarnings("unused") @FXML
 	private void resetZoomAction(ActionEvent e) {
-		strainView.resetZoom();
+		if (strainView != null) {
+			strainView.resetZoom();
+		}
 	}
 
 	@SuppressWarnings("unused") @FXML
 	private void resetPositionAction(ActionEvent e) {
-		strainView.resetTranslate();
+		if (strainView != null) {
+			strainView.resetTranslate();
+		}
 	}
 	
 	@SuppressWarnings("unused") @FXML
@@ -116,16 +114,29 @@ public class WindowController {
 	
 	@SuppressWarnings("unused") @FXML
 	private void toggleStepperAction(ActionEvent e) {
-		strainControl.toggleStepper();
+		if (strainView.getStrainControl() != null) {
+			strainView.getStrainControl().toggleStepper();
+		}
 	}
 	
 	@SuppressWarnings("unused") @FXML
 	private void jumpNodeAction(ActionEvent e) {
-		strainControl.toggleJumpNode();
+		if (strainView.getStrainControl() != null) {
+			strainView.getStrainControl().toggleJumpNode();
+		}
 	}
 	
 	@SuppressWarnings("unused") @FXML
 	private void jumpRankAction(ActionEvent e) {
-		strainControl.toggleJumpRank();
+		if (strainView.getStrainControl() != null) {
+			strainView.getStrainControl().toggleJumpRank();
+		}
+	}
+	
+	@SuppressWarnings("unused") @FXML
+	private void jumpAnnotationAction(ActionEvent e) {
+		if (strainView.getStrainControl() != null) {
+			strainView.getStrainControl().toggleJumpAnnotation();
+		}
 	}
 }
