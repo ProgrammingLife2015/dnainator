@@ -15,6 +15,7 @@ import nl.tudelft.dnainator.javafx.widgets.dialogs.ExceptionDialog;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.ProgressDialog;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -74,7 +75,8 @@ public class WelcomeController {
 	private void initialize() {
 		dirChooser = new DirectoryChooser();
 		dbload = new DBLoadService();
-		
+		items = FXCollections.observableArrayList();
+
 		dbload.setOnFailed(e -> {
 			progressDialog.close();
 			new ExceptionDialog(list.getParent(), dbload.getException(),
@@ -85,7 +87,6 @@ public class WelcomeController {
 			progressDialog.close();
 			dbProperty.setValue(dbload.getValue());
 		});
-		items = list.getItems();
 		dbProperty = new SimpleObjectProperty<>(this, "graph");
 		scanDirectory(DEFAULT_DB_PATH);
 		list.setItems(items);
@@ -130,6 +131,7 @@ public class WelcomeController {
 				new ExceptionDialog(list.getParent(), e, "Failed to retrieve databases.");
 			}
 		}
+		items.sort((e1, e2) -> e1.compareTo(e2));
 	}
 	
 	/**
