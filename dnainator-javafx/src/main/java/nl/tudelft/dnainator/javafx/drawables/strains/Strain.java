@@ -96,13 +96,7 @@ public class Strain extends SemanticDrawable {
 
 	private List<Annotation> getSortedAnnotations(Range ranks) {
 		return graph.getAnnotationByRank(ranks).stream()
-				.sorted((a1, a2) -> {
-					if (a1.getStart() < a2.getStart()) {
-						return -1;
-					} else {
-						return 1;
-					}
-				})
+				.sorted((a1, a2) -> Integer.compare(a1.getStart(), a2.getStart()))
 				.collect(Collectors.toList());
 	}
 
