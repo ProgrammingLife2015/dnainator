@@ -102,10 +102,10 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 	 */
 	private void initSingletonProperties() {
 		EnrichedSequenceNode sn = cluster.getNodes().iterator().next();
-		properties.put(Scores.SEQ_LENGTH, Integer.toString(sn.getInterestingnessScore()));
 		properties.put(ClusterPropertyTypes.BASEDIST, Integer.toString(sn.getBaseDistance()));
 		properties.put(ClusterPropertyTypes.STARTREF, Integer.toString(sn.getStartRef()));
 		properties.put(ClusterPropertyTypes.ENDREF, Integer.toString(sn.getEndRef()));
+		properties.put(Scores.SEQ_LENGTH, Integer.toString(sn.getScore(Scores.SEQ_LENGTH)));
 		properties.put(ClusterPropertyTypes.SEQUENCE, sn.getSequence());
 	}
 

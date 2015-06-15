@@ -10,7 +10,7 @@ public interface InterestingnessStrategy {
 	 * Compute the interestingness at the given location.
 	 * @param container a {@link ScoreContainer} in the graph, which has
 	 * several features.
-	 * @return the interestingness score.
+	 * @return the interestingness score, within the range of 0 to 1000.
 	 */
 	int compute(ScoreContainer container);
 }
