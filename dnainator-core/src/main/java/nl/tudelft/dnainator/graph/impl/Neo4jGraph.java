@@ -128,17 +128,8 @@ public final class Neo4jGraph implements Graph {
 	}
 
 	@Override
-	public List<List<EnrichedSequenceNode>> getRanks() {
-		return query(e -> {
-			int maxrank = (int) e.execute(GET_MAX_RANK).columnAs("max").next();
-			List<List<EnrichedSequenceNode>> nodes = new LinkedList<>();
-
-			for (int i = 0; i < maxrank; i++) {
-				nodes.add(getRank(i));
-			}
-
-			return nodes;
-		});
+	public int getMaxRank() {
+		return query(e -> (int) e.execute(GET_MAX_RANK).columnAs("max").next());
 	}
 
 	@Override

@@ -43,10 +43,10 @@ public interface Graph extends AnnotationCollection {
 	List<EnrichedSequenceNode> getRank(int rank);
 
 	/**
-	 * Get a list of all nodes from this graph.
-	 * @return	a list of all nodes, per rank
+	 * Return the maximum rank in this graph.
+	 * @return	the maximum rank
 	 */
-	List<List<EnrichedSequenceNode>> getRanks();
+	int getMaxRank();
 
 	/**
 	 * Return a list of nodes that belong to the same cluster as the given startId.

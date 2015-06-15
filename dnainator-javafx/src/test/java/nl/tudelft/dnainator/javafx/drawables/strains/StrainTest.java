@@ -48,7 +48,6 @@ public class StrainTest {
 	@Test
 	public void testConstruction() {
 		verify(graph, never()).getRank(anyInt());
-		//verify(graph, never()).getRanks();
 	}
 
 	/**
