@@ -42,14 +42,6 @@ public class StrainView extends AbstractView {
 		super.pan(delta);
 		updateStrain();
 	}
-
-	/**
-	 * Zoom based on center for stepper.
-	 * @param delta the amount to zoom in.
-	 */
-	public void zoom(double delta) {
-		zoom(delta, getCenter());
-	}
 	
 	@Override
 	public void zoom(double delta, Point2D center) {
@@ -74,34 +66,29 @@ public class StrainView extends AbstractView {
 	 * @param x the amount to pan on the x axis.
 	 * @param y the amount to pan on the y axis.
 	 */
-	public void setPan(double x, double y) {
-		resetZoom();
-		translateX(x);
-		translateY(y);
+	private void setPan(double x, double y) {
+		scale.setTx(0);
+		scale.setTy(0);
+		translate.setX(x * scale.getMxx());
+		translate.setY(y * scale.getMxx());
+		updateStrain();
+	}
+
+	/**
+	 * Sets the panning to a specific rank in the {@link Strain}.
+	 * @param rank The rank to pan to.
+	 */
+	public void gotoRank(int rank) {
+		setPan(-rank * strain.getRankWidth(), 0);
 	}
 	
 	/**
-	 * Translate the {@link StrainView} on the x axis.
-	 * @param x the amount to translate horizontally.
+	 * Center view on a node given the id.
+	 * @param id the id of the node.
 	 */
-	public void translateX(double x) {
-		translate.setX(x);
-	}
-	
-	/**
-	 * Translate the {@link StrainView} on the y axis.
-	 * @param y the amount to translate vertically.
-	 */
-	public void translateY(double y) {
-		translate.setY(y);
-	}
-	
-	/**
-	 * Zoom the maximum amount.
-	 */
-	public void zoomInMax() {
-		scale.setToTransform(computeZoom(ZOOM_IN_BOUND, getCenter()));
-		strain.update(cameraToWorld(getLayoutBounds()), scale.getMxx());
+	public void centerNodeVertically(String id) {
+		translate.setY(-strain.getClusters()
+				.get(id).getTranslateY() * strain.getRankWidth());
 	}
 	
 	/**

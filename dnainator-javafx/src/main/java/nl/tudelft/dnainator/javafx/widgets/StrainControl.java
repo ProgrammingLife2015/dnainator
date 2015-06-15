@@ -6,7 +6,6 @@ import java.util.NoSuchElementException;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.Control;
-import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import nl.tudelft.dnainator.core.EnrichedSequenceNode;
@@ -27,7 +26,6 @@ public class StrainControl extends VBox {
 	private static final String ERROR = "Invalid input!";
 	private static final String INVALIDPROMPT = "jump-invalid-prompt";
 	private StrainView strainView;
-	private Slider stepper;
 	private TextField jumpTo;
 	private int numberInput;
 	private String previousInput;
@@ -46,11 +44,10 @@ public class StrainControl extends VBox {
 		setPickOnBounds(false);
 		jumpTo = new TextField();
 		curGraph = strainView.getStrain().getGraph();
-		
+
 		// Wait for strain view to be created.
 		Platform.runLater(this::createJumpToNode);
-		setupStepper();
-		getChildren().addAll(jumpTo, stepper);
+		getChildren().add(jumpTo);
 	}
 
 	/**
@@ -67,11 +64,10 @@ public class StrainControl extends VBox {
 		if (isInteger(inputText) && curGraph.getNode(inputText) != null) {
 			EnrichedSequenceNode reqNode = curGraph.getNode(inputText);
 			resetPromptText(NODE);
-			strainView.setPan(-reqNode.getRank() * strainView.getStrain().getRankWidth() 
-					- strainView.getTranslateX(), 0);
-			strainView.zoomInMax();
-			strainView.translateY(-strainView.getStrain().getClusters()
-					.get(inputText).getTranslateY() * strainView.getStrain().getRankWidth());
+			strainView.gotoRank(reqNode.getRank());
+			if (strainView.getStrain().getClusters().get(inputText) != null) {
+				strainView.centerNodeVertically(inputText);
+			}
 		} else {
 			promptInvalid();
 		}
@@ -90,9 +86,7 @@ public class StrainControl extends VBox {
 		if (isInteger(jumpTo.getCharacters().toString()) 
 				&& curGraph.getRank(numberInput).size() != 0) {
 			resetPromptText(RANK);
-			strainView.setPan(-numberInput * strainView.getStrain().getRankWidth() 
-					- strainView.getTranslateX(), 0);
-			strainView.zoomInMax();
+			strainView.gotoRank(numberInput);
 		} else {
 			promptInvalid();
 		}
@@ -145,9 +139,7 @@ public class StrainControl extends VBox {
 	private void jumpToNextAnnotationNode() {
 		String next = attachedAnnotations.iterator().next();
 		attachedAnnotations.remove(next);
-		strainView.setPan(-curGraph.getNode(next).getRank() 
-				* strainView.getStrain().getRankWidth() - strainView.getTranslateX(), 0);
-		strainView.zoomInMax();
+		strainView.gotoRank(curGraph.getNode(next).getRank());
 	}
 	
 	private void setupTextField(String name) {
@@ -160,7 +152,7 @@ public class StrainControl extends VBox {
 			jumpTo.setPrefColumnCount(name.length());
 			resetPromptText(name);
 			getChildren().clear();
-			getChildren().addAll(jumpTo, stepper);
+			getChildren().addAll(jumpTo);
 			requestFocus();
 		}
 	}
@@ -170,28 +162,6 @@ public class StrainControl extends VBox {
 		jumpTo.setPromptText(name);
 	}
 
-	private void setupStepper() {
-		stepper = new Slider();
-		
-		// CHECKSTYLE.OFF: MagicNumber
-		stepper.setMin(0);
-		stepper.setMax(100);
-		stepper.setValue(0);
-		stepper.setShowTickLabels(true);
-		stepper.setShowTickMarks(true);
-		stepper.setMajorTickUnit(50);
-		stepper.setMinorTickCount(5);
-		stepper.setBlockIncrement(10);
-		// CHECKSTYLE.ON: MagicNumber
-		stepper.valueProperty().addListener((obj, oldV, newV) -> {
-			if (oldV.doubleValue() < newV.doubleValue()) {
-				strainView.zoom(newV.doubleValue());
-			} else {
-				strainView.zoom(-(oldV.doubleValue()));
-			}
-		});
-	}
-	
 	/**
 	 * Changes the prompt text of the {@link TextField} and marks it in red.
 	 */
@@ -208,13 +178,6 @@ public class StrainControl extends VBox {
 			return false;
 		}
 		return true;
-	}
-	
-	/**
-	 * Toggles visibility of the stepper.
-	 */
-	public void toggleStepper() {
-		stepper.setVisible(!stepper.isVisible());
 	}
 	
 	/**

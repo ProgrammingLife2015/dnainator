@@ -96,8 +96,14 @@ public final class Neo4jGraph implements Graph {
 
 	@Override
 	public EnrichedSequenceNode getNode(String s) {
-		return query(e -> createSequenceNode(e.findNode(NodeLabels.NODE,
-				PropertyTypes.ID.name(), s)));
+		return query(e -> {
+			Node n = e.findNode(NodeLabels.NODE,
+					PropertyTypes.ID.name(), s);
+			if (n != null) {
+				return createSequenceNode(n);
+			}
+			return null;
+		});
 	}
 
 	@Override
@@ -124,9 +130,6 @@ public final class Neo4jGraph implements Graph {
 	 * @return a {@link SequenceNode} with the information of the given {@link Node}.
 	 */
 	public EnrichedSequenceNode createSequenceNode(Node node) {
-		if (node == null) {
-			return null;
-		}
 		return new Neo4jSequenceNode(service, node);
 	}
 
