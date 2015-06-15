@@ -35,6 +35,7 @@ public class Neo4jSequenceNode implements EnrichedSequenceNode {
 	private Set<String> sources;
 	private List<String> outgoing;
 	private Map<ScoreIdentifier, Integer> scores;
+	private int interestingness;
 
 	private boolean loaded;
 
@@ -127,6 +128,12 @@ public class Neo4jSequenceNode implements EnrichedSequenceNode {
 		return scores;
 	}
 
+	@Override
+	public int getInterestingnessScore() {
+		load();
+		return interestingness;
+	}
+
 	private void load() {
 		if (loaded) {
 			return;
@@ -142,6 +149,7 @@ public class Neo4jSequenceNode implements EnrichedSequenceNode {
 			for (ScoreIdentifier id : Scores.values()) {
 				scores.put(id, (Integer) node.getProperty(id.getName(), 0));
 			}
+			interestingness = (int) node.getProperty(PropertyTypes.INTERESTINGNESS.name(), 0);
 			tx.success();
 		}
 
