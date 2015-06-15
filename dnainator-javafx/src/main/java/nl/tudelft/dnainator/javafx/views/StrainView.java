@@ -52,12 +52,7 @@ public class StrainView extends AbstractView {
 		updateStrain();
 	}
 
-	/**
-	 * Sets the panning of the {@link StrainView}.
-	 * @param x the amount to pan on the x axis.
-	 * @param y the amount to pan on the y axis.
-	 */
-	public void setPan(double x, double y) {
+	private void setPan(double x, double y) {
 		scale.setTx(0);
 		scale.setTy(0);
 		translate.setX(x * scale.getMxx());
@@ -92,11 +87,12 @@ public class StrainView extends AbstractView {
 	}
 
 	/**
-	 * Zoom the maximum amount.
+	 * Center view on a node given the id.
+	 * @param id the id of the node.
 	 */
-	public void zoomInMax() {
-		scale.setToTransform(computeZoom(ZOOM_IN_BOUND, getCenter()));
-		strain.update(cameraToWorld(getLayoutBounds()), scale.getMxx());
+	public void centerNodeVertically(String id) {
+		translate.setY(-strain.getClusters()
+				.get(id).getTranslateY() * strain.getRankWidth());
 	}
 	
 	/**

@@ -47,22 +47,14 @@ public abstract class AbstractView extends Pane {
 		heightProperty().addListener((o, v1, v2) -> toCenter.setY(v2.intValue() / 2));
 
 		translate = new Translate();
-		setScale(SCALE);
+		scale = getScale();
 	}
 
-	/**
-	 * Set the initial scale.
-	 * @param scale the scale applied to the {@link AbstractView}.
-	 */
-	public void setScale(double scale) {
-		this.scale = new Affine(new Scale(scale, scale));
-	}
-	
 	/**
 	 * @return The scale used to scale the contents of the {@link AbstractView}.
 	 */
 	public Affine getScale() {
-		return scale;
+		return new Affine(new Scale(SCALE, SCALE));
 	}
 
 	/**
