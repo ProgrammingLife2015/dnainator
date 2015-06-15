@@ -22,12 +22,12 @@ import nl.tudelft.dnainator.javafx.widgets.dialogs.ExceptionDialog;
  */
 public abstract class AbstractView extends Pane {
 	private static final String FXML = "/fxml/view.fxml";
-	private static final double SCALE = 0.8;
+	private static final double SCALE = 5;
 	protected static final double ZOOM_FACTOR = 1e-3;
 	protected static final int ZOOM_IN_STEP = 40;
 	protected static final int ZOOM_OUT_STEP = -80;
 	protected static final double ZOOM_IN_BOUND = 15;
-	protected static final double ZOOM_OUT_BOUND = .1;
+	protected static final double ZOOM_OUT_BOUND = 0.5;
 	protected Affine scale;
 	protected Translate toCenter;
 	protected Translate translate;
