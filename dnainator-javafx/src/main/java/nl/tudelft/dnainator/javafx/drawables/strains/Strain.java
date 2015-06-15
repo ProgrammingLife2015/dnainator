@@ -57,8 +57,6 @@ public class Strain extends SemanticDrawable {
 		this.colorServer = colorServer;
 		this.graph = graph;
 		this.clusters = new HashMap<>();
-		// FIXME: bounds are incorrect
-		loadContent(getBoundsInParent());
 	}
 
 	@Override

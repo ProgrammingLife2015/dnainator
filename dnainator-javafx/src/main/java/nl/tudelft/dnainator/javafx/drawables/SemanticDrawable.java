@@ -23,8 +23,8 @@ public abstract class SemanticDrawable extends Group {
 	}
 
 	/**
-	 * Load the {@link Drawable} content of the view itself. Must be called by the constructor of
-	 * the overriding class!
+	 * Load the {@link Drawable} content of the view itself. The overriding class must make sure
+	 * that this method gets called either in the constructor or right after!
 	 * @param bounds The bounds of the viewport.
 	 */
 	protected abstract void loadContent(Bounds bounds);
@@ -50,12 +50,11 @@ public abstract class SemanticDrawable extends Group {
 	 * @param visible    True if the content needs to be visible, false otherwise.
 	 */
 	public void toggle(Bounds bounds, boolean visible) {
-		if (visible && !content.isVisible()) {
+		if (visible) {
 			childContent.getChildren().clear();
 			content.setVisible(true);
 			loadContent(bounds);
-		}
-		if (!visible) {
+		} else {
 			content.setVisible(false);
 			loadChildren(bounds);
 		}

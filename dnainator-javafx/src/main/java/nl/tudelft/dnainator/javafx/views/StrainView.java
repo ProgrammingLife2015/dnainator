@@ -22,29 +22,34 @@ public class StrainView extends AbstractView {
 		strain = new Strain(colorServer, graph);
 		setTransforms(strain);
 		getChildren().add(strain);
+		updateStrain();
+	}
+
+	private void updateStrain() {
+		strain.update(cameraToWorld(getLayoutBounds()), scale.getMxx());
 	}
 
 	@Override
 	public void pan(Point2D delta) {
 		super.pan(delta);
-		strain.update(cameraToWorld(getLayoutBounds()), scale.getMxx());
+		updateStrain();
 	}
 
 	@Override
 	public void zoom(double delta, Point2D center) {
 		super.zoom(delta, center);
-		strain.update(cameraToWorld(getLayoutBounds()), scale.getMxx());
+		updateStrain();
 	}
 
 	@Override
 	public void resetZoom() {
 		super.resetZoom();
-		strain.update(cameraToWorld(getLayoutBounds()), scale.getMxx());
+		updateStrain();
 	}
 
 	@Override
 	public void resetTranslate() {
 		super.resetTranslate();
-		strain.update(cameraToWorld(getLayoutBounds()), scale.getMxx());
+		updateStrain();
 	}
 }
