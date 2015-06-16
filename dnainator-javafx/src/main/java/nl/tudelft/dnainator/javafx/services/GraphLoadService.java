@@ -41,8 +41,6 @@ public class GraphLoadService extends Service<Graph> {
 	private ObjectProperty<File> nodeFile = new SimpleObjectProperty<>(this, "nodeFile");
 	private ObjectProperty<File> edgeFile = new SimpleObjectProperty<>(this, "edgeFile");
 	private ObjectProperty<File> newickFile = new SimpleObjectProperty<>(this, "newickFile");
-	// FIXME: REMOVE THIS WHEN PERSISTENCE WORKS
-	private ObjectProperty<TreeNode> treeProperty = new SimpleObjectProperty<>(this, "philoTree");
 
 	/**
 	 * Construct a GraphLoadService with a default database path.
@@ -170,14 +168,6 @@ public class GraphLoadService extends Service<Graph> {
 		return newickFile;
 	}
 
-	/**
-	 * @return The root node of the newick tree.
-	 */
-	// FIXME: REMOVE THIS WHEN PERSISTENCE WORKS
-	public ObjectProperty<TreeNode> treeProperty() {
-		return treeProperty;
-	}
-
 	@Override
 	protected Task<Graph> createTask() {
 		return new Task<Graph>() {
@@ -198,9 +188,6 @@ public class GraphLoadService extends Service<Graph> {
 
 				EdgeParser ep = new EdgeParserImpl(getEdgeFile());
 				NodeParser np = new NodeParserImpl(getNodeFile());
-
-				// FIXME: REMOVE THIS WHEN PERSISTENCE WORKS
-				treeProperty.setValue(node);
 
 				return new Neo4jBatchBuilder(database.get(), annotations, node)
 					.constructGraph(np, ep)

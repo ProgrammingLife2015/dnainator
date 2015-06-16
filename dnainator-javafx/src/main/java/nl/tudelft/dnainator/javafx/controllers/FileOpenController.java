@@ -13,7 +13,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import nl.tudelft.dnainator.graph.Graph;
-import nl.tudelft.dnainator.tree.TreeNode;
 import nl.tudelft.dnainator.javafx.services.GraphLoadService;
 import nl.tudelft.dnainator.javafx.widgets.animations.RightSlideAnimation;
 import nl.tudelft.dnainator.javafx.widgets.animations.SlidingAnimation;
@@ -55,8 +54,6 @@ public class FileOpenController {
 
 	private ListProperty<String> dbPathProperty;
 	private ObjectProperty<Graph> graphProperty;
-	// FIXME: REMOVE THIS WHEN PERSISTENCE WORKS
-	private ObjectProperty<TreeNode> treeProperty;
 
 	/*
 	 * Sets up the services, filechooser and treeproperty.
@@ -66,8 +63,6 @@ public class FileOpenController {
 		fileChooser = new FileChooser();
 		dbPathProperty = new SimpleListProperty<>(this, "dbpath");
 		graphProperty = new SimpleObjectProperty<>(this, "graph");
-		// FIXME: REMOVE THIS WHEN PERSISTENCE WORKS
-		treeProperty = new SimpleObjectProperty<>(this, "tree");
 		setupServices();
 		
 		animation = new RightSlideAnimation(container, WIDTH, ANIM_DURATION, Position.LEFT);
@@ -87,8 +82,6 @@ public class FileOpenController {
 		graphLoadService.setOnRunning(e -> progressDialog.show());
 		graphLoadService.setOnSucceeded(e -> {
 			progressDialog.close();
-			// FIXME: REMOVE THIS WHEN PERSISTENCE WORKS
-			treeProperty.setValue(graphLoadService.treeProperty().get());
 			graphProperty.setValue(graphLoadService.getValue());
 		});
 	}
@@ -236,13 +229,6 @@ public class FileOpenController {
 		return new File(path.substring(0, path.length() - EDGE.length()).concat(NODE));
 	}
 
-	/**
-	 * @return The {@link TreeNode} property.
-	 */
-	public ObjectProperty<TreeNode> treeProperty() {
-		return treeProperty;
-	}
-	
 	/**
 	 * @return The {@link Graph} property.
 	 */

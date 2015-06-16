@@ -8,8 +8,8 @@ import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.graph.Graph;
-import nl.tudelft.dnainator.graph.impl.command.Command;
 import nl.tudelft.dnainator.graph.impl.command.AnalyzeCommand;
+import nl.tudelft.dnainator.graph.impl.command.Command;
 import nl.tudelft.dnainator.graph.impl.query.AllClustersQuery;
 import nl.tudelft.dnainator.graph.impl.query.Query;
 import nl.tudelft.dnainator.graph.interestingness.InterestingnessStrategy;
@@ -39,6 +39,9 @@ public final class Neo4jGraph implements Graph {
 	private static final String GET_ROOT = "MATCH (s:" + NodeLabels.NODE.name() + ") "
 			+ "WHERE NOT (s)<-[:NEXT]-(:" + NodeLabels.NODE.name() + ") "
 			+ "RETURN s";
+	private static final String GET_PHYLO_ROOT =
+			"MATCH n-[r:" + RelTypes.ANCESTOR_OF.name() + "]->s "
+			+ "WHERE n." + PropertyTypes.DIST_TO_ROOT.name() + " = 0 RETURN n";
 	private static final String GET_RANGE =
 			"MATCH (n:" + NodeLabels.NODE.name() + ")-[r:" + NodeLabels.SOURCE.name() + "]->s "
 			+ "WHERE s." + PropertyTypes.SOURCE.name() + " = \"TKK_REF\" "
