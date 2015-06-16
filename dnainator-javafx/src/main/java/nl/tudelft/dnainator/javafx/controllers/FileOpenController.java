@@ -12,7 +12,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.tree.TreeNode;
@@ -39,7 +39,7 @@ public class FileOpenController {
 	private static final int WIDTH = 550;
 	private static final int ANIM_DURATION = 250;
 
-	@SuppressWarnings("unused") @FXML private GridPane fileOpenPane;
+	@SuppressWarnings("unused") @FXML private AnchorPane container;
 	@SuppressWarnings("unused") @FXML private TextField nodeField;
 	@SuppressWarnings("unused") @FXML private TextField edgeField;
 	@SuppressWarnings("unused") @FXML private TextField newickField;
@@ -72,7 +72,7 @@ public class FileOpenController {
 		treeProperty = new SimpleObjectProperty<>(this, "tree");
 		setupServices();
 		
-		animation = new RightSlideAnimation(fileOpenPane, WIDTH, ANIM_DURATION, Position.LEFT);
+		animation = new RightSlideAnimation(container, WIDTH, ANIM_DURATION, Position.LEFT);
 		bindDisabledFieldsAndButtons();
 	}
 	
@@ -83,7 +83,7 @@ public class FileOpenController {
 		graphLoadService = new GraphLoadService();
 		graphLoadService.setOnFailed(e -> {
 			progressDialog.close();
-			new ExceptionDialog(fileOpenPane.getParent(), graphLoadService.getException(),
+			new ExceptionDialog(container.getParent(), graphLoadService.getException(),
 					"Error loading graph files!");
 		});
 		graphLoadService.setOnRunning(e -> progressDialog.show());
@@ -92,7 +92,7 @@ public class FileOpenController {
 			graphProperty.setValue(graphLoadService.getValue());
 		});
 		newickLoadService = new NewickLoadService();
-		newickLoadService.setOnFailed(e -> new ExceptionDialog(fileOpenPane.getParent(),
+		newickLoadService.setOnFailed(e -> new ExceptionDialog(container.getParent(),
 						newickLoadService.getException(), "Error loading newick file!"));
 		newickLoadService.setOnSucceeded(e -> treeProperty.setValue(newickLoadService.getValue()));
 	}
@@ -169,7 +169,7 @@ public class FileOpenController {
 	 */
 	@SuppressWarnings("unused") @FXML
 	private void onOpenAction() {
-		progressDialog = new ProgressDialog(fileOpenPane.getParent());
+		progressDialog = new ProgressDialog(container.getParent());
 		resetTextFields();
 		animation.toggle();
 		if (graphLoadService.getGffFilePath() != null
@@ -223,7 +223,7 @@ public class FileOpenController {
 		fileChooser.setTitle(title);
 		fileChooser.getExtensionFilters().setAll(
 				new FileChooser.ExtensionFilter(title, "*" + extension));
-		return fileChooser.showOpenDialog(fileOpenPane.getScene().getWindow());
+		return fileChooser.showOpenDialog(container.getScene().getWindow());
 	}
 
 	/**
