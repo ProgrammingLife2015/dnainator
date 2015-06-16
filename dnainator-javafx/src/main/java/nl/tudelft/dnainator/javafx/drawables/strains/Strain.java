@@ -14,7 +14,7 @@ import nl.tudelft.dnainator.javafx.drawables.annotations.Connection;
 import nl.tudelft.dnainator.javafx.drawables.annotations.Gene;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -31,7 +31,7 @@ public class Strain extends SemanticDrawable {
 	private ColorServer colorServer;
 	private Graph graph;
 	private double zoomInBound;
-	private Map<String, ClusterDrawable> clusters;
+	private LinkedHashMap<String, ClusterDrawable> clusters;
 
 	/**
 	 * Construct a new top level {@link Strain} using the specified graph.
@@ -58,7 +58,7 @@ public class Strain extends SemanticDrawable {
 		this.colorServer = colorServer;
 		this.graph = graph;
 		this.zoomInBound = zoomInBound;
-		this.clusters = new HashMap<>();
+		this.clusters = new LinkedHashMap<>();
 	}
 
 	@Override
@@ -82,7 +82,9 @@ public class Strain extends SemanticDrawable {
 
 		List<Annotation> annotations = getSortedAnnotations(ranks);
 		List<String> roots = graph.getRank(ranks.getX()).stream()
-				.map(SequenceNode::getId).collect(Collectors.toList());
+				.map(SequenceNode::getId)
+				.sorted((s1, s2) -> s1.compareTo(s2))
+				.collect(Collectors.toList());
 		Map<Integer, List<Cluster>> result = graph.getAllClusters(roots, ranks.getY(),
 				(int) Math.round(interestingness));
 
@@ -178,9 +180,9 @@ public class Strain extends SemanticDrawable {
 						// FIXME: find another way to do this
 						//e.getEdge().endYProperty().setValue(bounds.getMinY() + OFFSET);
 						e.getEdge().endYProperty().bind(cluster.translateYProperty()
-										.subtract(cluster.parentProperty().get()
-												.parentProperty().get()
-												.parentToLocal(0, 0).getY()).negate().add(OFFSET));
+								.subtract(cluster.parentProperty().get()
+										.parentProperty().get()
+										.parentToLocal(0, 0).getY()).negate().add(OFFSET));
 						return e;
 					} else {
 						return new Edge(cluster, dest);
