@@ -56,7 +56,7 @@ public class PropertyPaneController {
 	}
 
 	/**
-	 * Toggle the sliding animation on the {@link PropertyPane}.
+	 * Toggle the sliding animation on the property pane.
 	 */
 	public void toggle() {
 		animation.toggle();

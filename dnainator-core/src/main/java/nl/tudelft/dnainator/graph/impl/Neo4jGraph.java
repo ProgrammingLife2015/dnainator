@@ -96,8 +96,14 @@ public final class Neo4jGraph implements Graph {
 
 	@Override
 	public EnrichedSequenceNode getNode(String s) {
-		return query(e -> createSequenceNode(e.findNode(NodeLabels.NODE,
-				PropertyTypes.ID.name(), s)));
+		return query(e -> {
+			Node n = e.findNode(NodeLabels.NODE,
+					PropertyTypes.ID.name(), s);
+			if (n != null) {
+				return createSequenceNode(n);
+			}
+			return null;
+		});
 	}
 
 	@Override

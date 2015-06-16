@@ -7,11 +7,8 @@
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.BorderPane?>
-<?import java.lang.*?>
-<?import nl.tudelft.dnainator.javafx.views.*?>
-<?import nl.tudelft.dnainator.javafx.widgets.*?>
 
-<BorderPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.dnainator.javafx.controllers.WindowController">
+<BorderPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.dnainator.javafx.controllers.WindowController">
    <top>
       <MenuBar useSystemMenuBar="true" BorderPane.alignment="CENTER">
         <menus>
@@ -25,48 +22,50 @@
                   <MenuItem mnemonicParsing="false" onAction="#exitAction" text="Exit" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="View">
+          <Menu fx:id="menuView" mnemonicParsing="false" text="View">
             <items>
-                  <MenuItem mnemonicParsing="false" onAction="#zoomInAction" text="Zoom in">
+                  <MenuItem disable="true" mnemonicParsing="false" onAction="#zoomInAction" text="Zoom in">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="PLUS" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                      </accelerator>
                   </MenuItem>
-                  <MenuItem mnemonicParsing="false" onAction="#zoomOutAction" text="Zoom out">
+                  <MenuItem disable="true" mnemonicParsing="false" onAction="#zoomOutAction" text="Zoom out">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="MINUS" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                      </accelerator>
                   </MenuItem>
-                  <MenuItem mnemonicParsing="false" onAction="#resetZoomAction" text="Reset zoom level">
+                  <MenuItem disable="true" mnemonicParsing="false" onAction="#resetZoomAction" text="Reset zoom level">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="R" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                      </accelerator>
                   </MenuItem>
-                  <MenuItem mnemonicParsing="false" onAction="#resetPositionAction" text="Reset position">
+                  <MenuItem disable="true" mnemonicParsing="false" onAction="#resetPositionAction" text="Reset position">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="T" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                      </accelerator>
                   </MenuItem>
                   <SeparatorMenuItem mnemonicParsing="false" />
-                  <CheckMenuItem mnemonicParsing="false" selected="true" text="Show stepper">
-                     <accelerator>
-                        <KeyCodeCombination alt="UP" code="L" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
-                     </accelerator>
-                  </CheckMenuItem>
-                  <CheckMenuItem mnemonicParsing="false" selected="true" text="Show minimap">
+                  <CheckMenuItem disable="true" mnemonicParsing="false" selected="true" text="Show minimap">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="M" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                      </accelerator></CheckMenuItem>
-                  <CheckMenuItem mnemonicParsing="false" onAction="#toggleProperties" text="Show properties">
+                  <CheckMenuItem disable="true" mnemonicParsing="false" onAction="#toggleProperties" text="Show properties">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="P" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                      </accelerator></CheckMenuItem>
             </items>
           </Menu>
-            <Menu mnemonicParsing="false" text="Help">
+            <Menu fx:id="menuNavigate" mnemonicParsing="false" text="Navigate">
               <items>
-                <MenuItem id="about" mnemonicParsing="false" onAction="#aboutUsAction" text="About DNAinator" />
+                <MenuItem id="about" disable="true" mnemonicParsing="false" onAction="#jumpNodeAction" text="Jump to node..." />
+                  <MenuItem id="about" disable="true" mnemonicParsing="false" onAction="#jumpRankAction" text="Jump to rank..." />
+                  <MenuItem id="about" disable="true" mnemonicParsing="false" onAction="#jumpAnnotationAction" text="Jump to annotation..." />
               </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Help">
+               <items>
+                  <MenuItem id="about" mnemonicParsing="false" onAction="#aboutUsAction" text="About DNAinator" />
+               </items>
             </Menu>
         </menus>
       </MenuBar>
@@ -75,7 +74,7 @@
       <fx:include fx:id="welcome" source="welcome.fxml" />
    </center>
    <left>
-      <fx:include fx:id="fileOpen" source="openpane.fxml"/>
+      <fx:include fx:id="fileOpen" source="openpane.fxml" />
    </left>
    <right>
       <fx:include fx:id="propertyPane" source="propertypane.fxml" />

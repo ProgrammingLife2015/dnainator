@@ -73,3 +73,7 @@ Gene {
 	-fx-border-style: solid;
 	-fx-border-width: 1;
 }
+
+StrainControl .jump-invalid-prompt {
+	-fx-prompt-text-fill: red;
+}

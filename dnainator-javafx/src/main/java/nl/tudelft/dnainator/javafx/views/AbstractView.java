@@ -49,7 +49,7 @@ public abstract class AbstractView extends Pane {
 		translate = new Translate();
 		scale = getScale();
 	}
-
+	
 	/**
 	 * @return The scale used to scale the contents of the {@link AbstractView}.
 	 */
@@ -116,19 +116,31 @@ public abstract class AbstractView extends Pane {
 	 * @param center	the center of the zoom, in camera space
 	 */
 	protected void zoom(double delta, Point2D center) {
-		Point2D world;
 		double zoom = 1 + delta * ZOOM_FACTOR;
+		Transform newScale = computeZoom(zoom, center);
+		if (newScale.getMyy() > ZOOM_OUT_BOUND && newScale.getMxx() < ZOOM_IN_BOUND) {
+			scale.setToTransform(newScale);
+		}
+	}
+	
+	/**
+	 * Compute the transformation to be applied for the zoom.
+	 * @param zoom    the scale of the zoom.
+	 * @param center  the center of the zoom, in camera space
+	 * @return the transformation for the zoom.
+	 */
+	protected Transform computeZoom(double zoom, Point2D center) {
+		Point2D world;
+		Transform newScale = scale;
 		try {
 			world = scale.inverseTransform(center.getX() - toCenter.getX() - translate.getX(),
-							center.getY() - toCenter.getY() - translate.getY());
-			Transform newScale = scale.createConcatenation(new Scale(zoom, zoom,
+					center.getY() - toCenter.getY() - translate.getY());
+			newScale = scale.createConcatenation(new Scale(zoom, zoom,
 										world.getX(), world.getY()));
-			if (newScale.getMyy() > ZOOM_OUT_BOUND && newScale.getMxx() < ZOOM_IN_BOUND) {
-				scale.setToTransform(newScale);
-			}
 		} catch (NonInvertibleTransformException e) {
 			e.printStackTrace();
 		}
+		return newScale;
 	}
 
 	/**
@@ -167,8 +179,7 @@ public abstract class AbstractView extends Pane {
 	 * Resets the zoom level to the default value.
 	 */
 	public void resetZoom() {
-		scale.setToTransform(getScale());
-		worldToCamera();
+		scale.setToIdentity();
 	}
 
 	/**
