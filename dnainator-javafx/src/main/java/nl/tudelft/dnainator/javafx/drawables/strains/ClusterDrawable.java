@@ -26,8 +26,8 @@ enum ClusterPropertyTypes implements PropertyType {
 	TITLE("Cluster"),
 	ID("NodeID"),
 	SEQUENCE("Sequence"),
-	STARTREF("Startref"),
-	ENDREF("Endref"),
+	STARTREF("Start base on ref. strain"),
+	ENDREF("End base on ref. strain"),
 	SOURCES("Sources"),
 	STARTRANK("Start rank");
 

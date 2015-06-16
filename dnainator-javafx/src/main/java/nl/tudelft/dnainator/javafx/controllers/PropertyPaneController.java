@@ -6,7 +6,9 @@ import nl.tudelft.dnainator.javafx.widgets.animations.LeftSlideAnimation;
 import nl.tudelft.dnainator.javafx.widgets.animations.SlidingAnimation;
 import nl.tudelft.dnainator.javafx.widgets.animations.TransitionAnimation.Position;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.VBox;
 
 /**
@@ -17,6 +19,7 @@ public class PropertyPaneController {
 	private SlidingAnimation animation;
 	private static final int WIDTH = 300;
 	private static final int ANIM_DURATION = 250;
+	private static final int MAX_PROPERTY_SIZE = 750;
 
 	@SuppressWarnings("unused") @FXML private VBox propertyPane;
 
@@ -40,8 +43,15 @@ public class PropertyPaneController {
 	private void addLabel(PropertyType type, String value) {
 		Label description = new Label(type.description());
 		description.getStyleClass().add("property-header");
-		Label label = new Label(value);
+
+		Node label = new Label(value);
 		label.getStyleClass().add("property-info");
+		if (value != null && value.length() > MAX_PROPERTY_SIZE) {
+			ScrollPane sp = new ScrollPane(label);
+			sp.setFitToWidth(true);
+			sp.setPrefHeight(WIDTH);
+			label = sp;
+		}
 		propertyPane.getChildren().add(new VBox(description, label));
 	}
 
