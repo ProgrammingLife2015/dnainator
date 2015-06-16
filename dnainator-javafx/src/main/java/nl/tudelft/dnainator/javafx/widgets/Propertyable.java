@@ -1,20 +1,16 @@
 package nl.tudelft.dnainator.javafx.widgets;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * An interface that when implemented by a drawable, enables the property pane to
  * request and display information from that drawable.
  */
 public interface Propertyable {
-	
-	/**
-	 * @return The type of the {@link Propertyable} element.
-	 */
-	String getType();
+	PropertyType getTitle();
 
 	/**
-	 * @return The sources of the {@link Propertyable} element.
+	 * @return The properties of the {@link Propertyable} element.
 	 */
-	List<String> getSources();
+	Map<PropertyType, String> getPropertyMap();
 }

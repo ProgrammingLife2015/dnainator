@@ -1,7 +1,16 @@
 package nl.tudelft.dnainator.javafx.drawables.strains;
 
-import java.util.ArrayList;
+import nl.tudelft.dnainator.core.SequenceNode;
+import nl.tudelft.dnainator.core.impl.Cluster;
+import nl.tudelft.dnainator.javafx.ColorServer;
+import nl.tudelft.dnainator.javafx.drawables.Drawable;
+import nl.tudelft.dnainator.javafx.views.AbstractView;
+import nl.tudelft.dnainator.javafx.widgets.PropertyType;
+import nl.tudelft.dnainator.javafx.widgets.Propertyable;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -9,17 +18,33 @@ import javafx.collections.MapChangeListener;
 import javafx.scene.Group;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
-import nl.tudelft.dnainator.core.SequenceNode;
-import nl.tudelft.dnainator.core.impl.Cluster;
-import nl.tudelft.dnainator.javafx.ColorServer;
-import nl.tudelft.dnainator.javafx.drawables.Drawable;
-import nl.tudelft.dnainator.javafx.views.AbstractView;
-import nl.tudelft.dnainator.javafx.widgets.ClusterProperties;
+
+enum ClusterPropertyTypes implements PropertyType {
+	ID("NodeID"),
+	SEQUENCE("Sequence"),
+	STARTREF("Startref"),
+	ENDREF("Endref"),
+	SOURCES("Sources"),
+	STARTRANK("Start rank");
+
+	private String description;
+
+	ClusterPropertyTypes(String description) {
+		this.description = description;
+	}
+
+	@Override
+	public String description() {
+		return description;
+	}
+}
 
 /**
  * The {@link ClusterDrawable} class represents the mid level object in the viewable model.
  */
-public class ClusterDrawable extends Group implements Drawable, ClusterProperties {
+public class ClusterDrawable extends Group implements Drawable, Propertyable {
+	private static final String TITLE = "Cluster";
+
 	protected static final int SINGLE = 1;
 	protected static final int SMALL = 3;
 	protected static final int MEDIUM = 10;
@@ -32,7 +57,7 @@ public class ClusterDrawable extends Group implements Drawable, ClusterPropertie
 	private Set<String> sources;
 	private Text label;
 	private Pie pie;
-	private static final String TYPE = "Cluster";
+	private Map<PropertyType, String> properties;
 
 	/**
 	 * Construct a new mid level {@link ClusterDrawable} using the default graph.
@@ -41,12 +66,28 @@ public class ClusterDrawable extends Group implements Drawable, ClusterPropertie
 	 */
 	public ClusterDrawable(ColorServer colorServer, Cluster cluster) {
 		this.cluster = cluster;
+		this.properties = new HashMap<>();
 		this.sources = cluster.getNodes().stream()
 				.flatMap(e -> e.getSources().stream())
 				.collect(Collectors.toSet());
 		label = new Text(Integer.toString(cluster.getNodes().size()));
+		initProperties();
 		setOnMouseClicked(e -> AbstractView.setLastClicked(this));
 		draw(colorServer);
+	}
+
+	private void initProperties() {
+		if (cluster.getNodes().size() > 1) {
+			properties.put(ClusterPropertyTypes.ID, cluster.getNodes().toString());
+			properties.put(ClusterPropertyTypes.STARTRANK, Integer.toString(cluster.getStartRank()));
+		} else if (cluster.getNodes().size() == 1) {
+			SequenceNode sn = cluster.getNodes().iterator().next();
+			properties.put(ClusterPropertyTypes.ID, sn.getId());
+			properties.put(ClusterPropertyTypes.SEQUENCE, sn.getSequence());
+			properties.put(ClusterPropertyTypes.STARTREF, Integer.toString(sn.getStartRef()));
+			properties.put(ClusterPropertyTypes.ENDREF, Integer.toString(sn.getEndRef()));
+			properties.put(ClusterPropertyTypes.SOURCES, sn.getSources().toString());
+		}
 	}
 
 	private void draw(ColorServer colorServer) {
@@ -112,44 +153,19 @@ public class ClusterDrawable extends Group implements Drawable, ClusterPropertie
 	public Cluster getCluster() {
 		return cluster;
 	}
-	
+
 	@Override
-	public String getType() {
-		return TYPE;
+	public Map<PropertyType, String> getPropertyMap() {
+		return properties;
 	}
 
 	@Override
-	public List<String> getSources() {
-		ArrayList<String> sources = new ArrayList<>();
-		cluster.getNodes().forEach(cluster -> sources.addAll(cluster.getSources()));
-		return sources;
-	}
-	
-	@Override
-	public List<String> getIds() {
-		ArrayList<String> ids = new ArrayList<>();
-		cluster.getNodes().forEach(cluster -> ids.add(cluster.getId()));
-		return ids;
-	}
-
-	@Override
-	public List<Integer> getStartRefs() {
-		ArrayList<Integer> sRefs = new ArrayList<>();
-		cluster.getNodes().forEach(cluster -> sRefs.add(cluster.getStartRef()));
-		return sRefs;
-	}
-
-	@Override
-	public List<Integer> getEndRefs() {
-		ArrayList<Integer> eRefs = new ArrayList<>();
-		cluster.getNodes().forEach(cluster -> eRefs.add(cluster.getEndRef()));
-		return eRefs;
-	}
-
-	@Override
-	public List<String> getSequences() {
-		ArrayList<String> seqs = new ArrayList<>();
-		cluster.getNodes().forEach(cluster -> seqs.add(cluster.getSequence()));
-		return seqs;
+	public PropertyType getTitle() {
+		return new PropertyType() {
+			@Override
+			public String description() {
+				return TITLE;
+			}
+		};
 	}
 }
