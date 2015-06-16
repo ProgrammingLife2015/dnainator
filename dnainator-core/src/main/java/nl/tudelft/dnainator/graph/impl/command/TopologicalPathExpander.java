@@ -1,7 +1,8 @@
 package nl.tudelft.dnainator.graph.impl.command;
 
 import nl.tudelft.dnainator.graph.impl.RelTypes;
-import org.neo4j.collection.primitive.PrimitiveLongSet;
+import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
+
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
@@ -15,27 +16,31 @@ import java.util.List;
 /**
  * PathExpander for determining the topological ordering.
  */
-public class TopologicalPathExpander implements PathExpander<PrimitiveLongSet> {
-	private boolean hasUnprocessedIncoming(PrimitiveLongSet processed, Node n) {
+public class TopologicalPathExpander implements PathExpander<Object> {
+	private static final String PROCESSED = "PROCESSED";
+
+	private boolean hasUnprocessedIncoming(Node n) {
 		Iterable<Relationship> in = n.getRelationships(RelTypes.NEXT, Direction.INCOMING);
 		for (Relationship r : in) {
-			if (!processed.contains(r.getId())) {
+			if (!r.hasProperty(PROCESSED)) {
 				return true;
 			}
 		}
+		// Clean up after ourselves.
+		in.forEach(rel -> rel.removeProperty(PROCESSED));
 		// All incoming edges have been processed.
 		return false;
 	}
 
 	@Override
 	public Iterable<Relationship> expand(Path path,
-			BranchState<PrimitiveLongSet> state) {
+			BranchState<Object> noState) {
 		Node from = path.endNode();
 		List<Relationship> expand = new LinkedList<>();
 		for (Relationship r : from.getRelationships(RelTypes.NEXT, Direction.OUTGOING)) {
-			PrimitiveLongSet processed = state.getState();
-			processed.add(r.getId());
-			if (!hasUnprocessedIncoming(processed, r.getEndNode())) {
+			setNumStrainsThrough(r);
+			r.setProperty(PROCESSED, true);
+			if (!hasUnprocessedIncoming(r.getEndNode())) {
 				// All of the dependencies of this node have been added to the result.
 				expand.add(r);
 			}
@@ -43,8 +48,14 @@ public class TopologicalPathExpander implements PathExpander<PrimitiveLongSet> {
 		return expand;
 	}
 
+	private void setNumStrainsThrough(Relationship r) {
+		r.setProperty(SequenceProperties.EDGE_NUM_STRAINS.name(), Math.abs(
+				r.getStartNode().getDegree(RelTypes.SOURCE)
+				- r.getEndNode().getDegree(RelTypes.SOURCE)));
+	}
+
 	@Override
-	public PathExpander<PrimitiveLongSet> reverse() {
+	public PathExpander<Object> reverse() {
 		throw new UnsupportedOperationException();
 	}
 

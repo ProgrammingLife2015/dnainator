@@ -7,15 +7,13 @@ import nl.tudelft.dnainator.graph.impl.NodeLabels;
 import nl.tudelft.dnainator.graph.impl.RelTypes;
 import nl.tudelft.dnainator.graph.interestingness.Scores;
 
-import org.neo4j.collection.primitive.Primitive;
-import org.neo4j.collection.primitive.PrimitiveLongSet;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.ResourceIterator;
 import org.neo4j.graphdb.Transaction;
-import org.neo4j.graphdb.traversal.InitialBranchState.State;
+import org.neo4j.graphdb.traversal.InitialBranchState;
 import org.neo4j.graphdb.traversal.Uniqueness;
 
 import static nl.tudelft.dnainator.graph.impl.properties.SequenceProperties.BASE_DIST;
@@ -28,7 +26,6 @@ import static org.neo4j.helpers.collection.IteratorUtil.loop;
  * ranks the nodes in the Neo4j database accordingly.
  */
 public class AnalyzeCommand implements Command {
-	private static final int INIT_CAP = 4096;
 	private ResourceIterator<Node> roots;
 	private Map<Integer, Node> numStrainsToBubbleSource;
 
@@ -47,17 +44,12 @@ public class AnalyzeCommand implements Command {
 	 * @param service	the database service
 	 * @return		a topological ordering, starting from the roots
 	 */
+	@SuppressWarnings("unchecked")
 	public Iterable<Node> topologicalOrder(GraphDatabaseService service) {
-		return topologicalOrder(service, Primitive.longSet());
-	}
-
-	private Iterable<Node> topologicalOrder(GraphDatabaseService service,
-						PrimitiveLongSet processed) {
 		return service.traversalDescription()
 				// Depth first order, for creating bubbles.
 				.depthFirst()
-				.expand(new TopologicalPathExpander()
-				, new State<>(processed, null))
+				.expand(new TopologicalPathExpander(), InitialBranchState.NO_STATE)
 				// We manage uniqueness for ourselves.
 				.uniqueness(Uniqueness.NONE)
 				.traverse(loop(roots))
@@ -68,11 +60,8 @@ public class AnalyzeCommand implements Command {
 	public void execute(GraphDatabaseService service) {
 		try (
 			Transaction tx = service.beginTx();
-			// Our set is located "off heap", i.e. not managed by the garbage collector.
-			// It is automatically closed after the try block, which frees the allocated memory.
-			PrimitiveLongSet processed = Primitive.offHeapLongSet(INIT_CAP)
 		) {
-			for (Node n : topologicalOrder(service, processed)) {
+			for (Node n : topologicalOrder(service)) {
 				rankDest(n);
 				createBubbleSinkAndOrSource(n);
 			}
