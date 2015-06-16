@@ -1,6 +1,10 @@
 package nl.tudelft.dnainator.graph.impl.command;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import nl.tudelft.dnainator.graph.impl.RelTypes;
+import nl.tudelft.dnainator.graph.interestingness.Scores;
 
 import org.neo4j.collection.primitive.Primitive;
 import org.neo4j.collection.primitive.PrimitiveLongSet;
@@ -64,12 +68,17 @@ public class AnalyzeCommand implements Command {
 		) {
 			for (Node n : topologicalOrder(service, processed)) {
 				rankDest(n);
+				scoreIndependentMutation(n);
 			}
 			tx.success();
 		}
 	}
 
-	private void rankDest(Node n) {
+	/**
+	 * Rank the destination nodes of the outgoing edges of the given node.
+	 * @param n the source node of the destination nodes to be ranked.
+	 */
+	protected void rankDest(Node n) {
 		int rankSource = (int) n.getProperty(RANK.name());
 		for (Relationship r : n.getRelationships(RelTypes.NEXT, Direction.OUTGOING)) {
 			Node dest = r.getEndNode();
@@ -77,5 +86,20 @@ public class AnalyzeCommand implements Command {
 				dest.setProperty(RANK.name(), rankSource + 1);
 			}
 		}
+	}
+
+	/**
+	 * Scores the amount of independent mutations, using the phylogeny.
+	 * @param n the node representing the mutation.
+	 */
+	protected void scoreIndependentMutation(Node n) {
+		Set<Node> ancestors = new HashSet<>();
+		for (Relationship r : n.getRelationships(RelTypes.SOURCE)) {
+			for (Relationship ancestorOf : r.getEndNode()
+					.getRelationships(RelTypes.ANCESTOR_OF, Direction.INCOMING)) {
+				ancestors.add(ancestorOf.getStartNode());
+			}
+		}
+		n.setProperty(Scores.INDEP_MUT.getName(), ancestors.size());
 	}
 }
