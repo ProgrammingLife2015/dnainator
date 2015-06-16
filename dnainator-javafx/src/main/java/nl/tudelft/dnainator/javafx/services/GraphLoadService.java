@@ -11,6 +11,7 @@ import nl.tudelft.dnainator.graph.impl.Neo4jBatchBuilder;
 import nl.tudelft.dnainator.parser.AnnotationParser;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
+import nl.tudelft.dnainator.parser.TreeParser;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
 import nl.tudelft.dnainator.parser.impl.EdgeParserImpl;
 import nl.tudelft.dnainator.parser.impl.GFF3AnnotationParser;
@@ -39,8 +40,9 @@ public class GraphLoadService extends Service<Graph> {
 			new SimpleObjectProperty<>(this, "gffFilePath");
 	private ObjectProperty<File> nodeFile = new SimpleObjectProperty<>(this, "nodeFile");
 	private ObjectProperty<File> edgeFile = new SimpleObjectProperty<>(this, "edgeFile");
-	private ObjectProperty<TreeNode> phylogeneticTree =
-			new SimpleObjectProperty<>(this, "phylogeneticTree");
+	private ObjectProperty<File> newickFile = new SimpleObjectProperty<>(this, "newickFile");
+	// FIXME: REMOVE THIS WHEN PERSISTENCE WORKS
+	private ObjectProperty<TreeNode> treeProperty = new SimpleObjectProperty<>(this, "philoTree");
 
 	/**
 	 * Construct a GraphLoadService with a default database path.
@@ -148,11 +150,32 @@ public class GraphLoadService extends Service<Graph> {
 	}
 
 	/**
-	 * Sets the tree, needed for building the graph.
-	 * @param value the tree.
+	 * @param f The newick file to load.
 	 */
-	public void setTree(TreeNode value) {
-		phylogeneticTree.setValue(value);
+	public final void setNewickFile(File f) {
+		newickFile.set(f);
+	}
+
+	/**
+	 * @return The newick file to load, if any.
+	 */
+	public final File getNewickFile() {
+		return newickFile.get();
+	}
+
+	/**
+	 * @return The newick file property.
+	 */
+	public ObjectProperty<File> newickFileProperty() {
+		return newickFile;
+	}
+
+	/**
+	 * @return The root node of the newick tree.
+	 */
+	// FIXME: REMOVE THIS WHEN PERSISTENCE WORKS
+	public ObjectProperty<TreeNode> treeProperty() {
+		return treeProperty;
 	}
 
 	@Override
@@ -169,8 +192,12 @@ public class GraphLoadService extends Service<Graph> {
 				}
 				EdgeParser ep = new EdgeParserImpl(getEdgeFile());
 				NodeParser np = new NodeParserImpl(getNodeFile());
+				TreeParser tp = new TreeParser(getNewickFile());
 
-				return new Neo4jBatchBuilder(database.get(), annotations, phylogeneticTree.get())
+				// FIXME: REMOVE THIS WHEN PERSISTENCE WORKS
+				treeProperty.setValue(tp.parse());
+
+				return new Neo4jBatchBuilder(database.get(), annotations, tp.parse())
 					.constructGraph(np, ep)
 					.build();
 			}

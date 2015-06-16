@@ -40,6 +40,7 @@ public class WindowController {
 			strainView = new StrainView(colorServer, newV);
 			constructView();
 		});
+		// FIXME: REMOVE THIS WHEN PERSISTENCE WORKS
 		fileOpenController.treeProperty().addListener((obj, oldV, newV) -> {
 			phyloView = new PhylogeneticView(colorServer);
 			phyloView.rootProperty().set(newV);
