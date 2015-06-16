@@ -1,11 +1,13 @@
 package nl.tudelft.dnainator.javafx.drawables.strains;
 
+import nl.tudelft.dnainator.core.EnrichedSequenceNode;
+import nl.tudelft.dnainator.core.PropertyType;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
+import nl.tudelft.dnainator.graph.interestingness.Scores;
 import nl.tudelft.dnainator.javafx.ColorServer;
 import nl.tudelft.dnainator.javafx.drawables.Drawable;
 import nl.tudelft.dnainator.javafx.views.AbstractView;
-import nl.tudelft.dnainator.javafx.widgets.PropertyType;
 import nl.tudelft.dnainator.javafx.widgets.Propertyable;
 
 import java.util.LinkedHashMap;
@@ -87,8 +89,9 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 			properties.put(ClusterPropertyTypes.STARTRANK,
 					Integer.toString(cluster.getStartRank()));
 		} else {
-			SequenceNode sn = cluster.getNodes().iterator().next();
+			EnrichedSequenceNode sn = cluster.getNodes().iterator().next();
 			properties.put(ClusterPropertyTypes.ID, sn.getId());
+			properties.put(Scores.SEQ_LENGTH, Integer.toString(sn.getInterestingnessScore()));
 			properties.put(ClusterPropertyTypes.STARTREF, Integer.toString(sn.getStartRef()));
 			properties.put(ClusterPropertyTypes.ENDREF, Integer.toString(sn.getEndRef()));
 			properties.put(ClusterPropertyTypes.SOURCES, sn.getSources().toString());

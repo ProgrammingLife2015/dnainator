@@ -1,5 +1,7 @@
 package nl.tudelft.dnainator.javafx.widgets;
 
+import nl.tudelft.dnainator.core.PropertyType;
+
 import java.util.Map;
 
 /**
