@@ -25,6 +25,12 @@ public interface EnrichedSequenceNode extends SequenceNode, ScoreContainer {
 	List<String> getOutgoing();
 
 	/**
+	 * The associated maximum distance from the origin in base pairs.
+	 * @return	the distance in base pairs
+	 */
+	int getBaseDistance();
+
+	/**
 	 * The associated rank.
 	 * @return	the rank
 	 */

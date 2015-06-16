@@ -31,7 +31,8 @@ enum ClusterPropertyTypes implements PropertyType {
 	STARTREF("Start base on ref. strain"),
 	ENDREF("End base on ref. strain"),
 	SOURCES("Sources"),
-	STARTRANK("Start rank");
+	STARTRANK("Start rank"),
+	BASEDIST("Start base");
 
 	private String description;
 	private ClusterPropertyTypes(String description) {
@@ -92,6 +93,7 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 			EnrichedSequenceNode sn = cluster.getNodes().iterator().next();
 			properties.put(ClusterPropertyTypes.ID, sn.getId());
 			properties.put(Scores.SEQ_LENGTH, Integer.toString(sn.getInterestingnessScore()));
+			properties.put(ClusterPropertyTypes.BASEDIST, Integer.toString(sn.getBaseDistance()));
 			properties.put(ClusterPropertyTypes.STARTREF, Integer.toString(sn.getStartRef()));
 			properties.put(ClusterPropertyTypes.ENDREF, Integer.toString(sn.getEndRef()));
 			properties.put(ClusterPropertyTypes.SOURCES, sn.getSources().toString());
