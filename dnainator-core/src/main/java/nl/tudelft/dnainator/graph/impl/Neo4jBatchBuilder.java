@@ -158,23 +158,27 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 				NodeLabels.SOURCE);
 	}
 
-	private long createAncestor() {
-		return batchInserter.createNode(null, NodeLabels.ANCESTOR);
+	private long createAncestor(int distanceToRoot) {
+		return batchInserter.createNode(
+				Collections.singletonMap(PropertyTypes.DIST_TO_ROOT.name(), distanceToRoot),
+				NodeLabels.ANCESTOR);
 	}
 
 	private void linkSources() {
 		if (phylogeny != null) {
-			linkSources(phylogeny);
+			linkSources(0, phylogeny);
 		}
 	}
 
-	private long linkSources(TreeNode current) {
+	private long linkSources(int distanceToRoot, TreeNode current) {
 		if (current.getChildren().size() == 0) {
 			return sourceToNodeID.get(current.getName());
 		}
-		long anc = createAncestor();
+		long anc = createAncestor(distanceToRoot);
 		current.getChildren().forEach(child ->
-			batchInserter.createRelationship(anc, linkSources(child), RelTypes.ANCESTOR_OF, null)
+			batchInserter.createRelationship(anc,
+					linkSources(distanceToRoot + 1, child),
+					RelTypes.ANCESTOR_OF, null)
 		);
 		return anc;
 	}
