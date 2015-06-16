@@ -10,5 +10,7 @@ public enum NodeLabels implements Label {
 	ANNOTATION,
 	DRMUTATION,
 	SOURCE,
-	NODE
+	NODE,
+	BUBBLE_SOURCE,
+	BUBBLE_SINK
 }
