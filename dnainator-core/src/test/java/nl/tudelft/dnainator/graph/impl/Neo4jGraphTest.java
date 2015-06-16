@@ -102,9 +102,9 @@ public class Neo4jGraphTest {
 	@Test
 	public void testNodeLookup() {
 		// CHECKSTYLE.OFF: MagicNumber
-		SequenceNode node1 = new SequenceNodeImpl("2", Arrays.asList("ASDF"), 1, 5, "TATA");
-		SequenceNode node2 = new SequenceNodeImpl("3", Arrays.asList("ASDF"), 5, 9, "TATA");
-		SequenceNode node3 = new SequenceNodeImpl("5", Arrays.asList("ASDF"), 4, 8, "TATA");
+		SequenceNode node1 = new SequenceNodeImpl("2", Arrays.asList("A", "B", "C"), 2, 6, "TATA");
+		SequenceNode node2 = new SequenceNodeImpl("3", Arrays.asList("C"), 5, 9, "TATA");
+		SequenceNode node3 = new SequenceNodeImpl("5", Arrays.asList("A", "B", "C"), 4, 8, "TATA");
 		assertEquals(node1, db.getNode("2"));
 		assertEquals(node2, db.getNode("3"));
 		assertEquals(node3, db.getNode("5"));
@@ -117,7 +117,8 @@ public class Neo4jGraphTest {
 	@Test
 	public void testRootLookup() {
 		// CHECKSTYLE.OFF: MagicNumber
-		SequenceNode root = new SequenceNodeImpl("5", Arrays.asList("ASDF"), 4, 8, "TATA");
+		SequenceNode root = new SequenceNodeImpl("1", Arrays.asList("A", "B", "C", "D"),
+				1, 5, "TATA");
 		assertEquals(root, db.getRootNode());
 		// CHECKSTYLE.ON: MagicNumber
 	}
@@ -160,17 +161,29 @@ public class Neo4jGraphTest {
 	 */
 	@Test
 	public void testRanks() {
+		// CHECKSTYLE.OFF: MagicNumber
 		Set<String> rank0Expect = new HashSet<>();
-		Collections.addAll(rank0Expect, "7", "5", "3");
+		Collections.addAll(rank0Expect, "1");
 		assertUnorderedIDEquals(rank0Expect, db.getRank(0));
-
 		Set<String> rank1Expect = new HashSet<>();
-		Collections.addAll(rank1Expect, "11", "8");
+		Collections.addAll(rank1Expect, "11", "2");
 		assertUnorderedIDEquals(rank1Expect, db.getRank(1));
-
 		Set<String> rank2Expect = new HashSet<>();
-		Collections.addAll(rank2Expect, "2", "9", "10");
+		Collections.addAll(rank2Expect, "12", "3", "7");
 		assertUnorderedIDEquals(rank2Expect, db.getRank(2));
+		Set<String> rank3Expect = new HashSet<>();
+		Collections.addAll(rank3Expect, "4", "8", "10");
+		assertUnorderedIDEquals(rank3Expect, db.getRank(3));
+		Set<String> rank4Expect = new HashSet<>();
+		Collections.addAll(rank4Expect, "9");
+		assertUnorderedIDEquals(rank4Expect, db.getRank(4));
+		Set<String> rank5Expect = new HashSet<>();
+		Collections.addAll(rank5Expect, "5");
+		assertUnorderedIDEquals(rank5Expect, db.getRank(5));
+		Set<String> rank6Expect = new HashSet<>();
+		Collections.addAll(rank6Expect, "6");
+		assertUnorderedIDEquals(rank6Expect, db.getRank(6));
+		// CHECKSTYLE.ON: MagicNumber
 	}
 
 	/**
@@ -183,7 +196,7 @@ public class Neo4jGraphTest {
 			.fromRank(0)
 			.toRank(2);
 		Set<String> expect = new HashSet<>();
-		Collections.addAll(expect, "7", "5", "3", "11", "8");
+		Collections.addAll(expect, "1", "11", "2");
 		assertUnorderedIDEquals(expect, db.queryNodes(qd));
 	}
 
@@ -220,7 +233,7 @@ public class Neo4jGraphTest {
 			.filter((sn) -> Integer.parseInt(sn.getId()) > 8);
 		// CHECKSTYLE.ON: MagicNumber
 		Set<String> expect = new HashSet<>();
-		Collections.addAll(expect, "9", "10", "11");
+		Collections.addAll(expect, "9", "10", "11", "12");
 		assertUnorderedIDEquals(expect, db.queryNodes(qd));
 	}
 
@@ -230,19 +243,19 @@ public class Neo4jGraphTest {
 	@Test
 	public void testQuerySources() {
 		GraphQueryDescription qd = new GraphQueryDescription()
-			.containsSource("ASDF");
+			.containsSource("A");
 		Set<String> expect = new HashSet<>();
-		Collections.addAll(expect, "2", "5", "3", "7", "8");
+		Collections.addAll(expect, "1", "2", "5", "6", "7", "8", "9");
 		assertUnorderedIDEquals(expect, db.queryNodes(qd));
 
 		// Also test for multiple sources (reusing the old one)
-		qd = qd.containsSource("ASD");
-		Collections.addAll(expect, "9", "10", "11");
+		qd = qd.containsSource("B");
+		Collections.addAll(expect, "10");
 		assertUnorderedIDEquals(expect, db.queryNodes(qd));
 
 		// Search non-existing source.
 		qd = new GraphQueryDescription()
-			.containsSource("FDSA");
+			.containsSource("NONEXISTINGSOURCE");
 		// Expect an empty result
 		expect = new HashSet<>();
 		assertUnorderedIDEquals(expect, db.queryNodes(qd));
