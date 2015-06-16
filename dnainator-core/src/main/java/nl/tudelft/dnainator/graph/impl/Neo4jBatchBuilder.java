@@ -90,7 +90,7 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 
 	@Override
 	public Graph build() {
-		linkSources();
+		connectPhylogeny();
 		createIndicesAndConstraints();
 		batchInserter.shutdown();
 
@@ -100,6 +100,9 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 		return g;
 	}
 
+	/**
+	 * Create all indices using deferred initialization.
+	 */
 	private void createIndicesAndConstraints() {
 		batchInserter.createDeferredConstraint(NodeLabels.NODE)
 			.assertPropertyIsUnique(PropertyTypes.ID.name())
@@ -118,11 +121,21 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 			.create();
 	}
 
+	/**
+	 * Connect a sequence node to an annotation node.
+	 * @param nodeId	the sequence node
+	 * @param source	the annotation
+	 */
 	private void connectAnnotation(long nodeId, Annotation annotation) {
 		long annotationId = annotationIDToNodeID.get(annotation.getGeneName());
 		batchInserter.createRelationship(nodeId, annotationId, RelTypes.ANNOTATED, null);
 	}
 
+	/**
+	 * Connect a sequence node to a source.
+	 * @param nodeId	the sequence node
+	 * @param source	the source node
+	 */
 	private void connectSource(long nodeId, String source) {
 		long sourceId;
 		if (!sourceToNodeID.containsKey(source)) {
@@ -134,6 +147,39 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 		batchInserter.createRelationship(nodeId, sourceId, RelTypes.SOURCE, null);
 	}
 
+	/**
+	 * Connect the root phylogeny node and all of its children to their sources (recursively).
+	 */
+	private void connectPhylogeny() {
+		if (phylogeny != null) {
+			connectPhylogeny(0, phylogeny);
+		}
+	}
+
+	/**
+	 * Connect a phylogeny node and its children to their sources.
+	 * @param distanceToRoot	distance of this node to root of the tree
+	 * @param current		the current phylogeny tree node
+	 * @return			the id of the created node
+	 */
+	private long connectPhylogeny(int distanceToRoot, TreeNode current) {
+		if (current.getChildren().size() == 0) {
+			return sourceToNodeID.get(current.getName());
+		}
+		long anc = createAncestor(distanceToRoot);
+		current.getChildren().forEach(child ->
+			batchInserter.createRelationship(anc,
+					connectPhylogeny(distanceToRoot + 1, child),
+					RelTypes.ANCESTOR_OF, null)
+		);
+		return anc;
+	}
+
+	/**
+	 * Create an annotation node.
+	 * @param a	the annotation
+	 * @return	the id of the created node
+	 */
 	private long createAnnotation(Annotation a) {
 		annotationProperties.put(PropertyTypes.ID.name(), a.getGeneName());
 		annotationProperties.put(PropertyTypes.STARTREF.name(), a.getStart());
@@ -142,6 +188,22 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 		return batchInserter.createNode(annotationProperties, NodeLabels.ANNOTATION);
 	}
 
+	/**
+	 * Create a phylogeny ancestor node.
+	 * @param distanceToRoot	distance of this node to root of the tree
+	 * @return			the id of the created node
+	 */
+	private long createAncestor(int distanceToRoot) {
+		return batchInserter.createNode(
+				Collections.singletonMap(PropertyTypes.DIST_TO_ROOT.name(), distanceToRoot),
+				NodeLabels.ANCESTOR);
+	}
+
+	/**
+	 * Create a sequence node.
+	 * @param s	the sequencenode
+	 * @return	the id of the created node
+	 */
 	private long createNode(SequenceNode s) {
 		nodeProperties.put(PropertyTypes.ID.name(), s.getId());
 		nodeProperties.put(PropertyTypes.STARTREF.name(), s.getStartRef());
@@ -152,34 +214,14 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 		return batchInserter.createNode(nodeProperties, NodeLabels.NODE);
 	}
 
+	/**
+	 * Create a source node.
+	 * @param s	the source
+	 * @return	the id of the created node
+	 */
 	private long createSource(String source) {
 		return batchInserter.createNode(
 				Collections.singletonMap(PropertyTypes.SOURCE.name(), source),
 				NodeLabels.SOURCE);
-	}
-
-	private long createAncestor(int distanceToRoot) {
-		return batchInserter.createNode(
-				Collections.singletonMap(PropertyTypes.DIST_TO_ROOT.name(), distanceToRoot),
-				NodeLabels.ANCESTOR);
-	}
-
-	private void linkSources() {
-		if (phylogeny != null) {
-			linkSources(0, phylogeny);
-		}
-	}
-
-	private long linkSources(int distanceToRoot, TreeNode current) {
-		if (current.getChildren().size() == 0) {
-			return sourceToNodeID.get(current.getName());
-		}
-		long anc = createAncestor(distanceToRoot);
-		current.getChildren().forEach(child ->
-			batchInserter.createRelationship(anc,
-					linkSources(distanceToRoot + 1, child),
-					RelTypes.ANCESTOR_OF, null)
-		);
-		return anc;
 	}
 }
