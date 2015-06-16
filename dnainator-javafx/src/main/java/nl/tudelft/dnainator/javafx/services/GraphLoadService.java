@@ -190,14 +190,19 @@ public class GraphLoadService extends Service<Graph> {
 					AnnotationParser as = new GFF3AnnotationParser(gffFilePath.get());
 					annotations = new AnnotationCollectionFactoryImpl().build(as);
 				}
+
+				TreeNode node = null;
+				if (newickFile.getValue() != null) {
+					node = new TreeParser(getNewickFile()).parse();
+				}
+
 				EdgeParser ep = new EdgeParserImpl(getEdgeFile());
 				NodeParser np = new NodeParserImpl(getNodeFile());
-				TreeParser tp = new TreeParser(getNewickFile());
 
 				// FIXME: REMOVE THIS WHEN PERSISTENCE WORKS
-				treeProperty.setValue(tp.parse());
+				treeProperty.setValue(node);
 
-				return new Neo4jBatchBuilder(database.get(), annotations, tp.parse())
+				return new Neo4jBatchBuilder(database.get(), annotations, node)
 					.constructGraph(np, ep)
 					.build();
 			}
