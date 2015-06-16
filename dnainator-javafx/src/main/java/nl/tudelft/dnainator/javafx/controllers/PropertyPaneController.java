@@ -7,9 +7,6 @@ import nl.tudelft.dnainator.javafx.widgets.animations.SlidingAnimation;
 import nl.tudelft.dnainator.javafx.widgets.animations.TransitionAnimation.Position;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
 /**
@@ -44,11 +41,11 @@ public class PropertyPaneController {
 	}
 
 	private void addLabel(PropertyType type, String value) {
-		Region spacer = new Region();
+		Label description = new Label(type.description());
+		description.setStyle("-fx-font-weight: bold");
 		Label label = new Label(value);
 		label.setWrapText(true);
-		HBox.setHgrow(spacer, Priority.ALWAYS);
-		propertyPane.getChildren().add(new HBox(new Label(type.description()), spacer, label));
+		propertyPane.getChildren().add(new VBox(description, label));
 	}
 
 	/**

@@ -14,13 +14,15 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 
+/**
+ * This enum represents all properties an Edge can have.
+ */
 enum EdgePropertyTypes implements PropertyType {
 	SRC("Source"),
 	DEST("Destination");
 
 	private String description;
-
-	EdgePropertyTypes(String description) {
+	private EdgePropertyTypes(String description) {
 		this.description = description;
 	}
 

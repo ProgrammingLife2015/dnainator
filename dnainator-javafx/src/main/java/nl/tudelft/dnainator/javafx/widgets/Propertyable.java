@@ -7,6 +7,10 @@ import java.util.Map;
  * request and display information from that drawable.
  */
 public interface Propertyable {
+	/**
+	 * Return the title of this displayable property.
+	 * @return	the title
+	 */
 	PropertyType getTitle();
 
 	/**

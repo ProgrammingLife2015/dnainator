@@ -19,6 +19,9 @@ import javafx.scene.Group;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 
+/**
+ * This enum represents all properties a Cluster can have.
+ */
 enum ClusterPropertyTypes implements PropertyType {
 	ID("NodeID"),
 	SEQUENCE("Sequence"),
@@ -28,8 +31,7 @@ enum ClusterPropertyTypes implements PropertyType {
 	STARTRANK("Start rank");
 
 	private String description;
-
-	ClusterPropertyTypes(String description) {
+	private ClusterPropertyTypes(String description) {
 		this.description = description;
 	}
 
@@ -79,7 +81,8 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 	private void initProperties() {
 		if (cluster.getNodes().size() > 1) {
 			properties.put(ClusterPropertyTypes.ID, cluster.getNodes().toString());
-			properties.put(ClusterPropertyTypes.STARTRANK, Integer.toString(cluster.getStartRank()));
+			properties.put(ClusterPropertyTypes.STARTRANK,
+					Integer.toString(cluster.getStartRank()));
 		} else if (cluster.getNodes().size() == 1) {
 			SequenceNode sn = cluster.getNodes().iterator().next();
 			properties.put(ClusterPropertyTypes.ID, sn.getId());
