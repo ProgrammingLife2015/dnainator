@@ -1,6 +1,7 @@
 package nl.tudelft.dnainator.graph.impl.query;
 
 import nl.tudelft.dnainator.graph.impl.Neo4jScoreContainer;
+import nl.tudelft.dnainator.graph.impl.PropertyTypes;
 import nl.tudelft.dnainator.graph.interestingness.InterestingnessStrategy;
 
 import org.neo4j.graphdb.Node;
@@ -51,6 +52,7 @@ public class ClusterEvaluator implements Evaluator {
 	public Evaluation evaluate(Path path) {
 		Node end = path.endNode();
 		int score = is.compute(new Neo4jScoreContainer(end));
+		end.setProperty(PropertyTypes.INTERESTINGNESS.name(), score);
 		String id = (String) end.getProperty(ID.name());
 
 		if (!visited.contains(id)

@@ -30,4 +30,9 @@ public interface EnrichedSequenceNode extends SequenceNode, ScoreContainer {
 	 */
 	int getRank();
 
+	/**
+	 * @return The interestingness score of this node, at the moment it
+	 * was retrieved from the graph.
+	 */
+	int getInterestingnessScore();
 }

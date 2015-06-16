@@ -5,7 +5,9 @@ import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -172,17 +174,21 @@ public class FileOpenController {
 		animation.toggle();
 		if (graphLoadService.getGffFilePath() != null
 				&& graphLoadService.getNodeFile() != null
-				&& graphLoadService.getEdgeFile() != null) {
+				&& graphLoadService.getEdgeFile() != null
+				&& newickLoadService.getNewickFile() != null) {
 			graphLoadService.setDatabase(graphLoadService.getNewPath(dbPathProperty.getValue()));
-			graphLoadService.restart();
+			EventHandler<WorkerStateEvent> oldHandler = newickLoadService.getOnSucceeded();
+			newickLoadService.setOnSucceeded(e -> {
+				oldHandler.handle(e);
+				graphLoadService.setTree(newickLoadService.getValue());
+				graphLoadService.restart();
+			});
 
+			newickLoadService.restart();
+			curNewickLabel.setText(newickLoadService.getNewickFile().getAbsolutePath());
 			curGffLabel.setText(graphLoadService.getGffFilePath());
 			curNodeLabel.setText(graphLoadService.getNodeFile().getAbsolutePath());
 			curEdgeLabel.setText(graphLoadService.getEdgeFile().getAbsolutePath());
-		}
-		if (newickLoadService.getNewickFile() != null) {
-			newickLoadService.restart();
-			curNewickLabel.setText(newickLoadService.getNewickFile().getAbsolutePath());
 		}
 	}
 
