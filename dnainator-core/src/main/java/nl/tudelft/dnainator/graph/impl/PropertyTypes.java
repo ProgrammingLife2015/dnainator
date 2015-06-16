@@ -9,6 +9,7 @@ public enum PropertyTypes {
 	STARTREF,
 	ENDREF,
 	SEQUENCE,
+	BASE_DIST,
 	RANK,
 	INTERESTINGNESS,
 	SENSE,

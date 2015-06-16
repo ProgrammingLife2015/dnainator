@@ -147,7 +147,7 @@ public class Neo4jSequenceNode implements EnrichedSequenceNode {
 			sequence	= (String) node.getProperty(PropertyTypes.SEQUENCE.name());
 			rank		= (int)    node.getProperty(PropertyTypes.RANK.name());
 			for (ScoreIdentifier id : Scores.values()) {
-				scores.put(id, (Integer) node.getProperty(id.getName(), 0));
+				scores.put(id, (Integer) node.getProperty(id.name(), 0));
 			}
 			interestingness = (int) node.getProperty(PropertyTypes.INTERESTINGNESS.name(), 0);
 			tx.success();

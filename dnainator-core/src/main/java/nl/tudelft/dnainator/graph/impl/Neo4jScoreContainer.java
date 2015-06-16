@@ -24,7 +24,7 @@ public class Neo4jScoreContainer implements ScoreContainer {
 	@Override
 	public int getScore(ScoreIdentifier id) {
 		// Get's the score, cast to an int. Default value of 0.
-		return (int) delegate.getProperty(id.getName(), 0);
+		return (int) delegate.getProperty(id.name(), 0);
 	}
 
 }
