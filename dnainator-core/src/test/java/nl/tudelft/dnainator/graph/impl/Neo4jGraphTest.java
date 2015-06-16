@@ -8,7 +8,7 @@ import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.core.impl.SequenceNodeFactoryImpl;
 import nl.tudelft.dnainator.core.impl.SequenceNodeImpl;
-import nl.tudelft.dnainator.graph.impl.command.RankCommand;
+import nl.tudelft.dnainator.graph.impl.command.AnalyzeCommand;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
@@ -132,7 +132,7 @@ public class Neo4jGraphTest {
 							new InputStreamReader(getEdgeFile(), "UTF-8")));
 
 			db.execute(e -> {
-				for (Node n : new RankCommand(db.rootIterator()).topologicalOrder(e)) {
+				for (Node n : new AnalyzeCommand(db.rootIterator()).topologicalOrder(e)) {
 					order.add(Integer.parseInt((String) n.getProperty(ID.name())));
 				}
 			});

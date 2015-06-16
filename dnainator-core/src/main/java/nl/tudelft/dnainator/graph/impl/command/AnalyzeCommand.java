@@ -1,6 +1,7 @@
 package nl.tudelft.dnainator.graph.impl.command;
 
 import nl.tudelft.dnainator.graph.impl.RelTypes;
+
 import org.neo4j.collection.primitive.Primitive;
 import org.neo4j.collection.primitive.PrimitiveLongSet;
 import org.neo4j.graphdb.Direction;
@@ -16,19 +17,19 @@ import static nl.tudelft.dnainator.graph.impl.PropertyTypes.RANK;
 import static org.neo4j.helpers.collection.IteratorUtil.loop;
 
 /**
- * The {@link RankCommand} creates a topological ordering and
+ * The {@link AnalyzeCommand} creates a topological ordering and
  * ranks the nodes in the Neo4j database accordingly.
  */
-public class RankCommand implements Command {
+public class AnalyzeCommand implements Command {
 	private static final int INIT_CAP = 4096;
 	private ResourceIterator<Node> roots;
 
 	/**
-	 * Create a new {@link RankCommand} that will
+	 * Create a new {@link AnalyzeCommand} that will
 	 * start ranking from the specified roots.
 	 * @param roots	the roots
 	 */
-	public RankCommand(ResourceIterator<Node> roots) {
+	public AnalyzeCommand(ResourceIterator<Node> roots) {
 		this.roots = roots;
 	}
 
@@ -62,15 +63,19 @@ public class RankCommand implements Command {
 			PrimitiveLongSet processed = Primitive.offHeapLongSet(INIT_CAP)
 		) {
 			for (Node n : topologicalOrder(service, processed)) {
-				int rankSource = (int) n.getProperty(RANK.name());
-				for (Relationship r : n.getRelationships(RelTypes.NEXT, Direction.OUTGOING)) {
-					Node dest = r.getEndNode();
-					if ((int) dest.getProperty(RANK.name()) < rankSource + 1) {
-						dest.setProperty(RANK.name(), rankSource + 1);
-					}
-				}
+				rankDest(n);
 			}
 			tx.success();
+		}
+	}
+
+	private void rankDest(Node n) {
+		int rankSource = (int) n.getProperty(RANK.name());
+		for (Relationship r : n.getRelationships(RelTypes.NEXT, Direction.OUTGOING)) {
+			Node dest = r.getEndNode();
+			if ((int) dest.getProperty(RANK.name()) < rankSource + 1) {
+				dest.setProperty(RANK.name(), rankSource + 1);
+			}
 		}
 	}
 }

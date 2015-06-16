@@ -9,7 +9,7 @@ import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.command.Command;
-import nl.tudelft.dnainator.graph.impl.command.RankCommand;
+import nl.tudelft.dnainator.graph.impl.command.AnalyzeCommand;
 import nl.tudelft.dnainator.graph.impl.query.AllClustersQuery;
 import nl.tudelft.dnainator.graph.impl.query.Query;
 import nl.tudelft.dnainator.graph.interestingness.InterestingnessStrategy;
@@ -245,6 +245,6 @@ public final class Neo4jGraph implements Graph {
 	 */
 	protected void analyze() {
 		// Rank the graph.
-		execute(e -> new RankCommand(rootIterator()).execute(e));
+		execute(e -> new AnalyzeCommand(rootIterator()).execute(e));
 	}
 }
