@@ -1,6 +1,10 @@
 package nl.tudelft.dnainator.graph.impl.command;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import nl.tudelft.dnainator.graph.impl.RelTypes;
+import nl.tudelft.dnainator.graph.interestingness.Scores;
 
 import org.neo4j.collection.primitive.Primitive;
 import org.neo4j.collection.primitive.PrimitiveLongSet;
@@ -64,6 +68,7 @@ public class AnalyzeCommand implements Command {
 		) {
 			for (Node n : topologicalOrder(service, processed)) {
 				rankDest(n);
+				scoreIndependentMutation(n);
 			}
 			tx.success();
 		}
@@ -77,5 +82,17 @@ public class AnalyzeCommand implements Command {
 				dest.setProperty(RANK.name(), rankSource + 1);
 			}
 		}
+	}
+
+	private void scoreIndependentMutation(Node n) {
+		Set<Node> ancestors = new HashSet<>();
+		for (Relationship r : n.getRelationships(RelTypes.SOURCE)) {
+			Node ancestor = r.getEndNode()
+					.getSingleRelationship(RelTypes.ANCESTOR_OF, Direction.INCOMING)
+					.getStartNode();
+			ancestors.add(ancestor);
+		}
+		// TODO: check whether ancestors exist in separate branches of the phylogeny.
+		n.setProperty(Scores.INDEP_MUT.getName(), ancestors.size());
 	}
 }

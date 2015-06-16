@@ -5,7 +5,8 @@ package nl.tudelft.dnainator.graph.interestingness;
  */
 public enum Scores implements ScoreIdentifier {
 
-	SEQ_LENGTH("seqLength");
+	SEQ_LENGTH("seqLength"),
+	INDEP_MUT("independentMutation");
 
 	private String name;
 
