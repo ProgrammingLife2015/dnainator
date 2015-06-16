@@ -34,17 +34,14 @@ public class PropertyPaneController {
 	 */
 	public void update(Propertyable p) {
 		propertyPane.getChildren().clear();
-		addLabel(p.getTitle(), p.getPropertyMap().get(p.getTitle()));
-		p.getPropertyMap().entrySet().stream()
-				.filter(e -> e.getKey() != p.getTitle())
-				.forEach(e -> addLabel(e.getKey(), e.getValue()));
+		p.getPropertyMap().forEach((k, v) -> addLabel(k, v));
 	}
 
 	private void addLabel(PropertyType type, String value) {
 		Label description = new Label(type.description());
-		description.setStyle("-fx-font-weight: bold");
+		description.getStyleClass().add("property-header");
 		Label label = new Label(value);
-		label.setWrapText(true);
+		label.getStyleClass().add("property-info");
 		propertyPane.getChildren().add(new VBox(description, label));
 	}
 

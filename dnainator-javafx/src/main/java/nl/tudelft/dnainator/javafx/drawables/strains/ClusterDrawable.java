@@ -8,7 +8,7 @@ import nl.tudelft.dnainator.javafx.views.AbstractView;
 import nl.tudelft.dnainator.javafx.widgets.PropertyType;
 import nl.tudelft.dnainator.javafx.widgets.Propertyable;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,6 +23,7 @@ import javafx.scene.text.Text;
  * This enum represents all properties a Cluster can have.
  */
 enum ClusterPropertyTypes implements PropertyType {
+	TITLE("Cluster"),
 	ID("NodeID"),
 	SEQUENCE("Sequence"),
 	STARTREF("Startref"),
@@ -45,8 +46,6 @@ enum ClusterPropertyTypes implements PropertyType {
  * The {@link ClusterDrawable} class represents the mid level object in the viewable model.
  */
 public class ClusterDrawable extends Group implements Drawable, Propertyable {
-	private static final String TITLE = "Cluster";
-
 	protected static final int SINGLE = 1;
 	protected static final int SMALL = 3;
 	protected static final int MEDIUM = 10;
@@ -68,7 +67,7 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 	 */
 	public ClusterDrawable(ColorServer colorServer, Cluster cluster) {
 		this.cluster = cluster;
-		this.properties = new HashMap<>();
+		this.properties = new LinkedHashMap<>();
 		this.sources = cluster.getNodes().stream()
 				.flatMap(e -> e.getSources().stream())
 				.collect(Collectors.toSet());
@@ -79,17 +78,21 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 	}
 
 	private void initProperties() {
+		properties.put(ClusterPropertyTypes.TITLE, null);
+		List<String> nodeIds = cluster.getNodes().stream()
+						.map(e -> e.getId())
+						.collect(Collectors.toList());
 		if (cluster.getNodes().size() > 1) {
-			properties.put(ClusterPropertyTypes.ID, cluster.getNodes().toString());
+			properties.put(ClusterPropertyTypes.ID, nodeIds.toString());
 			properties.put(ClusterPropertyTypes.STARTRANK,
 					Integer.toString(cluster.getStartRank()));
-		} else if (cluster.getNodes().size() == 1) {
+		} else {
 			SequenceNode sn = cluster.getNodes().iterator().next();
 			properties.put(ClusterPropertyTypes.ID, sn.getId());
-			properties.put(ClusterPropertyTypes.SEQUENCE, sn.getSequence());
 			properties.put(ClusterPropertyTypes.STARTREF, Integer.toString(sn.getStartRef()));
 			properties.put(ClusterPropertyTypes.ENDREF, Integer.toString(sn.getEndRef()));
 			properties.put(ClusterPropertyTypes.SOURCES, sn.getSources().toString());
+			properties.put(ClusterPropertyTypes.SEQUENCE, sn.getSequence());
 		}
 	}
 
@@ -160,15 +163,5 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 	@Override
 	public Map<PropertyType, String> getPropertyMap() {
 		return properties;
-	}
-
-	@Override
-	public PropertyType getTitle() {
-		return new PropertyType() {
-			@Override
-			public String description() {
-				return TITLE;
-			}
-		};
 	}
 }

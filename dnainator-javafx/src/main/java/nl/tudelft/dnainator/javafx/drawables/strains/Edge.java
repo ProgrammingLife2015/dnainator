@@ -4,7 +4,7 @@ import nl.tudelft.dnainator.javafx.views.AbstractView;
 import nl.tudelft.dnainator.javafx.widgets.PropertyType;
 import nl.tudelft.dnainator.javafx.widgets.Propertyable;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javafx.geometry.Pos;
@@ -18,6 +18,7 @@ import javafx.scene.text.Text;
  * This enum represents all properties an Edge can have.
  */
 enum EdgePropertyTypes implements PropertyType {
+	TITLE("Edge"),
 	SRC("Source"),
 	DEST("Destination");
 
@@ -36,8 +37,6 @@ enum EdgePropertyTypes implements PropertyType {
  * The drawable edge is a line that can be bound to the a source and a destination cluster.
  */
 public class Edge extends Group implements Propertyable {
-	private static final String TITLE = "Edge";
-
 	private Line edge;
 	private Map<PropertyType, String> properties;
 
@@ -46,7 +45,8 @@ public class Edge extends Group implements Propertyable {
 	 * @param src This edge's source node.
 	 */
 	private Edge(ClusterDrawable src) {
-		properties = new HashMap<>();
+		properties = new LinkedHashMap<>();
+		properties.put(EdgePropertyTypes.TITLE, null);
 		properties.put(EdgePropertyTypes.SRC, src.getId());
 
 		setOnMouseClicked(e -> AbstractView.setLastClicked(this));
@@ -100,15 +100,5 @@ public class Edge extends Group implements Propertyable {
 	@Override
 	public Map<PropertyType, String> getPropertyMap() {
 		return properties;
-	}
-
-	@Override
-	public PropertyType getTitle() {
-		return new PropertyType() {
-			@Override
-			public String description() {
-				return TITLE;
-			}
-		};
 	}
 }

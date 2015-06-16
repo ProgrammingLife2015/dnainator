@@ -14,21 +14,12 @@
 	-fx-font-weight: bold;
 }
 
-#properties-title {
-	-fx-font-family: Kalinga;
-	-fx-font-smoothing-type: lcd;
-	-fx-font-size: 28px;
-	-fx-alignment: center;
-	-fx-font-weight: bold;
-}
-
 .property-header {
 	-fx-font-weight: bold;
-	-fx-alignment: center;
 }
 
 .property-info {
-	-fx-text-alignment: left;
+	-fx-wrap-text: true;
 }
 
 .view {

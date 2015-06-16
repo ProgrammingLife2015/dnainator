@@ -8,12 +8,6 @@ import java.util.Map;
  */
 public interface Propertyable {
 	/**
-	 * Return the title of this displayable property.
-	 * @return	the title
-	 */
-	PropertyType getTitle();
-
-	/**
 	 * @return The properties of the {@link Propertyable} element.
 	 */
 	Map<PropertyType, String> getPropertyMap();
