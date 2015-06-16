@@ -17,6 +17,7 @@ public class RightSlideAnimation extends SlidingAnimation {
 	 */
 	public RightSlideAnimation(Pane pane, double size, double duration, Position pos) {
 		super(pane, size, duration, pos);
+		setVisibility(pane, pos);
 	}
 
 	@Override
@@ -25,6 +26,15 @@ public class RightSlideAnimation extends SlidingAnimation {
 			newSize = size * frac;
 		} else if (pos == Position.RIGHT) {
 			newSize = size * (1.0 - frac);
+		}
+	}
+	
+	@Override
+	public void setVisibility(Pane pane, Position pos) {
+		if (pos == Position.LEFT && getRate() < 0) {
+			pane.setVisible(false);
+		} else if (pos == Position.RIGHT && getRate() > 0) {
+			pane.setVisible(false);
 		}
 	}
 }

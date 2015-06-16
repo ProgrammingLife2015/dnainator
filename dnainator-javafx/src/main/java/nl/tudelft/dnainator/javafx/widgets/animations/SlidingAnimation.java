@@ -33,6 +33,7 @@ public abstract class SlidingAnimation extends TransitionAnimation {
 	@Override
 	protected void interpolate(double frac) {
 		setCurSize(frac);
+		setVisibility(pane, pos);
 		setMovement();
 	}
 	
@@ -45,7 +46,7 @@ public abstract class SlidingAnimation extends TransitionAnimation {
 	/**
 	 * Does the sliding animation, through translations and width changing of the {@link Pane}.
 	 */
-	public void setMovement() {
+	private void setMovement() {
 		if (pos == Position.LEFT) {
 			pane.setPrefWidth(newSize);
 			pane.setTranslateX(newSize - size);
@@ -54,12 +55,19 @@ public abstract class SlidingAnimation extends TransitionAnimation {
 			pane.setTranslateX(size - newSize);
 		} else if (pos == Position.TOP) {
 			pane.setPrefHeight(newSize);
-			pane.setTranslateY(size - newSize);
+			pane.setTranslateY(newSize - size);
 		} else if (pos == Position.BOTTOM) {
 			pane.setPrefHeight(newSize);
-			pane.setTranslateY(newSize - size);
+			pane.setTranslateY(size - newSize);
 		}
 	}
+	
+	/**
+	 * Set the right visibility for the {@link Pane} depending on the animation and its position.
+	 * @param pane over which the animation will be applied.
+	 * @param position the position of the pane.
+	 */
+	public abstract void setVisibility(Pane pane, Position position);
 	
 	/**
 	 * Toggles the animation, i.e. if the box is currently
