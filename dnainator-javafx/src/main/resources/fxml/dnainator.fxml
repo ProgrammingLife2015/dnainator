@@ -7,6 +7,9 @@
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.BorderPane?>
+<?import java.lang.*?>
+<?import nl.tudelft.dnainator.javafx.views.*?>
+<?import nl.tudelft.dnainator.javafx.widgets.*?>
 
 <BorderPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.dnainator.javafx.controllers.WindowController">
    <top>
@@ -54,7 +57,7 @@
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="M" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                      </accelerator></CheckMenuItem>
-                  <CheckMenuItem mnemonicParsing="false" text="Show properties">
+                  <CheckMenuItem mnemonicParsing="false" onAction="#toggleProperties" text="Show properties">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="P" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                      </accelerator></CheckMenuItem>
@@ -72,6 +75,9 @@
       <fx:include fx:id="welcome" source="welcome.fxml" />
    </center>
    <left>
-      <fx:include fx:id="fileOpen" source="openpane.fxml" />
+      <fx:include fx:id="fileOpen" source="openpane.fxml"/>
    </left>
+   <right>
+      <fx:include fx:id="propertyPane" source="propertypane.fxml" />
+   </right>
 </BorderPane>

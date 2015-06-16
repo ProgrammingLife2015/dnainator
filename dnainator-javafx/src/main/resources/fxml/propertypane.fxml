@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.effect.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<javafx.scene.layout.VBox fx:id="propertyPane" alignment="TOP_CENTER" minHeight="0.0" minWidth="0.0" prefHeight="600.0" prefWidth="0.0" spacing="25.0" stylesheets="@../style.css" visible="false" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.dnainator.javafx.controllers.PropertyPaneController">
+   <padding>
+      <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+   </padding>
+</javafx.scene.layout.VBox>
