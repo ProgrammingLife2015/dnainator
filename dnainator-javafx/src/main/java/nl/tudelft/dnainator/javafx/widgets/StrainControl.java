@@ -1,16 +1,15 @@
 package nl.tudelft.dnainator.javafx.widgets;
 
 import java.util.Collection;
-import java.util.NoSuchElementException;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.control.Control;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
-import nl.tudelft.dnainator.core.EnrichedSequenceNode;
-import nl.tudelft.dnainator.annotation.Annotation;
-import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.javafx.views.StrainView;
 
 /**
@@ -19,7 +18,6 @@ import nl.tudelft.dnainator.javafx.views.StrainView;
 public class StrainControl extends VBox {
 	private static final double PADDING = 10;
 	private static final double WIDTH = 200;
-	private static final int GENE_LENGTH = 5;
 	private static final String NODE = "Jump to node...";
 	private static final String RANK = "Jump to rank...";
 	private static final String ANNOTATION = "Jump to annotation...";
@@ -27,10 +25,8 @@ public class StrainControl extends VBox {
 	private static final String INVALIDPROMPT = "jump-invalid-prompt";
 	private StrainView strainView;
 	private TextField jumpTo;
-	private int numberInput;
 	private String previousInput;
 	private Collection<String> attachedAnnotations;
-	private Graph curGraph;
 
 	/**
 	 * Instantiates a new {@link StrainControl}.
@@ -43,116 +39,71 @@ public class StrainControl extends VBox {
 		setMaxWidth(WIDTH);
 		setPickOnBounds(false);
 		jumpTo = new TextField();
-		curGraph = strainView.getStrain().getGraph();
 
 		// Wait for strain view to be created.
 		Platform.runLater(this::createJumpToNode);
 		getChildren().add(jumpTo);
 	}
 
-	/**
-	 * Setup the jump to node {@link TextField}.
-	 * @return the text field of the jump to node.
-	 */
 	private void createJumpToNode() {
 		setupTextField(NODE);
-		jumpTo.setOnAction(e -> jumpToNode());
+		jumpTo.setOnAction(e -> jump(NODE, bool -> bool, strainView::gotoNode,
+				str -> str));
 	}
 	
-	private void jumpToNode() {
-		String inputText = jumpTo.getCharacters().toString();
-		if (isInteger(inputText) && curGraph.getNode(inputText) != null) {
-			EnrichedSequenceNode reqNode = curGraph.getNode(inputText);
-			resetPromptText(NODE);
-			strainView.gotoRank(reqNode.getRank());
-			if (strainView.getStrain().getClusters().get(inputText) != null) {
-				strainView.centerNodeVertically(inputText);
-			}
-		} else {
-			promptInvalid();
-		}
-	}
-	
-	/**
-	 * Setup the jump to rank {@link TextField}.
-	 * @return the text field of the jump to rank.
-	 */
 	private void createJumpToRank() {
 		setupTextField(RANK);
-		jumpTo.setOnAction(e -> jumpToRank());
+		jumpTo.setOnAction(e -> jump(RANK, bool -> bool, strainView::gotoRank,
+				Integer::parseInt));
 	}
-	
-	private void jumpToRank() {
-		if (isInteger(jumpTo.getCharacters().toString()) 
-				&& curGraph.getRank(numberInput).size() != 0) {
-			resetPromptText(RANK);
-			strainView.gotoRank(numberInput);
-		} else {
-			promptInvalid();
-		}
-	}
-	
-	/**
-	 * Setup the jump to annotation {@link TextField}.
-	 * @return the text field of the jump to annotation.
-	 */
+
 	private void createJumpToAnnotation() {
 		setupTextField(ANNOTATION);
-		jumpTo.setOnAction(e -> jumpToAnnotation());
+		jumpTo.setOnAction(e -> jump(ANNOTATION, bool -> !bool, this::gotoAnnotation,
+				str -> str));
 	}
-	
-	private void jumpToAnnotation() {
+
+	private <T> void jump(String reset, Predicate<Boolean> predicate, Consumer<T> function,
+	                      Function<String, T> converter) {
 		String inputText = jumpTo.getCharacters().toString();
-		if (!isInteger(inputText)) {
-			resetPromptText(ANNOTATION);
-			if (previousInput != null && previousInput.equals(inputText) 
-					&& attachedAnnotations != null && !attachedAnnotations.isEmpty()) {
-				jumpToNextAnnotationNode();
-				return;
-			}
-			jumpToAnnotationNode(inputText);
-			previousInput = inputText;
+		if (predicate.test(isPositiveInteger(inputText))) {
+			resetPromptText(reset);
+			function.accept(converter.apply(inputText));
 		} else {
 			promptInvalid();
 		}
 	}
-	
-	/**
-	 * Search for a node with an annotation and jump to the first found.
-	 * @param inputText the name of the annotation.
-	 */
-	private void jumpToAnnotationNode(String inputText) {
-		try {
-			Annotation annotation = curGraph.getAnnotations().getAll().stream().filter(a -> 
-				a.getGeneName().toLowerCase().contains(inputText.toLowerCase()) 
-				&& inputText.length() > GENE_LENGTH).findFirst().get();
-			attachedAnnotations = annotation.getAnnotatedNodes();
-			jumpToNextAnnotationNode();
-		} catch (NoSuchElementException nse) {
+
+	private void gotoAnnotation(String inputText) {
+		resetPromptText(ANNOTATION);
+		if (previousInput != null && previousInput.equals(inputText)
+				&& attachedAnnotations != null && !attachedAnnotations.isEmpty()) {
+			gotoNextAnnotationNode();
+			return;
+		}
+		previousInput = inputText;
+		attachedAnnotations = strainView.getAnnotatedNodeIDs(inputText);
+		gotoNextAnnotationNode();
+	}
+
+	private void gotoNextAnnotationNode() {
+		if (attachedAnnotations != null) {
+			String next = attachedAnnotations.iterator().next();
+			attachedAnnotations.remove(next);
+			strainView.gotoNode(next);
+		} else {
 			promptInvalid();
 		}
-	}
-	
-	/**
-	 * Jump to the next node which was attached to the same annotation.
-	 */
-	private void jumpToNextAnnotationNode() {
-		String next = attachedAnnotations.iterator().next();
-		attachedAnnotations.remove(next);
-		strainView.gotoRank(curGraph.getNode(next).getRank());
 	}
 	
 	private void setupTextField(String name) {
 		if (jumpTo.getPromptText().equals(name) && jumpTo.isVisible()) {
 			jumpTo.setVisible(!jumpTo.isVisible());
-			getChildren().remove(jumpTo);
 		} else {
-			jumpTo.setVisible(true);
 			jumpTo.clear();
 			jumpTo.setPrefColumnCount(name.length());
 			resetPromptText(name);
-			getChildren().clear();
-			getChildren().addAll(jumpTo);
+			jumpTo.setVisible(true);
 			requestFocus();
 		}
 	}
@@ -162,22 +113,18 @@ public class StrainControl extends VBox {
 		jumpTo.setPromptText(name);
 	}
 
-	/**
-	 * Changes the prompt text of the {@link TextField} and marks it in red.
-	 */
 	private void promptInvalid() {
 		jumpTo.clear();
 		jumpTo.setPromptText(ERROR);
 		jumpTo.getStyleClass().add(INVALIDPROMPT);
 	}
 	
-	private boolean isInteger(String s) {
+	private boolean isPositiveInteger(String s) {
 		try {
-			numberInput = Integer.parseInt(s);
+			return Integer.parseInt(s) >= 0;
 		} catch (NumberFormatException nfe) {
 			return false;
 		}
-		return true;
 	}
 	
 	/**
