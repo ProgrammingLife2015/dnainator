@@ -1,6 +1,8 @@
 package nl.tudelft.dnainator.javafx.drawables.strains;
 
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.layout.HBox;
@@ -34,11 +36,14 @@ public class Strain extends SemanticDrawable {
 	private ColorServer colorServer;
 	private Graph graph;
 	private Map<String, ClusterDrawable> clusters;
+	private IntegerProperty minRank = new SimpleIntegerProperty(0, "minRank");
+	private IntegerProperty maxRank = new SimpleIntegerProperty(0, "maxRank");
 
 	/**
 	 * Construct a new top level {@link Strain} using the specified graph.
+	 *
 	 * @param colorServer The {@link ColorServer} to bind to.
-	 * @param graph	The specified graph.
+	 * @param graph The specified graph.
 	 */
 	public Strain(ColorServer colorServer, Graph graph) {
 		this(colorServer, graph, new Group(), new Group());
@@ -47,9 +52,10 @@ public class Strain extends SemanticDrawable {
 	/**
 	 * Construct a new top level {@link Strain} using the specified graph, content and child
 	 * content.
-	 * @param colorServer The {@link ColorServer} to bind to.
-	 * @param graph	The specified graph.
-	 * @param content The specified graph content.
+	 *
+	 * @param colorServer  The {@link ColorServer} to bind to.
+	 * @param graph        The specified graph.
+	 * @param content      The specified graph content.
 	 * @param childContent The specified child content.
 	 */
 	public Strain(ColorServer colorServer, Graph graph, Group content, Group childContent) {
@@ -89,9 +95,15 @@ public class Strain extends SemanticDrawable {
 	}
 
 	private Range getRange(Bounds bounds) {
-		int minRank = (int) (Math.max(bounds.getMinX() / RANK_WIDTH, 0));
-		int maxRank = (int) (RANK_WIDTH + bounds.getMaxX() / RANK_WIDTH);
-		return new Range(minRank, maxRank);
+		int min = (int) (Math.max(bounds.getMinX() / RANK_WIDTH, 0));
+		int max = (int) (RANK_WIDTH + bounds.getMaxX() / RANK_WIDTH);
+		min = Math.max(min, 0);
+		min = Math.min(min, graph.getMaxRank());
+		max = Math.max(min, max);
+		max = Math.min(max, graph.getMaxRank());
+		minRank.set(min);
+		maxRank.set(max);
+		return new Range(min, max);
 	}
 
 	private List<Annotation> getSortedAnnotations(Range ranks) {
@@ -181,5 +193,27 @@ public class Strain extends SemanticDrawable {
 			cluster.setTranslateY(i * RANK_WIDTH - value.size() * RANK_WIDTH / 2);
 			childContent.getChildren().add(cluster);
 		}
+	}
+
+	/**
+	 * @return The minimum rank property.
+	 */
+	public IntegerProperty minRankProperty() {
+		return minRank;
+	}
+
+	/**
+	 * @return The maximum rank property.
+	 */
+	public IntegerProperty maxRankProperty() {
+		return maxRank;
+	}
+
+	/**
+	 * Get the rank width.
+	 * @return the rank width.
+	 */
+	public int getRankWidth() {
+		return RANK_WIDTH;
 	}
 }

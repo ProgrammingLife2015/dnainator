@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.javafx.drawables.strains;
+package nl.tudelft.dnainator.javafx.drawables;
 
 /**
  * This enum holds zooming thresholds for the various zooming levels.
