@@ -95,9 +95,15 @@ public class Strain extends SemanticDrawable {
 	}
 
 	private Range getRange(Bounds bounds) {
-		minRank.set((int) (Math.max(bounds.getMinX() / RANK_WIDTH, 0)));
-		maxRank.set((int) (RANK_WIDTH + bounds.getMaxX() / RANK_WIDTH));
-		return new Range(minRank.get(), maxRank.get());
+		int min = (int) (Math.max(bounds.getMinX() / RANK_WIDTH, 0));
+		int max = (int) (RANK_WIDTH + bounds.getMaxX() / RANK_WIDTH);
+		min = Math.max(min, 0);
+		min = Math.min(min, graph.getMaxRank());
+		max = Math.max(min, max);
+		max = Math.min(max, graph.getMaxRank());
+		minRank.set(min);
+		maxRank.set(max);
+		return new Range(min, max);
 	}
 
 	private List<Annotation> getSortedAnnotations(Range ranks) {
