@@ -14,6 +14,11 @@ import java.util.NoSuchElementException;
  * An implementation for parsing the known drug resistant mutations file.
  */
 public class DRMutationParserImpl implements DRMutationParser {
+	private static final int TYPE_IDX = 0;
+	private static final int CHANGE_IDX = 1;
+	private static final int FILTER_IDX = 2;
+	private static final int POSITION_IDX = 3;
+
 	private BufferedReader br;
 	private DRMutation current;
 	private boolean needParse = true;
@@ -52,11 +57,13 @@ public class DRMutationParserImpl implements DRMutationParser {
 		int colon = curLine.indexOf(':');
 
 		String gene = curLine.substring(0, tab);
-//		String acid = curLine.substring(tab + 1);
+		String drug = curLine.substring(tab + 1);
+
 		String geneName = gene.substring(0, colon);
 		String[] geneInfo = gene.substring(colon + 1).split(",");
-		return new DRMutation(geneName, geneInfo[0], geneInfo[1], geneInfo[2],
-				Integer.parseInt(geneInfo[2 + 1])/*, acid*/);
+		
+		return new DRMutation(geneName, geneInfo[TYPE_IDX], geneInfo[CHANGE_IDX],
+				geneInfo[FILTER_IDX], Integer.parseInt(geneInfo[POSITION_IDX]), drug);
 	}
 
 	@Override

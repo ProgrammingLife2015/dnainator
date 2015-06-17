@@ -246,6 +246,7 @@ public final class Neo4jGraph implements Graph {
 			drannotation.setProperty(DRMutationProperties.CHANGE.name(), dr.getChange());
 			drannotation.setProperty(DRMutationProperties.FILTER.name(), dr.getFilter());
 			drannotation.setProperty(DRMutationProperties.TYPE.name(), dr.getPosition());
+			drannotation.setProperty(DRMutationProperties.DRUG.name(), dr.getDrug());
 			getAnnotationRange(new Range(dr.getPosition(), dr.getPosition() + 1), GET_SUB_RANGE)
 				.forEachRemaining(a -> a.createRelationshipTo(drannotation, RelTypes.MUTATION));
 		});

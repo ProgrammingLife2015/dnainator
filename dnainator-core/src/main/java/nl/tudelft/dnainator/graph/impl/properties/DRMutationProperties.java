@@ -8,5 +8,6 @@ public enum DRMutationProperties {
 	TYPE,
 	CHANGE,
 	FILTER,
-	POSITION
+	POSITION,
+	DRUG
 }

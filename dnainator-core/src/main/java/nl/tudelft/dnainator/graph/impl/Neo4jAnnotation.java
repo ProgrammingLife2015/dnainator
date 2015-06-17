@@ -1,19 +1,18 @@
 package nl.tudelft.dnainator.graph.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
-import org.neo4j.graphdb.Direction;
-import org.neo4j.graphdb.GraphDatabaseService;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.Transaction;
-
 import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.annotation.DRMutation;
 import nl.tudelft.dnainator.annotation.Range;
 import nl.tudelft.dnainator.graph.impl.properties.AnnotationProperties;
 import nl.tudelft.dnainator.graph.impl.properties.DRMutationProperties;
 import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
+import org.neo4j.graphdb.Direction;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Transaction;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * An {@link Annotation} which is stored in the Neo4j database.
@@ -50,7 +49,8 @@ public class Neo4jAnnotation implements Annotation {
 				String change	= (String) end.getProperty(DRMutationProperties.CHANGE.name());
 				String filter	= (String) end.getProperty(DRMutationProperties.FILTER.name());
 				int pos		= (int) end.getProperty(DRMutationProperties.POSITION.name());
-				mutations.add(new DRMutation(name, type, change, filter, pos));
+				String drug = (String) end.getProperty(DRMutationProperties.DRUG.name());
+				mutations.add(new DRMutation(name, type, change, filter, pos, drug));
 			});
 			tx.success();
 		}

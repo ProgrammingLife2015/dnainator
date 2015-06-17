@@ -134,8 +134,8 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 
 	/**
 	 * Connect a sequence node to an annotation node.
-	 * @param nodeId	the sequence node
-	 * @param source	the annotation
+	 * @param nodeId	    the sequence node
+	 * @param annotation	the annotation
 	 */
 	private void connectAnnotation(long nodeId, Annotation annotation) {
 		long annotationId = annotationIDToNodeID.get(annotation.getGeneName());
@@ -217,6 +217,7 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 		mutationProperties.put(DRMutationProperties.CHANGE.name(), dr.getChange());
 		mutationProperties.put(DRMutationProperties.FILTER.name(), dr.getFilter());
 		mutationProperties.put(DRMutationProperties.POSITION.name(), dr.getPosition());
+		mutationProperties.put(DRMutationProperties.DRUG.name(), dr.getDrug());
 		return batchInserter.createNode(mutationProperties, NodeLabels.DRMUTATION);
 	}
 
@@ -249,7 +250,7 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 
 	/**
 	 * Create a source node.
-	 * @param s	the source
+	 * @param source    the source
 	 * @return	the id of the created node
 	 */
 	private long createSource(String source) {
