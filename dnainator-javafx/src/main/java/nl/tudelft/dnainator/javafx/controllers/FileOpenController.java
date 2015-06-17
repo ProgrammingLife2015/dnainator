@@ -31,6 +31,7 @@ public class FileOpenController {
 	private static final String NODE = ".node.graph";
 	private static final String NEWICK = ".nwk";
 	private static final String GFF = ".gff";
+	private static final String DR = ".txt";
 
 	private static final int WIDTH = 550;
 	private static final int ANIM_DURATION = 250;
@@ -40,10 +41,12 @@ public class FileOpenController {
 	@SuppressWarnings("unused") @FXML private TextField edgeField;
 	@SuppressWarnings("unused") @FXML private TextField newickField;
 	@SuppressWarnings("unused") @FXML private TextField gffField;
+	@SuppressWarnings("unused") @FXML private TextField drField;
 	@SuppressWarnings("unused") @FXML private Label curNodeLabel;
 	@SuppressWarnings("unused") @FXML private Label curEdgeLabel;
 	@SuppressWarnings("unused") @FXML private Label curNewickLabel;
 	@SuppressWarnings("unused") @FXML private Label curGffLabel;
+	@SuppressWarnings("unused") @FXML private Label curDrLabel;
 	@SuppressWarnings("unused") @FXML private Button openButton;
 
 	private FileChooser fileChooser;
@@ -152,6 +155,15 @@ public class FileOpenController {
 		}
 	}
 
+	@SuppressWarnings("unused") @FXML
+	private void onDRFieldClicked() {
+		File drFile = selectFile("Drug resistant mutations file", DR);
+		if (drFile != null) {
+			graphLoadService.setDRFile(drFile);
+			drField.setText(graphLoadService.getDRFile().getAbsolutePath());
+		}
+	}
+
 	/*
 	 * If the open button is clicked, open the files if selected and hide the pane. Clears the
 	 * text fields and updates the current file labels if files are opened.
@@ -172,6 +184,10 @@ public class FileOpenController {
 			curGffLabel.setText(graphLoadService.getGffFilePath());
 			curNodeLabel.setText(graphLoadService.getNodeFile().getAbsolutePath());
 			curEdgeLabel.setText(graphLoadService.getEdgeFile().getAbsolutePath());
+
+			if (graphLoadService.getDRFile() != null) {
+				curDrLabel.setText(graphLoadService.getDRFile().getAbsolutePath());
+			}
 		}
 	}
 
@@ -183,6 +199,7 @@ public class FileOpenController {
 		graphLoadService.setNodeFile(null);
 		graphLoadService.setEdgeFile(null);
 		graphLoadService.setNewickFile(null);
+		graphLoadService.setDRFile(null);
 		resetTextFields();
 	}
 
@@ -191,6 +208,7 @@ public class FileOpenController {
 		edgeField.clear();
 		newickField.clear();
 		gffField.clear();
+		drField.clear();
 	}
 
 	/**

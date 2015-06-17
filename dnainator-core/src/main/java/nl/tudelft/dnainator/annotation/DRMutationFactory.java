@@ -20,7 +20,6 @@ public class DRMutationFactory {
 		try {
 			while (parser.hasNext()) {
 				DRMutation m = parser.next();
-				System.out.println(m);
 				annotations.addDRAnnotation(m);
 			}
 			parser.close();

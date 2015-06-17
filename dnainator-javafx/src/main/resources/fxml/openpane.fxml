@@ -34,6 +34,8 @@
             <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
             <Label text="Edge file:" GridPane.rowIndex="2" />
@@ -51,7 +53,10 @@
             <Label text="Annotations file:" GridPane.rowIndex="6" />
             <TextField fx:id="gffField" onMouseClicked="#onGFFFieldClicked" promptText="*.gff" GridPane.columnIndex="1" GridPane.rowIndex="6" />
             <Label fx:id="curGffLabel" styleClass="gray-label" stylesheets="@../style.css" text="Current annotations file: " GridPane.columnIndex="1" GridPane.rowIndex="7" />
-            <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="8">
+            <Label text="Known mutations file:" GridPane.rowIndex="8" />
+            <TextField fx:id="drField" onMouseClicked="#onDRFieldClicked" promptText="*.txt" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+            <Label fx:id="curDrLabel" styleClass="gray-label" stylesheets="@../style.css" text="Current known mutations file: " GridPane.columnIndex="1" GridPane.rowIndex="9" />
+            <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="10">
                <children>
                   <Button fx:id="openButton" disable="true" mnemonicParsing="false" onAction="#onOpenAction" text="Open" />
                   <Button mnemonicParsing="false" onAction="#onCancelAction" text="Cancel" />
