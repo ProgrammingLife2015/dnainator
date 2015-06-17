@@ -36,6 +36,7 @@ public class PropertyPaneController {
 	 * @param p The new {@link Propertyable} whose information to display.
 	 */
 	public void update(Propertyable p) {
+		onClickOpenPane();
 		propertyPane.getChildren().clear();
 		p.getPropertyMap().forEach((k, v) -> addLabel(k, v));
 	}
@@ -60,5 +61,14 @@ public class PropertyPaneController {
 	 */
 	public void toggle() {
 		animation.toggle();
+	}
+	
+	/**
+	 * Opens the {@link PropertyPane} when a drawable is clicked and it was not open.
+	 */
+	private void onClickOpenPane() {
+		if (!propertyPane.isVisible()) {
+			toggle();
+		}
 	}
 }

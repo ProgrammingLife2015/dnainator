@@ -27,4 +27,13 @@ public class UpSlideAnimation extends SlidingAnimation {
 			newSize = size * frac;
 		}
 	}
+
+	@Override
+	public void setVisibility(Pane pane, Position position) {
+		if (pos == Position.TOP && getRate() > 0) {
+			pane.setVisible(false);
+		} else if (pos == Position.BOTTOM && getRate() < 0) {
+			pane.setVisible(false);
+		}
+	}
 }
