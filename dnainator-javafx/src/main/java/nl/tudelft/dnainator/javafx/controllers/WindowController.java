@@ -5,10 +5,12 @@ import nl.tudelft.dnainator.javafx.views.AbstractView;
 import nl.tudelft.dnainator.javafx.views.PhylogeneticView;
 import nl.tudelft.dnainator.javafx.views.StrainView;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.AboutDialog;
+import nl.tudelft.dnainator.javafx.widgets.dialogs.HotkeyHelpDialog;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
+import javafx.scene.control.Menu;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
 
@@ -30,6 +32,11 @@ public class WindowController {
 	private PhylogeneticView phyloView;
 	@SuppressWarnings("unused") @FXML 
 	private PropertyPaneController propertyPaneController;
+	
+	@SuppressWarnings("unused") @FXML
+	private Menu menuFile;
+	@SuppressWarnings("unused") @FXML
+	private Menu menuView;
 
 	@SuppressWarnings("unused") @FXML
 	private void initialize() {
@@ -55,8 +62,7 @@ public class WindowController {
 		AbstractView.lastClickedProperty().addListener(
 				(ob, ov, nv) -> propertyPaneController.update(nv));
 	}
-
-
+	
 	@SuppressWarnings("unused") @FXML
 	private void openButtonAction() {
 		fileOpenController.toggle();
@@ -68,6 +74,12 @@ public class WindowController {
 		about.showAndWait();
 	}
 
+	@SuppressWarnings("unused") @FXML
+	private void hotkeyHelpAction(ActionEvent e) {
+		HotkeyHelpDialog hotkeyHelp = new HotkeyHelpDialog(root, menuFile, menuView);
+		hotkeyHelp.show();
+	}
+	
 	@SuppressWarnings("unused") @FXML
 	private void exitAction(ActionEvent e) {
 		Platform.exit();

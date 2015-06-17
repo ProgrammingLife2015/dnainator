@@ -14,6 +14,14 @@
 	-fx-font-weight: bold;
 }
 
+.hotkey-title {
+	-fx-font-weight: bold;
+}
+
+.hotkey-control {
+	-fx-font-family: Verdana;
+}
+
 .property-header {
 	-fx-font-weight: bold;
 }
