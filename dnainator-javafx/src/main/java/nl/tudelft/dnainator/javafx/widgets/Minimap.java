@@ -10,9 +10,11 @@ import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.javafx.drawables.strains.Strain;
 import nl.tudelft.dnainator.javafx.views.StrainView;
 
+import java.util.OptionalInt;
+
 /**
  * The minimap gives a global overview of the DNA strains in the {@link StrainView}, based on the
- * amount of ranks.
+ * amount of base pairs.
  */
 public class Minimap extends Pane {
 	private static final String VIEW_STYLE = "view";
@@ -22,7 +24,7 @@ public class Minimap extends Pane {
 	private Strain strain;
 	private Graph graph;
 	private StrainView strainView;
-	private DoubleProperty widthPerRank = new SimpleDoubleProperty(0, "widthPerRank");
+	private DoubleProperty widthPerBase = new SimpleDoubleProperty(0, "widthPerBase");
 
 	/**
 	 * Instantiates a new {@link Minimap}.
@@ -34,7 +36,7 @@ public class Minimap extends Pane {
 		this.strain = strain;
 		this.graph = graph;
 		this.strainView = strainView;
-		this.widthPerRank.bind(widthProperty().divide(graph.getMaxRank()));
+		this.widthPerBase.bind(widthProperty().divide(graph.getMaxBasePairs()));
 		setHeight(HEIGHT);
 
 		drawSpacer();
@@ -47,7 +49,7 @@ public class Minimap extends Pane {
 	private void drawSpacer() {
 		Rectangle spacer = new Rectangle();
 		spacer.getStyleClass().add(SPACER_STYLE);
-		spacer.widthProperty().bind(widthPerRank.multiply(graph.getMaxRank()));
+		spacer.widthProperty().bind(widthPerBase.multiply(graph.getMaxBasePairs()));
 		spacer.setHeight(SPACER_HEIGHT);
 		spacer.yProperty().bind(
 				heightProperty().divide(2).subtract(spacer.heightProperty().divide(2)));
@@ -57,15 +59,25 @@ public class Minimap extends Pane {
 	private void drawViewport() {
 		Rectangle view = new Rectangle();
 		view.getStyleClass().add(VIEW_STYLE);
-		view.xProperty().bind(strain.minRankProperty().multiply(widthPerRank));
 		view.heightProperty().bind(heightProperty());
-		view.widthProperty().bind(widthPerRank.multiply(
-				strain.maxRankProperty().subtract(strain.minRankProperty())));
+		strain.minRankProperty().addListener((obj, ov, nv) -> {
+			view.setX(getBasePairs(nv.intValue()) * widthPerBase.get());
+		});
+		strain.maxRankProperty().addListener((obj, ov, nv) -> {
+			view.setWidth(getBasePairs(nv.intValue()) * widthPerBase.get() - view.getX());
+		});
 		getChildren().add(view);
 	}
 
+	private int getBasePairs(int rank) {
+		return graph.getRank(rank).stream()
+				.mapToInt(n -> n.getBaseDistance())
+				.max().orElse(0);
+	}
+
 	private void onMouseClicked(MouseEvent e) {
-		int rank = (int) (e.getX() / widthPerRank.get());
+		int base = (int) (e.getX() / widthPerBase.get());
+		int rank = graph.getRankFromBasePair(base);
 		strainView.gotoRank(rank);
 	}
 }
