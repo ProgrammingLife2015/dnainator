@@ -16,9 +16,12 @@ import nl.tudelft.dnainator.graph.interestingness.InterestingnessStrategy;
 import nl.tudelft.dnainator.graph.interestingness.impl.SummingScoresStrategy;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 import nl.tudelft.dnainator.parser.AnnotationParser;
+import nl.tudelft.dnainator.tree.TreeNode;
 
+import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.ResourceIterator;
 import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.Transaction;
@@ -240,5 +243,29 @@ public final class Neo4jGraph implements Graph {
 	protected void analyze() {
 		// Rank the graph.
 		execute(e -> new AnalyzeCommand(rootIterator()).execute(e));
+	}
+
+	@Override
+	public TreeNode getTree() {
+		return query(e -> {
+			ResourceIterator<Node> dbroots = e.execute(GET_PHYLO_ROOT).columnAs("n");
+			Node dbroot = dbroots.next();
+
+			return getTree(dbroot, new TreeNode(null));
+		});
+	}
+
+	private TreeNode getTree(Node parent, TreeNode treeparent) {
+		for (Relationship r : parent.getRelationships(Direction.OUTGOING, RelTypes.ANCESTOR_OF)) {
+			TreeNode child = new TreeNode(treeparent);
+			child.setDistance((int) parent.getProperty(PropertyTypes.DIST_TO_ROOT.name()) + 1);
+
+			if (r.getEndNode().hasLabel(NodeLabels.SOURCE)) {
+				child.setName((String) r.getEndNode().getProperty(PropertyTypes.SOURCE.name()));
+			} else {
+				getTree(r.getEndNode(), child);
+			}
+		}
+		return treeparent;
 	}
 }
