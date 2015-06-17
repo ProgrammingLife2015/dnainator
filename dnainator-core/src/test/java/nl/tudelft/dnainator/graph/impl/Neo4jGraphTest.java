@@ -9,6 +9,7 @@ import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.core.impl.SequenceNodeFactoryImpl;
 import nl.tudelft.dnainator.core.impl.SequenceNodeImpl;
 import nl.tudelft.dnainator.graph.impl.command.AnalyzeCommand;
+import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
@@ -20,7 +21,10 @@ import nl.tudelft.dnainator.parser.impl.NodeParserImpl;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.neo4j.graphdb.Direction;
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
+import org.neo4j.helpers.collection.IteratorUtil;
 import org.neo4j.io.fs.FileUtils;
 
 import java.io.BufferedReader;
@@ -37,7 +41,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static nl.tudelft.dnainator.graph.impl.properties.SequenceProperties.ID;
-
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -125,6 +128,7 @@ public class Neo4jGraphTest {
 
 	/**
 	 * Unit-test the topological ordering.
+	 */
 	@Test
 	public void testTopologicalOrder() {
 		LinkedList<Integer> order = new LinkedList<>();
@@ -154,7 +158,6 @@ public class Neo4jGraphTest {
 			e.printStackTrace();
 		}
 	}
-	 */
 
 	/**
 	 * Tests the rank attributes for correctness.
@@ -169,20 +172,17 @@ public class Neo4jGraphTest {
 		Collections.addAll(rank1Expect, "11", "2");
 		assertUnorderedIDEquals(rank1Expect, db.getRank(1));
 		Set<String> rank2Expect = new HashSet<>();
-		Collections.addAll(rank2Expect, "12", "3", "7");
+		Collections.addAll(rank2Expect, "13", "14", "3", "7");
 		assertUnorderedIDEquals(rank2Expect, db.getRank(2));
 		Set<String> rank3Expect = new HashSet<>();
-		Collections.addAll(rank3Expect, "4", "8", "10");
+		Collections.addAll(rank3Expect, "12", "4", "8", "10");
 		assertUnorderedIDEquals(rank3Expect, db.getRank(3));
 		Set<String> rank4Expect = new HashSet<>();
-		Collections.addAll(rank4Expect, "9");
+		Collections.addAll(rank4Expect, "5");
 		assertUnorderedIDEquals(rank4Expect, db.getRank(4));
 		Set<String> rank5Expect = new HashSet<>();
-		Collections.addAll(rank5Expect, "5");
+		Collections.addAll(rank5Expect, "6");
 		assertUnorderedIDEquals(rank5Expect, db.getRank(5));
-		Set<String> rank6Expect = new HashSet<>();
-		Collections.addAll(rank6Expect, "6");
-		assertUnorderedIDEquals(rank6Expect, db.getRank(6));
 		// CHECKSTYLE.ON: MagicNumber
 	}
 
@@ -233,7 +233,7 @@ public class Neo4jGraphTest {
 			.filter((sn) -> Integer.parseInt(sn.getId()) > 8);
 		// CHECKSTYLE.ON: MagicNumber
 		Set<String> expect = new HashSet<>();
-		Collections.addAll(expect, "9", "10", "11", "12");
+		Collections.addAll(expect, "10", "11", "12", "13", "14");
 		assertUnorderedIDEquals(expect, db.queryNodes(qd));
 	}
 
@@ -245,7 +245,7 @@ public class Neo4jGraphTest {
 		GraphQueryDescription qd = new GraphQueryDescription()
 			.containsSource("A");
 		Set<String> expect = new HashSet<>();
-		Collections.addAll(expect, "1", "2", "5", "6", "7", "8", "9");
+		Collections.addAll(expect, "1", "2", "5", "6", "7", "8");
 		assertUnorderedIDEquals(expect, db.queryNodes(qd));
 
 		// Also test for multiple sources (reusing the old one)
@@ -293,6 +293,35 @@ public class Neo4jGraphTest {
 		assertEquals(expected.stream().collect(Collectors.toSet()),
 				actual.stream().map(sn -> sn.getId()).collect(Collectors.toSet()));
 	}
+
+	/**
+	 * Test bubble creation.
+	 */
+	@Test
+	public void testBubbles() {
+		db.execute(service -> {
+			assertBubble(service, "1", "6");
+			assertBubble(service, "2", "5");
+			assertBubble(service, "7", "5");
+			assertBubble(service, "11", "12");
+		});
+	}
+
+	private void assertBubble(GraphDatabaseService service, String source, String sink) {
+		Node sourceN = service.findNode(NodeLabels.BUBBLE_SOURCE,
+				SequenceProperties.ID.name(), source);
+		Node sinkN = service.findNode(NodeLabels.BUBBLE_SINK,
+				SequenceProperties.ID.name(), sink);
+		assertTrue(IteratorUtil.asCollection(sourceN.getRelationships(RelTypes.BUBBLE_SOURCE_OF,
+				Direction.OUTGOING)).stream()
+				.map(rel -> rel.getEndNode())
+				.anyMatch(n -> n.getId() == sinkN.getId()));
+		assertTrue(IteratorUtil.asCollection(sinkN.getRelationships(RelTypes.BUBBLE_SINK_OF,
+				Direction.OUTGOING)).stream()
+				.map(rel -> rel.getEndNode())
+				.anyMatch(n -> n.getId() == sourceN.getId()));
+	}
+
 	/**
 	 * Clean up after ourselves.
 	 * @throws IOException when the database could not be deleted
