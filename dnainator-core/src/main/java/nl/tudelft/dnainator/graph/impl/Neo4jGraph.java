@@ -10,6 +10,10 @@ import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.command.AnalyzeCommand;
 import nl.tudelft.dnainator.graph.impl.command.Command;
+import nl.tudelft.dnainator.graph.impl.properties.AnnotationProperties;
+import nl.tudelft.dnainator.graph.impl.properties.PhylogenyProperties;
+import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
+import nl.tudelft.dnainator.graph.impl.properties.SourceProperties;
 import nl.tudelft.dnainator.graph.impl.query.AllClustersQuery;
 import nl.tudelft.dnainator.graph.impl.query.Query;
 import nl.tudelft.dnainator.graph.interestingness.InterestingnessStrategy;
@@ -40,33 +44,33 @@ import java.util.Map;
  */
 public final class Neo4jGraph implements Graph {
 	private static final String GET_MAX_RANK = "MATCH (n:" + NodeLabels.NODE.name() + ") "
-			+ "RETURN MAX(n." + PropertyTypes.RANK.name() + ") AS max";
+			+ "RETURN MAX(n." + SequenceProperties.RANK.name() + ") AS max";
 	private static final String GET_MAX_BASEPAIRS = "MATCH (n:" + NodeLabels.NODE.name() + ") "
-			+ "RETURN MAX(n." + PropertyTypes.BASE_DIST.name() + ") AS max";
+			+ "RETURN MAX(n." + SequenceProperties.BASE_DIST.name() + ") AS max";
 	private static final String GET_RANK_FROM_BASEPAIR = "MATCH (n:" + NodeLabels.NODE.name() + ") "
-			+ "WHERE {dist} > n." + PropertyTypes.BASE_DIST.name()
-			+ " AND {dist} < n." + PropertyTypes.BASE_DIST.name()
-			+ " + n." + Scores.SEQ_LENGTH.name() + " RETURN n." + PropertyTypes.RANK.name()
+			+ "WHERE {dist} > n." + SequenceProperties.BASE_DIST.name()
+			+ " AND {dist} < n." + SequenceProperties.BASE_DIST.name()
+			+ " + n." + Scores.SEQ_LENGTH.name() + " RETURN n." + SequenceProperties.RANK.name()
 			+ " AS rank";
 	private static final String GET_ROOT = "MATCH (s:" + NodeLabels.NODE.name() + ") "
 			+ "WHERE NOT (s)<-[:NEXT]-(:" + NodeLabels.NODE.name() + ") "
 			+ "RETURN s";
 	private static final String GET_PHYLO_ROOT =
 			"MATCH n-[r:" + RelTypes.ANCESTOR_OF.name() + "]->s "
-			+ "WHERE n." + PropertyTypes.DIST_TO_ROOT.name() + " = 0 RETURN n";
-	private static final String GET_RANGE =
+			+ "WHERE n." + PhylogenyProperties.DIST_TO_ROOT.name() + " = 0 RETURN n";
+	private static final String GET_REF_RANGE =
 			"MATCH (n:" + NodeLabels.NODE.name() + ")-[r:" + NodeLabels.SOURCE.name() + "]->s "
-			+ "WHERE s." + PropertyTypes.SOURCE.name() + " = \"TKK_REF\" "
-			+ "AND n." + PropertyTypes.STARTREF.name() + " <= {to} "
-			+ "AND n." + PropertyTypes.ENDREF.name() + " >= {from} RETURN n";
+			+ "WHERE s." + SourceProperties.SOURCE.name() + " = \"TKK_REF\" "
+			+ "AND n." + SequenceProperties.STARTREF.name() + " <= {to} "
+			+ "AND n." + SequenceProperties.ENDREF.name() + " >= {from} RETURN n";
 	private static final String GET_SUB_RANGE =
 			"MATCH (a:" + NodeLabels.ANNOTATION.name() + ") "
-			+ "WHERE a." + PropertyTypes.STARTREF.name() + " < {to} "
-			+ "AND a." + PropertyTypes.ENDREF.name() + " >= {from} RETURN a";
+			+ "WHERE a." + AnnotationProperties.STARTREF.name() + " < {to} "
+			+ "AND a." + AnnotationProperties.ENDREF.name() + " >= {from} RETURN a";
 	private static final String GET_ANNOTATION_BY_RANK =
 			"MATCH (n:" + NodeLabels.NODE.name() + ")-[r:" + RelTypes.ANNOTATED.name() + "]->a "
-			+ "WHERE n." + PropertyTypes.RANK.name() + " >= {from} "
-			+   "AND n." + PropertyTypes.RANK.name() + " <= {to} RETURN DISTINCT a";
+			+ "WHERE n." + SequenceProperties.RANK.name() + " >= {from} "
+			+   "AND n." + SequenceProperties.RANK.name() + " <= {to} RETURN DISTINCT a";
 
 	private GraphDatabaseService service;
 	private InterestingnessStrategy is;
@@ -112,7 +116,7 @@ public final class Neo4jGraph implements Graph {
 	@Override
 	public EnrichedSequenceNode getNode(String s) {
 		return query(e -> createSequenceNode(e.findNode(NodeLabels.NODE,
-				PropertyTypes.ID.name(), s)));
+				SequenceProperties.ID.name(), s)));
 	}
 
 	@Override
@@ -124,7 +128,7 @@ public final class Neo4jGraph implements Graph {
 	public List<EnrichedSequenceNode> getRank(int rank) {
 		return query(e -> {
 			ResourceIterator<Node> res = e.findNodes(NodeLabels.NODE,
-					PropertyTypes.RANK.name(), rank);
+					SequenceProperties.RANK.name(), rank);
 			List<EnrichedSequenceNode> nodes = new LinkedList<>();
 			res.forEachRemaining(n -> nodes.add(createSequenceNode(n)));
 
@@ -217,12 +221,12 @@ public final class Neo4jGraph implements Graph {
 		parameters.put("to", a.getEnd());
 		execute(e -> {
 			Node annotation = e.createNode(NodeLabels.ANNOTATION);
-			annotation.setProperty(PropertyTypes.ID.name(), a.getGeneName());
-			annotation.setProperty(PropertyTypes.STARTREF.name(), a.getStart());
-			annotation.setProperty(PropertyTypes.ENDREF.name(), a.getEnd());
-			annotation.setProperty(PropertyTypes.SENSE.name(), a.isSense());
+			annotation.setProperty(AnnotationProperties.ID.name(), a.getGeneName());
+			annotation.setProperty(AnnotationProperties.STARTREF.name(), a.getStart());
+			annotation.setProperty(AnnotationProperties.ENDREF.name(), a.getEnd());
+			annotation.setProperty(AnnotationProperties.SENSE.name(), a.isSense());
 
-			ResourceIterator<Node> nodes = service.execute(GET_RANGE, parameters).columnAs("n");
+			ResourceIterator<Node> nodes = service.execute(GET_REF_RANGE, parameters).columnAs("n");
 			nodes.forEachRemaining(n -> n.createRelationshipTo(annotation, RelTypes.ANNOTATED));
 		});
 	}
@@ -279,10 +283,11 @@ public final class Neo4jGraph implements Graph {
 	private TreeNode getTree(Node parent, TreeNode treeparent) {
 		for (Relationship r : parent.getRelationships(Direction.OUTGOING, RelTypes.ANCESTOR_OF)) {
 			TreeNode child = new TreeNode(treeparent);
-			child.setDistance((int) parent.getProperty(PropertyTypes.DIST_TO_ROOT.name()) + 1);
+			child.setDistance((int) parent.getProperty(PhylogenyProperties
+									.DIST_TO_ROOT.name()) + 1);
 
 			if (r.getEndNode().hasLabel(NodeLabels.SOURCE)) {
-				child.setName((String) r.getEndNode().getProperty(PropertyTypes.SOURCE.name()));
+				child.setName((String) r.getEndNode().getProperty(SourceProperties.SOURCE.name()));
 			} else {
 				getTree(r.getEndNode(), child);
 			}

@@ -8,6 +8,7 @@ import org.neo4j.graphdb.Label;
 public enum NodeLabels implements Label {
 	ANCESTOR,
 	ANNOTATION,
+	DRUGRESISTANCE,
 	SOURCE,
 	NODE
 }

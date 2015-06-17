@@ -1,7 +1,7 @@
 package nl.tudelft.dnainator.graph.impl.query;
 
 import nl.tudelft.dnainator.graph.impl.Neo4jScoreContainer;
-import nl.tudelft.dnainator.graph.impl.PropertyTypes;
+import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
 import nl.tudelft.dnainator.graph.interestingness.InterestingnessStrategy;
 
 import org.neo4j.graphdb.Node;
@@ -11,7 +11,7 @@ import org.neo4j.graphdb.traversal.Evaluator;
 
 import java.util.Set;
 
-import static nl.tudelft.dnainator.graph.impl.PropertyTypes.ID;
+import static nl.tudelft.dnainator.graph.impl.properties.SequenceProperties.ID;
 
 /**
  * Evaluates whether a node is part of a cluster based on the given threshold.
@@ -52,7 +52,7 @@ public class ClusterEvaluator implements Evaluator {
 	public Evaluation evaluate(Path path) {
 		Node end = path.endNode();
 		int score = is.compute(new Neo4jScoreContainer(end));
-		end.setProperty(PropertyTypes.INTERESTINGNESS.name(), score);
+		end.setProperty(SequenceProperties.INTERESTINGNESS.name(), score);
 		String id = (String) end.getProperty(ID.name());
 
 		if (!visited.contains(id)

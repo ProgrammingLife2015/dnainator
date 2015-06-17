@@ -10,6 +10,8 @@ import org.neo4j.graphdb.Transaction;
 
 import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.annotation.Range;
+import nl.tudelft.dnainator.graph.impl.properties.AnnotationProperties;
+import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
 
 /**
  * An {@link Annotation} which is stored in the Neo4j database.
@@ -27,14 +29,16 @@ public class Neo4jAnnotation implements Annotation {
 	 */
 	public Neo4jAnnotation(GraphDatabaseService service, Node delegate) {
 		try (Transaction tx = service.beginTx()) {
-			this.geneName = (String) delegate.getProperty(PropertyTypes.ID.name());
-			this.range = new Range((Integer) delegate.getProperty(PropertyTypes.STARTREF.name()),
-					(Integer) delegate.getProperty(PropertyTypes.ENDREF.name()));
-			this.isSense = (Boolean) delegate.getProperty(PropertyTypes.SENSE.name());
+			this.geneName = (String) delegate.getProperty(AnnotationProperties.ID.name());
+			this.range = new Range((int) delegate.getProperty(AnnotationProperties.STARTREF.name()),
+					(Integer) delegate.getProperty(AnnotationProperties.ENDREF.name()));
+			this.isSense = (Boolean) delegate.getProperty(AnnotationProperties.SENSE.name());
 			this.annotatedNodes = new ArrayList<>();
-			delegate.getRelationships(Direction.INCOMING, RelTypes.ANNOTATED).forEach(e -> {
-				annotatedNodes.add((String) e.getStartNode().getProperty(PropertyTypes.ID.name()));
-			});
+			delegate.getRelationships(Direction.INCOMING, RelTypes.ANNOTATED).forEach(e ->
+				annotatedNodes.add(
+					(String) e.getStartNode().getProperty(SequenceProperties.ID.name())
+				)
+			);
 			tx.success();
 		}
 	}

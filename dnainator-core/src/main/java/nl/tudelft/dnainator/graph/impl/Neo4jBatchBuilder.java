@@ -6,6 +6,10 @@ import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.GraphBuilder;
+import nl.tudelft.dnainator.graph.impl.properties.AnnotationProperties;
+import nl.tudelft.dnainator.graph.impl.properties.PhylogenyProperties;
+import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
+import nl.tudelft.dnainator.graph.impl.properties.SourceProperties;
 import nl.tudelft.dnainator.graph.interestingness.Scores;
 import nl.tudelft.dnainator.tree.TreeNode;
 
@@ -105,19 +109,19 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 	 */
 	private void createIndicesAndConstraints() {
 		batchInserter.createDeferredConstraint(NodeLabels.NODE)
-			.assertPropertyIsUnique(PropertyTypes.ID.name())
+			.assertPropertyIsUnique(SequenceProperties.ID.name())
+			.create();
+		batchInserter.createDeferredSchemaIndex(NodeLabels.NODE)
+			.on(SequenceProperties.RANK.name())
+			.create();
+		batchInserter.createDeferredSchemaIndex(NodeLabels.NODE)
+			.on(SequenceProperties.STARTREF.name())
+			.create();
+		batchInserter.createDeferredSchemaIndex(NodeLabels.NODE)
+			.on(SequenceProperties.ENDREF.name())
 			.create();
 		batchInserter.createDeferredConstraint(NodeLabels.SOURCE)
-			.assertPropertyIsUnique(PropertyTypes.SOURCE.name())
-			.create();
-		batchInserter.createDeferredSchemaIndex(NodeLabels.NODE)
-			.on(PropertyTypes.RANK.name())
-			.create();
-		batchInserter.createDeferredSchemaIndex(NodeLabels.NODE)
-			.on(PropertyTypes.STARTREF.name())
-			.create();
-		batchInserter.createDeferredSchemaIndex(NodeLabels.NODE)
-			.on(PropertyTypes.ENDREF.name())
+			.assertPropertyIsUnique(SourceProperties.SOURCE.name())
 			.create();
 	}
 
@@ -181,10 +185,10 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 	 * @return	the id of the created node
 	 */
 	private long createAnnotation(Annotation a) {
-		annotationProperties.put(PropertyTypes.ID.name(), a.getGeneName());
-		annotationProperties.put(PropertyTypes.STARTREF.name(), a.getStart());
-		annotationProperties.put(PropertyTypes.ENDREF.name(), a.getEnd());
-		annotationProperties.put(PropertyTypes.SENSE.name(), a.isSense());
+		annotationProperties.put(AnnotationProperties.ID.name(), a.getGeneName());
+		annotationProperties.put(AnnotationProperties.STARTREF.name(), a.getStart());
+		annotationProperties.put(AnnotationProperties.ENDREF.name(), a.getEnd());
+		annotationProperties.put(AnnotationProperties.SENSE.name(), a.isSense());
 		return batchInserter.createNode(annotationProperties, NodeLabels.ANNOTATION);
 	}
 
@@ -195,7 +199,7 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 	 */
 	private long createAncestor(int distanceToRoot) {
 		return batchInserter.createNode(
-				Collections.singletonMap(PropertyTypes.DIST_TO_ROOT.name(), distanceToRoot),
+				Collections.singletonMap(PhylogenyProperties.DIST_TO_ROOT.name(), distanceToRoot),
 				NodeLabels.ANCESTOR);
 	}
 
@@ -205,12 +209,12 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 	 * @return	the id of the created node
 	 */
 	private long createNode(SequenceNode s) {
-		nodeProperties.put(PropertyTypes.ID.name(), s.getId());
-		nodeProperties.put(PropertyTypes.STARTREF.name(), s.getStartRef());
-		nodeProperties.put(PropertyTypes.ENDREF.name(), s.getEndRef());
-		nodeProperties.put(PropertyTypes.SEQUENCE.name(), s.getSequence());
-		nodeProperties.put(PropertyTypes.BASE_DIST.name(), 0);
-		nodeProperties.put(PropertyTypes.RANK.name(), 0);
+		nodeProperties.put(SequenceProperties.ID.name(), s.getId());
+		nodeProperties.put(SequenceProperties.STARTREF.name(), s.getStartRef());
+		nodeProperties.put(SequenceProperties.ENDREF.name(), s.getEndRef());
+		nodeProperties.put(SequenceProperties.SEQUENCE.name(), s.getSequence());
+		nodeProperties.put(SequenceProperties.BASE_DIST.name(), 0);
+		nodeProperties.put(SequenceProperties.RANK.name(), 0);
 		nodeProperties.put(Scores.SEQ_LENGTH.name(), s.getSequence().length());
 		return batchInserter.createNode(nodeProperties, NodeLabels.NODE);
 	}
@@ -222,7 +226,7 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 	 */
 	private long createSource(String source) {
 		return batchInserter.createNode(
-				Collections.singletonMap(PropertyTypes.SOURCE.name(), source),
+				Collections.singletonMap(SourceProperties.SOURCE.name(), source),
 				NodeLabels.SOURCE);
 	}
 }

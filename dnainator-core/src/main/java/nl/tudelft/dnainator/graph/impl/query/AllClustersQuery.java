@@ -5,8 +5,8 @@ import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.graph.impl.Neo4jSequenceNode;
 import nl.tudelft.dnainator.graph.impl.NodeLabels;
-import nl.tudelft.dnainator.graph.impl.PropertyTypes;
 import nl.tudelft.dnainator.graph.impl.RelTypes;
+import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
 import nl.tudelft.dnainator.graph.interestingness.InterestingnessStrategy;
 
 import org.neo4j.graphdb.Direction;
@@ -101,7 +101,7 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 
 	private Cluster cluster(GraphDatabaseService service, String start) {
 		Cluster cluster = null;
-		Node startNode = service.findNode(NodeLabels.NODE, PropertyTypes.ID.name(), start);
+		Node startNode = service.findNode(NodeLabels.NODE, SequenceProperties.ID.name(), start);
 		List<Node> result = new ArrayList<>();
 
 		// A depth first traversal traveling along both incoming and outgoing edges.
@@ -110,12 +110,12 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 						.relationships(RelTypes.NEXT, Direction.BOTH)
 						.evaluator(new ClusterEvaluator(threshold, visited, is));
 		// Traverse the cluster starting from the startNode.
-		int rankStart = (int) startNode.getProperty(PropertyTypes.RANK.name());
+		int rankStart = (int) startNode.getProperty(SequenceProperties.RANK.name());
 		for (Node end : clusterDesc.traverse(startNode).nodes()) {
 			result.add(end);
 
 			// Update this cluster's start rank according to the lowest node rank.
-			int endRank = (int) startNode.getProperty(PropertyTypes.RANK.name());
+			int endRank = (int) startNode.getProperty(SequenceProperties.RANK.name());
 			if (endRank < rankStart) {
 				rankStart = endRank;
 			}
