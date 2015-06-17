@@ -17,7 +17,6 @@ public class RightSlideAnimation extends SlidingAnimation {
 	 */
 	public RightSlideAnimation(Pane pane, double size, double duration, Position pos) {
 		super(pane, size, duration, pos);
-		setVisibility(pane, pos);
 	}
 
 	@Override
