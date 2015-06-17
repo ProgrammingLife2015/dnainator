@@ -10,8 +10,6 @@ import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.javafx.drawables.strains.Strain;
 import nl.tudelft.dnainator.javafx.views.StrainView;
 
-import java.util.OptionalInt;
-
 /**
  * The minimap gives a global overview of the DNA strains in the {@link StrainView}, based on the
  * amount of base pairs.

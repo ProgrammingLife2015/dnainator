@@ -56,8 +56,9 @@ public interface Graph extends AnnotationCollection {
 
 	/**
 	 * Return the rank belonging to the given base pair.
-	 * @return  the base pair whose rank to find
-	 */
+	 * @param base  the base pair whose rank to find
+	 * @return  the rank beloning to the given base pair
+	 * */
 	int getRankFromBasePair(int base);
 
 	/**
