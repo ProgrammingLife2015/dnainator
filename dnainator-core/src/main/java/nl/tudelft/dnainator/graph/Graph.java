@@ -55,6 +55,12 @@ public interface Graph extends AnnotationCollection {
 	int getMaxBasePairs();
 
 	/**
+	 * Return the rank belonging to the given base pair.
+	 * @return  the base pair whose rank to find
+	 */
+	int getRankFromBasePair(int base);
+
+	/**
 	 * Return a list of nodes that belong to the same cluster as the given startId.
 	 * @param startNodes	the start nodes
 	 * @param end		the maximum rank of the cluster

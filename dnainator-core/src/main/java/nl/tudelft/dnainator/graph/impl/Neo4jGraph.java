@@ -13,6 +13,7 @@ import nl.tudelft.dnainator.graph.impl.command.AnalyzeCommand;
 import nl.tudelft.dnainator.graph.impl.query.AllClustersQuery;
 import nl.tudelft.dnainator.graph.impl.query.Query;
 import nl.tudelft.dnainator.graph.interestingness.InterestingnessStrategy;
+import nl.tudelft.dnainator.graph.interestingness.Scores;
 import nl.tudelft.dnainator.graph.interestingness.impl.SummingScoresStrategy;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 import nl.tudelft.dnainator.parser.AnnotationParser;
@@ -25,6 +26,7 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,6 +40,11 @@ public final class Neo4jGraph implements Graph {
 			+ "RETURN MAX(n." + PropertyTypes.RANK.name() + ") AS max";
 	private static final String GET_MAX_BASEPAIRS = "MATCH (n:" + NodeLabels.NODE.name() + ") "
 			+ "RETURN MAX(n." + PropertyTypes.BASE_DIST.name() + ") AS max";
+	private static final String GET_RANK_FROM_BASEPAIR = "MATCH (n:" + NodeLabels.NODE.name() + ") "
+			+ "WHERE {dist} > n." + PropertyTypes.BASE_DIST.name()
+			+ " AND {dist} < n." + PropertyTypes.BASE_DIST.name()
+			+ " + n." + Scores.SEQ_LENGTH.name() + " RETURN n." + PropertyTypes.RANK.name()
+			+ " AS rank";
 	private static final String GET_ROOT = "MATCH (s:" + NodeLabels.NODE.name() + ") "
 			+ "WHERE NOT (s)<-[:NEXT]-(:" + NodeLabels.NODE.name() + ") "
 			+ "RETURN s";
@@ -137,6 +144,13 @@ public final class Neo4jGraph implements Graph {
 	@Override
 	public int getMaxBasePairs() {
 		return query(e -> (int) e.execute(GET_MAX_BASEPAIRS).columnAs("max").next());
+	}
+
+	@Override
+	public int getRankFromBasePair(int base) {
+		Map<String, Object> parameters = Collections.singletonMap("dist", base);
+		return query(e -> (int) e.execute(GET_RANK_FROM_BASEPAIR, parameters)
+				.columnAs("rank").next());
 	}
 
 	@Override
