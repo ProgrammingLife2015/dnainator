@@ -7,15 +7,12 @@
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.BorderPane?>
-<?import java.lang.*?>
-<?import nl.tudelft.dnainator.javafx.views.*?>
-<?import nl.tudelft.dnainator.javafx.widgets.*?>
 
-<BorderPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.dnainator.javafx.controllers.WindowController">
+<BorderPane fx:id="root" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" stylesheets="@../style.css" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.dnainator.javafx.controllers.WindowController">
    <top>
       <MenuBar useSystemMenuBar="true" BorderPane.alignment="CENTER">
         <menus>
-          <Menu mnemonicParsing="false" text="File">
+          <Menu fx:id="menuFile" mnemonicParsing="false" text="File">
             <items>
               <MenuItem onAction="#openButtonAction" text="Open...">
                      <accelerator>
@@ -25,7 +22,7 @@
                   <MenuItem mnemonicParsing="false" onAction="#exitAction" text="Exit" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="View">
+          <Menu fx:id="menuView" mnemonicParsing="false" text="View">
             <items>
                   <MenuItem mnemonicParsing="false" onAction="#zoomInAction" text="Zoom in">
                      <accelerator>
@@ -65,7 +62,11 @@
           </Menu>
             <Menu mnemonicParsing="false" text="Help">
               <items>
-                <MenuItem id="about" mnemonicParsing="false" onAction="#aboutUsAction" text="About DNAinator" />
+                <MenuItem mnemonicParsing="false" onAction="#hotkeyHelpAction" text="Hotkeys">
+                     <accelerator>
+                        <KeyCodeCombination alt="UP" code="F1" control="UP" meta="UP" shift="UP" shortcut="ANY" />
+                     </accelerator></MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#aboutUsAction" text="About DNAinator" />
               </items>
             </Menu>
         </menus>
@@ -75,7 +76,7 @@
       <fx:include fx:id="welcome" source="welcome.fxml" />
    </center>
    <left>
-      <fx:include fx:id="fileOpen" source="openpane.fxml"/>
+      <fx:include fx:id="fileOpen" source="openpane.fxml" />
    </left>
    <right>
       <fx:include fx:id="propertyPane" source="propertypane.fxml" />
