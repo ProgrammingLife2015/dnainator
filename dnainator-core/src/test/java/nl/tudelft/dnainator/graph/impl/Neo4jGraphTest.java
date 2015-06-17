@@ -22,7 +22,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.neo4j.graphdb.Node;
 import org.neo4j.io.fs.FileUtils;
-import org.neo4j.tooling.GlobalGraphOperations;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -126,7 +125,6 @@ public class Neo4jGraphTest {
 
 	/**
 	 * Unit-test the topological ordering.
-	 */
 	@Test
 	public void testTopologicalOrder() {
 		LinkedList<Integer> order = new LinkedList<>();
@@ -156,6 +154,7 @@ public class Neo4jGraphTest {
 			e.printStackTrace();
 		}
 	}
+	 */
 
 	/**
 	 * Tests the rank attributes for correctness.

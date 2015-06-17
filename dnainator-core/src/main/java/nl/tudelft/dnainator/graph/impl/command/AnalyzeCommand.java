@@ -1,9 +1,5 @@
 package nl.tudelft.dnainator.graph.impl.command;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import nl.tudelft.dnainator.graph.impl.NodeLabels;
 import nl.tudelft.dnainator.graph.impl.RelTypes;
 import nl.tudelft.dnainator.graph.interestingness.Scores;
 
@@ -27,7 +23,6 @@ import static org.neo4j.helpers.collection.IteratorUtil.loop;
  */
 public class AnalyzeCommand implements Command {
 	private ResourceIterator<Node> roots;
-	private Map<Integer, Node> numStrainsToBubbleSource;
 
 	/**
 	 * Create a new {@link AnalyzeCommand} that will
@@ -36,7 +31,6 @@ public class AnalyzeCommand implements Command {
 	 */
 	public AnalyzeCommand(ResourceIterator<Node> roots) {
 		this.roots = roots;
-		this.numStrainsToBubbleSource = new HashMap<>();
 	}
 
 	/**
@@ -63,24 +57,8 @@ public class AnalyzeCommand implements Command {
 		) {
 			for (Node n : topologicalOrder(service)) {
 				rankDest(n);
-				createBubbleSinkAndOrSource(n);
 			}
 			tx.success();
-		}
-	}
-
-	private void createBubbleSinkAndOrSource(Node n) {
-		if (n.getDegree(RelTypes.NEXT, Direction.OUTGOING) >= 2) {
-			n.addLabel(NodeLabels.BUBBLE_SOURCE);
-			numStrainsToBubbleSource.put(n.getDegree(RelTypes.SOURCE), n);
-		}
-		if (n.getDegree(RelTypes.NEXT, Direction.INCOMING) >= 2) {
-			n.addLabel(NodeLabels.BUBBLE_SINK);
-			// This works because we traverse in depth first and topological order.
-			// Furthermore, the number of strains always get smaller in nested bubbles.
-			Node bubbleSource = numStrainsToBubbleSource.remove(n.getDegree(RelTypes.SOURCE));
-			n.createRelationshipTo(bubbleSource, RelTypes.BUBBLE_SINK_OF);
-			bubbleSource.createRelationshipTo(n, RelTypes.BUBBLE_SOURCE_OF);
 		}
 	}
 
