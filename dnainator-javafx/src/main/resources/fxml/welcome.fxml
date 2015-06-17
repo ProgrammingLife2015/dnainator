@@ -12,20 +12,20 @@
 
 <AnchorPane xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.dnainator.javafx.controllers.WelcomeController">
    <children>
-      <ListView fx:id="list" onKeyPressed="#onKeyPressed" onMouseClicked="#onMouseClicked" prefHeight="200.0" prefWidth="400.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="100.0">
+      <ListView fx:id="list" onKeyPressed="#onKeyPressed" onMouseClicked="#onMouseClicked" prefHeight="200.0" prefWidth="400.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="100.0">
         <items>
           <FXCollections fx:factory="observableArrayList">
              <String fx:id="selectDB" fx:value="Select a directory containing databases..." />
           </FXCollections>
         </items>
       </ListView>
-        <Label alignment="CENTER" text="Welcome" textAlignment="CENTER" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="20.0">
+        <Label alignment="CENTER" text="Welcome" textAlignment="CENTER" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="20.0">
             <font>
                 <Font size="32.0" />
             </font>
         </Label>
-      <Label alignment="CENTER" text="Please choose a database to open, or press Ctrl+O to open a new file" textAlignment="CENTER" AnchorPane.leftAnchor="100.0" AnchorPane.rightAnchor="100.0" AnchorPane.topAnchor="80.0" />
-      <ButtonBar prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="32.0">
+      <Label alignment="CENTER" text="Please choose a database to open, or press Ctrl+O to open a new file" textAlignment="CENTER" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="80.0" />
+      <ButtonBar prefHeight="40.0" prefWidth="200.0" AnchorPane.bottomAnchor="13.0" AnchorPane.rightAnchor="20.0">
          <buttons>
             <Button fx:id="loadButton" onAction="#loadButtonAction" text="Load" />
               <Button fx:id="deleteButton" disable="true" onAction="#deleteButtonAction" text="Delete" />
