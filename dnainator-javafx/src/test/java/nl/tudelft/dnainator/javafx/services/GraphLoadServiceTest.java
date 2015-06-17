@@ -37,6 +37,7 @@ public class GraphLoadServiceTest {
 	private GraphLoadService loadService;
 	private File nodeFile;
 	private File edgeFile;
+	private File treeFile;
 
 	/**
 	 * Setup the database and construct the graph.
@@ -59,11 +60,13 @@ public class GraphLoadServiceTest {
 		try {
 			nodeFile = new File(getClass().getResource("/strains/test.node.graph").toURI());
 			edgeFile = new File(getClass().getResource("/strains/test.edge.graph").toURI());
+			treeFile = new File(getClass().getResource("/strains/test.nwk").toURI());
 		} catch (URISyntaxException e) {
 			fail(e.getMessage());
 		}
 		loadService.setNodeFile(nodeFile);
 		loadService.setEdgeFile(edgeFile);
+		loadService.setNewickFile(treeFile);
 	}
 
 	/**
@@ -95,6 +98,37 @@ public class GraphLoadServiceTest {
 	@Test
 	public void testNodeFileProperty() {
 		assertNotNull(loadService.nodeFileProperty());
+	}
+
+	/**
+	 * Tests setNewickFile().
+	 */
+	@Test
+	public void testSetNewickFile() {
+		try {
+			File foo = File.createTempFile("foo", ".bar");
+			loadService.setNewickFile(foo);
+			assertEquals(foo, loadService.getNewickFile());
+			foo.delete();
+		} catch (IOException e) {
+			fail(e.getMessage());
+		}
+	}
+
+	/**
+	 * Tests getNewickFile().
+	 */
+	@Test
+	public void testGetNewickFile() {
+		assertEquals(treeFile, loadService.getNewickFile());
+	}
+
+	/**
+	 * Tests nodeFileProperty().
+	 */
+	@Test
+	public void testNewickFileProperty() {
+		assertNotNull(loadService.newickFileProperty());
 	}
 
 	/**
