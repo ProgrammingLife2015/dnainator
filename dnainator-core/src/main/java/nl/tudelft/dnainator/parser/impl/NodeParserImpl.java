@@ -12,7 +12,6 @@ import nl.tudelft.dnainator.parser.HeaderParser;
 import nl.tudelft.dnainator.parser.exceptions.InvalidHeaderFormatException;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -29,22 +28,22 @@ public class NodeParserImpl extends BufferedNodeParser {
 	/**
 	 * Constructs a new NodeParserImpl.
 	 *
-	 * @param f  The {@link File} from which to read.
+	 * @param path  The path from which to read.
 	 * @throws IOException If something goes wrong constructing.
 	 */
-	public NodeParserImpl(File f) throws IOException {
-		this(new SequenceNodeFactoryImpl(), f);
+	public NodeParserImpl(String path) throws IOException {
+		this(new SequenceNodeFactoryImpl(), path);
 	}
 
 	/**
 	 * Constructs a new NodeParserImpl.
 	 *
-	 * @param f  The {@link File} from which to read.
+	 * @param path  The path from which to read.
 	 * @param sf The {@link SequenceNodeFactory} used to created {@link SequenceNode}s.
 	 * @throws IOException If something goes wrong constructing.
 	 */
-	public NodeParserImpl(SequenceNodeFactory sf, File f) throws IOException {
-		this(sf, new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8")));
+	public NodeParserImpl(SequenceNodeFactory sf, String path) throws IOException {
+		this(sf, new BufferedReader(new InputStreamReader(new FileInputStream(path), "UTF-8")));
 	}
 
 	/**

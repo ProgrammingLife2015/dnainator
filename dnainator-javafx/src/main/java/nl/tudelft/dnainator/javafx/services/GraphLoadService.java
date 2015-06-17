@@ -2,12 +2,15 @@ package nl.tudelft.dnainator.javafx.services;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
 import nl.tudelft.dnainator.annotation.impl.AnnotationCollectionFactoryImpl;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.Neo4jBatchBuilder;
+import nl.tudelft.dnainator.javafx.utils.AppConfig;
 import nl.tudelft.dnainator.parser.AnnotationParser;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
@@ -33,20 +36,22 @@ import java.util.List;
 public class GraphLoadService extends Service<Graph> {
 	private static final String DB_PATH = "target" + File.separator + "db" 
 			+ File.separator + "dna-graph-";
-	
-	private ObjectProperty<String> database = new SimpleObjectProperty<>(this, "database");
-	private ObjectProperty<String> gffFilePath =
-			new SimpleObjectProperty<>(this, "gffFilePath");
-	private ObjectProperty<File> nodeFile = new SimpleObjectProperty<>(this, "nodeFile");
-	private ObjectProperty<File> edgeFile = new SimpleObjectProperty<>(this, "edgeFile");
+
 	private ObjectProperty<TreeNode> phylogeneticTree =
 			new SimpleObjectProperty<>(this, "phylogeneticTree");
+	private StringProperty nodePath = new SimpleStringProperty(this, "nodePath");
+	private StringProperty edgePath = new SimpleStringProperty(this, "edgePath");
+	private StringProperty gffPath = new SimpleStringProperty(this, "gffPath");
+	private StringProperty database = new SimpleStringProperty(this, "database");
 
 	/**
 	 * Construct a GraphLoadService with a default database path.
 	 */
 	public GraphLoadService() {
 		setDatabase(DB_PATH);
+		nodePathProperty().setValue(AppConfig.getInstance().getNodePath());
+		edgePathProperty().set(AppConfig.getInstance().getEdgePath());
+		gffPathProperty().set(AppConfig.getInstance().getGffPath());
 	}
 
 	/**
@@ -66,64 +71,64 @@ public class GraphLoadService extends Service<Graph> {
 	 * Sets the GFF filename to the specified value.
 	 * @param fileName The new filename.
 	 */
-	public final void setGffFilePath(String fileName) {
-		gffFilePath.set(fileName);
+	public final void setGffPath(String fileName) {
+		gffPath.set(fileName);
 	}
 
 	/**
 	 * @return The filename of the GFF file.
 	 */
-	public final String getGffFilePath() {
-		return gffFilePath.get();
+	public final String getGffPath() {
+		return gffPath.get();
 	}
 
 	/**
 	 * @return The GFF filename property.
 	 */
-	public ObjectProperty<String> gffFilePathProperty() {
-		return gffFilePath;
+	public StringProperty gffPathProperty() {
+		return gffPath;
 	}
 	
 	/**
-	 * @param f The node file to load.
+	 * @param path The node file path to load.
 	 */
-	public final void setNodeFile(File f) {
-		nodeFile.set(f);
+	public final void setNodePath(String path) {
+		nodePath.set(path);
 	}
 
 	/**
-	 * @return The node file to load, if any.
+	 * @return The node file path to load, if any.
 	 */
-	public final File getNodeFile() {
-		return nodeFile.get();
+	public final String getNodePath() {
+		return nodePath.get();
 	}
 
 	/**
-	 * @return The node file property.
+	 * @return The node file path property.
 	 */
-	public ObjectProperty<File> nodeFileProperty() {
-		return nodeFile;
+	public StringProperty nodePathProperty() {
+		return nodePath;
 	}
 
 	/**
-	 * @param f The edge file to load.
+	 * @param path The edge file path to load.
 	 */
-	public final void setEdgeFile(File f) {
-		edgeFile.set(f);
+	public final void setEdgePath(String path) {
+		edgePath.set(path);
 	}
 
 	/**
-	 * @return The edge file to load, if any.
+	 * @return The edge file path to load, if any.
 	 */
-	public final File getEdgeFile() {
-		return edgeFile.get();
+	public final String getEdgePath() {
+		return edgePath.get();
 	}
 
 	/**
-	 * @return The edge file property.
+	 * @return The edge file path property.
 	 */
-	public ObjectProperty<File> edgeFileProperty() {
-		return edgeFile;
+	public StringProperty edgePathProperty() {
+		return edgePath;
 	}
 
 	/**
@@ -143,7 +148,7 @@ public class GraphLoadService extends Service<Graph> {
 	/**
 	 * @return The database property.
 	 */
-	public ObjectProperty<String> databaseProperty() {
+	public StringProperty databaseProperty() {
 		return database;
 	}
 
@@ -161,19 +166,27 @@ public class GraphLoadService extends Service<Graph> {
 			@Override
 			protected Graph call() throws IOException, ParseException {
 				AnnotationCollection annotations;
-				if (gffFilePath.getValue() == null) {
+				if (gffPath.getValue() == null) {
 					annotations = new AnnotationCollectionFactoryImpl().build();
 				} else {
-					AnnotationParser as = new GFF3AnnotationParser(gffFilePath.get());
+					AnnotationParser as = new GFF3AnnotationParser(gffPath.get());
 					annotations = new AnnotationCollectionFactoryImpl().build(as);
 				}
-				EdgeParser ep = new EdgeParserImpl(getEdgeFile());
-				NodeParser np = new NodeParserImpl(getNodeFile());
+				EdgeParser ep = new EdgeParserImpl(getEdgePath());
+				NodeParser np = new NodeParserImpl(getNodePath());
 
 				return new Neo4jBatchBuilder(database.get(), annotations, phylogeneticTree.get())
 					.constructGraph(np, ep)
 					.build();
 			}
 		};
+	}
+
+	@Override
+	public void restart() {
+		super.restart();
+		AppConfig.getInstance().setNodePath(nodePath.get());
+		AppConfig.getInstance().setEdgePath(edgePath.get());
+		AppConfig.getInstance().setGffPath(gffPath.get());
 	}
 }
