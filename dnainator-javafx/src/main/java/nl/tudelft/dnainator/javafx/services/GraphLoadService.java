@@ -11,6 +11,7 @@ import nl.tudelft.dnainator.graph.impl.Neo4jBatchBuilder;
 import nl.tudelft.dnainator.parser.AnnotationParser;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
+import nl.tudelft.dnainator.parser.TreeParser;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
 import nl.tudelft.dnainator.parser.impl.EdgeParserImpl;
 import nl.tudelft.dnainator.parser.impl.GFF3AnnotationParser;
@@ -39,8 +40,7 @@ public class GraphLoadService extends Service<Graph> {
 			new SimpleObjectProperty<>(this, "gffFilePath");
 	private ObjectProperty<File> nodeFile = new SimpleObjectProperty<>(this, "nodeFile");
 	private ObjectProperty<File> edgeFile = new SimpleObjectProperty<>(this, "edgeFile");
-	private ObjectProperty<TreeNode> phylogeneticTree =
-			new SimpleObjectProperty<>(this, "phylogeneticTree");
+	private ObjectProperty<File> newickFile = new SimpleObjectProperty<>(this, "newickFile");
 
 	/**
 	 * Construct a GraphLoadService with a default database path.
@@ -148,11 +148,24 @@ public class GraphLoadService extends Service<Graph> {
 	}
 
 	/**
-	 * Sets the tree, needed for building the graph.
-	 * @param value the tree.
+	 * @param f The newick file to load.
 	 */
-	public void setTree(TreeNode value) {
-		phylogeneticTree.setValue(value);
+	public final void setNewickFile(File f) {
+		newickFile.set(f);
+	}
+
+	/**
+	 * @return The newick file to load, if any.
+	 */
+	public final File getNewickFile() {
+		return newickFile.get();
+	}
+
+	/**
+	 * @return The newick file property.
+	 */
+	public ObjectProperty<File> newickFileProperty() {
+		return newickFile;
 	}
 
 	@Override
@@ -167,10 +180,16 @@ public class GraphLoadService extends Service<Graph> {
 					AnnotationParser as = new GFF3AnnotationParser(gffFilePath.get());
 					annotations = new AnnotationCollectionFactoryImpl().build(as);
 				}
+
+				TreeNode node = null;
+				if (newickFile.getValue() != null) {
+					node = new TreeParser(getNewickFile()).parse();
+				}
+
 				EdgeParser ep = new EdgeParserImpl(getEdgeFile());
 				NodeParser np = new NodeParserImpl(getNodeFile());
 
-				return new Neo4jBatchBuilder(database.get(), annotations, phylogeneticTree.get())
+				return new Neo4jBatchBuilder(database.get(), annotations, node)
 					.constructGraph(np, ep)
 					.build();
 			}

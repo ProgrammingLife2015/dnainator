@@ -1,17 +1,16 @@
 package nl.tudelft.dnainator.javafx.controllers;
 
+import nl.tudelft.dnainator.javafx.ColorServer;
+import nl.tudelft.dnainator.javafx.views.AbstractView;
+import nl.tudelft.dnainator.javafx.views.PhylogeneticView;
+import nl.tudelft.dnainator.javafx.views.StrainView;
+import nl.tudelft.dnainator.javafx.widgets.dialogs.AboutDialog;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Orientation;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
-import nl.tudelft.dnainator.javafx.ColorServer;
-import nl.tudelft.dnainator.javafx.views.AbstractView;
-import nl.tudelft.dnainator.javafx.views.PhylogeneticView;
-import nl.tudelft.dnainator.javafx.views.StrainView;
-import nl.tudelft.dnainator.javafx.widgets.dialogs.AboutDialog;
-
 
 /**
  * The WindowController is a controller class for the main window.
@@ -38,15 +37,12 @@ public class WindowController {
 		fileOpenController.dbPathProperty().set(welcomeController.getListedPaths());
 		fileOpenController.graphProperty().addListener((obj, oldV, newV) -> {
 			strainView = new StrainView(colorServer, newV);
+			phyloView = new PhylogeneticView(colorServer, newV.getTree());
 			constructView();
-		});
-		fileOpenController.treeProperty().addListener((obj, oldV, newV) -> {
-			phyloView = new PhylogeneticView(colorServer);
-			phyloView.rootProperty().set(newV);
 		});
 		welcomeController.dbProperty().addListener((obj, oldV, newV) -> {
 			strainView = new StrainView(colorServer, newV);
-			phyloView = new PhylogeneticView(colorServer);
+			phyloView = new PhylogeneticView(colorServer, newV.getTree());
 			constructView();
 		});
 	}

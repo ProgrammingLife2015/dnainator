@@ -5,9 +5,7 @@ import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -15,9 +13,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import nl.tudelft.dnainator.graph.Graph;
-import nl.tudelft.dnainator.tree.TreeNode;
 import nl.tudelft.dnainator.javafx.services.GraphLoadService;
-import nl.tudelft.dnainator.javafx.services.NewickLoadService;
 import nl.tudelft.dnainator.javafx.widgets.animations.RightSlideAnimation;
 import nl.tudelft.dnainator.javafx.widgets.animations.SlidingAnimation;
 import nl.tudelft.dnainator.javafx.widgets.animations.TransitionAnimation.Position;
@@ -55,11 +51,9 @@ public class FileOpenController {
 	private SlidingAnimation animation;
 
 	private GraphLoadService graphLoadService;
-	private NewickLoadService newickLoadService;
 
 	private ListProperty<String> dbPathProperty;
 	private ObjectProperty<Graph> graphProperty;
-	private ObjectProperty<TreeNode> treeProperty;
 
 	/*
 	 * Sets up the services, filechooser and treeproperty.
@@ -69,7 +63,6 @@ public class FileOpenController {
 		fileChooser = new FileChooser();
 		dbPathProperty = new SimpleListProperty<>(this, "dbpath");
 		graphProperty = new SimpleObjectProperty<>(this, "graph");
-		treeProperty = new SimpleObjectProperty<>(this, "tree");
 		setupServices();
 		
 		animation = new RightSlideAnimation(container, WIDTH, ANIM_DURATION, Position.LEFT);
@@ -77,7 +70,7 @@ public class FileOpenController {
 	}
 	
 	/**
-	 * Setup the {@link GraphLoadService} and {@link NewickLoadService}.
+	 * Setup the {@link GraphLoadService}.
 	 */
 	private void setupServices() {
 		graphLoadService = new GraphLoadService();
@@ -91,10 +84,6 @@ public class FileOpenController {
 			progressDialog.close();
 			graphProperty.setValue(graphLoadService.getValue());
 		});
-		newickLoadService = new NewickLoadService();
-		newickLoadService.setOnFailed(e -> new ExceptionDialog(container.getParent(),
-						newickLoadService.getException(), "Error loading newick file!"));
-		newickLoadService.setOnSucceeded(e -> treeProperty.setValue(newickLoadService.getValue()));
 	}
 
 	/*
@@ -145,8 +134,8 @@ public class FileOpenController {
 	private void onNewickFieldClicked() {
 		File newickFile = selectFile("Newick file", NEWICK);
 		if (newickFile != null) {
-			newickLoadService.setNewickFile(newickFile);
-			newickField.setText(newickLoadService.getNewickFile().getAbsolutePath());
+			graphLoadService.setNewickFile(newickFile);
+			newickField.setText(graphLoadService.getNewickFile().getAbsolutePath());
 		}
 	}
 
@@ -175,17 +164,11 @@ public class FileOpenController {
 		if (graphLoadService.getGffFilePath() != null
 				&& graphLoadService.getNodeFile() != null
 				&& graphLoadService.getEdgeFile() != null
-				&& newickLoadService.getNewickFile() != null) {
+				&& graphLoadService.getNewickFile() != null) {
 			graphLoadService.setDatabase(graphLoadService.getNewPath(dbPathProperty.getValue()));
-			EventHandler<WorkerStateEvent> oldHandler = newickLoadService.getOnSucceeded();
-			newickLoadService.setOnSucceeded(e -> {
-				oldHandler.handle(e);
-				graphLoadService.setTree(newickLoadService.getValue());
-				graphLoadService.restart();
-			});
+			graphLoadService.restart();
 
-			newickLoadService.restart();
-			curNewickLabel.setText(newickLoadService.getNewickFile().getAbsolutePath());
+			curNewickLabel.setText(graphLoadService.getNewickFile().getAbsolutePath());
 			curGffLabel.setText(graphLoadService.getGffFilePath());
 			curNodeLabel.setText(graphLoadService.getNodeFile().getAbsolutePath());
 			curEdgeLabel.setText(graphLoadService.getEdgeFile().getAbsolutePath());
@@ -199,7 +182,7 @@ public class FileOpenController {
 		graphLoadService.setGffFilePath(null);
 		graphLoadService.setNodeFile(null);
 		graphLoadService.setEdgeFile(null);
-		newickLoadService.setNewickFile(null);
+		graphLoadService.setNewickFile(null);
 		resetTextFields();
 	}
 
@@ -246,13 +229,6 @@ public class FileOpenController {
 		return new File(path.substring(0, path.length() - EDGE.length()).concat(NODE));
 	}
 
-	/**
-	 * @return The {@link TreeNode} property.
-	 */
-	public ObjectProperty<TreeNode> treeProperty() {
-		return treeProperty;
-	}
-	
 	/**
 	 * @return The {@link Graph} property.
 	 */

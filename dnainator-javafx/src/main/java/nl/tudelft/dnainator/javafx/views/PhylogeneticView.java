@@ -1,7 +1,5 @@
 package nl.tudelft.dnainator.javafx.views;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Scale;
 import nl.tudelft.dnainator.tree.TreeNode;
@@ -17,17 +15,17 @@ import java.util.stream.Collectors;
  */
 public class PhylogeneticView extends AbstractView {
 	private static final int SCALE = 1;
-	private ObjectProperty<TreeNode> rootProperty = new SimpleObjectProperty<>(null, "root");
 	private ColorServer colorServer;
 
 	/**
 	 * Constructs a new {@link PhylogeneticView}.
 	 * @param colorServer The {@link ColorServer} to communicate with.
+	 * @param root The root {@link TreeNode}.
 	 */
-	public PhylogeneticView(ColorServer colorServer) {
+	public PhylogeneticView(ColorServer colorServer, TreeNode root) {
 		super();
 		this.colorServer = colorServer;
-		rootProperty().addListener((obj, oldV, newV) -> redraw());
+		redraw(root);
 	}
 
 	@Override
@@ -35,9 +33,9 @@ public class PhylogeneticView extends AbstractView {
 		return new Affine(new Scale(SCALE, SCALE));
 	}
 
-	private void redraw() {
+	private void redraw(TreeNode node) {
 		getChildren().clear();
-		AbstractNode root = draw(getRoot());
+		AbstractNode root = draw(node);
 		setTransforms(root);
 		getChildren().add(root);
 	}
@@ -52,26 +50,4 @@ public class PhylogeneticView extends AbstractView {
 				.collect(Collectors.toList()));
 		return self;
 	}
-
-	/**
-	 * @param root The {@link TreeNode} to set as root.
-	 */
-	public final void setRoot(TreeNode root) {
-		rootProperty.set(root);
-	}
-
-	/**
-	 * @return The root node, if any.
-	 */
-	public final TreeNode getRoot() {
-		return rootProperty.get();
-	}
-
-	/**
-	 * @return The root node property.
-	 */
-	public ObjectProperty<TreeNode> rootProperty() {
-		return rootProperty;
-	}
-
 }

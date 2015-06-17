@@ -7,6 +7,7 @@ import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.graph.interestingness.InterestingnessStrategy;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
+import nl.tudelft.dnainator.tree.TreeNode;
 
 import java.util.Collection;
 import java.util.List;
@@ -34,6 +35,11 @@ public interface Graph extends AnnotationCollection {
 	 * @return The {@link AnnotationCollection} containing the annotations.
 	 */
 	AnnotationCollection getAnnotations();
+
+	/**
+	 * @return The root {@link TreeNode}.
+	 */
+	TreeNode getTree();
 
 	/**
 	 * Get all the nodes with a specific rank from this graph.
