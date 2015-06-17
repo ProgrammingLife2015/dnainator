@@ -36,6 +36,8 @@ import java.util.Map;
 public final class Neo4jGraph implements Graph {
 	private static final String GET_MAX_RANK = "MATCH (n:" + NodeLabels.NODE.name() + ") "
 			+ "RETURN MAX(n." + PropertyTypes.RANK.name() + ") AS max";
+	private static final String GET_MAX_BASEPAIRS = "MATCH (n:" + NodeLabels.NODE.name() + ") "
+			+ "RETURN MAX(n." + PropertyTypes.BASE_DIST.name() + ") AS max";
 	private static final String GET_ROOT = "MATCH (s:" + NodeLabels.NODE.name() + ") "
 			+ "WHERE NOT (s)<-[:NEXT]-(:" + NodeLabels.NODE.name() + ") "
 			+ "RETURN s";
@@ -130,6 +132,11 @@ public final class Neo4jGraph implements Graph {
 	@Override
 	public int getMaxRank() {
 		return query(e -> (int) e.execute(GET_MAX_RANK).columnAs("max").next());
+	}
+
+	@Override
+	public int getMaxBasePairs() {
+		return query(e -> (int) e.execute(GET_MAX_BASEPAIRS).columnAs("max").next());
 	}
 
 	@Override
