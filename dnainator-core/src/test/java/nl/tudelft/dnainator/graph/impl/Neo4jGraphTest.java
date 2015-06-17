@@ -172,7 +172,7 @@ public class Neo4jGraphTest {
 		Collections.addAll(rank1Expect, "11", "2");
 		assertUnorderedIDEquals(rank1Expect, db.getRank(1));
 		Set<String> rank2Expect = new HashSet<>();
-		Collections.addAll(rank2Expect, "13", "14", "3", "7");
+		Collections.addAll(rank2Expect, "13", "14", "15", "3", "7");
 		assertUnorderedIDEquals(rank2Expect, db.getRank(2));
 		Set<String> rank3Expect = new HashSet<>();
 		Collections.addAll(rank3Expect, "12", "4", "8", "10");
@@ -233,7 +233,7 @@ public class Neo4jGraphTest {
 			.filter((sn) -> Integer.parseInt(sn.getId()) > 8);
 		// CHECKSTYLE.ON: MagicNumber
 		Set<String> expect = new HashSet<>();
-		Collections.addAll(expect, "10", "11", "12", "13", "14");
+		Collections.addAll(expect, "10", "11", "12", "13", "14", "15");
 		assertUnorderedIDEquals(expect, db.queryNodes(qd));
 	}
 
@@ -302,6 +302,7 @@ public class Neo4jGraphTest {
 		db.execute(service -> {
 			assertBubble(service, "1", "6");
 			assertBubble(service, "2", "5");
+			assertBubble(service, "2", "4");
 			assertBubble(service, "7", "5");
 			assertBubble(service, "11", "12");
 		});
