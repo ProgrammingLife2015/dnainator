@@ -3,6 +3,8 @@ package nl.tudelft.dnainator.graph.impl;
 import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.core.SequenceNode;
+import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
+import nl.tudelft.dnainator.graph.impl.properties.SourceProperties;
 import nl.tudelft.dnainator.graph.interestingness.ScoreIdentifier;
 import nl.tudelft.dnainator.graph.interestingness.Scores;
 
@@ -57,16 +59,16 @@ public class Neo4jSequenceNode implements EnrichedSequenceNode {
 		this.scores = new HashMap<>();
 
 		try (Transaction tx = service.beginTx()) {
-			this.id = (String) node.getProperty(PropertyTypes.ID.name());
+			this.id = (String) node.getProperty(SequenceProperties.ID.name());
 
 			node.getRelationships(RelTypes.ANNOTATED, Direction.OUTGOING).forEach(e -> {
 				annotations.add(new Neo4jAnnotation(service, e.getEndNode()));
 			});
 			node.getRelationships(RelTypes.NEXT, Direction.OUTGOING).forEach(e -> {
-				outgoing.add((String) e.getEndNode().getProperty(PropertyTypes.ID.name()));
+				outgoing.add((String) e.getEndNode().getProperty(SequenceProperties.ID.name()));
 			});
 			node.getRelationships(RelTypes.SOURCE, Direction.OUTGOING).forEach(e -> {
-				sources.add((String) e.getEndNode().getProperty(PropertyTypes.SOURCE.name()));
+				sources.add((String) e.getEndNode().getProperty(SourceProperties.SOURCE.name()));
 			});
 
 			tx.success();
@@ -149,15 +151,15 @@ public class Neo4jSequenceNode implements EnrichedSequenceNode {
 		System.out.println("--- loading sequence node " + getId() + " ---");
 
 		try (Transaction tx = service.beginTx()) {
-			start		= (int)    node.getProperty(PropertyTypes.STARTREF.name());
-			end		= (int)    node.getProperty(PropertyTypes.ENDREF.name());
-			sequence	= (String) node.getProperty(PropertyTypes.SEQUENCE.name());
-			basedist	= (int)    node.getProperty(PropertyTypes.BASE_DIST.name());
-			rank		= (int)    node.getProperty(PropertyTypes.RANK.name());
+			start    = (int)    node.getProperty(SequenceProperties.STARTREF.name());
+			end      = (int)    node.getProperty(SequenceProperties.ENDREF.name());
+			sequence = (String) node.getProperty(SequenceProperties.SEQUENCE.name());
+			basedist = (int)    node.getProperty(SequenceProperties.BASE_DIST.name());
+			rank     = (int)    node.getProperty(SequenceProperties.RANK.name());
 			for (ScoreIdentifier id : Scores.values()) {
 				scores.put(id, (Integer) node.getProperty(id.name(), 0));
 			}
-			interestingness = (int) node.getProperty(PropertyTypes.INTERESTINGNESS.name(), 0);
+			interestingness = (int) node.getProperty(SequenceProperties.INTERESTINGNESS.name(), 0);
 			tx.success();
 		}
 

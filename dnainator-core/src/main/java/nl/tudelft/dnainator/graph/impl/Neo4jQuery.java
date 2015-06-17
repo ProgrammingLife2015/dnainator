@@ -2,6 +2,8 @@ package nl.tudelft.dnainator.graph.impl;
 
 import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.core.SequenceNode;
+import nl.tudelft.dnainator.graph.impl.properties.SourceProperties;
+import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
 import nl.tudelft.dnainator.graph.query.GraphQuery;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 import nl.tudelft.dnainator.graph.query.IDsFilter;
@@ -24,10 +26,6 @@ import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-import static nl.tudelft.dnainator.graph.impl.PropertyTypes.ID;
-import static nl.tudelft.dnainator.graph.impl.PropertyTypes.RANK;
-import static nl.tudelft.dnainator.graph.impl.PropertyTypes.SOURCE;
-
 /**
  * A useful class for creating and executing a query on a Neo4j
  * database using a {@link GraphQueryDescription}.
@@ -39,7 +37,7 @@ public final class Neo4jQuery implements GraphQuery {
 	private Predicate<SequenceNode> p;
 
 	private Neo4jQuery() {
-		this.sb = new StringBuilder("MATCH n-[" + SOURCE.name() + "]->p\n");
+		this.sb = new StringBuilder("MATCH n-[" + SourceProperties.SOURCE.name() + "]->p\n");
 	}
 
 	private void addCondition(String c) {
@@ -86,7 +84,7 @@ public final class Neo4jQuery implements GraphQuery {
 	public void compile(IDsFilter ids) {
 		parameters.compute("ids", (k, v) -> {
 			if (v == null) {
-				addCondition("n." + ID.name() + " IN {ids}\n");
+				addCondition("n." + SequenceProperties.ID.name() + " IN {ids}\n");
 				return ids.getIds();
 			}
 			((Collection<String>) v).addAll(ids.getIds());
@@ -99,7 +97,7 @@ public final class Neo4jQuery implements GraphQuery {
 	public void compile(SourcesFilter sources) {
 		parameters.compute("sources", (k, v) -> {
 			if (v == null) {
-				addCondition("p." + SOURCE.name() + " IN {sources}\n");
+				addCondition("p." + SourceProperties.SOURCE.name() + " IN {sources}\n");
 				return sources.getSources();
 			}
 			((Collection<String>) v).addAll(sources.getSources());
@@ -114,13 +112,13 @@ public final class Neo4jQuery implements GraphQuery {
 
 	@Override
 	public void compile(RankStart start) {
-		addCondition("n." + RANK.name() + " >= {from}\n");
+		addCondition("n." + SequenceProperties.RANK.name() + " >= {from}\n");
 		parameters.put("from", start.getStart());
 	}
 
 	@Override
 	public void compile(RankEnd end) {
-		addCondition("n." + RANK.name() + " < {to}\n");
+		addCondition("n." + SequenceProperties.RANK.name() + " < {to}\n");
 		parameters.put("to", end.getEnd());
 	}
 

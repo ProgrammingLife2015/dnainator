@@ -14,8 +14,9 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.traversal.InitialBranchState.State;
 import org.neo4j.graphdb.traversal.Uniqueness;
 
-import static nl.tudelft.dnainator.graph.impl.PropertyTypes.BASE_DIST;
-import static nl.tudelft.dnainator.graph.impl.PropertyTypes.RANK;
+import static nl.tudelft.dnainator.graph.impl.properties.SequenceProperties.BASE_DIST;
+import static nl.tudelft.dnainator.graph.impl.properties.SequenceProperties.RANK;
+
 import static org.neo4j.helpers.collection.IteratorUtil.loop;
 
 /**
