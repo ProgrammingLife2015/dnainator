@@ -3,6 +3,7 @@ package nl.tudelft.dnainator.graph.impl;
 import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
 import nl.tudelft.dnainator.annotation.AnnotationCollectionFactory;
+import nl.tudelft.dnainator.annotation.DRMutation;
 import nl.tudelft.dnainator.annotation.Range;
 import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.core.SequenceNode;
@@ -11,6 +12,7 @@ import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.command.AnalyzeCommand;
 import nl.tudelft.dnainator.graph.impl.command.Command;
 import nl.tudelft.dnainator.graph.impl.properties.AnnotationProperties;
+import nl.tudelft.dnainator.graph.impl.properties.DRMutationProperties;
 import nl.tudelft.dnainator.graph.impl.properties.PhylogenyProperties;
 import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
 import nl.tudelft.dnainator.graph.impl.properties.SourceProperties;
@@ -191,7 +193,6 @@ public final class Neo4jGraph implements Graph {
 	 * @param <T>	the result type
 	 * @return	the result of the query
 	 */
-//	public Cluster query(Query<? extends QueryResult> q) {
 	public <T> T query(Query<T> q) {
 		T res = null;
 		try (Transaction tx = service.beginTx()) {
@@ -231,29 +232,41 @@ public final class Neo4jGraph implements Graph {
 		});
 	}
 
-	private Collection<Annotation> getAnnotationRange(Range r, String query) {
+	@Override
+	public void addDRAnnotation(DRMutation dr) {
+		execute(service -> {
+			Node drannotation = service.createNode(NodeLabels.DRMUTATION);
+			drannotation.setProperty(DRMutationProperties.ID.name(), dr.getGeneName());
+			drannotation.setProperty(DRMutationProperties.TYPE.name(), dr.getType());
+			drannotation.setProperty(DRMutationProperties.CHANGE.name(), dr.getChange());
+			drannotation.setProperty(DRMutationProperties.FILTER.name(), dr.getFilter());
+			drannotation.setProperty(DRMutationProperties.TYPE.name(), dr.getPosition());
+			getAnnotationRange(new Range(dr.getPosition(), dr.getPosition() + 1), GET_SUB_RANGE)
+				.forEachRemaining(a -> a.createRelationshipTo(drannotation, RelTypes.MUTATION));
+		});
+	}
+
+	private ResourceIterator<Node> getAnnotationRange(Range r, String query) {
 		Map<String, Object> parameters = new HashMap<>(2);
-		List<Annotation> result = new LinkedList<Annotation>();
 		parameters.put("from", r.getX());
 		parameters.put("to", r.getY());
-		return query(service -> {
-			ResourceIterator<Node> annotations = service.execute(query, parameters)
-					.columnAs("a");
-			while (annotations.hasNext()) {
-				result.add(new Neo4jAnnotation(service, annotations.next()));
-			}
-			return result;
-		});
+		return query(service -> service.execute(query, parameters).columnAs("a"));
 	}
 
 	@Override
 	public Collection<Annotation> getSubrange(Range r) {
-		return getAnnotationRange(r, GET_SUB_RANGE);
+		List<Annotation> result = new LinkedList<Annotation>();
+		execute(service -> getAnnotationRange(r, GET_SUB_RANGE).forEachRemaining(a ->
+				result.add(new Neo4jAnnotation(service, a))));
+		return result;
 	}
 
 	@Override
 	public Collection<Annotation> getAnnotationByRank(Range r) {
-		return getAnnotationRange(r, GET_ANNOTATION_BY_RANK);
+		List<Annotation> result = new LinkedList<Annotation>();
+		execute(service -> getAnnotationRange(r, GET_ANNOTATION_BY_RANK).forEachRemaining(a ->
+				result.add(new Neo4jAnnotation(service, a))));
+		return result;
 	}
 
 	@Override

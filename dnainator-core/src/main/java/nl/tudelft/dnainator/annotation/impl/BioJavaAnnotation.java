@@ -1,9 +1,11 @@
 package nl.tudelft.dnainator.annotation.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
 import nl.tudelft.dnainator.annotation.Annotation;
+import nl.tudelft.dnainator.annotation.DRMutation;
 import nl.tudelft.dnainator.annotation.Range;
 
 import org.biojava.nbio.genome.parsers.gff.Feature;
@@ -13,6 +15,7 @@ import org.biojava.nbio.genome.parsers.gff.Feature;
  */
 public class BioJavaAnnotation implements Annotation {
 	private Feature delegate;
+	private Collection<DRMutation> mutations;
 
 	/**
 	 * Create a new BioJavaAnnotation with the given delegate.
@@ -20,6 +23,7 @@ public class BioJavaAnnotation implements Annotation {
 	 */
 	public BioJavaAnnotation(Feature feature) {
 		this.delegate = feature;
+		this.mutations = new ArrayList<>();
 	}
 
 	@Override
@@ -61,5 +65,15 @@ public class BioJavaAnnotation implements Annotation {
 	@Override
 	public String toString() {
 		return delegate.getAttributes().toString();
+	}
+
+	@Override
+	public void addDRMutation(DRMutation dr) {
+		mutations.add(dr);
+	}
+
+	@Override
+	public Collection<DRMutation> getDRMutations() {
+		return mutations;
 	}
 }
