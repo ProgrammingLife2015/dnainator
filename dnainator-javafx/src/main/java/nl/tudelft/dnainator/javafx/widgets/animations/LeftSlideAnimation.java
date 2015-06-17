@@ -17,7 +17,6 @@ public class LeftSlideAnimation extends SlidingAnimation {
 	 */
 	public LeftSlideAnimation(Pane pane, double size, double duration, Position pos) {
 		super(pane, size, duration, pos);
-		
 	}
 
 	@Override
