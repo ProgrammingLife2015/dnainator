@@ -67,4 +67,9 @@ public class DRMutation {
 	public int getPosition() {
 		return position;
 	}
+
+	@Override
+	public String toString() {
+		return geneName + ": " + type + " " + change + " " + filter + " " + position;
+	}
 }

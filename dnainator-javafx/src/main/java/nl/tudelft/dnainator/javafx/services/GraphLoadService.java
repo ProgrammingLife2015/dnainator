@@ -5,6 +5,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
+import nl.tudelft.dnainator.annotation.DRMutationFactory;
 import nl.tudelft.dnainator.annotation.impl.AnnotationCollectionFactoryImpl;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.Neo4jBatchBuilder;
@@ -13,6 +14,7 @@ import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
 import nl.tudelft.dnainator.parser.TreeParser;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
+import nl.tudelft.dnainator.parser.impl.DRMutationParserImpl;
 import nl.tudelft.dnainator.parser.impl.EdgeParserImpl;
 import nl.tudelft.dnainator.parser.impl.GFF3AnnotationParser;
 import nl.tudelft.dnainator.parser.impl.NodeParserImpl;
@@ -41,6 +43,7 @@ public class GraphLoadService extends Service<Graph> {
 	private ObjectProperty<File> nodeFile = new SimpleObjectProperty<>(this, "nodeFile");
 	private ObjectProperty<File> edgeFile = new SimpleObjectProperty<>(this, "edgeFile");
 	private ObjectProperty<File> newickFile = new SimpleObjectProperty<>(this, "newickFile");
+	private ObjectProperty<File> drFile = new SimpleObjectProperty<>(this, "drFile");
 
 	/**
 	 * Construct a GraphLoadService with a default database path.
@@ -168,6 +171,28 @@ public class GraphLoadService extends Service<Graph> {
 		return newickFile;
 	}
 
+	/**
+	 * @return The drug resistant mutations file.
+	 */
+	public final File getDRFile() {
+		return drFile.get();
+	}
+
+	/**
+	 * Sets the drug resistant mutations file property.
+	 * @param file The drug resistant mutations file.
+	 */
+	public final void setDRFile(File file) {
+		drFile.set(file);
+	}
+
+	/**
+	 * @return The drug resistant mutations file property.
+	 */
+	public ObjectProperty<File> getDrFileProperty() {
+		return drFile;
+	}
+
 	@Override
 	protected Task<Graph> createTask() {
 		return new Task<Graph>() {
@@ -181,6 +206,11 @@ public class GraphLoadService extends Service<Graph> {
 					annotations = new AnnotationCollectionFactoryImpl().build(as);
 				}
 
+				if (drFile.getValue() != null) {
+					annotations = new DRMutationFactory().build(annotations,
+							new DRMutationParserImpl(drFile.get()));
+				}
+
 				TreeNode node = null;
 				if (newickFile.getValue() != null) {
 					node = new TreeParser(getNewickFile()).parse();
@@ -190,8 +220,7 @@ public class GraphLoadService extends Service<Graph> {
 				NodeParser np = new NodeParserImpl(getNodeFile());
 
 				return new Neo4jBatchBuilder(database.get(), annotations, node)
-					.constructGraph(np, ep)
-					.build();
+					.constructGraph(np, ep).build();
 			}
 		};
 	}
