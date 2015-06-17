@@ -30,6 +30,7 @@ public class Neo4jSequenceNode implements EnrichedSequenceNode {
 	private int start;
 	private int end;
 	private String sequence;
+	private int basedist;
 	private int rank;
 	private List<Annotation> annotations;
 	private Set<String> sources;
@@ -106,6 +107,12 @@ public class Neo4jSequenceNode implements EnrichedSequenceNode {
 	}
 
 	@Override
+	public int getBaseDistance() {
+		load();
+		return basedist;
+	}
+
+	@Override
 	public int getRank() {
 		load();
 		return rank;
@@ -145,9 +152,10 @@ public class Neo4jSequenceNode implements EnrichedSequenceNode {
 			start		= (int)    node.getProperty(PropertyTypes.STARTREF.name());
 			end		= (int)    node.getProperty(PropertyTypes.ENDREF.name());
 			sequence	= (String) node.getProperty(PropertyTypes.SEQUENCE.name());
+			basedist	= (int)    node.getProperty(PropertyTypes.BASE_DIST.name());
 			rank		= (int)    node.getProperty(PropertyTypes.RANK.name());
 			for (ScoreIdentifier id : Scores.values()) {
-				scores.put(id, (Integer) node.getProperty(id.getName(), 0));
+				scores.put(id, (Integer) node.getProperty(id.name(), 0));
 			}
 			interestingness = (int) node.getProperty(PropertyTypes.INTERESTINGNESS.name(), 0);
 			tx.success();

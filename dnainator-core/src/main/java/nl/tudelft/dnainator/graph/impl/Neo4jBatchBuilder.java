@@ -209,8 +209,9 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 		nodeProperties.put(PropertyTypes.STARTREF.name(), s.getStartRef());
 		nodeProperties.put(PropertyTypes.ENDREF.name(), s.getEndRef());
 		nodeProperties.put(PropertyTypes.SEQUENCE.name(), s.getSequence());
+		nodeProperties.put(PropertyTypes.BASE_DIST.name(), 0);
 		nodeProperties.put(PropertyTypes.RANK.name(), 0);
-		nodeProperties.put(Scores.SEQ_LENGTH.getName(), s.getSequence().length());
+		nodeProperties.put(Scores.SEQ_LENGTH.name(), s.getSequence().length());
 		return batchInserter.createNode(nodeProperties, NodeLabels.NODE);
 	}
 

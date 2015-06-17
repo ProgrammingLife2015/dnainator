@@ -1,6 +1,7 @@
 package nl.tudelft.dnainator.graph.impl.command;
 
 import nl.tudelft.dnainator.graph.impl.RelTypes;
+import nl.tudelft.dnainator.graph.interestingness.Scores;
 
 import org.neo4j.collection.primitive.Primitive;
 import org.neo4j.collection.primitive.PrimitiveLongSet;
@@ -13,6 +14,7 @@ import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.traversal.InitialBranchState.State;
 import org.neo4j.graphdb.traversal.Uniqueness;
 
+import static nl.tudelft.dnainator.graph.impl.PropertyTypes.BASE_DIST;
 import static nl.tudelft.dnainator.graph.impl.PropertyTypes.RANK;
 import static org.neo4j.helpers.collection.IteratorUtil.loop;
 
@@ -70,11 +72,18 @@ public class AnalyzeCommand implements Command {
 	}
 
 	private void rankDest(Node n) {
-		int rankSource = (int) n.getProperty(RANK.name());
+		int baseSource = (int) n.getProperty(BASE_DIST.name())
+				+ (int) n.getProperty(Scores.SEQ_LENGTH.name());
+		int rankSource = (int) n.getProperty(RANK.name()) + 1;
+
 		for (Relationship r : n.getRelationships(RelTypes.NEXT, Direction.OUTGOING)) {
 			Node dest = r.getEndNode();
-			if ((int) dest.getProperty(RANK.name()) < rankSource + 1) {
-				dest.setProperty(RANK.name(), rankSource + 1);
+
+			if ((int) dest.getProperty(BASE_DIST.name()) < baseSource) {
+				dest.setProperty(BASE_DIST.name(), baseSource);
+			}
+			if ((int) dest.getProperty(RANK.name()) < rankSource) {
+				dest.setProperty(RANK.name(), rankSource);
 			}
 		}
 	}

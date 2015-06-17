@@ -1,7 +1,7 @@
 package nl.tudelft.dnainator.javafx.drawables.strains;
 
+import nl.tudelft.dnainator.core.PropertyType;
 import nl.tudelft.dnainator.javafx.views.AbstractView;
-import nl.tudelft.dnainator.javafx.widgets.PropertyType;
 import nl.tudelft.dnainator.javafx.widgets.Propertyable;
 
 import java.util.LinkedHashMap;

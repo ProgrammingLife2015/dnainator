@@ -1,6 +1,6 @@
 package nl.tudelft.dnainator.javafx.controllers;
 
-import nl.tudelft.dnainator.javafx.widgets.PropertyType;
+import nl.tudelft.dnainator.core.PropertyType;
 import nl.tudelft.dnainator.javafx.widgets.Propertyable;
 import nl.tudelft.dnainator.javafx.widgets.animations.LeftSlideAnimation;
 import nl.tudelft.dnainator.javafx.widgets.animations.SlidingAnimation;
