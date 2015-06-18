@@ -2,22 +2,32 @@ package nl.tudelft.dnainator.annotation.impl;
 
 import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
+import nl.tudelft.dnainator.parser.AnnotationParser;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Collection;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
  * Test the annotation collection.
  */
+@RunWith(MockitoJUnitRunner.class)
 public class AnnotationCollectionTest {
 	private AnnotationCollection collection;
 	private AnnotationImpl first;
 	private AnnotationImpl middle;
 	private AnnotationImpl last;
+
+	@Mock private AnnotationParser parser;
 
 	/**
 	 * get the instance of the annotations singleton.
@@ -61,4 +71,29 @@ public class AnnotationCollectionTest {
 		assertTrue(as.contains(last));
 	}
 
+	/**
+	 * Test parsing all annotations from an annotionparser specified in the constructor.
+	 */
+	@Test
+	public void testAnnotationParser() {
+		Mockito.when(parser.hasNext()).thenReturn(false);
+		AnnotationCollection ac = new AnnotationCollectionImpl(parser);
+		Mockito.verify(parser, Mockito.times(1)).hasNext();
+		Mockito.verify(parser, Mockito.times(0)).next();
+		assertEquals(0, ac.getAll().size());
+	}
+
+	/**
+	 * Test parsing all annotations from an annotionparser specified later.
+	 */
+	@Test
+	public void testAnnotationParserAfterConstruction() {
+		int expected = collection.getAll().size();
+
+		Mockito.when(parser.hasNext()).thenReturn(false);
+		collection.addAnnotations(parser);
+		Mockito.verify(parser, Mockito.times(1)).hasNext();
+		Mockito.verify(parser, Mockito.times(0)).next();
+		assertEquals(expected, collection.getAll().size());
+	}
 }
