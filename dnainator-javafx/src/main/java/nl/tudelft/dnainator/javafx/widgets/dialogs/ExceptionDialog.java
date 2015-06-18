@@ -16,6 +16,8 @@ import java.io.StringWriter;
  * </p>
  */
 public class ExceptionDialog extends Alert {
+	private static final String STYLE = "/style.css";
+	private static final String EX_STYLE = "exception-style";
 	
 	/**
 	 * Instantiates a new ExceptionDialog.
@@ -29,7 +31,9 @@ public class ExceptionDialog extends Alert {
 		this.setTitle(title);
 		this.setHeaderText(throwable.getMessage());
 		this.setContentText("The exception stacktrace was:");
-
+		this.getDialogPane().getStylesheets().add(getClass().getResource(STYLE).toString());
+		this.getDialogPane().getStyleClass().add(EX_STYLE);
+		
 		TextArea textArea = initTextArea(throwable);
 		GridPane.setVgrow(textArea, Priority.ALWAYS);
 		GridPane.setHgrow(textArea, Priority.ALWAYS);

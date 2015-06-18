@@ -14,6 +14,7 @@ import nl.tudelft.dnainator.javafx.views.AbstractView;
  * Controller class for all views.
  */
 public class AbstractViewController {
+	private static final String MOVE_CURSOR = "move-cursor";
 	private static final int X_DELTA = 40;
 	private static final int Y_DELTA = 20;
 	private static final double SCROLLSPEED_INC = 0.3;
@@ -24,12 +25,15 @@ public class AbstractViewController {
 	@SuppressWarnings("unused") @FXML
 	private Group group;
 
-	private Point2D dragstart;
+	private Point2D dragstart = new Point2D(0, 0);
 	private double scrollSpeedFactor;
 
 	@SuppressWarnings("unused") @FXML
 	private void onMouseDragged(MouseEvent e) {
 		if (e.getButton() == MouseButton.PRIMARY) {
+			if (!view.getStyleClass().contains(MOVE_CURSOR)) {
+				view.getStyleClass().add(MOVE_CURSOR);
+			}
 			Point2D end = new Point2D(e.getX(), e.getY());
 			Point2D delta = end.subtract(dragstart);
 			view.pan(delta);
@@ -45,6 +49,11 @@ public class AbstractViewController {
 		if (e.getButton() == MouseButton.PRIMARY) {
 			dragstart = new Point2D(e.getX(), e.getY());
 		}
+	}
+	
+	@SuppressWarnings("unused") @FXML
+	private void onMouseReleased(MouseEvent e) {
+		view.getStyleClass().remove(MOVE_CURSOR);
 	}
 
 	@SuppressWarnings("unused") @FXML

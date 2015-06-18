@@ -13,16 +13,16 @@
 
 <AnchorPane fx:id="container" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0.0" minWidth="0.0" prefHeight="500.0" prefWidth="0.0" visible="false" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="nl.tudelft.dnainator.javafx.controllers.FileOpenController">
    <children>
-      <Label alignment="CENTER" text="Open files" textAlignment="CENTER" wrapText="true" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
+      <Label alignment="CENTER" focusTraversable="false" text="Open files" textAlignment="CENTER" wrapText="true" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="30.0">
          <font>
             <Font size="24.0" />
          </font>
       </Label>
-      <Label alignment="CENTER" text="To create a new database, please fill in the files below." AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="80.0" />
+      <Label alignment="CENTER" focusTraversable="false" text="To create a new database, please fill in the files below." AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="80.0" />
       <GridPane layoutX="10.0" layoutY="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="0" minWidth="0" prefHeight="300.0" prefWidth="500.0" AnchorPane.bottomAnchor="90.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="90.0">
          <columnConstraints>
-            <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" maxWidth="137.0" minWidth="0.0" prefWidth="126.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="365.0" minWidth="10.0" prefWidth="364.0" />
+            <ColumnConstraints fillWidth="false" hgrow="SOMETIMES" maxWidth="150.0" minWidth="0.0" prefWidth="135.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="365.0" minWidth="10.0" prefWidth="337.0" />
          </columnConstraints>
          <rowConstraints>
             <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
@@ -38,23 +38,28 @@
             <RowConstraints fillHeight="false" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <Label text="Edge file:" GridPane.rowIndex="2" />
-            <Label text="Phylogenetic tree file:" GridPane.rowIndex="4">
+            <Label focusTraversable="false" styleClass="openpane-title" text="Node file:" wrapText="true">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+            </Label>
+            <Label focusTraversable="false" styleClass="openpane-title" text="Edge file:" wrapText="true" GridPane.rowIndex="2" />
+            <Label focusTraversable="false" styleClass="openpane-title" text="Phylogenetic tree file:" wrapText="true" GridPane.rowIndex="4">
                <GridPane.margin>
                   <Insets right="10.0" />
                </GridPane.margin>
             </Label>
-            <TextField fx:id="nodeField" onMouseClicked="#onNodeFieldClicked" promptText="*.node.graph" GridPane.columnIndex="1" />
-            <TextField fx:id="edgeField" onMouseClicked="#onEdgeFieldClicked" promptText="*.edge.graph" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <TextField fx:id="newickField" onMouseClicked="#onNewickFieldClicked" promptText="*.nwk" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <Label fx:id="curNodeLabel" styleClass="gray-label" stylesheets="@../style.css" text="Current node file: " GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <Label fx:id="curEdgeLabel" styleClass="gray-label" stylesheets="@../style.css" text="Current edge file: " GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <Label fx:id="curNewickLabel" styleClass="gray-label" stylesheets="@../style.css" text="Current newick file: " GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            <Label text="Annotations file:" GridPane.rowIndex="6" />
-            <TextField fx:id="gffField" onMouseClicked="#onGFFFieldClicked" promptText="*.gff" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-            <Label fx:id="curGffLabel" styleClass="gray-label" stylesheets="@../style.css" text="Current annotations file: " GridPane.columnIndex="1" GridPane.rowIndex="7" />
-            <Label text="Known mutations file:" GridPane.rowIndex="8" />
-            <TextField fx:id="drField" onMouseClicked="#onDRFieldClicked" promptText="*.txt" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+            <Label focusTraversable="false" styleClass="openpane-title" text="Annotations file:" wrapText="true" GridPane.rowIndex="6" />
+            <Label styleClass="openpane-title" text="Known mutations file:" GridPane.rowIndex="8" />
+            <TextField fx:id="nodeField" onMouseClicked="#onNodeFieldClicked" promptText="*.node.graph" styleClass="openpane-field" GridPane.columnIndex="1" />
+            <TextField fx:id="edgeField" onMouseClicked="#onEdgeFieldClicked" promptText="*.edge.graph" styleClass="openpane-field" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="newickField" onMouseClicked="#onNewickFieldClicked" promptText="*.nwk" styleClass="openpane-field" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <TextField fx:id="gffField" onMouseClicked="#onGFFFieldClicked" promptText="*.gff" styleClass="openpane-field" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <TextField fx:id="drField" onMouseClicked="#onDRFieldClicked" promptText="*.txt" styleClass="openpane-field" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+            <Label fx:id="curNodeLabel" focusTraversable="false" styleClass="gray-label" stylesheets="@../style.css" text="Current node file: " GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Label fx:id="curEdgeLabel" focusTraversable="false" styleClass="gray-label" stylesheets="@../style.css" text="Current edge file: " GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Label fx:id="curNewickLabel" focusTraversable="false" styleClass="gray-label" stylesheets="@../style.css" text="Current newick file: " GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <Label fx:id="curGffLabel" focusTraversable="false" styleClass="gray-label" stylesheets="@../style.css" text="Current annotations file: " GridPane.columnIndex="1" GridPane.rowIndex="7" />
             <Label fx:id="curDrLabel" styleClass="gray-label" stylesheets="@../style.css" text="Current known mutations file: " GridPane.columnIndex="1" GridPane.rowIndex="9" />
             <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="1" GridPane.rowIndex="10">
                <children>
@@ -62,11 +67,6 @@
                   <Button mnemonicParsing="false" onAction="#onCancelAction" text="Cancel" />
                </children>
             </HBox>
-            <Label text="Node file:">
-               <GridPane.margin>
-                  <Insets />
-               </GridPane.margin>
-            </Label>
          </children>
          <padding>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
