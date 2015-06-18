@@ -105,7 +105,9 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 		double radius = getRadius();
 
 		if (sources.size() > PIETHRESHOLD) {
-			getChildren().add(new Circle(radius));
+			Circle commonNode = new Circle(radius);
+			commonNode.getStyleClass().add("common-node");
+			getChildren().add(commonNode);
 		} else {
 			colorServer.addListener(this::onColorServerChanged);
 

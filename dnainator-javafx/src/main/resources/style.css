@@ -44,6 +44,11 @@
 	-fx-text-fill: #a8a8a8;
 }
 
+.common-node {
+	-fx-stroke: #a8a8a8;
+	-fx-stroke-width: .5;
+}
+
 AbstractNode {
 	-fx-font-size: 4px;
 }
