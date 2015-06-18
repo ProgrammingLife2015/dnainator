@@ -33,6 +33,7 @@ public class Strain extends SemanticDrawable {
 	private double zoomInBound;
 	private LinkedHashMap<String, ClusterDrawable> clusters;
 	private Range lastLoaded;
+	private Thresholds lastThreshold;
 
 	/**
 	 * Construct a new top level {@link Strain} using the specified graph.
@@ -61,6 +62,7 @@ public class Strain extends SemanticDrawable {
 		this.zoomInBound = zoomInBound;
 		this.clusters = new LinkedHashMap<>();
 		this.lastLoaded = new Range(Integer.MAX_VALUE, Integer.MIN_VALUE);
+		this.lastThreshold = Thresholds.INDIVIDUAL;
 	}
 
 	@Override
@@ -71,18 +73,19 @@ public class Strain extends SemanticDrawable {
 		maxRank = Math.min(Math.max(minRank, maxRank), graph.getMaxRank());
 		minRankProperty().set(minRank);
 		maxRankProperty().set(maxRank);
-		if (minRank < lastLoaded.getX() || maxRank > lastLoaded.getY()) {
-			int offset = (maxRank - minRank) / 2;
-			lastLoaded = new Range(minRank - offset, maxRank + offset);
-			loadContent(lastLoaded, zoom);
-		}
+		loadContent(new Range(minRank, maxRank), zoom);
 	}
 
 	@Override
 	protected void loadContent(Range ranks, double zoom) {
 		double interestingness = (zoomInBound - zoom) * THRESHOLD_FACTOR;
+		Thresholds newThreshold = Thresholds.retrieve(interestingness);
+
+		if (!needRedraw(ranks, newThreshold)) {
+			return;
+		}
 		System.out.println("load iteration: " + ranks.getX() + " -> " + ranks.getY()
-				+ " with zoom level " + zoom + " (" + interestingness + ")");
+				+ " with zoom level " + zoom + " (" + interestingness + ": " + lastThreshold + ")");
 
 		List<Annotation> annotations = getSortedAnnotations(ranks);
 		List<String> roots = graph.getRank(lastLoaded.getX()).stream()
@@ -90,13 +93,24 @@ public class Strain extends SemanticDrawable {
 				.sorted((s1, s2) -> s1.compareTo(s2))
 				.collect(Collectors.toList());
 		Map<Integer, List<Cluster>> result = graph.getAllClusters(roots, lastLoaded.getY(),
-				(int) Math.round(interestingness));
+				lastThreshold.get());
 
 		content.getChildren().clear();
 		clusters.clear();
 		result.forEach(this::loadRank);
 		clusters.values().forEach(this::loadEdges);
 		drawAnnotations(annotations);
+	}
+
+	private boolean needRedraw(Range ranks, Thresholds newThreshold) {
+		if (ranks.getX() < lastLoaded.getX() || ranks.getY() > lastLoaded.getY()
+				|| lastThreshold.compareTo(newThreshold) != 0) {
+			int offset = (ranks.getY() - ranks.getX()) / 2;
+			lastLoaded = new Range(Math.max(ranks.getX() - offset, 0), ranks.getY() + offset);
+			lastThreshold = newThreshold;
+			return true;
+		}
+		return false;
 	}
 
 	private List<Annotation> getSortedAnnotations(Range ranks) {
