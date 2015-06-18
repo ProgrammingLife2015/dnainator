@@ -32,6 +32,7 @@ public class Strain extends SemanticDrawable {
 	private Graph graph;
 	private double zoomInBound;
 	private LinkedHashMap<String, ClusterDrawable> clusters;
+	private Range lastLoaded;
 
 	/**
 	 * Construct a new top level {@link Strain} using the specified graph.
@@ -59,19 +60,22 @@ public class Strain extends SemanticDrawable {
 		this.graph = graph;
 		this.zoomInBound = zoomInBound;
 		this.clusters = new LinkedHashMap<>();
+		this.lastLoaded = new Range(Integer.MAX_VALUE, Integer.MIN_VALUE);
 	}
 
 	@Override
 	public void update(Bounds bounds, double zoom) {
 		int minRank = (int) (Math.max(bounds.getMinX() / RANK_WIDTH, 0));
 		int maxRank = (int) (RANK_WIDTH + bounds.getMaxX() / RANK_WIDTH);
-		minRank = Math.max(minRank, 0);
-		minRank = Math.min(minRank, graph.getMaxRank());
-		maxRank = Math.max(minRank, maxRank);
-		maxRank = Math.min(maxRank, graph.getMaxRank());
+		minRank = Math.min(Math.max(minRank, 0), graph.getMaxRank());
+		maxRank = Math.min(Math.max(minRank, maxRank), graph.getMaxRank());
 		minRankProperty().set(minRank);
 		maxRankProperty().set(maxRank);
-		loadContent(new Range(minRank, maxRank), zoom);
+		if (minRank < lastLoaded.getX() || maxRank > lastLoaded.getY()) {
+			int offset = (maxRank - minRank) / 2;
+			lastLoaded = new Range(minRank - offset, maxRank + offset);
+			loadContent(lastLoaded, zoom);
+		}
 	}
 
 	@Override
@@ -81,11 +85,11 @@ public class Strain extends SemanticDrawable {
 				+ " with zoom level " + zoom + " (" + interestingness + ")");
 
 		List<Annotation> annotations = getSortedAnnotations(ranks);
-		List<String> roots = graph.getRank(ranks.getX()).stream()
+		List<String> roots = graph.getRank(lastLoaded.getX()).stream()
 				.map(SequenceNode::getId)
 				.sorted((s1, s2) -> s1.compareTo(s2))
 				.collect(Collectors.toList());
-		Map<Integer, List<Cluster>> result = graph.getAllClusters(roots, ranks.getY(),
+		Map<Integer, List<Cluster>> result = graph.getAllClusters(roots, lastLoaded.getY(),
 				(int) Math.round(interestingness));
 
 		content.getChildren().clear();
