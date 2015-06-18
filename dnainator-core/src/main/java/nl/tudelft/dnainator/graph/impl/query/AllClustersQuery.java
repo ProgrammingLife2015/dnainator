@@ -93,6 +93,7 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 				}
 			}
 			int interestingness = is.compute(new Neo4jScoreContainer(n));
+			n.setProperty(SequenceProperties.INTERESTINGNESS.name(), interestingness);
 			if (interestingness > threshold) {
 				for (long sourceID
 						: (long[]) n.getProperty(BubbleProperties.BUBBLE_SOURCE_IDS.name())) {
