@@ -13,11 +13,13 @@ import nl.tudelft.dnainator.graph.interestingness.InterestingnessStrategy;
 
 import org.neo4j.graphalgo.GraphAlgoFactory;
 import org.neo4j.graphalgo.PathFinder;
+import org.neo4j.graphalgo.impl.util.PathImpl;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.PathExpanders;
+import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.traversal.Evaluation;
 import org.neo4j.graphdb.traversal.TraversalDescription;
 import org.neo4j.helpers.collection.IteratorUtil;
@@ -25,7 +27,9 @@ import org.neo4j.helpers.collection.IteratorUtil;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -99,14 +103,13 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 
 	private Map<Integer, List<Cluster>> cluster(GraphDatabaseService service,
 			Set<Long> bubbleSourcesToCluster, Set<Long> bubbleSourcesToKeepIntact) {
-		Map<Integer, List<Cluster>> bubblesClustered = bubbleSourcesToCluster.stream()
+		Stream<Map<Integer, List<Cluster>>> bubblesClustered = bubbleSourcesToCluster.stream()
 				.map(service::getNodeById)
-				.map(source -> collapseBubble(service, source, getSinkFromSource(source)))
-				.collect(Collectors.groupingBy(Cluster::getStartRank));
+				.map(source -> collapseBubble(service, source, getSinkFromSource(source)));
 		Stream<Map<Integer, List<Cluster>>> singletonClusters = bubbleSourcesToKeepIntact.stream()
 				.map(service::getNodeById)
 				.map(source -> getSingletonClusters(service, source, getSinkFromSource(source)));
-		return mergeMaps(Stream.concat(Stream.of(bubblesClustered), singletonClusters));
+		return mergeMaps(Stream.concat(bubblesClustered, singletonClusters));
 	}
 
 	private static Node getSinkFromSource(Node source) {
@@ -132,22 +135,41 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 				Collections.singletonList(sn), sn.getAnnotations());
 	}
 
-	private Cluster collapseBubble(GraphDatabaseService service, Node source, Node sink) {
+	private Map<Integer, List<Cluster>> collapseBubble(GraphDatabaseService service,
+			Node source, Node sink) {
+		Map<Integer, List<Cluster>> res = new HashMap<>(2 + 1); // source + sink + bubble.
 		int sourceRank = (int) source.getProperty(SequenceProperties.RANK.name());
 		int sinkRank = (int) sink.getProperty(SequenceProperties.RANK.name());
+		// Set the rank of the cluster to be in the middle.
 		int clusterRank = sourceRank + (sinkRank - sourceRank) / 2;
+		res.put(sourceRank, Collections.singletonList(createSingletonCluster(service, source)));
+		res.put(sinkRank, Collections.singletonList(createSingletonCluster(service, sink)));
+
 		PathFinder<Path> withinBubble = pathFinderBetweenRanks(sourceRank, sinkRank);
-		// FIXME: don't collapse source and sink, keep those intact.
 		List<EnrichedSequenceNode> nodes = stream(
 				withinBubble.findAllPaths(source, sink))
-				.flatMap(path -> stream(path.nodes()))
+				.flatMap(path -> stream(trimPath(path).nodes()))
 				.distinct()
 				.map(n -> new Neo4jSequenceNode(service, n))
 				.collect(Collectors.toList());
 		List<Annotation> annotations = nodes.stream()
 				.flatMap(e -> e.getAnnotations().stream())
 				.collect(Collectors.toList());
-		return new Cluster(clusterRank, nodes, annotations);
+		Cluster cluster = new Cluster(clusterRank, nodes, annotations);
+		res.put(clusterRank, Collections.singletonList(cluster));
+		return res;
+	}
+
+	private Path trimPath(Path path) {
+		Iterator<Node> nodes = path.nodes().iterator();
+		Iterator<Relationship> rels = path.relationships().iterator();
+		nodes.next();
+		rels.next();
+		PathImpl.Builder builder = new PathImpl.Builder(nodes.next());
+		for (int i = 1; i < path.length() - 2; i++) {
+			builder = builder.push(rels.next());
+		}
+		return builder.build();
 	}
 
 	private PathFinder<Path> pathFinderBetweenRanks(int minRank, int maxRank) {
