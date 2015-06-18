@@ -210,6 +210,13 @@ public class Strain extends SemanticDrawable {
 	}
 
 	/**
+	 * @return the clusters in the view.
+	 */
+	public Map<String, ClusterDrawable> getClusters() {
+		return clusters;
+	}
+
+	/**
 	 * Get the rank width.
 	 * @return the rank width.
 	 */

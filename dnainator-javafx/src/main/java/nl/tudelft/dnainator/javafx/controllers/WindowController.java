@@ -28,15 +28,17 @@ public class WindowController {
 	private FileOpenController fileOpenController;
 	@SuppressWarnings("unused") @FXML
 	private WelcomeController welcomeController;
-	private StrainView strainView;
-	private PhylogeneticView phyloView;
-	@SuppressWarnings("unused") @FXML 
+	@SuppressWarnings("unused") @FXML
 	private PropertyPaneController propertyPaneController;
-	
 	@SuppressWarnings("unused") @FXML
 	private Menu menuFile;
 	@SuppressWarnings("unused") @FXML
 	private Menu menuView;
+	@SuppressWarnings("unused") @FXML
+	private Menu menuNavigate;
+
+	private StrainView strainView;
+	private PhylogeneticView phyloView;
 
 	@SuppressWarnings("unused") @FXML
 	private void initialize() {
@@ -58,11 +60,16 @@ public class WindowController {
 		SplitPane splitPane = new SplitPane(strainView, phyloView);
 		splitPane.setOrientation(Orientation.VERTICAL);
 		root.setCenter(splitPane);
-		
 		AbstractView.lastClickedProperty().addListener(
 				(ob, ov, nv) -> propertyPaneController.update(nv));
+		enableAllMenuItems();
 	}
 	
+	private void enableAllMenuItems() {
+		menuView.getItems().forEach(item -> item.setDisable(false));
+		menuNavigate.getItems().forEach(item -> item.setDisable(false));
+	}
+
 	@SuppressWarnings("unused") @FXML
 	private void openButtonAction() {
 		fileOpenController.toggle();
@@ -76,7 +83,7 @@ public class WindowController {
 
 	@SuppressWarnings("unused") @FXML
 	private void hotkeyHelpAction(ActionEvent e) {
-		HotkeyHelpDialog hotkeyHelp = new HotkeyHelpDialog(root, menuFile, menuView);
+		HotkeyHelpDialog hotkeyHelp = new HotkeyHelpDialog(root, menuFile, menuView, menuNavigate);
 		hotkeyHelp.show();
 	}
 	
@@ -108,5 +115,20 @@ public class WindowController {
 	@SuppressWarnings("unused") @FXML
 	private void toggleProperties(ActionEvent e) {
 		propertyPaneController.toggle();
+	}
+	
+	@SuppressWarnings("unused") @FXML
+	private void jumpNodeAction(ActionEvent e) {
+		strainView.getStrainControl().toggleJumpNode();
+	}
+	
+	@SuppressWarnings("unused") @FXML
+	private void jumpRankAction(ActionEvent e) {
+		strainView.getStrainControl().toggleJumpRank();
+	}
+	
+	@SuppressWarnings("unused") @FXML
+	private void jumpAnnotationAction(ActionEvent e) {
+		strainView.getStrainControl().toggleJumpAnnotation();
 	}
 }
