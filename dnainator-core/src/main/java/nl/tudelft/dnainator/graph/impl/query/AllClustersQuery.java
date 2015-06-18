@@ -13,13 +13,11 @@ import nl.tudelft.dnainator.graph.interestingness.InterestingnessStrategy;
 
 import org.neo4j.graphalgo.GraphAlgoFactory;
 import org.neo4j.graphalgo.PathFinder;
-import org.neo4j.graphalgo.impl.util.PathImpl;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.PathExpanders;
-import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.traversal.Evaluation;
 import org.neo4j.graphdb.traversal.TraversalDescription;
 import org.neo4j.helpers.collection.IteratorUtil;
@@ -81,6 +79,7 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 
 	@Override
 	public Map<Integer, List<Cluster>> execute(GraphDatabaseService service) {
+		Set<Long> bubbleSourcesNested = new HashSet<>();
 		Set<Long> bubbleSourcesToCluster = new HashSet<>();
 		Set<Long> bubbleSourcesToKeepIntact = new HashSet<>();
 		Iterable<Node> start = IteratorUtil.loop(service.findNodes(NodeLabels.NODE,
@@ -88,6 +87,10 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 		for (Node n : untilMaxRank(service).traverse(start).nodes()) {
 			if (n.hasLabel(NodeLabels.BUBBLE_SOURCE)) {
 				bubbleSourcesToCluster.add(n.getId());
+				if (((long[]) n.getProperty(BubbleProperties.BUBBLE_SOURCE_IDS.name()))
+						.length > 0) {
+					bubbleSourcesNested.add(n.getId());
+				}
 			}
 			int interestingness = is.compute(new Neo4jScoreContainer(n));
 			if (interestingness > threshold) {
@@ -98,6 +101,7 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 				}
 			}
 		}
+		bubbleSourcesToCluster.removeAll(bubbleSourcesNested);
 		return cluster(service, bubbleSourcesToCluster, bubbleSourcesToKeepIntact);
 	}
 
@@ -148,7 +152,7 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 		PathFinder<Path> withinBubble = pathFinderBetweenRanks(sourceRank, sinkRank);
 		List<EnrichedSequenceNode> nodes = stream(
 				withinBubble.findAllPaths(source, sink))
-				.flatMap(path -> stream(trimPath(path).nodes()))
+				.flatMap(path -> stream(trimPath(path)))
 				.distinct()
 				.map(n -> new Neo4jSequenceNode(service, n))
 				.collect(Collectors.toList());
@@ -160,16 +164,17 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 		return res;
 	}
 
-	private Path trimPath(Path path) {
-		Iterator<Node> nodes = path.nodes().iterator();
-		Iterator<Relationship> rels = path.relationships().iterator();
-		nodes.next();
-		rels.next();
-		PathImpl.Builder builder = new PathImpl.Builder(nodes.next());
-		for (int i = 1; i < path.length() - 2; i++) {
-			builder = builder.push(rels.next());
+	private Iterable<Node> trimPath(Path path) {
+		if (path.length() < 2) {
+			return Collections.emptyList();
 		}
-		return builder.build();
+		Iterator<Node> nodes = path.nodes().iterator();
+		List<Node> res = new ArrayList<>(path.length() - 1);
+		nodes.next();
+		for (int i = 1; i <= path.length() - 1; i++) {
+			res.add(nodes.next());
+		}
+		return res;
 	}
 
 	private PathFinder<Path> pathFinderBetweenRanks(int minRank, int maxRank) {
