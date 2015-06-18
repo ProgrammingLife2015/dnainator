@@ -69,12 +69,12 @@ public interface Graph extends AnnotationCollection {
 
 	/**
 	 * Return a list of nodes that belong to the same cluster as the given startId.
-	 * @param startNodes	the start nodes
+	 * @param start	the start nodes
 	 * @param end		the maximum rank of the cluster
 	 * @param threshold	the clustering threshold
 	 * @return		a list representing the cluster
 	 */
-	Map<Integer, List<Cluster>> getAllClusters(List<String> startNodes, int end, int threshold);
+	Map<Integer, List<Cluster>> getAllClusters(int start, int end, int threshold);
 
 	/**
 	 * Sets the interestingness strategy which calculates the interestingness when

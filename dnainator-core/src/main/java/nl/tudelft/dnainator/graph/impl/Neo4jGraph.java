@@ -169,9 +169,9 @@ public final class Neo4jGraph implements Graph {
 	}
 
 	@Override
-	public Map<Integer, List<Cluster>> getAllClusters(List<String> startNodes,
+	public Map<Integer, List<Cluster>> getAllClusters(int start,
 							int end, int threshold) {
-		return query(new AllClustersQuery(startNodes, end, threshold, is));
+		return query(new AllClustersQuery(start, end, threshold, is));
 	}
 
 	@Override

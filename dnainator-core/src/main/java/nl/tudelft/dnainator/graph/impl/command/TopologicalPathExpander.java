@@ -53,14 +53,14 @@ public class TopologicalPathExpander implements PathExpander<Object> {
 	public Iterable<Relationship> expand(Path path,
 			BranchState<Object> noState) {
 		Node from = path.endNode();
-
 		// Propagate all unclosed bubbles and the newly created ones.
 		Set<Long> toPropagate = getSourcesToPropagate(from);
 
 		// For each unclosed bubble source, remove the current node from the endings and
 		// add outgoing nodes to the ending nodes, thereby advancing the bubble endings.
 		toPropagate.forEach(e -> advanceEnds(e, from));
-
+		// Store in this node the bubbles in which it is nested.
+		storeOuterBubbles(from, toPropagate);
 		// Create a new bubblesource, that will have its own bubble endings.
 		createBubbleSource(from, toPropagate);
 
@@ -68,7 +68,6 @@ public class TopologicalPathExpander implements PathExpander<Object> {
 		from.getRelationships(RelTypes.NEXT, Direction.OUTGOING)
 			.forEach(out -> propagateSourceIDs(toPropagate, out));
 
-		// Process all outgoing edges.
 		List<Relationship> expand = new LinkedList<>();
 		for (Relationship out : from.getRelationships(RelTypes.NEXT, Direction.OUTGOING)) {
 			setNumStrainsThrough(out);
@@ -80,6 +79,13 @@ public class TopologicalPathExpander implements PathExpander<Object> {
 			}
 		}
 		return expand;
+	}
+
+	private void storeOuterBubbles(Node from, Set<Long> toPropagate) {
+		// Set the source id of the bubbles to which this node belongs. Excludes its own
+		// source id if it's a source.
+		from.setProperty(BubbleProperties.BUBBLE_SOURCE_IDS.name(),
+				toPropagate.stream().mapToLong(l -> l).toArray());
 	}
 
 	private Set<Long> getSourcesToPropagate(Node from) {
@@ -121,8 +127,6 @@ public class TopologicalPathExpander implements PathExpander<Object> {
 	}
 
 	private void propagateSourceIDs(Set<Long> propagatedUnique, Relationship out) {
-		out.setProperty(BubbleProperties.BUBBLE_SOURCE_IDS.name(),
-				propagatedUnique.stream().mapToLong(l -> l).toArray());
 		relIDtoSourceIDs.put(out.getId(), propagatedUnique);
 	}
 

@@ -81,10 +81,8 @@ public class Strain extends SemanticDrawable {
 		Range ranks = getRange(bounds);
 
 		System.out.println("load iteration: " + ranks.getX() + " -> " + ranks.getY());
-		List<String> roots = graph.getRank(ranks.getX()).stream()
-				.map(SequenceNode::getId).collect(Collectors.toList());
 		List<Annotation> annotations = getSortedAnnotations(ranks);
-		Map<Integer, List<Cluster>> result = graph.getAllClusters(roots, ranks.getY(),
+		Map<Integer, List<Cluster>> result = graph.getAllClusters(ranks.getX(), ranks.getY(),
 				(int) (bounds.getWidth() / CLUSTER_DIVIDER));
 		clusters.clear();
 		childContent.getChildren().clear();
