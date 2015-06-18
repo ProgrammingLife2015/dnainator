@@ -216,12 +216,20 @@ Pie Arc {
 	-fx-smooth: true;
 }
 
-Strain Edge {
+.ghost {
 	-fx-font-size: 4px;
+	-fx-opacity: 0.2;
 }
 
-Strain Edge Circle {
+.ghost Circle {
 	-fx-fill: #4C4C4C;
+	-fx-opacity: 0.2;
+}
+
+.ghost Line {
+	-fx-opacity: 0.2;
+	-fx-stroke: #000000;
+	-fx-stroke-width: .2;
 }
 
 Strain Edge Line {

@@ -27,7 +27,7 @@ public class Strain extends SemanticDrawable {
 	// Max zoom is 15. 15*53.33 = 800, which is our max threshold.
 	private static final double THRESHOLD_FACTOR = 53.33;
 	private static final double ANNOTATION_HEIGHT = 50;
-	private static final double OFFSET = 10;
+	private static final double OFFSET = 30;
 	private ColorServer colorServer;
 	private Graph graph;
 	private double zoomInBound;
@@ -100,6 +100,8 @@ public class Strain extends SemanticDrawable {
 		result.forEach(this::loadRank);
 		clusters.values().forEach(this::loadEdges);
 		drawAnnotations(annotations);
+		content.getChildren().addAll(clusters.values().stream().distinct()
+				.collect(Collectors.toList()));
 	}
 
 	private boolean needRedraw(Range ranks, Thresholds newThreshold) {
@@ -183,7 +185,6 @@ public class Strain extends SemanticDrawable {
 			cluster.getCluster().getNodes().forEach(e -> clusters.put(e.getId(), cluster));
 			cluster.setTranslateX(key * RANK_WIDTH);
 			cluster.setTranslateY(i * RANK_WIDTH - value.size() * RANK_WIDTH / 2);
-			content.getChildren().add(cluster);
 		}
 	}
 
@@ -195,12 +196,8 @@ public class Strain extends SemanticDrawable {
 					ClusterDrawable dest = clusters.get(destid);
 					if (dest == null) {
 						Edge e = new Edge(cluster, destid);
-						// FIXME: find another way to do this
-						//e.getEdge().endYProperty().setValue(bounds.getMinY() + OFFSET);
-						e.getEdge().endYProperty().bind(cluster.translateYProperty()
-								.subtract(cluster.parentProperty().get()
-										.parentProperty().get()
-										.parentToLocal(0, 0).getY()).negate().add(OFFSET));
+						e.getStyleClass().add("ghost");
+						e.getEdge().endYProperty().setValue(-OFFSET);
 						return e;
 					} else {
 						return new Edge(cluster, dest);
