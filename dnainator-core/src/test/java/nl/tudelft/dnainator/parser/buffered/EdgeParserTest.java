@@ -7,6 +7,7 @@ import nl.tudelft.dnainator.parser.impl.EdgeParserImpl;
 import org.junit.Test;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 
@@ -244,6 +245,20 @@ public class EdgeParserTest {
 			assertEdgeEquals(new Edge<>("3", "4"), next);
 		} catch (IOException | InvalidEdgeFormatException e) {
 			fail("Shouldn't happen.");
+		}
+	}
+
+	/**
+	 * Tests if the constructor accepting a File works as it should.
+	 */
+	@Test
+	public void testFileConstructor() {
+		try {
+			EdgeParser ep = new EdgeParserImpl(new File(getClass().getResource(
+					"/strains/simple_graph.edge.graph").getFile()));
+			assertTrue(ep.hasNext());
+		} catch (Exception e) {
+			fail("Shouldn't happen");
 		}
 	}
 }

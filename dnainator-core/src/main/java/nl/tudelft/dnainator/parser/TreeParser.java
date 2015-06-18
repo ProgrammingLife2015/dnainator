@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.NoSuchElementException;
 
 /**
  * This class parses newick files to {@link TreeNode} items. It returns a {@link TreeNode}
@@ -56,6 +57,10 @@ public class TreeParser {
 	 * @return The root of the phylogenetic tree.
 	 */
 	public TreeNode build(String s) {
+		if (s == null) {
+			throw new NoSuchElementException("Empty tree file.");
+		}
+
 		String[] tokens = s.split(REGEX);
 		boolean isDistance = false;
 

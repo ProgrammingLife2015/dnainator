@@ -9,6 +9,7 @@ import nl.tudelft.dnainator.parser.impl.NodeParserImpl;
 import org.junit.Test;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
@@ -176,6 +177,20 @@ public class NodeParserTest {
 			//CHECKSTYLE.ON: MagicNumber
 		} catch (IOException | InvalidHeaderFormatException e) {
 			fail("Shouldn't happen.");
+		}
+	}
+
+	/**
+	 * Tests if the constructor accepting a File works as it should.
+	 */
+	@Test
+	public void testFileConstructor() {
+		try {
+			NodeParser np = new NodeParserImpl(new File(getClass().getResource(
+					"/strains/simple_graph.node.graph").getFile()));
+			assertTrue(np.hasNext());
+		} catch (Exception e) {
+			fail("Shouldn't happen");
 		}
 	}
 
