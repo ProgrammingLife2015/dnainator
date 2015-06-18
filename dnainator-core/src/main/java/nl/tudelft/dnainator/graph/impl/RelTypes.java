@@ -9,5 +9,6 @@ public enum RelTypes implements RelationshipType {
 	ANCESTOR_OF,
 	ANNOTATED,
 	NEXT,
-	SOURCE
+	SOURCE,
+	MUTATION
 }

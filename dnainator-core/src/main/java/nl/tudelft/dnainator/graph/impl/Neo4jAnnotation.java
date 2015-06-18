@@ -9,8 +9,10 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
 
 import nl.tudelft.dnainator.annotation.Annotation;
+import nl.tudelft.dnainator.annotation.DRMutation;
 import nl.tudelft.dnainator.annotation.Range;
 import nl.tudelft.dnainator.graph.impl.properties.AnnotationProperties;
+import nl.tudelft.dnainator.graph.impl.properties.DRMutationProperties;
 import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
 
 /**
@@ -21,6 +23,7 @@ public class Neo4jAnnotation implements Annotation {
 	private Range range;
 	private boolean isSense;
 	private Collection<String> annotatedNodes;
+	private Collection<DRMutation> mutations;
 
 	/**
 	 * Constructs a new Neo4jAnnotation.
@@ -39,6 +42,16 @@ public class Neo4jAnnotation implements Annotation {
 					(String) e.getStartNode().getProperty(SequenceProperties.ID.name())
 				)
 			);
+			this.mutations = new ArrayList<>();
+			delegate.getRelationships(Direction.OUTGOING, RelTypes.MUTATION).forEach(e -> {
+				Node end = e.getEndNode();
+				String name	= (String) end.getProperty(DRMutationProperties.ID.name());
+				String type	= (String) end.getProperty(DRMutationProperties.TYPE.name());
+				String change	= (String) end.getProperty(DRMutationProperties.CHANGE.name());
+				String filter	= (String) end.getProperty(DRMutationProperties.FILTER.name());
+				int pos		= (int) end.getProperty(DRMutationProperties.POSITION.name());
+				mutations.add(new DRMutation(name, type, change, filter, pos));
+			});
 			tx.success();
 		}
 	}
@@ -78,4 +91,13 @@ public class Neo4jAnnotation implements Annotation {
 		return getGeneName().hashCode() + getStart() + getEnd() + ((Boolean) isSense()).hashCode();
 	}
 
+	@Override
+	public void addDRMutation(DRMutation dr) {
+		mutations.add(dr);
+	}
+
+	@Override
+	public Collection<DRMutation> getDRMutations() {
+		return mutations;
+	}
 }

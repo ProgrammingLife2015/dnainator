@@ -1,9 +1,11 @@
 package nl.tudelft.dnainator.annotation.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
 import nl.tudelft.dnainator.annotation.Annotation;
+import nl.tudelft.dnainator.annotation.DRMutation;
 import nl.tudelft.dnainator.annotation.Range;
 
 /**
@@ -13,6 +15,7 @@ public class AnnotationImpl implements Annotation {
 	private String name;
 	private Range range;
 	private boolean sense;
+	private Collection<DRMutation> mutations;
 
 	/**
 	 * Construct a new annotation with the given parameters.
@@ -35,6 +38,7 @@ public class AnnotationImpl implements Annotation {
 		this.name = name;
 		this.range = range;
 		this.sense = sense;
+		this.mutations = new ArrayList<>();
 	}
 
 	@Override
@@ -75,5 +79,15 @@ public class AnnotationImpl implements Annotation {
 	@Override
 	public Collection<String> getAnnotatedNodes() {
 		return Collections.emptyList();
+	}
+
+	@Override
+	public void addDRMutation(DRMutation dr) {
+		mutations.add(dr);
+	}
+
+	@Override
+	public Collection<DRMutation> getDRMutations() {
+		return mutations;
 	}
 }
