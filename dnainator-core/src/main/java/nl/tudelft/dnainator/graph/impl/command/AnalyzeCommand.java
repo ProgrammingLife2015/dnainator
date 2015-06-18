@@ -8,7 +8,6 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.ResourceIterator;
-import org.neo4j.graphdb.Transaction;
 import org.neo4j.graphdb.traversal.InitialBranchState;
 import org.neo4j.graphdb.traversal.Uniqueness;
 
@@ -52,13 +51,8 @@ public class AnalyzeCommand implements Command {
 
 	@Override
 	public void execute(GraphDatabaseService service) {
-		try (
-			Transaction tx = service.beginTx();
-		) {
-			for (Node n : topologicalOrder(service)) {
-				rankDest(n);
-			}
-			tx.success();
+		for (Node n : topologicalOrder(service)) {
+			rankDest(n);
 		}
 	}
 

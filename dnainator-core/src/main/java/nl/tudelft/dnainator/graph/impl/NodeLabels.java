@@ -12,5 +12,4 @@ public enum NodeLabels implements Label {
 	SOURCE,
 	NODE,
 	BUBBLE_SOURCE,
-	BUBBLE_SINK
 }
