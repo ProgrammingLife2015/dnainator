@@ -75,7 +75,6 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 				.flatMap(e -> e.getSources().stream())
 				.collect(Collectors.toSet());
 		label = new Text(Integer.toString(cluster.getNodes().size()));
-		initProperties();
 		setOnMouseClicked(e -> AbstractView.setLastClicked(this));
 		draw(colorServer);
 	}
@@ -89,6 +88,9 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 			properties.put(ClusterPropertyTypes.ID, nodeIds.toString());
 			properties.put(ClusterPropertyTypes.STARTRANK,
 					Integer.toString(cluster.getStartRank()));
+			properties.put(ClusterPropertyTypes.SOURCES, cluster.getNodes().stream()
+									.flatMap(e -> e.getSources().stream())
+									.collect(Collectors.toList()).toString());
 		} else {
 			EnrichedSequenceNode sn = cluster.getNodes().iterator().next();
 			properties.put(ClusterPropertyTypes.ID, sn.getId());
@@ -167,6 +169,9 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 
 	@Override
 	public Map<PropertyType, String> getPropertyMap() {
+		if (properties.size() == 0) {
+			initProperties();
+		}
 		return properties;
 	}
 }

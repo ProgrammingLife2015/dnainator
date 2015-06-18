@@ -12,7 +12,6 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -45,7 +44,7 @@ public class ClusterDrawableTest {
 	 */
 	@Test
 	public void testCreate() {
-		Cluster c = new Cluster(0, Arrays.asList(node), Collections.emptyList());
+		Cluster c = new Cluster(0, Arrays.asList(node));
 		cluster = new ClusterDrawable(colorserver, c);
 		
 		// CHECKSTYLE.OFF: MagicNumber
@@ -60,7 +59,7 @@ public class ClusterDrawableTest {
 	 */
 	@Test
 	public void testCreateSmall() {
-		Cluster c = new Cluster(0, Arrays.asList(node, node, node), Collections.emptyList());
+		Cluster c = new Cluster(0, Arrays.asList(node, node, node));
 		cluster = new ClusterDrawable(colorserver, c);
 		
 		// CHECKSTYLE.OFF: MagicNumber
@@ -75,7 +74,7 @@ public class ClusterDrawableTest {
 	 */
 	@Test
 	public void testCreateMedium() {
-		Cluster c = new Cluster(0, Arrays.asList(node, node, node, node), Collections.emptyList());
+		Cluster c = new Cluster(0, Arrays.asList(node, node, node, node));
 		cluster = new ClusterDrawable(colorserver, c);
 		
 		// CHECKSTYLE.OFF: MagicNumber
@@ -91,7 +90,7 @@ public class ClusterDrawableTest {
 	@Test
 	public void testCreateLarge() {
 		Cluster c = new Cluster(0, Arrays.asList(node, node, node, node, node,
-							node, node, node, node, node, node), Collections.emptyList());
+							node, node, node, node, node, node));
 		cluster = new ClusterDrawable(colorserver, c);
 		
 		// CHECKSTYLE.OFF: MagicNumber
