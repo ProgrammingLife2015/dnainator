@@ -160,7 +160,7 @@ public class FileOpenController {
 		File drFile = selectFile("Drug resistant mutations file", DR);
 		if (drFile != null) {
 			graphLoadService.setDRFile(drFile);
-			drField.setText(graphLoadService.getDRFile().getAbsolutePath());
+			drField.setText(graphLoadService.getDrFile().getAbsolutePath());
 		}
 	}
 
@@ -185,8 +185,8 @@ public class FileOpenController {
 			curNodeLabel.setText(graphLoadService.getNodeFile().getAbsolutePath());
 			curEdgeLabel.setText(graphLoadService.getEdgeFile().getAbsolutePath());
 
-			if (graphLoadService.getDRFile() != null) {
-				curDrLabel.setText(graphLoadService.getDRFile().getAbsolutePath());
+			if (graphLoadService.getDrFile() != null) {
+				curDrLabel.setText(graphLoadService.getDrFile().getAbsolutePath());
 			}
 		}
 	}

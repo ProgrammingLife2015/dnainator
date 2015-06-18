@@ -38,6 +38,7 @@ public class GraphLoadServiceTest {
 	private File nodeFile;
 	private File edgeFile;
 	private File treeFile;
+	private File drFile;
 
 	/**
 	 * Setup the database and construct the graph.
@@ -61,12 +62,14 @@ public class GraphLoadServiceTest {
 			nodeFile = new File(getClass().getResource("/strains/test.node.graph").toURI());
 			edgeFile = new File(getClass().getResource("/strains/test.edge.graph").toURI());
 			treeFile = new File(getClass().getResource("/strains/test.nwk").toURI());
+			drFile = new File(getClass().getResource("/annotations/dr_test.txt").toURI());
 		} catch (URISyntaxException e) {
 			fail(e.getMessage());
 		}
 		loadService.setNodeFile(nodeFile);
 		loadService.setEdgeFile(edgeFile);
 		loadService.setNewickFile(treeFile);
+		loadService.setDRFile(drFile);
 	}
 
 	/**
@@ -160,6 +163,37 @@ public class GraphLoadServiceTest {
 	@Test
 	public void testEdgeFileProperty() {
 		assertNotNull(loadService.edgeFileProperty());
+	}
+
+	/**
+	 * Tests setDrFile().
+	 */
+	@Test
+	public void testDrEdgeFile() {
+		try {
+			File foo = File.createTempFile("foo", ".bar");
+			loadService.setDRFile(foo);
+			assertEquals(foo, loadService.getDrFile());
+			foo.delete();
+		} catch (IOException e) {
+			fail(e.getMessage());
+		}
+	}
+
+	/**
+	 * Tests getDrFile().
+	 */
+	@Test
+	public void testGetDrFile() {
+		assertEquals(drFile, loadService.getDrFile());
+	}
+
+	/**
+	 * Tests drFileProperty().
+	 */
+	@Test
+	public void testDrFileProperty() {
+		assertNotNull(loadService.drFileProperty());
 	}
 
 	/**

@@ -71,9 +71,4 @@ public class DRMutation {
 	public String getDrug() {
 		return drug;
 	}
-
-	@Override
-	public String toString() {
-		return geneName + ": " + type + " " + change + " " + filter + " " + position + " " + drug;
-	}
 }

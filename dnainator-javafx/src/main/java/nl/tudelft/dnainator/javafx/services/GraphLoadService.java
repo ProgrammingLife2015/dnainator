@@ -174,7 +174,7 @@ public class GraphLoadService extends Service<Graph> {
 	/**
 	 * @return The drug resistant mutations file.
 	 */
-	public final File getDRFile() {
+	public final File getDrFile() {
 		return drFile.get();
 	}
 
@@ -189,7 +189,7 @@ public class GraphLoadService extends Service<Graph> {
 	/**
 	 * @return The drug resistant mutations file property.
 	 */
-	public ObjectProperty<File> getDrFileProperty() {
+	public ObjectProperty<File> drFileProperty() {
 		return drFile;
 	}
 
