@@ -32,6 +32,11 @@ public interface Annotation {
 	}
 
 	/**
+	 * @return whether this gene is a mutation
+	 */
+	boolean isMutation();
+
+	/**
 	 * @return whether this gene is sense or note (positive or negative)
 	 */
 	boolean isSense();
@@ -40,14 +45,4 @@ public interface Annotation {
 	 * @return the nodes that are annotated by this annotation.
 	 */
 	Collection<String> getAnnotatedNodes();
-
-	/**
-	 * @param dr the DR mutation to be added to this gene annotation
-	 */
-	void addDRMutation(DRMutation dr);
-
-	/**
-	 * @return the DR mutations on this gene annotation
-	 */
-	Collection<DRMutation> getDRMutations();
 }

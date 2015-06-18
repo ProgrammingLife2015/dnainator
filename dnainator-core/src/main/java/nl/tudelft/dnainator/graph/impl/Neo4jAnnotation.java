@@ -1,19 +1,19 @@
 package nl.tudelft.dnainator.graph.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import nl.tudelft.dnainator.annotation.Annotation;
+import nl.tudelft.dnainator.annotation.Range;
+import nl.tudelft.dnainator.annotation.impl.DRMutation;
+import nl.tudelft.dnainator.graph.impl.properties.AnnotationProperties;
+import nl.tudelft.dnainator.graph.impl.properties.DRMutationProperties;
+import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
 
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
 
-import nl.tudelft.dnainator.annotation.Annotation;
-import nl.tudelft.dnainator.annotation.DRMutation;
-import nl.tudelft.dnainator.annotation.Range;
-import nl.tudelft.dnainator.graph.impl.properties.AnnotationProperties;
-import nl.tudelft.dnainator.graph.impl.properties.DRMutationProperties;
-import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * An {@link Annotation} which is stored in the Neo4j database.
@@ -21,6 +21,7 @@ import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
 public class Neo4jAnnotation implements Annotation {
 	private String geneName;
 	private Range range;
+	private boolean isMutation;
 	private boolean isSense;
 	private Collection<String> annotatedNodes;
 	private Collection<DRMutation> mutations;
@@ -35,6 +36,7 @@ public class Neo4jAnnotation implements Annotation {
 			this.geneName = (String) delegate.getProperty(AnnotationProperties.ID.name());
 			this.range = new Range((int) delegate.getProperty(AnnotationProperties.STARTREF.name()),
 					(Integer) delegate.getProperty(AnnotationProperties.ENDREF.name()));
+			this.isMutation = delegate.hasLabel(NodeLabels.DRMUTATION);
 			this.isSense = (Boolean) delegate.getProperty(AnnotationProperties.SENSE.name());
 			this.annotatedNodes = new ArrayList<>();
 			delegate.getRelationships(Direction.INCOMING, RelTypes.ANNOTATED).forEach(e ->
@@ -50,7 +52,8 @@ public class Neo4jAnnotation implements Annotation {
 				String change	= (String) end.getProperty(DRMutationProperties.CHANGE.name());
 				String filter	= (String) end.getProperty(DRMutationProperties.FILTER.name());
 				int pos		= (int) end.getProperty(DRMutationProperties.POSITION.name());
-				mutations.add(new DRMutation(name, type, change, filter, pos));
+				String drug = (String) end.getProperty(DRMutationProperties.DRUG.name());
+				mutations.add(new DRMutation(name, type, change, filter, pos, drug));
 			});
 			tx.success();
 		}
@@ -64,6 +67,11 @@ public class Neo4jAnnotation implements Annotation {
 	@Override
 	public Range getRange() {
 		return range;
+	}
+
+	@Override
+	public boolean isMutation() {
+		return isMutation;
 	}
 
 	@Override
@@ -89,15 +97,5 @@ public class Neo4jAnnotation implements Annotation {
 	@Override
 	public int hashCode() {
 		return getGeneName().hashCode() + getStart() + getEnd() + ((Boolean) isSense()).hashCode();
-	}
-
-	@Override
-	public void addDRMutation(DRMutation dr) {
-		mutations.add(dr);
-	}
-
-	@Override
-	public Collection<DRMutation> getDRMutations() {
-		return mutations;
 	}
 }

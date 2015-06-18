@@ -26,12 +26,6 @@ public interface AnnotationCollection {
 	void addAnnotation(Annotation a);
 
 	/**
-	 * Add a drug resistance annotation to a gen annotation.
-	 * @param dr The annotation to be added.
-	 */
-	void addDRAnnotation(DRMutation dr);
-
-	/**
 	 * @return all of the annotations in this collection.
 	 */
 	default Collection<Annotation> getAll() {

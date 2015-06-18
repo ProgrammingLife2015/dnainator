@@ -3,7 +3,6 @@ package nl.tudelft.dnainator.graph.impl;
 import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
 import nl.tudelft.dnainator.annotation.AnnotationCollectionFactory;
-import nl.tudelft.dnainator.annotation.DRMutation;
 import nl.tudelft.dnainator.annotation.Range;
 import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.core.SequenceNode;
@@ -12,7 +11,6 @@ import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.command.AnalyzeCommand;
 import nl.tudelft.dnainator.graph.impl.command.Command;
 import nl.tudelft.dnainator.graph.impl.properties.AnnotationProperties;
-import nl.tudelft.dnainator.graph.impl.properties.DRMutationProperties;
 import nl.tudelft.dnainator.graph.impl.properties.PhylogenyProperties;
 import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
 import nl.tudelft.dnainator.graph.impl.properties.SourceProperties;
@@ -234,20 +232,6 @@ public final class Neo4jGraph implements Graph {
 
 			ResourceIterator<Node> nodes = service.execute(GET_REF_RANGE, parameters).columnAs("n");
 			nodes.forEachRemaining(n -> n.createRelationshipTo(annotation, RelTypes.ANNOTATED));
-		});
-	}
-
-	@Override
-	public void addDRAnnotation(DRMutation dr) {
-		execute(service -> {
-			Node drannotation = service.createNode(NodeLabels.DRMUTATION);
-			drannotation.setProperty(DRMutationProperties.ID.name(), dr.getGeneName());
-			drannotation.setProperty(DRMutationProperties.TYPE.name(), dr.getType());
-			drannotation.setProperty(DRMutationProperties.CHANGE.name(), dr.getChange());
-			drannotation.setProperty(DRMutationProperties.FILTER.name(), dr.getFilter());
-			drannotation.setProperty(DRMutationProperties.TYPE.name(), dr.getPosition());
-			getAnnotationRange(new Range(dr.getPosition(), dr.getPosition() + 1), GET_SUB_RANGE)
-				.forEachRemaining(a -> a.createRelationshipTo(drannotation, RelTypes.MUTATION));
 		});
 	}
 
