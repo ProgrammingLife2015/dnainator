@@ -1,6 +1,5 @@
 package nl.tudelft.dnainator.core.impl;
 
-import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.core.SequenceNode;
 
@@ -12,30 +11,18 @@ import java.util.List;
 public class Cluster {
 	private List<EnrichedSequenceNode> nodes;
 	private int rankStart;
-	private List<Annotation> annotations;
 
 	/**
 	 * Create a new {@link Cluster} using a list of {@link SequenceNode}s.
 	 * The rankStart is the rank of the first {@link SequenceNode} in the list.
 	 * This will be used for positioning this {@link Cluster}.
 	 * @param rankStart	the start rank of this {@link Cluster}
-	 * @param annotations	the annotations associated with this cluster
 	 * @param nodes		the list of {@link EnrichedSequenceNode}s in this
 	 * cluster.
 	 */
-	public Cluster(int rankStart, List<EnrichedSequenceNode> nodes,
-			List<Annotation> annotations) {
+	public Cluster(int rankStart, List<EnrichedSequenceNode> nodes) {
 		this.rankStart = rankStart;
-		this.annotations = annotations;
 		this.nodes = nodes;
-	}
-
-	/**
-	 * Return the {@link Annotation}s associated with the nodes in this {@link Cluster}.
-	 * @return	the associated {@link Annotation}s
-	 */
-	public List<Annotation> getAnnotations() {
-		return annotations;
 	}
 
 	/**

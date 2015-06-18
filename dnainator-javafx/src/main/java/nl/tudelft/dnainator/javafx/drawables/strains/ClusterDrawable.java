@@ -75,7 +75,6 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 				.flatMap(e -> e.getSources().stream())
 				.collect(Collectors.toSet());
 		label = new Text(Integer.toString(cluster.getNodes().size()));
-		initProperties();
 		setOnMouseClicked(e -> AbstractView.setLastClicked(this));
 		draw(colorServer);
 	}
@@ -178,6 +177,9 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 
 	@Override
 	public Map<PropertyType, String> getPropertyMap() {
+		if (properties.size() == 0) {
+			initProperties();
+		}
 		return properties;
 	}
 }
