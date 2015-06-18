@@ -53,11 +53,21 @@ public class TopologicalPathExpander implements PathExpander<Object> {
 			BranchState<Object> noState) {
 		Node from = path.endNode();
 
+		// Propagate all unclosed bubbles and the newly created ones.
 		Set<Long> toPropagate = getSourcesToPropagate(from);
-		createBubbleSource(from, toPropagate);
-		from.getRelationships(RelTypes.NEXT, Direction.OUTGOING)
-			.forEach(out -> propagateSourceIDs(toPropagate, out));
 
+		// For each unclosed bubble source, remove the current node from the endings and
+		// add outgoing nodes to the ending nodes, thereby advancing the bubble endings.
+		toPropagate.forEach(e -> advanceEnds(e, from));
+
+		// Create a new bubblesource, that will have its own bubble endings.
+		createBubbleSource(from, toPropagate);
+
+		// Encode the unclosed propagated bubbles on the edges.
+		from.getRelationships(RelTypes.NEXT, Direction.OUTGOING)
+			.forEach(out -> relIDtoSourceIDs.put(out.getId(), toPropagate));
+
+		// Process all outgoing edges.
 		List<Relationship> expand = new LinkedList<>();
 		for (Relationship out : from.getRelationships(RelTypes.NEXT, Direction.OUTGOING)) {
 			setNumStrainsThrough(out);
@@ -71,49 +81,48 @@ public class TopologicalPathExpander implements PathExpander<Object> {
 		return expand;
 	}
 
-	private Set<Long> getSourcesToPropagate(Node n) {
-		Iterable<Relationship> ins = n.getRelationships(RelTypes.NEXT, Direction.INCOMING);
+	private Set<Long> getSourcesToPropagate(Node from) {
+		Iterable<Relationship> ins = from.getRelationships(RelTypes.NEXT, Direction.INCOMING);
 
+		// This function accumulates unclosed bubble sources from a mapping of incoming edge ids.
 		Set<Long> propagatedSources = new HashSet<>();
 		for (Relationship in : ins) {
 			propagatedSources.addAll(relIDtoSourceIDs.remove(in.getId()).stream()
 					.filter(source -> bubbleSourceIDtoEndIDs.get(source) != null)
 					.collect(Collectors.toList()));
 		}
-		propagatedSources.forEach(id -> {
-			Set<Long> pathEndIDs = bubbleSourceIDtoEndIDs.get(id);
-			if (pathEndIDs != null) {
-				pathEndIDs.remove(n.getId());
-				// FIXME: we add twice here in most cases.
-				n.getRelationships(RelTypes.NEXT, Direction.OUTGOING)
-					.forEach(rel -> pathEndIDs.add(rel.getEndNode().getId()));
-			}
-		});
 		return propagatedSources;
+	}
+
+	private void advanceEnds(long bubbleSource, Node endnode) {
+		Set<Long> pathEndIDs = bubbleSourceIDtoEndIDs.get(bubbleSource);
+		if (pathEndIDs != null) {
+			pathEndIDs.remove(endnode.getId());
+
+			// FIXME: we add twice here in most cases.
+			endnode.getRelationships(RelTypes.NEXT, Direction.OUTGOING)
+				.forEach(rel -> pathEndIDs.add(rel.getEndNode().getId()));
+		}
 	}
 
 	private void createBubbleSource(Node n, Set<Long> toPropagate) {
 		int outDegree = n.getDegree(RelTypes.NEXT, Direction.OUTGOING);
 		if (outDegree >= 2) {
-			n.addLabel(NodeLabels.BUBBLE_SOURCE);
-			long newSourceID = n.getId();
-			toPropagate.add(newSourceID);
 			Set<Long> pathEnds = new HashSet<>(outDegree);
+			toPropagate.add(n.getId());
+
+			n.addLabel(NodeLabels.BUBBLE_SOURCE);
 			n.getRelationships(RelTypes.NEXT, Direction.OUTGOING)
 				.forEach(rel -> pathEnds.add(rel.getEndNode().getId()));
-			bubbleSourceIDtoEndIDs.put(newSourceID, pathEnds);
-		}
-	}
 
-	private void propagateSourceIDs(Set<Long> propagatedUnique, Relationship out) {
-		relIDtoSourceIDs.put(out.getId(), propagatedUnique);
+			bubbleSourceIDtoEndIDs.put(n.getId(), pathEnds);
+		}
 	}
 
 	private void createBubbleSink(Node n) {
 		int degree = n.getDegree(RelTypes.NEXT, Direction.INCOMING);
 		if (degree >= 2) {
 			Set<Long> bubbleSourceID = new HashSet<>();
-			n.addLabel(NodeLabels.BUBBLE_SINK);
 			for (Relationship in : n.getRelationships(RelTypes.NEXT, Direction.INCOMING)) {
 				for (long sourceID : relIDtoSourceIDs.get(in.getId())) {
 					if (bubbleSourceIDtoEndIDs.get(sourceID).size() == 1) {
@@ -129,6 +138,9 @@ public class TopologicalPathExpander implements PathExpander<Object> {
 				n.createRelationshipTo(bubbleSource, RelTypes.BUBBLE_SINK_OF);
 				bubbleSource.createRelationshipTo(n, RelTypes.BUBBLE_SOURCE_OF);
 			});
+			if (bubbleSourceID.size() != 0) {
+				n.addLabel(NodeLabels.BUBBLE_SINK);
+			}
 		}
 	}
 
