@@ -48,6 +48,11 @@ public class DRMutation implements Annotation {
 	}
 
 	@Override
+	public boolean isMutation() {
+		return true;
+	}
+
+	@Override
 	public boolean isSense() {
 		return false;
 	}

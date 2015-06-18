@@ -2,7 +2,6 @@ package nl.tudelft.dnainator.graph.impl;
 
 import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
-import nl.tudelft.dnainator.annotation.impl.DRMutation;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.graph.Graph;
@@ -13,7 +12,6 @@ import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
 import nl.tudelft.dnainator.graph.impl.properties.SourceProperties;
 import nl.tudelft.dnainator.graph.interestingness.Scores;
 import nl.tudelft.dnainator.tree.TreeNode;
-
 import org.neo4j.unsafe.batchinsert.BatchInserter;
 import org.neo4j.unsafe.batchinsert.BatchInserters;
 
@@ -191,7 +189,7 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 		annotationProperties.put(AnnotationProperties.ENDREF.name(), a.getEnd());
 		annotationProperties.put(AnnotationProperties.SENSE.name(), a.isSense());
 
-		if (a instanceof DRMutation) {
+		if (a.isMutation()) {
 			return batchInserter.createNode(annotationProperties, NodeLabels.ANNOTATION,
 										NodeLabels.DRMUTATION);
 		} else {

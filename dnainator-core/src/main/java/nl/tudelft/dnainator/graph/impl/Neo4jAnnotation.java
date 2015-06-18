@@ -21,6 +21,7 @@ import java.util.Collection;
 public class Neo4jAnnotation implements Annotation {
 	private String geneName;
 	private Range range;
+	private boolean isMutation;
 	private boolean isSense;
 	private Collection<String> annotatedNodes;
 	private Collection<DRMutation> mutations;
@@ -35,6 +36,7 @@ public class Neo4jAnnotation implements Annotation {
 			this.geneName = (String) delegate.getProperty(AnnotationProperties.ID.name());
 			this.range = new Range((int) delegate.getProperty(AnnotationProperties.STARTREF.name()),
 					(Integer) delegate.getProperty(AnnotationProperties.ENDREF.name()));
+			this.isMutation = delegate.hasLabel(NodeLabels.DRMUTATION);
 			this.isSense = (Boolean) delegate.getProperty(AnnotationProperties.SENSE.name());
 			this.annotatedNodes = new ArrayList<>();
 			delegate.getRelationships(Direction.INCOMING, RelTypes.ANNOTATED).forEach(e ->
@@ -65,6 +67,11 @@ public class Neo4jAnnotation implements Annotation {
 	@Override
 	public Range getRange() {
 		return range;
+	}
+
+	@Override
+	public boolean isMutation() {
+		return isMutation;
 	}
 
 	@Override

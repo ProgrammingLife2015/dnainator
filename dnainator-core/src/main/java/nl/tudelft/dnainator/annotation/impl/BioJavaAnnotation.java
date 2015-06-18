@@ -49,6 +49,11 @@ public class BioJavaAnnotation implements Annotation {
 	}
 
 	@Override
+	public boolean isMutation() {
+		return false;
+	}
+
+	@Override
 	public boolean isSense() {
 		return delegate.location().bioStrand() == '+';
 	}

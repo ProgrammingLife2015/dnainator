@@ -32,6 +32,11 @@ public interface Annotation {
 	}
 
 	/**
+	 * @return whether this gene is a mutation
+	 */
+	boolean isMutation();
+
+	/**
 	 * @return whether this gene is sense or note (positive or negative)
 	 */
 	boolean isSense();

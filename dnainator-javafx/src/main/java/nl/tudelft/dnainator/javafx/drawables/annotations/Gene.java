@@ -24,6 +24,11 @@ public class Gene extends VBox implements Drawable {
 		Text coordinates = new Text("Coordinates: " + annotation.getRange());
 		Text sense = new Text("Sense: " + annotation.isSense());
 		getChildren().addAll(name, coordinates, sense);
+
+		// FIXME: Jente: probably replace this in redo-annotations?
+		if (annotation.isMutation()) {
+			setStyle("-fx-background-color: #FF0000");
+		}
 	}
 
 	@Override
