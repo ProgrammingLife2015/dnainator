@@ -1,9 +1,15 @@
-package nl.tudelft.dnainator.annotation;
+package nl.tudelft.dnainator.annotation.impl;
+
+import java.util.Collection;
+import java.util.Collections;
+
+import nl.tudelft.dnainator.annotation.Annotation;
+import nl.tudelft.dnainator.annotation.Range;
 
 /**
  * This class represents a drug resistance annotation on a gene annotation.
  */
-public class DRMutation {
+public class DRMutation implements Annotation {
 	private String geneName;
 	private String type;
 	private String change;
@@ -30,45 +36,29 @@ public class DRMutation {
 		this.drug = drug;
 	}
 
-	/**
-	 * @return the geneName
-	 */
+	@Override
 	public String getGeneName() {
-		return geneName;
+		return geneName + " -> type: " + type + " change: " + change
+				+ " position: " + position + " drug: " + drug;
 	}
 
-	/**
-	 * @return the type
-	 */
-	public String getType() {
-		return type;
+	@Override
+	public Range getRange() {
+		return new Range(position, position + 1);
 	}
 
-	/**
-	 * @return the change
-	 */
-	public String getChange() {
-		return change;
+	@Override
+	public boolean isSense() {
+		return false;
 	}
 
-	/**
-	 * @return the filter
-	 */
-	public String getFilter() {
-		return filter;
+	@Override
+	public String toString() {
+		return geneName + ": " + type + " " + change + " " + filter + " " + position + " " + drug;
 	}
 
-	/**
-	 * @return the position
-	 */
-	public int getPosition() {
-		return position;
-	}
-
-	/**
-	 * @return the drug
-	 */
-	public String getDrug() {
-		return drug;
+	@Override
+	public Collection<String> getAnnotatedNodes() {
+		return Collections.emptyList();
 	}
 }

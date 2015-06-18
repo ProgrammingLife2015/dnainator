@@ -1,5 +1,7 @@
 package nl.tudelft.dnainator.annotation;
 
+import nl.tudelft.dnainator.annotation.impl.DRMutation;
+
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -14,11 +16,8 @@ public class DRMutationTest {
 	@Test
 	public void testDRMutation() {
 		DRMutation mutation = new DRMutation("name", "type", "change", "filter", 0, "drug");
-		assertEquals("name", mutation.getGeneName());
-		assertEquals("type", mutation.getType());
-		assertEquals("change", mutation.getChange());
-		assertEquals("filter", mutation.getFilter());
-		assertEquals(0, mutation.getPosition());
-		assertEquals("drug", mutation.getDrug());
+		String expected = "name -> type: type change: change position: 0 drug: drug";
+		assertEquals(expected, mutation.getGeneName());
+		assertEquals(new Range(0, 1), mutation.getRange());
 	}
 }

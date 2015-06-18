@@ -1,6 +1,6 @@
 package nl.tudelft.dnainator.parser;
 
-import nl.tudelft.dnainator.annotation.DRMutation;
+import nl.tudelft.dnainator.annotation.impl.DRMutation;
 
 import java.io.IOException;
 import java.util.NoSuchElementException;

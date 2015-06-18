@@ -1,6 +1,6 @@
 package nl.tudelft.dnainator.parser.impl;
 
-import nl.tudelft.dnainator.annotation.DRMutation;
+import nl.tudelft.dnainator.annotation.impl.DRMutation;
 import nl.tudelft.dnainator.parser.DRMutationParser;
 
 import java.io.BufferedReader;

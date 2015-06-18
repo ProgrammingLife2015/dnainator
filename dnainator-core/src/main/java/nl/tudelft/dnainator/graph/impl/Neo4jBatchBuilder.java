@@ -2,13 +2,12 @@ package nl.tudelft.dnainator.graph.impl;
 
 import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
-import nl.tudelft.dnainator.annotation.DRMutation;
+import nl.tudelft.dnainator.annotation.impl.DRMutation;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.GraphBuilder;
 import nl.tudelft.dnainator.graph.impl.properties.AnnotationProperties;
-import nl.tudelft.dnainator.graph.impl.properties.DRMutationProperties;
 import nl.tudelft.dnainator.graph.impl.properties.PhylogenyProperties;
 import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
 import nl.tudelft.dnainator.graph.impl.properties.SourceProperties;
@@ -33,7 +32,6 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 	private Map<String, Long> sourceToNodeID;
 	private Map<String, Object> annotationProperties;
 	private Map<String, Object> nodeProperties;
-	private Map<String, Object> mutationProperties;
 	private AnnotationCollection annotations;
 	private TreeNode phylogeny;
 
@@ -66,7 +64,6 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 		sourceToNodeID = new HashMap<>();
 		annotationProperties = new HashMap<>();
 		nodeProperties = new HashMap<>();
-		mutationProperties = new HashMap<>();
 
 		annotations.getAll().forEach(e -> {
 			annotationIDToNodeID.put(e.getGeneName(), createAnnotation(e));
@@ -90,10 +87,7 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 			connectSource(nodeId, source);
 			if (source.equals("TKK_REF")) {
 				annotations.getSubrange(s.getStartRef(), s.getEndRef())
-					.forEach(a -> {
-						connectAnnotation(nodeId, a);
-						connectDRMutations(a);
-					});
+					.forEach(a -> connectAnnotation(nodeId, a));
 			}
 		});
 		return this;
@@ -140,18 +134,6 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 	private void connectAnnotation(long nodeId, Annotation annotation) {
 		long annotationId = annotationIDToNodeID.get(annotation.getGeneName());
 		batchInserter.createRelationship(nodeId, annotationId, RelTypes.ANNOTATED, null);
-	}
-
-	/**
-	 * Connect all DRMutations on an annotation to the annotation itself.
-	 * @param a
-	 */
-	private void connectDRMutations(Annotation a) {
-		long annotationId = annotationIDToNodeID.get(a.getGeneName());
-		a.getDRMutations().forEach(dr -> {
-			long mutationId = createDRMutation(dr);
-			batchInserter.createRelationship(annotationId, mutationId, RelTypes.MUTATION, null);
-		});
 	}
 
 	/**
@@ -208,17 +190,13 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 		annotationProperties.put(AnnotationProperties.STARTREF.name(), a.getStart());
 		annotationProperties.put(AnnotationProperties.ENDREF.name(), a.getEnd());
 		annotationProperties.put(AnnotationProperties.SENSE.name(), a.isSense());
-		return batchInserter.createNode(annotationProperties, NodeLabels.ANNOTATION);
-	}
 
-	private long createDRMutation(DRMutation dr) {
-		mutationProperties.put(DRMutationProperties.ID.name(), dr.getGeneName());
-		mutationProperties.put(DRMutationProperties.TYPE.name(), dr.getType());
-		mutationProperties.put(DRMutationProperties.CHANGE.name(), dr.getChange());
-		mutationProperties.put(DRMutationProperties.FILTER.name(), dr.getFilter());
-		mutationProperties.put(DRMutationProperties.POSITION.name(), dr.getPosition());
-		mutationProperties.put(DRMutationProperties.DRUG.name(), dr.getDrug());
-		return batchInserter.createNode(mutationProperties, NodeLabels.DRMUTATION);
+		if (a instanceof DRMutation) {
+			return batchInserter.createNode(annotationProperties, NodeLabels.ANNOTATION,
+										NodeLabels.DRMUTATION);
+		} else {
+			return batchInserter.createNode(annotationProperties, NodeLabels.ANNOTATION);
+		}
 	}
 
 	/**

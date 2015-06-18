@@ -1,6 +1,8 @@
 package nl.tudelft.dnainator.annotation;
 
+import nl.tudelft.dnainator.annotation.impl.DRMutation;
 import nl.tudelft.dnainator.parser.impl.DRMutationParserImpl;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -35,6 +37,6 @@ public class DRMutationFactoryTest {
 	@Test
 	public void testBuild() throws IOException, URISyntaxException {
 		createDRMutations();
-		Mockito.verify(annotations, times(1)).addDRAnnotation(any(DRMutation.class));
+		Mockito.verify(annotations, times(1)).addAnnotation(any(DRMutation.class));
 	}
 }

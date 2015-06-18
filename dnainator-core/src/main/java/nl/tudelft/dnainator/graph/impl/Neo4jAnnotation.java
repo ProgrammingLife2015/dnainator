@@ -1,11 +1,12 @@
 package nl.tudelft.dnainator.graph.impl;
 
 import nl.tudelft.dnainator.annotation.Annotation;
-import nl.tudelft.dnainator.annotation.DRMutation;
 import nl.tudelft.dnainator.annotation.Range;
+import nl.tudelft.dnainator.annotation.impl.DRMutation;
 import nl.tudelft.dnainator.graph.impl.properties.AnnotationProperties;
 import nl.tudelft.dnainator.graph.impl.properties.DRMutationProperties;
 import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
+
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
@@ -89,15 +90,5 @@ public class Neo4jAnnotation implements Annotation {
 	@Override
 	public int hashCode() {
 		return getGeneName().hashCode() + getStart() + getEnd() + ((Boolean) isSense()).hashCode();
-	}
-
-	@Override
-	public void addDRMutation(DRMutation dr) {
-		mutations.add(dr);
-	}
-
-	@Override
-	public Collection<DRMutation> getDRMutations() {
-		return mutations;
 	}
 }

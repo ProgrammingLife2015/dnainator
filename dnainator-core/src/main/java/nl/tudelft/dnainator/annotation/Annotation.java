@@ -40,14 +40,4 @@ public interface Annotation {
 	 * @return the nodes that are annotated by this annotation.
 	 */
 	Collection<String> getAnnotatedNodes();
-
-	/**
-	 * @param dr the DR mutation to be added to this gene annotation
-	 */
-	void addDRMutation(DRMutation dr);
-
-	/**
-	 * @return the DR mutations on this gene annotation
-	 */
-	Collection<DRMutation> getDRMutations();
 }

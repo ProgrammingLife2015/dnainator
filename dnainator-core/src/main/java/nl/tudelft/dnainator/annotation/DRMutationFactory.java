@@ -1,5 +1,6 @@
 package nl.tudelft.dnainator.annotation;
 
+import nl.tudelft.dnainator.annotation.impl.DRMutation;
 import nl.tudelft.dnainator.parser.DRMutationParser;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ public class DRMutationFactory {
 		try {
 			while (parser.hasNext()) {
 				DRMutation m = parser.next();
-				annotations.addDRAnnotation(m);
+				annotations.addAnnotation(m);
 			}
 			parser.close();
 		} catch (IOException e) {
