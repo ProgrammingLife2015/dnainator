@@ -2,6 +2,7 @@ package nl.tudelft.dnainator.graph.impl.command;
 
 import nl.tudelft.dnainator.graph.impl.NodeLabels;
 import nl.tudelft.dnainator.graph.impl.RelTypes;
+import nl.tudelft.dnainator.graph.impl.properties.BubbleProperties;
 import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
 
 import org.neo4j.graphdb.Direction;
@@ -65,7 +66,7 @@ public class TopologicalPathExpander implements PathExpander<Object> {
 
 		// Encode the unclosed propagated bubbles on the edges.
 		from.getRelationships(RelTypes.NEXT, Direction.OUTGOING)
-			.forEach(out -> relIDtoSourceIDs.put(out.getId(), toPropagate));
+			.forEach(out -> propagateSourceIDs(toPropagate, out));
 
 		// Process all outgoing edges.
 		List<Relationship> expand = new LinkedList<>();
@@ -117,6 +118,12 @@ public class TopologicalPathExpander implements PathExpander<Object> {
 
 			bubbleSourceIDtoEndIDs.put(n.getId(), pathEnds);
 		}
+	}
+
+	private void propagateSourceIDs(Set<Long> propagatedUnique, Relationship out) {
+		out.setProperty(BubbleProperties.BUBBLE_SOURCE_IDS.name(),
+				propagatedUnique.stream().mapToLong(l -> l).toArray());
+		relIDtoSourceIDs.put(out.getId(), propagatedUnique);
 	}
 
 	private void createBubbleSink(Node n) {
