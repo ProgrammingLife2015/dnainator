@@ -23,6 +23,12 @@ public enum Scores implements ScoreIdentifier {
 		public int applyImportanceModifier(int rawScore) {
 			return (int) Math.pow(BASE, rawScore);
 		}
+	},
+	DR_MUT("drugResistanceMutation") {
+		@Override
+		public int applyImportanceModifier(int rawScore) {
+			return rawScore * 100;
+		}
 	};
 
 	private String name;

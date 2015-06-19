@@ -1,9 +1,14 @@
 package nl.tudelft.dnainator.graph.impl.command;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
+import nl.tudelft.dnainator.graph.impl.NodeLabels;
 import nl.tudelft.dnainator.graph.impl.RelTypes;
+import nl.tudelft.dnainator.graph.impl.properties.AnnotationProperties;
+import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
 import nl.tudelft.dnainator.graph.interestingness.Scores;
 
 import org.neo4j.collection.primitive.Primitive;
@@ -19,7 +24,6 @@ import org.neo4j.graphdb.traversal.Uniqueness;
 
 import static nl.tudelft.dnainator.graph.impl.properties.SequenceProperties.BASE_DIST;
 import static nl.tudelft.dnainator.graph.impl.properties.SequenceProperties.RANK;
-
 import static org.neo4j.helpers.collection.IteratorUtil.loop;
 
 /**
@@ -28,6 +32,12 @@ import static org.neo4j.helpers.collection.IteratorUtil.loop;
  */
 public class AnalyzeCommand implements Command {
 	private static final int INIT_CAP = 4096;
+	private static final String LABEL = "n";
+	private static final String GET_NODES_BASEDIST =
+			"MATCH (n:" + NodeLabels.NODE.name() + ") "
+			+ "WHERE {dist} >= n." + SequenceProperties.BASE_DIST.name()
+			+ " AND {dist} < n." + SequenceProperties.BASE_DIST.name()
+			+ " + n." + Scores.SEQ_LENGTH.name() + " RETURN n AS " + LABEL;
 	private ResourceIterator<Node> roots;
 
 	/**
@@ -72,6 +82,7 @@ public class AnalyzeCommand implements Command {
 				rankDest(n);
 				scoreIndependentMutation(n);
 			}
+			scoreDRMutations(service);
 			tx.success();
 		}
 	}
@@ -98,16 +109,40 @@ public class AnalyzeCommand implements Command {
 	}
 
 	/**
+	 * Scores the amount of drug resistance mutations.
+	 * @param service	the graph service
+	 */
+	private void scoreDRMutations(GraphDatabaseService service) {
+		service.findNodes(NodeLabels.DRMUTATION).forEachRemaining(drannotations ->
+			drannotations.getRelationships(RelTypes.ANNOTATED).forEach(node -> {
+				// From the startref of the annotation
+				// subtract the startref of the annotated node
+				// and add the base distance of the annotated node
+				int basedist = (int) drannotations.getProperty(AnnotationProperties.STARTREF.name())
+					- (int) node.getStartNode().getProperty(SequenceProperties.STARTREF.name())
+					+ (int) node.getStartNode().getProperty(SequenceProperties.BASE_DIST.name());
+
+				Map<String, Object> params = Collections.singletonMap("dist", basedist);
+				ResourceIterator<Node> mutations = service.execute(GET_NODES_BASEDIST, params)
+									.columnAs(LABEL);
+				mutations.forEachRemaining(m -> {
+					int score = (int) m.getProperty(Scores.DR_MUT.name(), 0);
+					m.setProperty(Scores.DR_MUT.name(), score + 1);
+				});
+			})
+		);
+	}
+
+	/**
 	 * Scores the amount of independent mutations, using the phylogeny.
 	 * @param n the node representing the mutation.
 	 */
 	protected void scoreIndependentMutation(Node n) {
 		Set<Node> ancestors = new HashSet<>();
 		for (Relationship r : n.getRelationships(RelTypes.SOURCE)) {
-			for (Relationship ancestorOf : r.getEndNode()
-					.getRelationships(RelTypes.ANCESTOR_OF, Direction.INCOMING)) {
-				ancestors.add(ancestorOf.getStartNode());
-			}
+			r.getEndNode().getRelationships(RelTypes.ANCESTOR_OF, Direction.INCOMING).forEach(e ->
+				ancestors.add(e.getStartNode())
+			);
 		}
 		n.setProperty(Scores.INDEP_MUT.name(), ancestors.size());
 	}
