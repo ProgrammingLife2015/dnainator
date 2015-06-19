@@ -80,25 +80,34 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 		draw(colorServer);
 	}
 
+	/**
+	 * Add all properties of a cluster to the property pane.
+	 */
 	private void initProperties() {
 		properties.put(ClusterPropertyTypes.TITLE, null);
-		List<String> nodeIds = cluster.getNodes().stream()
-						.map(e -> e.getId())
-						.collect(Collectors.toList());
-		if (cluster.getNodes().size() > 1) {
-			properties.put(ClusterPropertyTypes.ID, nodeIds.toString());
-			properties.put(ClusterPropertyTypes.STARTRANK,
-					Integer.toString(cluster.getStartRank()));
-		} else {
-			EnrichedSequenceNode sn = cluster.getNodes().iterator().next();
-			properties.put(ClusterPropertyTypes.ID, sn.getId());
-			properties.put(Scores.SEQ_LENGTH, Integer.toString(sn.getInterestingnessScore()));
-			properties.put(ClusterPropertyTypes.BASEDIST, Integer.toString(sn.getBaseDistance()));
-			properties.put(ClusterPropertyTypes.STARTREF, Integer.toString(sn.getStartRef()));
-			properties.put(ClusterPropertyTypes.ENDREF, Integer.toString(sn.getEndRef()));
-			properties.put(ClusterPropertyTypes.SOURCES, sn.getSources().toString());
-			properties.put(ClusterPropertyTypes.SEQUENCE, sn.getSequence());
+		properties.put(ClusterPropertyTypes.ID, cluster.getNodes().stream()
+								.map(e -> e.getId())
+								.collect(Collectors.toList()).toString());
+		properties.put(ClusterPropertyTypes.STARTRANK, Integer.toString(cluster.getStartRank()));
+		properties.put(ClusterPropertyTypes.SOURCES, cluster.getNodes().stream()
+								.flatMap(e -> e.getSources().stream())
+								.collect(Collectors.toList()).toString());
+
+		if (cluster.getNodes().size() == 1) {
+			initSingletonProperties();
 		}
+	}
+
+	/**
+	 * Add all properties of a single sequence node to the property pane.
+	 */
+	private void initSingletonProperties() {
+		EnrichedSequenceNode sn = cluster.getNodes().iterator().next();
+		properties.put(Scores.SEQ_LENGTH, Integer.toString(sn.getInterestingnessScore()));
+		properties.put(ClusterPropertyTypes.BASEDIST, Integer.toString(sn.getBaseDistance()));
+		properties.put(ClusterPropertyTypes.STARTREF, Integer.toString(sn.getStartRef()));
+		properties.put(ClusterPropertyTypes.ENDREF, Integer.toString(sn.getEndRef()));
+		properties.put(ClusterPropertyTypes.SEQUENCE, sn.getSequence());
 	}
 
 	private void draw(ColorServer colorServer) {
