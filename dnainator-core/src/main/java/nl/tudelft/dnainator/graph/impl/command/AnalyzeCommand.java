@@ -1,9 +1,7 @@
 package nl.tudelft.dnainator.graph.impl.command;
 
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import nl.tudelft.dnainator.graph.impl.NodeLabels;
 import nl.tudelft.dnainator.graph.impl.RelTypes;
@@ -80,7 +78,6 @@ public class AnalyzeCommand implements Command {
 		) {
 			for (Node n : topologicalOrder(service, processed)) {
 				rankDest(n);
-				scoreIndependentMutation(n);
 			}
 			scoreDRMutations(service);
 			tx.success();
@@ -113,6 +110,7 @@ public class AnalyzeCommand implements Command {
 	 * @param service	the graph service
 	 */
 	private void scoreDRMutations(GraphDatabaseService service) {
+		Map<String, Object> params = new HashMap<>(1);
 		service.findNodes(NodeLabels.DRMUTATION).forEachRemaining(drannotations ->
 			drannotations.getRelationships(RelTypes.ANNOTATED).forEach(node -> {
 				// From the startref of the annotation
@@ -122,7 +120,7 @@ public class AnalyzeCommand implements Command {
 					- (int) node.getStartNode().getProperty(SequenceProperties.STARTREF.name())
 					+ (int) node.getStartNode().getProperty(SequenceProperties.BASE_DIST.name());
 
-				Map<String, Object> params = Collections.singletonMap("dist", basedist);
+				params.put("dist", basedist);
 				ResourceIterator<Node> mutations = service.execute(GET_NODES_BASEDIST, params)
 									.columnAs(LABEL);
 				mutations.forEachRemaining(m -> {
@@ -131,19 +129,5 @@ public class AnalyzeCommand implements Command {
 				});
 			})
 		);
-	}
-
-	/**
-	 * Scores the amount of independent mutations, using the phylogeny.
-	 * @param n the node representing the mutation.
-	 */
-	protected void scoreIndependentMutation(Node n) {
-		Set<Node> ancestors = new HashSet<>();
-		for (Relationship r : n.getRelationships(RelTypes.SOURCE)) {
-			r.getEndNode().getRelationships(RelTypes.ANCESTOR_OF, Direction.INCOMING).forEach(e ->
-				ancestors.add(e.getStartNode())
-			);
-		}
-		n.setProperty(Scores.INDEP_MUT.name(), ancestors.size());
 	}
 }

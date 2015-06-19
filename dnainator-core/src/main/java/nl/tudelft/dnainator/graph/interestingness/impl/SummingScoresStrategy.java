@@ -10,9 +10,6 @@ import nl.tudelft.dnainator.graph.interestingness.Scores;
  * {@link Scores} together.
  */
 public class SummingScoresStrategy implements InterestingnessStrategy {
-	private static final int RANGE_LOWER = 0;
-	private static final int RANGE_UPPER = 1000;
-
 	@Override
 	public int compute(ScoreContainer container) {
 		int sum = 0;

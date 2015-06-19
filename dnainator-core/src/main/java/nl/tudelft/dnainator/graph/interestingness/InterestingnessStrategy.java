@@ -5,6 +5,8 @@ package nl.tudelft.dnainator.graph.interestingness;
  * is calculated.
  */
 public interface InterestingnessStrategy {
+	int RANGE_LOWER = 0;
+	int RANGE_UPPER = 1000;
 
 	/**
 	 * Compute the interestingness at the given location.

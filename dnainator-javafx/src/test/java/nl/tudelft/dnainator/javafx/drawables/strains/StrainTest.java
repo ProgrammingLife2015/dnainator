@@ -103,7 +103,7 @@ public class StrainTest {
 		assertTrue(content.isVisible());
 		verify(graph, never()).getRank(anyInt());
 
-		strain.update(new Rectangle(5000, 2500).getBoundsInLocal(), 1.7);
+		strain.update(new Rectangle(5000, 2500).getBoundsInLocal(), 2.0);
 		assertFalse(content.isVisible());
 		verify(graph, Mockito.atLeastOnce()).getRank(anyInt());
 

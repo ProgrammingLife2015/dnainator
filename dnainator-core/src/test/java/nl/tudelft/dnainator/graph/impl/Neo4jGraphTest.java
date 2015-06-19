@@ -9,7 +9,6 @@ import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.core.impl.SequenceNodeFactoryImpl;
 import nl.tudelft.dnainator.core.impl.SequenceNodeImpl;
 import nl.tudelft.dnainator.graph.impl.command.AnalyzeCommand;
-import nl.tudelft.dnainator.graph.interestingness.Scores;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
@@ -282,19 +281,6 @@ public class Neo4jGraphTest {
 		assertTrue(as.contains(first));
 		assertTrue(as.contains(middle));
 		assertTrue(as.contains(last));
-	}
-
-	/**
-	 * Test the scoring of independent mutations.
-	 */
-	@Test
-	public void testIndependentMutationScore() {
-		EnrichedSequenceNode node11 = db.getNode("11");
-		EnrichedSequenceNode node2 = db.getNode("2");
-		EnrichedSequenceNode node9 = db.getNode("9");
-		assertEquals(node11.getScore(Scores.INDEP_MUT), 2);
-		assertEquals(node2.getScore(Scores.INDEP_MUT), 1);
-		assertEquals(node9.getScore(Scores.INDEP_MUT), 1);
 	}
 
 	private static void assertUnorderedIDEquals(Collection<String> expected,

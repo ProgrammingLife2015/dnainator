@@ -4,30 +4,26 @@ package nl.tudelft.dnainator.graph.interestingness;
  * All of the supported scores.
  */
 public enum Scores implements ScoreIdentifier {
-	SEQ_LENGTH("seqLength") {
-		private static final int DENOMINATOR = 500;
+	SEQ_LENGTH("Sequence Length Score") {
 		private static final int SEQ_LENGTH_THRESHOLD = 5000;
 
 		@Override
 		public int applyImportanceModifier(int rawScore) {
 			if (rawScore < SEQ_LENGTH_THRESHOLD) {
-				return rawScore / DENOMINATOR;
+				return rawScore;
 			} else {
-				return (rawScore * rawScore) / DENOMINATOR;
+				return rawScore * rawScore;
 			}
 		}
 	},
-	INDEP_MUT("independentMutation") {
-		private static final int BASE = 8;
+	DR_MUT("Drug Resistance Mutation Score") {
+		private final int[] multipliers = { 0, 800, 1000 };
 		@Override
 		public int applyImportanceModifier(int rawScore) {
-			return (int) Math.pow(BASE, rawScore);
-		}
-	},
-	DR_MUT("drugResistanceMutation") {
-		@Override
-		public int applyImportanceModifier(int rawScore) {
-			return rawScore * 100;
+			if (rawScore >= multipliers.length) {
+				return multipliers[multipliers.length - 1];
+			}
+			return multipliers[rawScore];
 		}
 	};
 

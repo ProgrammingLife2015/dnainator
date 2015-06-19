@@ -4,7 +4,6 @@ import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.core.PropertyType;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
-import nl.tudelft.dnainator.graph.interestingness.Scores;
 import nl.tudelft.dnainator.javafx.ColorServer;
 import nl.tudelft.dnainator.javafx.drawables.Drawable;
 import nl.tudelft.dnainator.javafx.views.AbstractView;
@@ -32,7 +31,8 @@ enum ClusterPropertyTypes implements PropertyType {
 	ENDREF("End base on ref. strain"),
 	SOURCES("Sources"),
 	STARTRANK("Start rank"),
-	BASEDIST("Start base");
+	BASEDIST("Start base"),
+	SCORE("Total interestingness score");
 
 	private String description;
 	private ClusterPropertyTypes(String description) {
@@ -105,8 +105,10 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 		properties.put(ClusterPropertyTypes.BASEDIST, Integer.toString(sn.getBaseDistance()));
 		properties.put(ClusterPropertyTypes.STARTREF, Integer.toString(sn.getStartRef()));
 		properties.put(ClusterPropertyTypes.ENDREF, Integer.toString(sn.getEndRef()));
-		properties.put(Scores.SEQ_LENGTH, Integer.toString(sn.getScore(Scores.SEQ_LENGTH)));
 		properties.put(ClusterPropertyTypes.SEQUENCE, sn.getSequence());
+
+		properties.put(ClusterPropertyTypes.SCORE, Integer.toString(sn.getInterestingnessScore()));
+		sn.getScores().forEach((k, v) -> properties.put(k, Integer.toString(v)));
 	}
 
 	private void draw(ColorServer colorServer) {
