@@ -44,6 +44,11 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 	private int maxRank;
 	private int threshold;
 	private InterestingnessStrategy is;
+	private Map<String, Object> nodesInBubbleParameters;
+	private static final String GET_NODES_IN_BUBBLE = "match (n: " + NodeLabels.NODE.name() + ") "
+			+ "where n." + SequenceProperties.RANK.name() + " > {sourceRank} "
+			+ "and n." + SequenceProperties.RANK.name() + " < {sinkRank} "
+			+ "and {sourceID} in n." + BubbleProperties.BUBBLE_SOURCE_IDS.name() + " return n";
 
 	/**
 	 * Create a new {@link AllClustersQuery}, which will:.
@@ -61,6 +66,7 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 		this.maxRank = maxRank;
 		this.threshold = threshold;
 		this.is = is;
+		this.nodesInBubbleParameters = new HashMap<>(2 + 1);
 	}
 
 	private ResourceIterable<Node> untilMaxRank(GraphDatabaseService service) {
@@ -110,6 +116,7 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 			}
 		}
 		bubbleSourcesToCluster.removeAll(bubbleSourcesNested);
+		bubbleSourcesToKeepIntact.removeAll(bubbleSourcesNested);
 		return mergeMaps(Stream.of(individualNodes,
 				cluster(service, bubbleSourcesToCluster, bubbleSourcesToKeepIntact)));
 	}
@@ -138,12 +145,13 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 			Node source, Node sink) {
 		int sourceRank = (int) source.getProperty(SequenceProperties.RANK.name());
 		int sinkRank = (int) sink.getProperty(SequenceProperties.RANK.name());
-		PathFinder<Path> withinBubble = pathFinderBetweenRanks(sourceRank, sinkRank);
-		return stream(withinBubble.findAllPaths(source, sink))
-				.flatMap(path -> stream(path.nodes()))
-				.distinct()
+		Map<Integer, List<Cluster>> single =
+				nodesWithinBubble(service, sourceRank, sinkRank, source, sink)
 				.map(n -> createSingletonCluster(service, n))
 				.collect(Collectors.groupingBy(Cluster::getStartRank));
+		single.put(sourceRank, Collections.singletonList(createSingletonCluster(service, source)));
+		single.put(sinkRank, Collections.singletonList(createSingletonCluster(service, sink)));
+		return single;
 	}
 
 	private Cluster createSingletonCluster(GraphDatabaseService service, Node n) {
@@ -162,11 +170,8 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 		res.put(sourceRank, Collections.singletonList(createSingletonCluster(service, source)));
 		res.put(sinkRank, Collections.singletonList(createSingletonCluster(service, sink)));
 
-		PathFinder<Path> withinBubble = pathFinderBetweenRanks(sourceRank, sinkRank);
-		List<EnrichedSequenceNode> nodes = stream(
-				withinBubble.findAllPaths(source, sink))
-				.flatMap(path -> stream(trimPath(path)))
-				.distinct()
+		List<EnrichedSequenceNode> nodes =
+				nodesWithinBubble(service, sourceRank, sinkRank, source, sink)
 				.map(n -> new Neo4jSequenceNode(service, n))
 				.collect(Collectors.toList());
 		List<Annotation> annotations = nodes.stream()
@@ -190,10 +195,22 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 		return res;
 	}
 
-	private PathFinder<Path> pathFinderBetweenRanks(int minRank, int maxRank) {
-		return GraphAlgoFactory.allSimplePaths(
+	private Stream<Node> nodesWithinBubble(GraphDatabaseService service,
+			int sourceRank, int sinkRank, Node source, Node sink) {
+		if (sinkRank - sourceRank > 20) {
+			nodesInBubbleParameters.put("sourceRank", sourceRank);
+			nodesInBubbleParameters.put("sinkRank", sinkRank);
+			nodesInBubbleParameters.put("sourceID", source.getId());
+			return stream(IteratorUtil.loop(
+				service.execute(GET_NODES_IN_BUBBLE, nodesInBubbleParameters).columnAs("n")
+			));
+		} else {
+			return stream(GraphAlgoFactory.allSimplePaths(
 				PathExpanders.forTypeAndDirection(RelTypes.NEXT, Direction.OUTGOING),
-				maxRank - minRank);
+				sinkRank - sourceRank).findAllPaths(source, sink))
+					.flatMap(path -> stream(trimPath(path)))
+					.distinct();
+		}
 	}
 
 	private Map<Integer, List<Cluster>> mergeMaps(Stream<Map<Integer, List<Cluster>>> concat) {
