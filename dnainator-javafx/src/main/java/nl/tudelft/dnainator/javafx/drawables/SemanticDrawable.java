@@ -10,7 +10,7 @@ import nl.tudelft.dnainator.annotation.Range;
  * An abstract drawable that enables a semantic display of data.
  */
 public abstract class SemanticDrawable extends Group {
-	protected static final double RANK_WIDTH = 10;
+	protected static final double RANK_WIDTH = 100;
 	protected IntegerProperty minRank = new SimpleIntegerProperty(0, "minRank");
 	protected IntegerProperty maxRank = new SimpleIntegerProperty(0, "maxRank");
 	protected Group content;

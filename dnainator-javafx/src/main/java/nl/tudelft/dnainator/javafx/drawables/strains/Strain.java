@@ -10,7 +10,6 @@ import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.javafx.ColorServer;
 import nl.tudelft.dnainator.javafx.drawables.SemanticDrawable;
-import nl.tudelft.dnainator.javafx.drawables.annotations.Connection;
 import nl.tudelft.dnainator.javafx.drawables.annotations.Gene;
 
 import java.util.Collection;
@@ -27,7 +26,7 @@ public class Strain extends SemanticDrawable {
 	// Max zoom is 15. 15*53.33 = 800, which is our max threshold.
 	private static final double THRESHOLD_FACTOR = 53.33;
 	private static final double ANNOTATION_HEIGHT = 50;
-	private static final double OFFSET = 30;
+	private static final double OFFSET = 300;
 	private ColorServer colorServer;
 	private Graph graph;
 	private double zoomInBound;
@@ -134,7 +133,7 @@ public class Strain extends SemanticDrawable {
 				(x, acc) -> x <= acc);
 		ClusterDrawable right = getClusterDrawable(annotation, Double.MIN_VALUE,
 				(x, acc) -> x >= acc);
-		if (left != null) {
+		/*if (left != null) {
 			content.getChildren().add(new Connection(g.translateXProperty().add(0),
 					g.translateYProperty().add(0), left.translateXProperty().add(0),
 					left.translateYProperty().add(0)));
@@ -143,7 +142,7 @@ public class Strain extends SemanticDrawable {
 			content.getChildren().add(new Connection(g.translateXProperty().add(
 					g.widthProperty()), g.translateYProperty().add(0),
 					right.translateXProperty().add(0), right.translateYProperty().add(0)));
-		}
+		}*/
 		if (left != null && right != null) {
 			g.translateXProperty().bind(Bindings.add(left.translateXProperty(), Bindings.subtract(
 					Bindings.divide(right.translateXProperty().subtract(left.translateXProperty()),

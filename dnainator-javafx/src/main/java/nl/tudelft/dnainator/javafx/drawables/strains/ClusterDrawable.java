@@ -51,10 +51,10 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 	protected static final int SINGLE = 1;
 	protected static final int SMALL = 3;
 	protected static final int MEDIUM = 10;
-	protected static final double SINGLE_RADIUS = 2;
-	protected static final double SMALL_RADIUS = 4;
-	protected static final double MEDIUM_RADIUS = 5;
-	protected static final double LARGE_RADIUS = 6;
+	protected static final double SINGLE_RADIUS = 20;
+	protected static final double SMALL_RADIUS = 40;
+	protected static final double MEDIUM_RADIUS = 50;
+	protected static final double LARGE_RADIUS = 60;
 	protected static final int PIETHRESHOLD = 20;
 	private static final int INTERESTINGNESS_THRESHOLD = 800;
 	private Cluster cluster;
