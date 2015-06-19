@@ -83,19 +83,4 @@ public class Neo4jAnnotation implements Annotation {
 	public Collection<String> getAnnotatedNodes() {
 		return annotatedNodes;
 	}
-
-	@Override
-	public boolean equals(Object other) {
-		if (!(other instanceof Annotation)) {
-			return false;
-		}
-		Annotation a = (Annotation) other;
-		return a.getGeneName().equals(this.getGeneName()) && a.getStart() == this.getStart()
-				&& a.getEnd() == this.getEnd() && a.isSense() == this.isSense();
-	}
-
-	@Override
-	public int hashCode() {
-		return getGeneName().hashCode() + getStart() + getEnd() + ((Boolean) isSense()).hashCode();
-	}
 }
