@@ -15,7 +15,6 @@ import nl.tudelft.dnainator.javafx.widgets.dialogs.ExceptionDialog;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.ProgressDialog;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -75,7 +74,7 @@ public class WelcomeController {
 	private void initialize() {
 		dirChooser = new DirectoryChooser();
 		dbload = new DBLoadService();
-		items = FXCollections.observableArrayList();
+		items = list.getItems();
 
 		dbload.setOnFailed(e -> {
 			progressDialog.close();
@@ -93,7 +92,7 @@ public class WelcomeController {
 		list.getSelectionModel().select(getDBPath());
 		list.getSelectionModel().selectedItemProperty().addListener((obj, oldV, newV) -> {
 			deleteButton.setDisable(true);
-			if (newV != selectDB) {
+			if (newV != selectDB && newV != null) {
 				deleteButton.setDisable(false);
 			}
 			dbload.setDatabase(newV);
