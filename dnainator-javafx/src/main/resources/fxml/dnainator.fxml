@@ -62,7 +62,7 @@
                   <MenuItem id="about" disable="true" mnemonicParsing="false" onAction="#jumpAnnotationAction" text="Jump to annotation..." />
               </items>
             </Menu>
-            <Menu mnemonicParsing="false" text="Help">
+            <Menu fx:id="menuHelp" mnemonicParsing="false" text="Help">
                <items>
                    <MenuItem mnemonicParsing="false" onAction="#hotkeyHelpAction" text="Hotkeys">
                        <accelerator>

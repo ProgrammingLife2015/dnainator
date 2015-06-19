@@ -6,6 +6,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Modality;
@@ -41,11 +42,15 @@ public class HotkeyHelpDialog extends Alert {
 		setupContentGrid();
 		this.setHeaderText("Hotkeys");
 		setupContent(menus);
-		
+
 		getDialogPane().setContent(content);
 		
 		ButtonType close = new ButtonType("Close", ButtonData.CANCEL_CLOSE);
 		this.getDialogPane().getButtonTypes().add(close);
+		this.showingProperty().addListener((obj, oldV, newV) -> {
+			MenuItem hotkey = menus[menus.length - 1].getItems().get(0);
+			hotkey.setDisable(!hotkey.isDisable());
+		});
 	}
 	
 	private void setupContent(Menu... menus) {
