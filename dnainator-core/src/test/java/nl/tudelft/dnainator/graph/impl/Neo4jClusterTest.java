@@ -63,21 +63,24 @@ public class Neo4jClusterTest {
 		// CHECKSTYLE.OFF: MagicNumber
 		Map<Integer, List<Cluster>> clusters = db.getAllClusters(0, Integer.MAX_VALUE, 11);
 
+		// The root node is not associated with a bubble, so it should be a singleton cluster.
+		assertUnorderedIDEquals(Sets.newSet("0"), clusters.get(0).get(0).getNodes());
+
 		// first bubble is not clustered because one node has length greater than 11.
-		assertUnorderedIDEquals(Sets.newSet("1"), clusters.get(0).get(0).getNodes());
+		assertUnorderedIDEquals(Sets.newSet("1"), clusters.get(1).get(0).getNodes());
 
 		// 2 and 3 Expected on rank 1
-		assertUnorderedIDEquals(Sets.newSet("2"), clusters.get(1).get(1).getNodes());
-		assertUnorderedIDEquals(Sets.newSet("3"), clusters.get(1).get(0).getNodes());
+		assertUnorderedIDEquals(Sets.newSet("2"), clusters.get(2).get(1).getNodes());
+		assertUnorderedIDEquals(Sets.newSet("3"), clusters.get(2).get(0).getNodes());
 
 		// Source node is not collapsed.
-		assertUnorderedIDEquals(Sets.newSet("4"), clusters.get(2).get(0).getNodes());
+		assertUnorderedIDEquals(Sets.newSet("4"), clusters.get(3).get(0).getNodes());
 
 		// Collapsed bubble.
-		assertUnorderedIDEquals(Sets.newSet("5", "6", "7"), clusters.get(3).get(0).getNodes());
+		assertUnorderedIDEquals(Sets.newSet("5", "6", "7"), clusters.get(4).get(0).getNodes());
 
 		// Sink node is not collapsed.
-		assertUnorderedIDEquals(Sets.newSet("8"), clusters.get(5).get(0).getNodes());
+		assertUnorderedIDEquals(Sets.newSet("8"), clusters.get(6).get(0).getNodes());
 		// CHECKSTYLE.ON: MagicNumber
 	}
 

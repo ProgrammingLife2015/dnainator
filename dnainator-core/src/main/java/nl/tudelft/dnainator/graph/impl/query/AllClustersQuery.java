@@ -18,8 +18,8 @@ import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.PathExpanders;
+import org.neo4j.graphdb.ResourceIterable;
 import org.neo4j.graphdb.traversal.Evaluation;
-import org.neo4j.graphdb.traversal.TraversalDescription;
 import org.neo4j.helpers.collection.IteratorUtil;
 
 import java.util.ArrayList;
@@ -63,7 +63,9 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 		this.is = is;
 	}
 
-	private TraversalDescription untilMaxRank(GraphDatabaseService service) {
+	private ResourceIterable<Node> untilMaxRank(GraphDatabaseService service) {
+		Iterable<Node> start = IteratorUtil.loop(service.findNodes(NodeLabels.NODE,
+				SequenceProperties.RANK.name(), minRank));
 		return service.traversalDescription()
 				.breadthFirst()
 				.evaluator(path -> {
@@ -74,22 +76,27 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 						return Evaluation.EXCLUDE_AND_PRUNE;
 					}
 				})
-				.relationships(RelTypes.NEXT, Direction.OUTGOING);
+				.relationships(RelTypes.NEXT, Direction.OUTGOING)
+				.traverse(start).nodes();
 	}
 
 	@Override
 	public Map<Integer, List<Cluster>> execute(GraphDatabaseService service) {
+		Map<Integer, List<Cluster>> individualNodes = new HashMap<>();
 		Set<Long> bubbleSourcesNested = new HashSet<>();
 		Set<Long> bubbleSourcesToCluster = new HashSet<>();
 		Set<Long> bubbleSourcesToKeepIntact = new HashSet<>();
-		Iterable<Node> start = IteratorUtil.loop(service.findNodes(NodeLabels.NODE,
-				SequenceProperties.RANK.name(), minRank));
-		for (Node n : untilMaxRank(service).traverse(start).nodes()) {
+		for (Node n : untilMaxRank(service)) {
 			if (n.hasLabel(NodeLabels.BUBBLE_SOURCE)) {
 				bubbleSourcesToCluster.add(n.getId());
-				if (((long[]) n.getProperty(BubbleProperties.BUBBLE_SOURCE_IDS.name()))
-						.length > 0) {
+				if (getBubbleIDs(n).length > 0) {
 					bubbleSourcesNested.add(n.getId());
+				}
+			} else {
+				if (getBubbleIDs(n).length == 0) {
+					Cluster individualNode = createSingletonCluster(service, n);
+					individualNodes.put(individualNode.getStartRank(),
+							Collections.singletonList(individualNode));
 				}
 			}
 			int interestingness = is.compute(new Neo4jScoreContainer(n));
@@ -103,7 +110,12 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 			}
 		}
 		bubbleSourcesToCluster.removeAll(bubbleSourcesNested);
-		return cluster(service, bubbleSourcesToCluster, bubbleSourcesToKeepIntact);
+		return mergeMaps(Stream.of(individualNodes,
+				cluster(service, bubbleSourcesToCluster, bubbleSourcesToKeepIntact)));
+	}
+
+	private long[] getBubbleIDs(Node n) {
+		return (long[]) n.getProperty(BubbleProperties.BUBBLE_SOURCE_IDS.name());
 	}
 
 	private Map<Integer, List<Cluster>> cluster(GraphDatabaseService service,
