@@ -36,6 +36,8 @@ public class WindowController {
 	private Menu menuView;
 	@SuppressWarnings("unused") @FXML
 	private Menu menuNavigate;
+	@SuppressWarnings("unused") @FXML
+	private Menu menuHelp;
 
 	private StrainView strainView;
 	private PhylogeneticView phyloView;
@@ -83,7 +85,8 @@ public class WindowController {
 
 	@SuppressWarnings("unused") @FXML
 	private void hotkeyHelpAction(ActionEvent e) {
-		HotkeyHelpDialog hotkeyHelp = new HotkeyHelpDialog(root, menuFile, menuView, menuNavigate);
+		HotkeyHelpDialog hotkeyHelp = new HotkeyHelpDialog(root, menuFile,
+				menuView, menuNavigate, menuHelp);
 		hotkeyHelp.show();
 	}
 	
