@@ -14,23 +14,16 @@
 #welcome > ListView .list-cell {
 	-fx-background-color: #c1c1c1;
 	-fx-text-fill: #141414;
-	-fx-opacity: 0.75;
 }
 
 #welcome > ListView .list-cell:filled:selected {
 	-fx-background-color: #737373;
 	-fx-text-fill: white;
-	-fx-opacity: 1.0;
 }
 
 #welcome > ListView .list-cell:filled:hover {
-	-fx-background-color: #737373;
+	-fx-background-color: #8c8c8c;
 	-fx-text-fill: white;
-}
-
-TextField {
-	-fx-background-color: white;
-	-fx-text-fill: #141414;
 }
 
 .button, ProgressDialog > * > .button {
@@ -84,8 +77,7 @@ TextField {
 }
 
 .menu-bar {
-	-fx-background-color: linear-gradient(#d0d0d0 0%, #c1c1c1 30%, #b1b1b1 60%, #929292 100%);
-	-fx-effect: innershadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 0);
+	-fx-background-color: linear-gradient(#dedede 0%, #cdcdcd 30%, #bdbdbd 60%, #adadad 100%);
 }
 
 .menu-bar .context-menu, .context-menu:focused, .context-menu:showing {
@@ -93,7 +85,7 @@ TextField {
 }
 
 .menu:hover, .menu:showing, .menu:focused {
-	-fx-background-color: linear-gradient(#999999 0%, #848484 30%, #707070 60%, #5b5b5b 100%);
+	-fx-background-color: linear-gradient(#bdbdbd 0%, #adadad 30%, #8c8c8c 60%, #7b7b7b 100%);
 	-fx-text-fill: white;
 }
 
@@ -102,7 +94,7 @@ TextField {
 }
 
 .menu-item:hover, .menu-item:showing, .menu-item:focused {
-	-fx-background-color: #737373;
+	-fx-background-color: #8c8c8c;
 }
 
 .menu-item:hover .label, .menu-item:showing .label, .menu-item:focused .label {
@@ -158,20 +150,11 @@ TextField {
 	-fx-padding: 0 10 0 5;
 }
 
-.gray-label, .openpane-field {
+.gray-label {
 	-fx-font-size: 11px;
 	-fx-text-fill: #3B3B3B;
 	-fx-prompt-text-fill: #3B3B3B;
 	-fx-opacity: 0.5;
-}
-
-.gray-label:hover {
-	-fx-opacity: 1.0;
-	-fx-text-fill: #141414;
-}
-
-.openpane-field:hover {
-	-fx-opacity: 0.6;
 }
 
 .split-pane *.split-pane-divider {
@@ -274,14 +257,19 @@ Minimap .spacer {
 }
 
 StrainControl .jump-invalid-prompt {
-	-fx-prompt-text-fill: red;
+	-fx-background-color: #ED6D6D;
+	-fx-prompt-text-fill: white;
+	-fx-opacity: 1.0;
 }
 
-StrainControl > TextField {
-	-fx-text-fill: #3B3B3B;
-	-fx-prompt-text-fill: #3B3B3B;
-	-fx-opacity: 0.5;
+StrainControl > TextField, .openpane-field {
+	-fx-text-fill: #141414;
+	-fx-prompt-text-fill: #adadad;
+	-fx-background-color: #EBEBEB;
+	-fx-border-color: #CFCFCF;
+	-fx-border-size: 1;
+	-fx-border-radius: 3.75;
 }
-StrainControl > TextField:hover {
-	-fx-opacity: 0.6;
+StrainControl > TextField:hover, .openpane-field:hover {
+	-fx-background-color: #EDEDED;
 }
