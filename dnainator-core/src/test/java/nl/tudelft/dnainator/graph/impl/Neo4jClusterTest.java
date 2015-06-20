@@ -1,6 +1,7 @@
 package nl.tudelft.dnainator.graph.impl;
 
 import nl.tudelft.dnainator.annotation.impl.AnnotationCollectionImpl;
+import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.core.impl.SequenceNodeFactoryImpl;
 import nl.tudelft.dnainator.parser.EdgeParser;
@@ -22,8 +23,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static nl.tudelft.dnainator.graph.impl.Neo4jTestUtils.assertUnorderedIDEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test clustering in a DNA sequence graph.
@@ -55,13 +58,23 @@ public class Neo4jClusterTest {
 		}
 	}
 
+	private Stream<EnrichedSequenceNode> getAllNodes(Map<Integer, List<Cluster>> clusters) {
+		return clusters.values().stream()
+				.flatMap(list -> list.stream())
+				.flatMap(cluster -> cluster.getNodes().stream());
+	}
+
 	/**
 	 * Test returning various clusters from the sample graph.
 	 */
 	@Test
-	public void test() {
+	public void testSingleNestedBubble() {
 		// CHECKSTYLE.OFF: MagicNumber
-		Map<Integer, List<Cluster>> clusters = db.getAllClusters(0, Integer.MAX_VALUE, 11);
+		Map<Integer, List<Cluster>> clusters = db.getAllClusters(0, 6, 11);
+		// Assert that all elements occur only once, no duplicates.
+		assertTrue(getAllNodes(clusters).count() == getAllNodes(clusters).distinct().count());
+		// Assert that no elements are missing.
+		assertTrue(getAllNodes(clusters).count() == 9);
 
 		// The root node is not associated with a bubble, so it should be a singleton cluster.
 		assertUnorderedIDEquals(Sets.newSet("0"), clusters.get(0).get(0).getNodes());
@@ -81,6 +94,40 @@ public class Neo4jClusterTest {
 
 		// Sink node is not collapsed.
 		assertUnorderedIDEquals(Sets.newSet("8"), clusters.get(6).get(0).getNodes());
+	}
+
+	/**
+	 * Test the part of the graph that has multiple bubbles nested.
+	 */
+	@Test
+	public void testMultipleNestedBubbles() {
+		// CHECKSTYLE.OFF: MagicNumber
+		Map<Integer, List<Cluster>> clusters = db.getAllClusters(7, 13, 11);
+		// Assert that all elements occur only once, no duplicates.
+		assertTrue(getAllNodes(clusters).count() == getAllNodes(clusters).distinct().count());
+		// Assert that no elements are missing.
+		assertTrue(getAllNodes(clusters).count() == 9);
+
+		// Source node of new bubble is not collapsed.
+		assertUnorderedIDEquals(Sets.newSet("9"), clusters.get(7).get(0).getNodes());
+
+		// Source node of nested bubble is not collapsed.
+		assertUnorderedIDEquals(Sets.newSet("10"), clusters.get(8).get(0).getNodes());
+		assertUnorderedIDEquals(Sets.newSet("18"), clusters.get(8).get(0).getNodes());
+
+		// 15 and 16 have sequencelength of 8.
+		assertUnorderedIDEquals(Sets.newSet("16"), clusters.get(9).get(0).getNodes());
+		assertUnorderedIDEquals(Sets.newSet("15"), clusters.get(9).get(1).getNodes());
+		// Source node of nested nested bubble is not collapsed.
+		assertUnorderedIDEquals(Sets.newSet("11"), clusters.get(9).get(2).getNodes());
+
+		// 12 and 13 are not clustered, because 13 has sequencelength of 12.
+		assertUnorderedIDEquals(Sets.newSet("12", "13"), clusters.get(10).get(0).getNodes());
+
+		// 14, 17, and 19 are sink nodes, so the'yre not clustered.
+		assertUnorderedIDEquals(Sets.newSet("14"), clusters.get(11).get(0).getNodes());
+		assertUnorderedIDEquals(Sets.newSet("17"), clusters.get(12).get(0).getNodes());
+		assertUnorderedIDEquals(Sets.newSet("19"), clusters.get(13).get(0).getNodes());
 		// CHECKSTYLE.ON: MagicNumber
 	}
 
