@@ -45,7 +45,7 @@ public abstract class AbstractView extends Pane {
 		toCenter = new Translate();
 		widthProperty().addListener((o, v1, v2) -> toCenter.setX(v2.intValue() / 2));
 		heightProperty().addListener((o, v1, v2) -> toCenter.setY(v2.intValue() / 2));
-
+		
 		translate = new Translate();
 		scale = getScale();
 	}
