@@ -73,7 +73,12 @@ public class Neo4jClusterTest {
 		Map<Integer, List<Cluster>> clusters = db.getAllClusters(0, 6, 11);
 		System.out.println(clusters);
 		assertProperClustering(clusters, 9);
+		testSingleNestedBubbleNodes(clusters);
+		// CHECKSTYLE.ON: MagicNumber
+	}
 
+	private void testSingleNestedBubbleNodes(Map<Integer, List<Cluster>> clusters) {
+		// CHECKSTYLE.OFF: MagicNumber
 		// The root node is not associated with a bubble, so it should be a singleton cluster.
 		assertUnorderedIDEquals(Sets.newSet("0"), clusters.get(0).get(0).getNodes());
 
@@ -103,7 +108,11 @@ public class Neo4jClusterTest {
 		Map<Integer, List<Cluster>> clusters = db.getAllClusters(7, 13, 11);
 		System.out.println(clusters);
 		assertProperClustering(clusters, 11);
+		testMultipleNestedBubbleNodes(clusters);
+	}
 
+	private void testMultipleNestedBubbleNodes(Map<Integer, List<Cluster>> clusters) {
+		// CHECKSTYLE.OFF: MagicNumber
 		// Source node of new bubble is not collapsed.
 		assertUnorderedIDEquals(Sets.newSet("9"), clusters.get(7).get(0).getNodes());
 
@@ -124,6 +133,20 @@ public class Neo4jClusterTest {
 		assertUnorderedIDEquals(Sets.newSet("14"), clusters.get(11).get(0).getNodes());
 		assertUnorderedIDEquals(Sets.newSet("17"), clusters.get(12).get(0).getNodes());
 		assertUnorderedIDEquals(Sets.newSet("19"), clusters.get(13).get(0).getNodes());
+		// CHECKSTYLE.ON: MagicNumber
+	}
+
+	/**
+	 * Test the entire graph.
+	 */
+	@Test
+	public void testEntireGraph() {
+		// CHECKSTYLE.OFF: MagicNumber
+		Map<Integer, List<Cluster>> clusters = db.getAllClusters(0, 13, 11);
+		System.out.println(clusters);
+		assertProperClustering(clusters, 20);
+		testSingleNestedBubbleNodes(clusters);
+		testMultipleNestedBubbleNodes(clusters);
 		// CHECKSTYLE.ON: MagicNumber
 	}
 
