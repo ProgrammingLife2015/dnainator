@@ -30,7 +30,7 @@ public class StrainView extends AbstractView {
 	public StrainView(ColorServer colorServer, Graph graph) {
 		super();
 		this.graph = graph;
-		this.strain = new Strain(colorServer, graph, ZOOM_IN_BOUND);
+		this.strain = new Strain(colorServer, graph);
 
 		setTransforms(strain);
 		getChildren().addAll(strain, setupStrainControl(), setupMinimap(strain, graph));

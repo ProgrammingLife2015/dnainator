@@ -33,7 +33,7 @@ public class StrainTest {
 	public void setup() {
 		content = new Group();
 		// CHECKSTYLE.OFF: MagicNumber
-		strain = new Strain(new ColorServer(), graph, 10.0, content);
+		strain = new Strain(new ColorServer(), graph, content);
 		// CHECKSTYLE.ON: MagicNumber
 	}
 

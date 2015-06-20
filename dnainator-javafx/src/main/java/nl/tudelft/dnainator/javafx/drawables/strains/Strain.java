@@ -23,13 +23,12 @@ import java.util.stream.Collectors;
  * The {@link Strain} class represents the graph that contains the DNA strain.
  */
 public class Strain extends SemanticDrawable {
-	// Max zoom is 15. 15*53.33 = 800, which is our max threshold.
-	private static final double THRESHOLD_FACTOR = 53.33;
+	// Max zoom is 800. 1 / .05 * 40 = 800, which is our max threshold.
+	private static final double THRESHOLD_FACTOR = 40;
 	private static final double ANNOTATION_HEIGHT = 50;
 	private static final double OFFSET = 300;
 	private ColorServer colorServer;
 	private Graph graph;
-	private double zoomInBound;
 	private LinkedHashMap<String, ClusterDrawable> clusters;
 	private Range lastLoaded;
 	private Thresholds lastThreshold;
@@ -39,10 +38,9 @@ public class Strain extends SemanticDrawable {
 	 *
 	 * @param colorServer The {@link ColorServer} to bind to.
 	 * @param graph The specified graph.
-	 * @param zoomInBound The bound on zooming in.
 	 */
-	public Strain(ColorServer colorServer, Graph graph, double zoomInBound) {
-		this(colorServer, graph, zoomInBound, new Group());
+	public Strain(ColorServer colorServer, Graph graph) {
+		this(colorServer, graph, new Group());
 	}
 
 	/**
@@ -52,13 +50,11 @@ public class Strain extends SemanticDrawable {
 	 * @param colorServer The {@link ColorServer} to bind to.
 	 * @param graph	The specified graph.
 	 * @param content The specified graph content.
-	 * @param zoomInBound The bound on zooming in.
 	 */
-	public Strain(ColorServer colorServer, Graph graph, double zoomInBound, Group content) {
+	public Strain(ColorServer colorServer, Graph graph, Group content) {
 		super(content);
 		this.colorServer = colorServer;
 		this.graph = graph;
-		this.zoomInBound = zoomInBound;
 		this.clusters = new LinkedHashMap<>();
 		this.lastLoaded = new Range(Integer.MAX_VALUE, Integer.MIN_VALUE);
 		this.lastThreshold = Thresholds.INDIVIDUAL;
@@ -77,7 +73,7 @@ public class Strain extends SemanticDrawable {
 
 	@Override
 	protected void loadContent(Range ranks, double zoom) {
-		double interestingness = (zoomInBound - zoom) * THRESHOLD_FACTOR;
+		double interestingness = 1 / zoom * THRESHOLD_FACTOR;
 		Thresholds newThreshold = Thresholds.retrieve(interestingness);
 
 		if (!needRedraw(ranks, newThreshold)) {
