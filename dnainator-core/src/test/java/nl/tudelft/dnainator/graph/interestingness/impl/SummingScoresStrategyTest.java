@@ -12,7 +12,8 @@ import org.mockito.Mockito;
  * Tests the {@link SummingScoresStrategy}.
  */
 public class SummingScoresStrategyTest {
-	private static final int TEST_SCORE = 5;
+	private static final int TEST_SEQ_LENGTH = 5;
+	private static final int TEST_DR_MUT = 1;
 	private SummingScoresStrategy strategy;
 	private ScoreContainer container;
 
@@ -23,7 +24,8 @@ public class SummingScoresStrategyTest {
 	public void setUp() {
 		this.strategy = new SummingScoresStrategy();
 		this.container = Mockito.mock(ScoreContainer.class);
-		Mockito.when(container.getScore(Mockito.any())).thenReturn(TEST_SCORE);
+		Mockito.when(container.getScore(Scores.SEQ_LENGTH)).thenReturn(TEST_SEQ_LENGTH);
+		Mockito.when(container.getScore(Scores.DR_MUT)).thenReturn(TEST_DR_MUT);
 	}
 
 	/**
@@ -31,7 +33,9 @@ public class SummingScoresStrategyTest {
 	 */
 	@Test
 	public void testSum() {
-		assertEquals(strategy.compute(container), Scores.values().length * TEST_SCORE);
+		int expected = Scores.SEQ_LENGTH.applyImportanceModifier(TEST_SEQ_LENGTH)
+				+ Scores.DR_MUT.applyImportanceModifier(TEST_DR_MUT);
+		assertEquals(expected, strategy.compute(container));
 	}
 
 }

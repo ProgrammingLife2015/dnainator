@@ -4,7 +4,6 @@ import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.core.PropertyType;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
-import nl.tudelft.dnainator.graph.interestingness.Scores;
 import nl.tudelft.dnainator.javafx.ColorServer;
 import nl.tudelft.dnainator.javafx.drawables.Drawable;
 import nl.tudelft.dnainator.javafx.views.AbstractView;
@@ -19,7 +18,6 @@ import java.util.stream.Collectors;
 import javafx.collections.MapChangeListener;
 import javafx.scene.Group;
 import javafx.scene.shape.Circle;
-import javafx.scene.text.Text;
 
 /**
  * This enum represents all properties a Cluster can have.
@@ -32,7 +30,8 @@ enum ClusterPropertyTypes implements PropertyType {
 	ENDREF("End base on ref. strain"),
 	SOURCES("Sources"),
 	STARTRANK("Start rank"),
-	BASEDIST("Start base");
+	BASEDIST("Start base"),
+	SCORE("Maximum interestingness score");
 
 	private String description;
 	private ClusterPropertyTypes(String description) {
@@ -57,11 +56,12 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 	protected static final double MEDIUM_RADIUS = 5;
 	protected static final double LARGE_RADIUS = 6;
 	protected static final int PIETHRESHOLD = 20;
+	private static final int INTERESTINGNESS_THRESHOLD = 800;
 	private Cluster cluster;
 	private Set<String> sources;
-	private Text label;
 	private Pie pie;
 	private Map<PropertyType, String> properties;
+	private int interestingness;
 
 	/**
 	 * Construct a new mid level {@link ClusterDrawable} using the default graph.
@@ -74,8 +74,9 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 		this.sources = cluster.getNodes().stream()
 				.flatMap(e -> e.getSources().stream())
 				.collect(Collectors.toSet());
-		label = new Text(Integer.toString(cluster.getNodes().size()));
-		initProperties();
+		this.interestingness = cluster.getNodes().stream()
+				.mapToInt(e -> e.getInterestingnessScore())
+				.max().getAsInt();
 		setOnMouseClicked(e -> AbstractView.setLastClicked(this));
 		draw(colorServer);
 	}
@@ -84,7 +85,7 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 	 * Add all properties of a cluster to the property pane.
 	 */
 	private void initProperties() {
-		properties.put(ClusterPropertyTypes.TITLE, null);
+		properties.put(ClusterPropertyTypes.TITLE, cluster.getNodes().size() + " nodes");
 		properties.put(ClusterPropertyTypes.ID, cluster.getNodes().stream()
 								.map(e -> e.getId())
 								.collect(Collectors.toList()).toString());
@@ -92,7 +93,7 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 		properties.put(ClusterPropertyTypes.SOURCES, cluster.getNodes().stream()
 								.flatMap(e -> e.getSources().stream())
 								.collect(Collectors.toList()).toString());
-
+		properties.put(ClusterPropertyTypes.SCORE, Integer.toString(interestingness));
 		if (cluster.getNodes().size() == 1) {
 			initSingletonProperties();
 		}
@@ -103,20 +104,24 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 	 */
 	private void initSingletonProperties() {
 		EnrichedSequenceNode sn = cluster.getNodes().iterator().next();
-		properties.put(Scores.SEQ_LENGTH, Integer.toString(sn.getInterestingnessScore()));
+		String score = properties.remove(ClusterPropertyTypes.SCORE);
 		properties.put(ClusterPropertyTypes.BASEDIST, Integer.toString(sn.getBaseDistance()));
 		properties.put(ClusterPropertyTypes.STARTREF, Integer.toString(sn.getStartRef()));
 		properties.put(ClusterPropertyTypes.ENDREF, Integer.toString(sn.getEndRef()));
 		properties.put(ClusterPropertyTypes.SEQUENCE, sn.getSequence());
+		properties.put(ClusterPropertyTypes.SCORE, score);
+
+		sn.getScores().forEach((k, v) -> properties.put(k, Integer.toString(v)));
 	}
 
 	private void draw(ColorServer colorServer) {
 		double radius = getRadius();
 
+		Circle commonNode = new Circle(radius);
+		getChildren().add(commonNode);
+
 		if (sources.size() > PIETHRESHOLD) {
-			Circle commonNode = new Circle(radius);
 			commonNode.getStyleClass().add("common-node");
-			getChildren().add(commonNode);
 		} else {
 			colorServer.addListener(this::onColorServerChanged);
 
@@ -127,7 +132,9 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 			pie = new Pie(radius, collect);
 			getChildren().add(pie);
 		}
-		getChildren().add(label);
+		if (interestingness > INTERESTINGNESS_THRESHOLD) {
+			commonNode.getStyleClass().add("interesting-node");
+		}
 	}
 
 	/**
@@ -178,6 +185,9 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 
 	@Override
 	public Map<PropertyType, String> getPropertyMap() {
+		if (properties.size() == 0) {
+			initProperties();
+		}
 		return properties;
 	}
 }

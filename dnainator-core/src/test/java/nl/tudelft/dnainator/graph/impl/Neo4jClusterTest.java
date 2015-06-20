@@ -3,6 +3,7 @@ package nl.tudelft.dnainator.graph.impl;
 import nl.tudelft.dnainator.annotation.impl.AnnotationCollectionImpl;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.core.impl.SequenceNodeFactoryImpl;
+import nl.tudelft.dnainator.graph.interestingness.Scores;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
@@ -68,6 +69,8 @@ public class Neo4jClusterTest {
 		Set<String> expected;
 
 		List<String> start = Arrays.asList("1");
+		// Set the interestingness strategy to return the sequence length.
+		db.setInterestingnessStrategy(container -> container.getScore(Scores.SEQ_LENGTH));
 		// CHECKSTYLE.OFF: MagicNumber
 		Map<Integer, List<Cluster>> clusters = db.getAllClusters(start, Integer.MAX_VALUE, 11);
 		expected = Sets.newSet("1", "3", "4", "5", "6", "7");

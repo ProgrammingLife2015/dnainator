@@ -1,6 +1,13 @@
 package nl.tudelft.dnainator.graph.impl.command;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import nl.tudelft.dnainator.graph.impl.NodeLabels;
 import nl.tudelft.dnainator.graph.impl.RelTypes;
+import nl.tudelft.dnainator.graph.impl.properties.AnnotationProperties;
+import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
+import nl.tudelft.dnainator.graph.impl.properties.SourceProperties;
 import nl.tudelft.dnainator.graph.interestingness.Scores;
 
 import org.neo4j.collection.primitive.Primitive;
@@ -16,7 +23,6 @@ import org.neo4j.graphdb.traversal.Uniqueness;
 
 import static nl.tudelft.dnainator.graph.impl.properties.SequenceProperties.BASE_DIST;
 import static nl.tudelft.dnainator.graph.impl.properties.SequenceProperties.RANK;
-
 import static org.neo4j.helpers.collection.IteratorUtil.loop;
 
 /**
@@ -25,6 +31,14 @@ import static org.neo4j.helpers.collection.IteratorUtil.loop;
  */
 public class AnalyzeCommand implements Command {
 	private static final int INIT_CAP = 4096;
+	private static final String LABEL = "n";
+	private static final String GET_NODES_BASEDIST =
+			"MATCH (n:" + NodeLabels.NODE.name() + ")-[:" + RelTypes.SOURCE.name() + "]-s, "
+			+ "    (t {" + SourceProperties.SOURCE.name() + ": \"TKK_REF\"})"
+			+ "WHERE NOT (n-->t)"
+			+ " AND {dist} >= n." + SequenceProperties.BASE_DIST.name()
+			+ " AND {dist} < n." + SequenceProperties.BASE_DIST.name()
+			+ " + n." + Scores.SEQ_LENGTH.name() + " RETURN n AS " + LABEL;
 	private ResourceIterator<Node> roots;
 
 	/**
@@ -68,10 +82,15 @@ public class AnalyzeCommand implements Command {
 			for (Node n : topologicalOrder(service, processed)) {
 				rankDest(n);
 			}
+			scoreDRMutations(service);
 			tx.success();
 		}
 	}
 
+	/**
+	 * Rank the destination nodes of the outgoing edges of the given node.
+	 * @param n the source node of the destination nodes to be ranked.
+	 */
 	private void rankDest(Node n) {
 		int baseSource = (int) n.getProperty(BASE_DIST.name())
 				+ (int) n.getProperty(Scores.SEQ_LENGTH.name());
@@ -87,5 +106,31 @@ public class AnalyzeCommand implements Command {
 				dest.setProperty(RANK.name(), rankSource);
 			}
 		}
+	}
+
+	/**
+	 * Scores the amount of drug resistance mutations.
+	 * @param service	the graph service
+	 */
+	private void scoreDRMutations(GraphDatabaseService service) {
+		Map<String, Object> params = new HashMap<>(1);
+		service.findNodes(NodeLabels.DRMUTATION).forEachRemaining(drannotations ->
+			drannotations.getRelationships(RelTypes.ANNOTATED).forEach(node -> {
+				// From the startref of the annotation
+				// subtract the startref of the annotated node
+				// and add the base distance of the annotated node
+				int basedist = (int) drannotations.getProperty(AnnotationProperties.STARTREF.name())
+					- (int) node.getStartNode().getProperty(SequenceProperties.STARTREF.name())
+					+ (int) node.getStartNode().getProperty(SequenceProperties.BASE_DIST.name());
+
+				params.put("dist", basedist);
+				ResourceIterator<Node> mutations = service.execute(GET_NODES_BASEDIST, params)
+									.columnAs(LABEL);
+				mutations.forEachRemaining(m -> {
+					int score = (int) m.getProperty(Scores.DR_MUT.name(), 0);
+					m.setProperty(Scores.DR_MUT.name(), score + 1);
+				});
+			})
+		);
 	}
 }

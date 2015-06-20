@@ -12,10 +12,12 @@ import nl.tudelft.dnainator.graph.impl.command.AnalyzeCommand;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
+import nl.tudelft.dnainator.parser.TreeParser;
 import nl.tudelft.dnainator.parser.exceptions.InvalidEdgeFormatException;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
 import nl.tudelft.dnainator.parser.impl.EdgeParserImpl;
 import nl.tudelft.dnainator.parser.impl.NodeParserImpl;
+import nl.tudelft.dnainator.tree.TreeNode;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -28,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -59,9 +62,10 @@ public class Neo4jGraphTest {
 
 	/**
 	 * Setup the database and construct the graph.
+	 * @throws URISyntaxException 
 	 */
 	@BeforeClass
-	public static void setUp() {
+	public static void setUp() throws URISyntaxException {
 		try {
 			FileUtils.deleteRecursively(new File(DB_PATH));
 			nodeFile = getNodeFile();
@@ -70,7 +74,8 @@ public class Neo4jGraphTest {
 					new BufferedReader(new InputStreamReader(nodeFile, "UTF-8")));
 			EdgeParser ep = new EdgeParserImpl(new BufferedReader(
 							new InputStreamReader(edgeFile, "UTF-8")));
-			db = (Neo4jGraph) new Neo4jBatchBuilder(DB_PATH, new AnnotationCollectionImpl())
+			TreeNode phylo = new TreeParser(getTreeFile()).parse();
+			db = (Neo4jGraph) new Neo4jBatchBuilder(DB_PATH, new AnnotationCollectionImpl(), phylo)
 				.constructGraph(np, ep)
 				.build();
 		} catch (IOException e) {
@@ -96,13 +101,17 @@ public class Neo4jGraphTest {
 		return Neo4jGraphTest.class.getResourceAsStream("/strains/topo.edge.graph");
 	}
 
+	private static File getTreeFile() throws URISyntaxException {
+		return new File(Neo4jGraphTest.class.getResource("/strains/topo.nwk").toURI());
+	}
+
 	/**
 	 * Test looking up a single node.
 	 */
 	@Test
 	public void testNodeLookup() {
 		// CHECKSTYLE.OFF: MagicNumber
-		SequenceNode node1 = new SequenceNodeImpl("2", Arrays.asList("ASDF"), 1, 5, "TATA");
+		SequenceNode node1 = new SequenceNodeImpl("2", Arrays.asList("ASDF", "ASD"), 1, 5, "TATA");
 		SequenceNode node2 = new SequenceNodeImpl("3", Arrays.asList("ASDF"), 5, 9, "TATA");
 		SequenceNode node3 = new SequenceNodeImpl("5", Arrays.asList("ASDF"), 4, 8, "TATA");
 		assertEquals(node1, db.getNode("2"));
@@ -232,17 +241,17 @@ public class Neo4jGraphTest {
 		GraphQueryDescription qd = new GraphQueryDescription()
 			.containsSource("ASDF");
 		Set<String> expect = new HashSet<>();
-		Collections.addAll(expect, "2", "5", "3", "7", "8");
+		Collections.addAll(expect, "2", "5", "3", "7", "8", "11");
 		assertUnorderedIDEquals(expect, db.queryNodes(qd));
 
 		// Also test for multiple sources (reusing the old one)
 		qd = qd.containsSource("ASD");
-		Collections.addAll(expect, "9", "10", "11");
+		Collections.addAll(expect, "9", "10");
 		assertUnorderedIDEquals(expect, db.queryNodes(qd));
 
 		// Search non-existing source.
 		qd = new GraphQueryDescription()
-			.containsSource("FDSA");
+			.containsSource("FOO");
 		// Expect an empty result
 		expect = new HashSet<>();
 		assertUnorderedIDEquals(expect, db.queryNodes(qd));
@@ -274,12 +283,12 @@ public class Neo4jGraphTest {
 		assertTrue(as.contains(last));
 	}
 
-
 	private static void assertUnorderedIDEquals(Collection<String> expected,
 			Collection<EnrichedSequenceNode> actual) {
 		assertEquals(expected.stream().collect(Collectors.toSet()),
 				actual.stream().map(sn -> sn.getId()).collect(Collectors.toSet()));
 	}
+
 	/**
 	 * Clean up after ourselves.
 	 * @throws IOException when the database could not be deleted

@@ -1,6 +1,5 @@
 package nl.tudelft.dnainator.graph.impl.query;
 
-import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.graph.impl.Neo4jSequenceNode;
@@ -124,9 +123,7 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 		List<EnrichedSequenceNode> retrieve = result.stream()
 				.map(e -> new Neo4jSequenceNode(service, e))
 				.collect(Collectors.toList());
-		List<Annotation> annotations = retrieve.stream().flatMap(e -> e.getAnnotations().stream())
-				.collect(Collectors.toList());
-		cluster = new Cluster(rankStart, retrieve, annotations);
+		cluster = new Cluster(rankStart, retrieve);
 		return cluster;
 	}
 }

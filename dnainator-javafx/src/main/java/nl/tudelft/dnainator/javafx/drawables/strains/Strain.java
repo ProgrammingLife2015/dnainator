@@ -31,7 +31,8 @@ public class Strain extends SemanticDrawable {
 	private static final int OFFSET = 10;
 	private static final double ANNOTATION_HEIGHT = 50;
 	private static final int RANK_WIDTH = 10;
-	private static final int CLUSTER_DIVIDER = 100;
+	private static final int ZOOM_MIN = 200;
+	private static final int ZOOM_MAX = 800;
 
 	private ColorServer colorServer;
 	private Graph graph;
@@ -79,13 +80,15 @@ public class Strain extends SemanticDrawable {
 	@Override
 	public void loadChildren(Bounds bounds) {
 		Range ranks = getRange(bounds);
+		int interestingness = Math.max(0, Math.min((int) bounds.getWidth() - ZOOM_MIN, ZOOM_MAX));
+		System.out.println("load iteration: " + ranks.getX() + " -> " + ranks.getY()
+					+ " zoom: " + interestingness);
 
-		System.out.println("load iteration: " + ranks.getX() + " -> " + ranks.getY());
 		List<String> roots = graph.getRank(ranks.getX()).stream()
 				.map(SequenceNode::getId).collect(Collectors.toList());
 		List<Annotation> annotations = getSortedAnnotations(ranks);
 		Map<Integer, List<Cluster>> result = graph.getAllClusters(roots, ranks.getY(),
-				(int) (bounds.getWidth() / CLUSTER_DIVIDER));
+				interestingness);
 		clusters.clear();
 		childContent.getChildren().clear();
 

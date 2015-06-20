@@ -111,6 +111,9 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 			.assertPropertyIsUnique(SequenceProperties.ID.name())
 			.create();
 		batchInserter.createDeferredSchemaIndex(NodeLabels.NODE)
+			.on(SequenceProperties.BASE_DIST.name())
+			.create();
+		batchInserter.createDeferredSchemaIndex(NodeLabels.NODE)
 			.on(SequenceProperties.RANK.name())
 			.create();
 		batchInserter.createDeferredSchemaIndex(NodeLabels.NODE)
