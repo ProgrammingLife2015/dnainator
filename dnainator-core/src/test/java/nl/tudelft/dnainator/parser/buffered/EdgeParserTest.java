@@ -19,8 +19,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
- * Test the {@link EdgeParserImpl} implementation of an
- * {@link EdgeParser}.
+ * Test the {@link EdgeParserImpl} implementation of the {@link Parser}.
  */
 public class EdgeParserTest {
 

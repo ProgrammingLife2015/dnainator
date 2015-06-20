@@ -3,7 +3,7 @@ package nl.tudelft.dnainator.annotation.impl;
 import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
 import nl.tudelft.dnainator.annotation.Range;
-import nl.tudelft.dnainator.parser.AnnotationParser;
+import nl.tudelft.dnainator.parser.Parser;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -31,7 +31,7 @@ public class AnnotationCollectionImpl implements AnnotationCollection {
 	 * using addAnnotations.
 	 * @param source The source for getting the annotations.
 	 */
-	public AnnotationCollectionImpl(AnnotationParser source) {
+	public AnnotationCollectionImpl(Parser<Annotation> source) {
 		this();
 		addAnnotations(source);
 	}

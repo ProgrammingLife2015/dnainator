@@ -4,14 +4,14 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
 import nl.tudelft.dnainator.annotation.DRMutationFactory;
-import nl.tudelft.dnainator.annotation.impl.AnnotationCollectionFactoryImpl;
+import nl.tudelft.dnainator.annotation.impl.AnnotationCollectionImpl;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.Neo4jBatchBuilder;
-import nl.tudelft.dnainator.parser.AnnotationParser;
 import nl.tudelft.dnainator.parser.Parser;
 import nl.tudelft.dnainator.parser.TreeParser;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
@@ -201,10 +201,10 @@ public class GraphLoadService extends Service<Graph> {
 			protected Graph call() throws IOException, ParseException {
 				AnnotationCollection annotations;
 				if (gffFilePath.getValue() == null) {
-					annotations = new AnnotationCollectionFactoryImpl().build();
+					annotations = new AnnotationCollectionImpl();
 				} else {
-					AnnotationParser as = new GFF3AnnotationParser(gffFilePath.get());
-					annotations = new AnnotationCollectionFactoryImpl().build(as);
+					Parser<Annotation> as = new GFF3AnnotationParser(gffFilePath.get());
+					annotations = new AnnotationCollectionImpl(as);
 				}
 
 				if (drFile.getValue() != null) {

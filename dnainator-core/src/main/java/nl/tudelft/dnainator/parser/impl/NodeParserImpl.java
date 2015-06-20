@@ -20,12 +20,13 @@ import java.io.InputStreamReader;
 import static java.lang.Integer.parseInt;
 
 /**
- * A {@link BufferedNodeParser} which uses JFASTA's parser internally.
+ * A {@link BufferedParser} for nodes which uses JFASTA's parser internally.
  */
 public class NodeParserImpl extends BufferedParser<SequenceNode> {
 
 	private FASTAElementIterator it;
 	private SequenceNodeFactory sf;
+	private FASTAFileReader fr;
 
 	/**
 	 * Constructs a new NodeParserImpl.
@@ -58,7 +59,7 @@ public class NodeParserImpl extends BufferedParser<SequenceNode> {
 	public NodeParserImpl(SequenceNodeFactory sf, BufferedReader br) throws IOException {
 		super(br);
 		this.sf = sf;
-		FASTAFileReader fr = new FASTAFileReaderImpl(this.br);
+		fr = new FASTAFileReaderImpl(this.br);
 		it = fr.getIterator();
 	}
 
@@ -75,4 +76,9 @@ public class NodeParserImpl extends BufferedParser<SequenceNode> {
 				parseInt(p.next()), next.getSequence());
 	}
 
+	@Override
+	public void close() throws IOException {
+		fr.close();
+		super.close();
+	}
 }

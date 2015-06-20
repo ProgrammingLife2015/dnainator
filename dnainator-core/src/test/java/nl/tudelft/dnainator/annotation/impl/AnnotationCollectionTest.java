@@ -2,7 +2,7 @@ package nl.tudelft.dnainator.annotation.impl;
 
 import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
-import nl.tudelft.dnainator.parser.AnnotationParser;
+import nl.tudelft.dnainator.parser.Parser;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import java.io.IOException;
 import java.util.Collection;
 
 import static org.junit.Assert.assertEquals;
@@ -27,7 +28,7 @@ public class AnnotationCollectionTest {
 	private AnnotationImpl middle;
 	private AnnotationImpl last;
 
-	@Mock private AnnotationParser parser;
+	@Mock private Parser<Annotation> parser;
 
 	/**
 	 * get the instance of the annotations singleton.
@@ -73,9 +74,10 @@ public class AnnotationCollectionTest {
 
 	/**
 	 * Test parsing all annotations from an annotionparser specified in the constructor.
+	 * @throws IOException when an error occurs during parsing
 	 */
 	@Test
-	public void testAnnotationParser() {
+	public void testAnnotationParser() throws IOException {
 		Mockito.when(parser.hasNext()).thenReturn(false);
 		AnnotationCollection ac = new AnnotationCollectionImpl(parser);
 		Mockito.verify(parser, Mockito.times(1)).hasNext();
@@ -85,9 +87,10 @@ public class AnnotationCollectionTest {
 
 	/**
 	 * Test parsing all annotations from an annotionparser specified later.
+	 * @throws IOException when an error occurs during parsing
 	 */
 	@Test
-	public void testAnnotationParserAfterConstruction() {
+	public void testAnnotationParserAfterConstruction() throws IOException {
 		int expected = collection.getAll().size();
 
 		Mockito.when(parser.hasNext()).thenReturn(false);

@@ -60,7 +60,7 @@ public class Neo4jGraphTest {
 
 	/**
 	 * Setup the database and construct the graph.
-	 * @throws URISyntaxException 
+	 * @throws URISyntaxException when the path is incorrect
 	 */
 	@BeforeClass
 	public static void setUp() throws URISyntaxException {

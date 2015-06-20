@@ -18,8 +18,8 @@ public interface Parser<T> {
 	boolean hasNext() throws IOException;
 
 	/**
-	 * Get the next parsed {@link SequenceNode}.
-	 * @return the {@link SequenceNode} parsed.
+	 * Get the next parsed item.
+	 * @return the parsed item.
 	 * @throws IOException if something went wrong while reading.
 	 */
 	T next() throws IOException;
