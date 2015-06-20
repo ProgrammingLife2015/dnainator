@@ -12,7 +12,6 @@ import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
 import nl.tudelft.dnainator.graph.interestingness.InterestingnessStrategy;
 
 import org.neo4j.graphalgo.GraphAlgoFactory;
-import org.neo4j.graphalgo.PathFinder;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
@@ -89,14 +88,16 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 	@Override
 	public Map<Integer, List<Cluster>> execute(GraphDatabaseService service) {
 		Map<Integer, List<Cluster>> individualNodes = new HashMap<>();
-		Set<Long> bubbleSourcesNested = new HashSet<>();
+		Map<Long, Set<Long>> bubbleSourcesNested = new HashMap<>();
 		Set<Long> bubbleSourcesToCluster = new HashSet<>();
 		Set<Long> bubbleSourcesToKeepIntact = new HashSet<>();
 		for (Node n : untilMaxRank(service)) {
 			if (n.hasLabel(NodeLabels.BUBBLE_SOURCE)) {
 				bubbleSourcesToCluster.add(n.getId());
-				if (getBubbleIDs(n).length > 0) {
-					bubbleSourcesNested.add(n.getId());
+				for (long id : getBubbleIDs(n)) {
+					Set<Long> nestedIDs = bubbleSourcesNested.getOrDefault(id, new HashSet<>());
+					nestedIDs.add(n.getId());
+					bubbleSourcesNested.put(id, nestedIDs);
 				}
 			} else {
 				if (getBubbleIDs(n).length == 0) {
@@ -108,17 +109,20 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 			int interestingness = is.compute(new Neo4jScoreContainer(n));
 			n.setProperty(SequenceProperties.INTERESTINGNESS.name(), interestingness);
 			if (interestingness > threshold) {
-				for (long sourceID
-						: (long[]) n.getProperty(BubbleProperties.BUBBLE_SOURCE_IDS.name())) {
+				for (long sourceID : getBubbleIDs(n)) {
 					bubbleSourcesToKeepIntact.add(sourceID);
+					// bubbleSourcesNested.remove(sourceID);
 					bubbleSourcesToCluster.remove(sourceID);
 				}
 			}
 		}
-		bubbleSourcesToCluster.removeAll(bubbleSourcesNested);
-		bubbleSourcesToKeepIntact.removeAll(bubbleSourcesNested);
-		return mergeMaps(Stream.of(individualNodes,
-				cluster(service, bubbleSourcesToCluster, bubbleSourcesToKeepIntact)));
+		// Bubbles which are nested can be clustered within bubbles that are not clustered.
+		bubbleSourcesNested.keySet().removeAll(bubbleSourcesToKeepIntact);
+		// But they shouldn't be clustered within bubbles that will be clustered.
+		bubbleSourcesToCluster.removeAll(bubbleSourcesNested.values().stream()
+				.flatMap(nested -> nested.stream())
+				.collect(Collectors.toSet()));
+		return cluster(service, individualNodes, bubbleSourcesToCluster, bubbleSourcesToKeepIntact);
 	}
 
 	private long[] getBubbleIDs(Node n) {
@@ -126,6 +130,7 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 	}
 
 	private Map<Integer, List<Cluster>> cluster(GraphDatabaseService service,
+			Map<Integer, List<Cluster>> individualNodes,
 			Set<Long> bubbleSourcesToCluster, Set<Long> bubbleSourcesToKeepIntact) {
 		Stream<Map<Integer, List<Cluster>>> bubblesClustered = bubbleSourcesToCluster.stream()
 				.map(service::getNodeById)
@@ -133,7 +138,9 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 		Stream<Map<Integer, List<Cluster>>> singletonClusters = bubbleSourcesToKeepIntact.stream()
 				.map(service::getNodeById)
 				.map(source -> getSingletonClusters(service, source, getSinkFromSource(source)));
-		return mergeMaps(Stream.concat(bubblesClustered, singletonClusters));
+		// Merge everything together.
+		return mergeMaps(Stream.concat(Stream.of(individualNodes),
+				Stream.concat(bubblesClustered, singletonClusters)));
 	}
 
 	private static Node getSinkFromSource(Node source) {
@@ -197,7 +204,7 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 
 	private Stream<Node> nodesWithinBubble(GraphDatabaseService service,
 			int sourceRank, int sinkRank, Node source, Node sink) {
-		if (sinkRank - sourceRank > 20) {
+		if (sinkRank - sourceRank > 30) {
 			nodesInBubbleParameters.put("sourceRank", sourceRank);
 			nodesInBubbleParameters.put("sinkRank", sinkRank);
 			nodesInBubbleParameters.put("sourceID", source.getId());
