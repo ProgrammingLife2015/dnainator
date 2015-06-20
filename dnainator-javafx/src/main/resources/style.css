@@ -202,7 +202,7 @@ Strain ClusterDrawable {
 	-fx-font-size: 4px;
 }
 
-Strain ClusterDrawable Circle:hover, Pie:hover {
+Strain ClusterDrawable:hover {
 	-fx-scale-x: 1.2;
 	-fx-scale-y: 1.2;
 	-fx-opacity: 0.5;
@@ -213,13 +213,13 @@ Strain ClusterDrawable Circle {
 	-fx-smooth: true;
 }
 
-Pie Arc {
-	-fx-smooth: true;
-}
-
 .ghost {
 	-fx-font-size: 12pt;
 	-fx-opacity: 0.2;
+}
+
+Strain Edge {
+	-fx-font-size: 4px;
 }
 
 .ghost Circle {
@@ -240,6 +240,7 @@ Strain Edge Line {
 
 Strain Edge Line:hover {
 	-fx-stroke-width: 1;
+	-fx-opacity: 0.5;
 }
 
 StrainView, PhylogeneticView {
