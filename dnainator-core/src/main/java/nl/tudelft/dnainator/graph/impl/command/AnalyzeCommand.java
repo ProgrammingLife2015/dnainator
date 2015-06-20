@@ -7,6 +7,7 @@ import nl.tudelft.dnainator.graph.impl.NodeLabels;
 import nl.tudelft.dnainator.graph.impl.RelTypes;
 import nl.tudelft.dnainator.graph.impl.properties.AnnotationProperties;
 import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
+import nl.tudelft.dnainator.graph.impl.properties.SourceProperties;
 import nl.tudelft.dnainator.graph.interestingness.Scores;
 
 import org.neo4j.collection.primitive.Primitive;
@@ -32,8 +33,10 @@ public class AnalyzeCommand implements Command {
 	private static final int INIT_CAP = 4096;
 	private static final String LABEL = "n";
 	private static final String GET_NODES_BASEDIST =
-			"MATCH (n:" + NodeLabels.NODE.name() + ") "
-			+ "WHERE {dist} >= n." + SequenceProperties.BASE_DIST.name()
+			"MATCH (n:" + NodeLabels.NODE.name() + ")-[:" + RelTypes.SOURCE.name() + "]-s, "
+			+ "    (t {" + SourceProperties.SOURCE.name() + ": \"TKK_REF\"})"
+			+ "WHERE NOT (n-->t)"
+			+ " AND {dist} >= n." + SequenceProperties.BASE_DIST.name()
 			+ " AND {dist} < n." + SequenceProperties.BASE_DIST.name()
 			+ " + n." + Scores.SEQ_LENGTH.name() + " RETURN n AS " + LABEL;
 	private ResourceIterator<Node> roots;

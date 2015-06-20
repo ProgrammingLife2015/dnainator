@@ -56,7 +56,7 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 	protected static final double MEDIUM_RADIUS = 5;
 	protected static final double LARGE_RADIUS = 6;
 	protected static final int PIETHRESHOLD = 20;
-	private static final int INTERESTINGNESS_THRESHOLD = 600;
+	private static final int INTERESTINGNESS_THRESHOLD = 800;
 	private Cluster cluster;
 	private Set<String> sources;
 	private Pie pie;

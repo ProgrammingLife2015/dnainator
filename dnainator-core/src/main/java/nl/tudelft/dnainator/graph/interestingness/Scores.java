@@ -5,15 +5,12 @@ package nl.tudelft.dnainator.graph.interestingness;
  */
 public enum Scores implements ScoreIdentifier {
 	SEQ_LENGTH("Sequence Length Score") {
-		private static final int SEQ_LENGTH_THRESHOLD = 5000;
+		private static final int SEQ_LENGTH_THRESHOLD = 799;
+		private static final int SEQ_LENGTH_MULTIPLIER = 3;
 
 		@Override
 		public int applyImportanceModifier(int rawScore) {
-			if (rawScore < SEQ_LENGTH_THRESHOLD) {
-				return rawScore;
-			} else {
-				return rawScore * rawScore;
-			}
+			return Math.min(SEQ_LENGTH_THRESHOLD, rawScore * SEQ_LENGTH_MULTIPLIER);
 		}
 	},
 	DR_MUT("Drug Resistance Mutation Score") {
