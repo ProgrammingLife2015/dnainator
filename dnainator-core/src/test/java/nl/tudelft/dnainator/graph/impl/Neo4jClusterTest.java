@@ -71,10 +71,8 @@ public class Neo4jClusterTest {
 	public void testSingleNestedBubble() {
 		// CHECKSTYLE.OFF: MagicNumber
 		Map<Integer, List<Cluster>> clusters = db.getAllClusters(0, 6, 11);
-		// Assert that all elements occur only once, no duplicates.
-		assertTrue(getAllNodes(clusters).count() == getAllNodes(clusters).distinct().count());
-		// Assert that no elements are missing.
-		assertTrue(getAllNodes(clusters).count() == 9);
+		System.out.println(clusters);
+		assertProperClustering(clusters, 9);
 
 		// The root node is not associated with a bubble, so it should be a singleton cluster.
 		assertUnorderedIDEquals(Sets.newSet("0"), clusters.get(0).get(0).getNodes());
@@ -103,17 +101,15 @@ public class Neo4jClusterTest {
 	public void testMultipleNestedBubbles() {
 		// CHECKSTYLE.OFF: MagicNumber
 		Map<Integer, List<Cluster>> clusters = db.getAllClusters(7, 13, 11);
-		// Assert that all elements occur only once, no duplicates.
-		assertTrue(getAllNodes(clusters).count() == getAllNodes(clusters).distinct().count());
-		// Assert that no elements are missing.
-		assertTrue(getAllNodes(clusters).count() == 9);
+		System.out.println(clusters);
+		assertProperClustering(clusters, 11);
 
 		// Source node of new bubble is not collapsed.
 		assertUnorderedIDEquals(Sets.newSet("9"), clusters.get(7).get(0).getNodes());
 
 		// Source node of nested bubble is not collapsed.
-		assertUnorderedIDEquals(Sets.newSet("10"), clusters.get(8).get(0).getNodes());
 		assertUnorderedIDEquals(Sets.newSet("18"), clusters.get(8).get(0).getNodes());
+		assertUnorderedIDEquals(Sets.newSet("10"), clusters.get(8).get(1).getNodes());
 
 		// 15 and 16 have sequencelength of 8.
 		assertUnorderedIDEquals(Sets.newSet("16"), clusters.get(9).get(0).getNodes());
@@ -131,6 +127,12 @@ public class Neo4jClusterTest {
 		// CHECKSTYLE.ON: MagicNumber
 	}
 
+	private void assertProperClustering(Map<Integer, List<Cluster>> clustering, int numNodes) {
+		// Assert that all elements occur only once, no duplicates.
+		assertTrue(getAllNodes(clustering).count() == getAllNodes(clustering).distinct().count());
+		// Assert that no elements are missing.
+		assertTrue(getAllNodes(clustering).count() == numNodes);
+	}
 	/**
 	 * Clean up after ourselves.
 	 * @throws IOException when the database could not be deleted

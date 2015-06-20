@@ -11,18 +11,19 @@ import nl.tudelft.dnainator.graph.impl.properties.BubbleProperties;
 import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
 import nl.tudelft.dnainator.graph.interestingness.InterestingnessStrategy;
 
+import org.neo4j.collection.primitive.Primitive;
+import org.neo4j.collection.primitive.PrimitiveLongSet;
 import org.neo4j.graphalgo.GraphAlgoFactory;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
+import org.neo4j.graphdb.PathExpander;
 import org.neo4j.graphdb.PathExpanders;
 import org.neo4j.graphdb.ResourceIterable;
-import org.neo4j.graphdb.traversal.Evaluation;
 import org.neo4j.helpers.collection.IteratorUtil;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,6 +45,9 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 	private int threshold;
 	private InterestingnessStrategy is;
 	private Map<String, Object> nodesInBubbleParameters;
+	private List<Node> startNodes;
+	private Set<Long> bubbleSourcesToKeepIntact;
+	private PrimitiveLongSet visited;
 	private static final String GET_NODES_IN_BUBBLE = "match (n: " + NodeLabels.NODE.name() + ") "
 			+ "where n." + SequenceProperties.RANK.name() + " > {sourceRank} "
 			+ "and n." + SequenceProperties.RANK.name() + " < {sinkRank} "
@@ -66,63 +70,45 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 		this.threshold = threshold;
 		this.is = is;
 		this.nodesInBubbleParameters = new HashMap<>(2 + 1);
+		this.startNodes = new ArrayList<>(1);
+		this.bubbleSourcesToKeepIntact = new HashSet<>();
+		this.visited = Primitive.longSet();
 	}
 
-	private ResourceIterable<Node> untilMaxRank(GraphDatabaseService service) {
-		Iterable<Node> start = IteratorUtil.loop(service.findNodes(NodeLabels.NODE,
-				SequenceProperties.RANK.name(), minRank));
+	private Iterable<Node> getNodesInRank(GraphDatabaseService service, int rank) {
+		return IteratorUtil.loop(service.findNodes(NodeLabels.NODE,
+				SequenceProperties.RANK.name(), rank));
+	}
+
+	private ResourceIterable<Node> withinRange(GraphDatabaseService service,
+			int startRank, int endRank) {
+		return withinRange(service, getNodesInRank(service, startRank), endRank,
+				PathExpanders.forTypeAndDirection(RelTypes.NEXT, Direction.OUTGOING));
+	}
+
+	private ResourceIterable<Node> withinRange(GraphDatabaseService service,
+			Iterable<Node> start, int endRank, PathExpander<Object> pe) {
 		return service.traversalDescription()
 				.breadthFirst()
-				.evaluator(path -> {
-					if ((int) path.endNode().getProperty(SequenceProperties.RANK.name())
-							<= maxRank) {
-						return Evaluation.INCLUDE_AND_CONTINUE;
-					} else {
-						return Evaluation.EXCLUDE_AND_PRUNE;
-					}
-				})
-				.relationships(RelTypes.NEXT, Direction.OUTGOING)
+				.expand(pe)
+				.evaluator(new UntilRankEvaluator(endRank))
 				.traverse(start).nodes();
 	}
 
 	@Override
 	public Map<Integer, List<Cluster>> execute(GraphDatabaseService service) {
-		Map<Integer, List<Cluster>> individualNodes = new HashMap<>();
-		Map<Long, Set<Long>> bubbleSourcesNested = new HashMap<>();
-		Set<Long> bubbleSourcesToCluster = new HashSet<>();
-		Set<Long> bubbleSourcesToKeepIntact = new HashSet<>();
-		for (Node n : untilMaxRank(service)) {
-			if (n.hasLabel(NodeLabels.BUBBLE_SOURCE)) {
-				bubbleSourcesToCluster.add(n.getId());
-				for (long id : getBubbleIDs(n)) {
-					Set<Long> nestedIDs = bubbleSourcesNested.getOrDefault(id, new HashSet<>());
-					nestedIDs.add(n.getId());
-					bubbleSourcesNested.put(id, nestedIDs);
-				}
-			} else {
-				if (getBubbleIDs(n).length == 0) {
-					Cluster individualNode = createSingletonCluster(service, n);
-					individualNodes.put(individualNode.getStartRank(),
-							Collections.singletonList(individualNode));
-				}
-			}
+		// First determine which nodes are interesting.
+		for (Node n : withinRange(service, minRank, maxRank)) {
 			int interestingness = is.compute(new Neo4jScoreContainer(n));
 			n.setProperty(SequenceProperties.INTERESTINGNESS.name(), interestingness);
 			if (interestingness > threshold) {
 				for (long sourceID : getBubbleIDs(n)) {
 					bubbleSourcesToKeepIntact.add(sourceID);
-					// bubbleSourcesNested.remove(sourceID);
-					bubbleSourcesToCluster.remove(sourceID);
 				}
 			}
 		}
-		// Bubbles which are nested can be clustered within bubbles that are not clustered.
-		bubbleSourcesNested.keySet().removeAll(bubbleSourcesToKeepIntact);
-		// But they shouldn't be clustered within bubbles that will be clustered.
-		bubbleSourcesToCluster.removeAll(bubbleSourcesNested.values().stream()
-				.flatMap(nested -> nested.stream())
-				.collect(Collectors.toSet()));
-		return cluster(service, individualNodes, bubbleSourcesToCluster, bubbleSourcesToKeepIntact);
+		// Then cluster everything, except for the bubbles in bubbleSourcesToKeepIntact.
+		return cluster(service, minRank, maxRank);
 	}
 
 	private long[] getBubbleIDs(Node n) {
@@ -130,35 +116,60 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 	}
 
 	private Map<Integer, List<Cluster>> cluster(GraphDatabaseService service,
-			Map<Integer, List<Cluster>> individualNodes,
-			Set<Long> bubbleSourcesToCluster, Set<Long> bubbleSourcesToKeepIntact) {
-		Stream<Map<Integer, List<Cluster>>> bubblesClustered = bubbleSourcesToCluster.stream()
-				.map(service::getNodeById)
-				.map(source -> collapseBubble(service, source, getSinkFromSource(source)));
-		Stream<Map<Integer, List<Cluster>>> singletonClusters = bubbleSourcesToKeepIntact.stream()
-				.map(service::getNodeById)
-				.map(source -> getSingletonClusters(service, source, getSinkFromSource(source)));
-		// Merge everything together.
-		return mergeMaps(Stream.concat(Stream.of(individualNodes),
-				Stream.concat(bubblesClustered, singletonClusters)));
+			int startRank, int endRank) {
+		return cluster(service, getNodesInRank(service, startRank), endRank);
+	}
+
+	private Map<Integer, List<Cluster>> cluster(GraphDatabaseService service,
+			Iterable<Node> startNodes, int endRank) {
+		Map<Integer, List<Cluster>> result = new HashMap<Integer, List<Cluster>>();
+		cluster(service, startNodes, endRank, result);
+		return result;
+	}
+
+	private void cluster(GraphDatabaseService service,
+			Iterable<Node> startNodes, int endRank, Map<Integer, List<Cluster>> acc) {
+		for (Node n : withinRange(service, startNodes, endRank, BubbleSkipper.get())) {
+			if (visited.contains(n.getId())) {
+				return;
+			}
+			visited.add(n.getId());
+			if (isSource(n)) {
+				Node sink = getSinkFromSource(n);
+				if (!isSink(n)) {
+					putClusterInto(createSingletonCluster(service, n), acc);
+				}
+				putClusterInto(createSingletonCluster(service, sink), acc);
+				if (bubbleSourcesToKeepIntact.contains(n.getId())) {
+					System.out.println("Intact bubble: " + n.getProperty("ID"));
+					int sinkRank = (int) sink.getProperty(SequenceProperties.RANK.name());
+					this.startNodes.clear();
+					n.getRelationships(RelTypes.NEXT, Direction.OUTGOING)
+						.forEach(rel -> this.startNodes.add(rel.getEndNode()));
+					cluster(service, this.startNodes, sinkRank, acc);
+				} else {
+					System.out.println("Collapsed bubble: " + n.getProperty("ID"));
+					// Cluster the bubble.
+					putClusterInto(collapseBubble(service, n, sink), acc);
+				}
+			} else if (!n.hasRelationship(RelTypes.BUBBLE_SOURCE_OF)) {
+				System.out.println("Singleton: " + n.getProperty("ID"));
+				putClusterInto(createSingletonCluster(service, n), acc);
+			}
+		}
+	}
+
+	private boolean isSource(Node n) {
+		return n.hasLabel(NodeLabels.BUBBLE_SOURCE);
+	}
+
+	private boolean isSink(Node n) {
+		return n.hasRelationship(RelTypes.BUBBLE_SOURCE_OF, Direction.INCOMING);
 	}
 
 	private static Node getSinkFromSource(Node source) {
 		return source.getSingleRelationship(RelTypes.BUBBLE_SOURCE_OF, Direction.OUTGOING)
 				.getEndNode();
-	}
-
-	private Map<Integer, List<Cluster>> getSingletonClusters(GraphDatabaseService service,
-			Node source, Node sink) {
-		int sourceRank = (int) source.getProperty(SequenceProperties.RANK.name());
-		int sinkRank = (int) sink.getProperty(SequenceProperties.RANK.name());
-		Map<Integer, List<Cluster>> single =
-				nodesWithinBubble(service, sourceRank, sinkRank, source, sink)
-				.map(n -> createSingletonCluster(service, n))
-				.collect(Collectors.groupingBy(Cluster::getStartRank));
-		single.put(sourceRank, Collections.singletonList(createSingletonCluster(service, source)));
-		single.put(sinkRank, Collections.singletonList(createSingletonCluster(service, sink)));
-		return single;
 	}
 
 	private Cluster createSingletonCluster(GraphDatabaseService service, Node n) {
@@ -167,15 +178,12 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 				Collections.singletonList(sn), sn.getAnnotations());
 	}
 
-	private Map<Integer, List<Cluster>> collapseBubble(GraphDatabaseService service,
+	private Cluster collapseBubble(GraphDatabaseService service,
 			Node source, Node sink) {
-		Map<Integer, List<Cluster>> res = new HashMap<>(2 + 1); // source + sink + bubble.
 		int sourceRank = (int) source.getProperty(SequenceProperties.RANK.name());
 		int sinkRank = (int) sink.getProperty(SequenceProperties.RANK.name());
 		// Set the rank of the cluster to be in the middle.
 		int clusterRank = sourceRank + (sinkRank - sourceRank) / 2;
-		res.put(sourceRank, Collections.singletonList(createSingletonCluster(service, source)));
-		res.put(sinkRank, Collections.singletonList(createSingletonCluster(service, sink)));
 
 		List<EnrichedSequenceNode> nodes =
 				nodesWithinBubble(service, sourceRank, sinkRank, source, sink)
@@ -185,8 +193,7 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 				.flatMap(e -> e.getAnnotations().stream())
 				.collect(Collectors.toList());
 		Cluster cluster = new Cluster(clusterRank, nodes, annotations);
-		res.put(clusterRank, Collections.singletonList(cluster));
-		return res;
+		return cluster;
 	}
 
 	private Iterable<Node> trimPath(Path path) {
@@ -220,15 +227,14 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 		}
 	}
 
-	private Map<Integer, List<Cluster>> mergeMaps(Stream<Map<Integer, List<Cluster>>> concat) {
-		return concat.map(Map::entrySet)
-				.flatMap(Collection::stream)
-				.collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue(), (left, right) -> {
-					List<Cluster> newList = new ArrayList<>(left.size() + right.size());
-					newList.addAll(right);
-					newList.addAll(left);
-					return left;
-				}));
+	private void putClusterInto(Cluster c, Map<Integer, List<Cluster>> into) {
+		if (into.containsKey(c.getStartRank())) {
+			into.get(c.getStartRank()).add(c);
+		} else {
+			List<Cluster> cs = new ArrayList<>();
+			cs.add(c);
+			into.put(c.getStartRank(), cs);
+		}
 	}
 
 	private static <T> Stream<T> stream(Iterable<T> in) {
