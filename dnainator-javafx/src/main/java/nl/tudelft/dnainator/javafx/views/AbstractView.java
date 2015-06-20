@@ -27,7 +27,7 @@ public abstract class AbstractView extends Pane {
 	protected static final int ZOOM_IN_STEP = 40;
 	protected static final int ZOOM_OUT_STEP = -80;
 	protected static final double ZOOM_IN_BOUND = 1.5;
-	protected static final double ZOOM_OUT_BOUND = 0.05;
+	protected static final double ZOOM_OUT_BOUND = 0.15;
 	protected Affine scale;
 	protected Translate toCenter;
 	protected Translate translate;
