@@ -19,7 +19,7 @@ import nl.tudelft.dnainator.graph.interestingness.InterestingnessStrategy;
 import nl.tudelft.dnainator.graph.interestingness.Scores;
 import nl.tudelft.dnainator.graph.interestingness.impl.SummingScoresStrategy;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
-import nl.tudelft.dnainator.parser.Parser;
+import nl.tudelft.dnainator.parser.Iterator;
 import nl.tudelft.dnainator.tree.TreeNode;
 
 import org.neo4j.graphdb.Direction;
@@ -212,7 +212,7 @@ public final class Neo4jGraph implements Graph {
 	}
 
 	@Override
-	public void addAnnotations(Parser<Annotation> source) {
+	public void addAnnotations(Iterator<Annotation> source) {
 		execute(e -> addAnnotations(source));
 	}
 

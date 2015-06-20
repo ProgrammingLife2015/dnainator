@@ -1,14 +1,12 @@
 package nl.tudelft.dnainator.parser;
 
-import nl.tudelft.dnainator.core.SequenceNode;
-
 import java.io.IOException;
 
 /**
- * An interface for parsing nodes, using the Iterator pattern.
+ * A generic {@link Iterator} that throws exceptions.
  * @param <T> the type this parser returns
  */
-public interface Parser<T> {
+public interface Iterator<T> {
 
 	/**
 	 * Whether there's a next node to be parsed.

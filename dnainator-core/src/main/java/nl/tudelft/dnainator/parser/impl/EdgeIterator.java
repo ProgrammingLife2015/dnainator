@@ -1,7 +1,7 @@
 package nl.tudelft.dnainator.parser.impl;
 
 import nl.tudelft.dnainator.core.impl.Edge;
-import nl.tudelft.dnainator.parser.BufferedParser;
+import nl.tudelft.dnainator.parser.BufferedIterator;
 import nl.tudelft.dnainator.parser.exceptions.InvalidEdgeFormatException;
 
 import java.io.BufferedReader;
@@ -15,9 +15,9 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 
 /**
- * An implementation for parsing an edge file input stream.
+ * A buffered {@link EdgeIterator} that parses edge files.
  */
-public class EdgeParserImpl extends BufferedParser<Edge<String>> {
+public class EdgeIterator extends BufferedIterator<Edge<String>> {
 	private Edge<String> current;
 	private boolean needParse = true; // Whether we have to parse a new line or not.
 	private int currentChar;
@@ -29,22 +29,19 @@ public class EdgeParserImpl extends BufferedParser<Edge<String>> {
 	}
 
 	/**
-	 * Constructs a {@link EdgeParserImpl}, which reads from
-	 * the given {@link File}.
+	 * Constructs a {@link EdgeIterator}, which reads from the given {@link File}.
 	 * @param f	The {@link File} to read from.
 	 * @throws IOException	when file is not found or encoding is invalid
 	 */
-	public EdgeParserImpl(File f) throws IOException {
+	public EdgeIterator(File f) throws IOException {
 		this(new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8")));
 	}
 
 	/**
-	 * Constructs a {@link EdgeParserImpl}, which reads from
-	 * the given {@link BufferedReader}.
-	 *
+	 * Constructs a {@link EdgeIterator}, which reads from the given {@link BufferedReader}.
 	 * @param br The {@link BufferedReader} to read from.
 	 */
-	public EdgeParserImpl(BufferedReader br) {
+	public EdgeIterator(BufferedReader br) {
 		super(br);
 		current = null;
 	}
@@ -149,7 +146,7 @@ public class EdgeParserImpl extends BufferedParser<Edge<String>> {
 	}
 
 	@Override
-	public Edge<String> next() throws IOException, InvalidEdgeFormatException {
+	public Edge<String> next() throws IOException {
 		if (hasNext()) {
 			needParse = true;
 			return current;

@@ -12,13 +12,13 @@ import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.Neo4jBatchBuilder;
-import nl.tudelft.dnainator.parser.Parser;
+import nl.tudelft.dnainator.parser.Iterator;
 import nl.tudelft.dnainator.parser.TreeParser;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
-import nl.tudelft.dnainator.parser.impl.DRMutationParserImpl;
-import nl.tudelft.dnainator.parser.impl.EdgeParserImpl;
-import nl.tudelft.dnainator.parser.impl.GFF3AnnotationParser;
-import nl.tudelft.dnainator.parser.impl.NodeParserImpl;
+import nl.tudelft.dnainator.parser.impl.DRMutationIterator;
+import nl.tudelft.dnainator.parser.impl.EdgeIterator;
+import nl.tudelft.dnainator.parser.impl.AnnotationIterator;
+import nl.tudelft.dnainator.parser.impl.NodeIterator;
 import nl.tudelft.dnainator.tree.TreeNode;
 
 import java.io.File;
@@ -203,13 +203,13 @@ public class GraphLoadService extends Service<Graph> {
 				if (gffFilePath.getValue() == null) {
 					annotations = new AnnotationCollectionImpl();
 				} else {
-					Parser<Annotation> as = new GFF3AnnotationParser(gffFilePath.get());
+					Iterator<Annotation> as = new AnnotationIterator(gffFilePath.get());
 					annotations = new AnnotationCollectionImpl(as);
 				}
 
 				if (drFile.getValue() != null) {
 					annotations = new DRMutationFactory().build(annotations,
-							new DRMutationParserImpl(drFile.get()));
+							new DRMutationIterator(drFile.get()));
 				}
 
 				TreeNode node = null;
@@ -217,8 +217,8 @@ public class GraphLoadService extends Service<Graph> {
 					node = new TreeParser(getNewickFile()).parse();
 				}
 
-				Parser<Edge<String>> ep = new EdgeParserImpl(getEdgeFile());
-				Parser<SequenceNode> np = new NodeParserImpl(getNodeFile());
+				Iterator<Edge<String>> ep = new EdgeIterator(getEdgeFile());
+				Iterator<SequenceNode> np = new NodeIterator(getNodeFile());
 
 				return new Neo4jBatchBuilder(database.get(), annotations, node)
 					.constructGraph(np, ep).build();

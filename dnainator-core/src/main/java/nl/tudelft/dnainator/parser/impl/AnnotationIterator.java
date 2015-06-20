@@ -2,34 +2,33 @@ package nl.tudelft.dnainator.parser.impl;
 
 import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.annotation.impl.BioJavaAnnotation;
-import nl.tudelft.dnainator.parser.Parser;
+import nl.tudelft.dnainator.parser.Iterator;
 
 import org.biojava.nbio.genome.parsers.gff.Feature;
 import org.biojava.nbio.genome.parsers.gff.FeatureI;
 import org.biojava.nbio.genome.parsers.gff.FeatureList;
 import org.biojava.nbio.genome.parsers.gff.GFF3Reader;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * An annotationparser which parses GFF3 files, using BioJava's
- * implementation internally.
+ * An annotation iterator which parses GFF3 files, using BioJava's implementation internally.
  */
-public class GFF3AnnotationParser implements Parser<Annotation> {
-	private Iterator<FeatureI> delegate;
+public class AnnotationIterator implements Iterator<Annotation> {
+	private java.util.Iterator<FeatureI> delegate;
 	private FeatureI next;
 	private boolean needsNext = true;
 
 	/**
-	 * Constructs a new {@link Parser} reading from the file with the given filename.
-	 * @param filename The filename of the file to parse the annotations from.
-	 * @throws IOException When an error occurs reading the file.
+	 * Constructs a {@link AnnotationIterator}, which reads from the given {@link File}.
+	 * @param filename	The filename to read from.
+	 * @throws IOException	when file is not found or encoding is invalid
 	 */
-	public GFF3AnnotationParser(String filename) throws IOException {
-		FeatureList eager = GFF3Reader.read(filename);
-		delegate = eager.iterator();
+	public AnnotationIterator(String filename) throws IOException {
+		FeatureList reader = GFF3Reader.read(filename);
+		delegate = reader.iterator();
 		next = null;
 	}
 

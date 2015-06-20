@@ -4,17 +4,17 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 /**
- * A generic {@link Parser} which uses a {@link BufferedReader} as its source.
+ * A generic {@link Iterator} which uses a {@link BufferedReader} as its source.
  * @param <T> the type this parser returns
  */
-public abstract class BufferedParser <T> implements Parser<T> {
+public abstract class BufferedIterator <T> implements Iterator<T> {
 	protected BufferedReader br;
 
 	/**
-	 * Construct a new {@link BufferedParser}.
+	 * Constructs a {@link BufferedIterator}, which reads from the given {@link BufferedReader}.
 	 * @param br The {@link BufferedReader} to read from.
 	 */
-	public BufferedParser(BufferedReader br) {
+	public BufferedIterator(BufferedReader br) {
 		this.br = br;
 	}
 

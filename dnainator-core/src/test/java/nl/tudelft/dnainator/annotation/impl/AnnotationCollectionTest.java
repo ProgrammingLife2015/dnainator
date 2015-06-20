@@ -2,7 +2,7 @@ package nl.tudelft.dnainator.annotation.impl;
 
 import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
-import nl.tudelft.dnainator.parser.Parser;
+import nl.tudelft.dnainator.parser.Iterator;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,7 +28,7 @@ public class AnnotationCollectionTest {
 	private AnnotationImpl middle;
 	private AnnotationImpl last;
 
-	@Mock private Parser<Annotation> parser;
+	@Mock private Iterator<Annotation> parser;
 
 	/**
 	 * get the instance of the annotations singleton.
