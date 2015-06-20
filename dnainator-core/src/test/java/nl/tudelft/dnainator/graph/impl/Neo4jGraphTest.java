@@ -40,7 +40,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static nl.tudelft.dnainator.graph.impl.properties.SequenceProperties.ID;
-
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -111,9 +110,10 @@ public class Neo4jGraphTest {
 	@Test
 	public void testNodeLookup() {
 		// CHECKSTYLE.OFF: MagicNumber
-		SequenceNode node1 = new SequenceNodeImpl("2", Arrays.asList("ASDF", "ASD"), 1, 5, "TATA");
-		SequenceNode node2 = new SequenceNodeImpl("3", Arrays.asList("ASDF"), 5, 9, "TATA");
-		SequenceNode node3 = new SequenceNodeImpl("5", Arrays.asList("ASDF"), 4, 8, "TATA");
+		SequenceNode node1 = new SequenceNodeImpl("2", Arrays.asList("TKK_001",
+										"TKK_002"), 1, 5, "TATA");
+		SequenceNode node2 = new SequenceNodeImpl("3", Arrays.asList("TKK_001"), 5, 9, "TATA");
+		SequenceNode node3 = new SequenceNodeImpl("5", Arrays.asList("TKK_001"), 4, 8, "TATA");
 		assertEquals(node1, db.getNode("2"));
 		assertEquals(node2, db.getNode("3"));
 		assertEquals(node3, db.getNode("5"));
@@ -126,7 +126,7 @@ public class Neo4jGraphTest {
 	@Test
 	public void testRootLookup() {
 		// CHECKSTYLE.OFF: MagicNumber
-		SequenceNode root = new SequenceNodeImpl("5", Arrays.asList("ASDF"), 4, 8, "TATA");
+		SequenceNode root = new SequenceNodeImpl("5", Arrays.asList("TKK_001"), 4, 8, "TATA");
 		assertEquals(root, db.getRootNode());
 		// CHECKSTYLE.ON: MagicNumber
 	}
@@ -239,13 +239,13 @@ public class Neo4jGraphTest {
 	@Test
 	public void testQuerySources() {
 		GraphQueryDescription qd = new GraphQueryDescription()
-			.containsSource("ASDF");
+			.containsSource("TKK_001");
 		Set<String> expect = new HashSet<>();
 		Collections.addAll(expect, "2", "5", "3", "7", "8", "11");
 		assertUnorderedIDEquals(expect, db.queryNodes(qd));
 
 		// Also test for multiple sources (reusing the old one)
-		qd = qd.containsSource("ASD");
+		qd = qd.containsSource("TKK_002");
 		Collections.addAll(expect, "9", "10");
 		assertUnorderedIDEquals(expect, db.queryNodes(qd));
 

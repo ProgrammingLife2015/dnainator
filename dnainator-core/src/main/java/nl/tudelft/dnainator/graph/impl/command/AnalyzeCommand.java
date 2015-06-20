@@ -79,12 +79,20 @@ public class AnalyzeCommand implements Command {
 			// It is automatically closed after the try block, which frees the allocated memory.
 			PrimitiveLongSet processed = Primitive.offHeapLongSet(INIT_CAP)
 		) {
+			System.out.println("executing");
+			long start = System.nanoTime();
 			for (Node n : topologicalOrder(service, processed)) {
 				rankDest(n);
+				scoreIndependentMutation(service, n);
 			}
+			System.out.println((System.nanoTime() - start) * 1e-6 + " ms");
 			scoreDRMutations(service);
 			tx.success();
 		}
+	}
+
+	private void scoreIndependentMutation(GraphDatabaseService service, Node n) {
+		new MutationFinderCommand(n).execute(service);
 	}
 
 	/**
