@@ -123,15 +123,15 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 	private Map<Integer, List<Cluster>> cluster(GraphDatabaseService service,
 			Iterable<Node> startNodes, int endRank) {
 		Map<Integer, List<Cluster>> result = new HashMap<Integer, List<Cluster>>();
-		cluster(service, startNodes, endRank, result);
+		cluster(service, startNodes, endRank, result, new HashSet<>());
 		return result;
 	}
 
 	private int recursionLevelGlobal = 0;
-	private void cluster(GraphDatabaseService service,
-			Iterable<Node> startNodes, int endRank, Map<Integer, List<Cluster>> acc) {
+	private void cluster(GraphDatabaseService service, Iterable<Node> startNodes,
+			int endRank, Map<Integer, List<Cluster>> acc, Set<Long> visitedSinks) {
 		int recursionLevel = recursionLevelGlobal;
-		System.out.println("Begin Recursion level: " + recursionLevelGlobal++);
+		System.out.println("--> Begin Recursion level: " + recursionLevelGlobal++);
 		for (Node n : withinRange(service, startNodes, endRank, BubbleSkipper.get())) {
 			if (visited.contains(n.getId())) {
 				return;
@@ -142,14 +142,22 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 				if (!isSink(n)) {
 					putClusterInto(createSingletonCluster(service, n), acc);
 				}
-				putClusterInto(createSingletonCluster(service, sink), acc);
+				if (!visitedSinks.contains(sink.getId())) {
+					visitedSinks.add(sink.getId());
+					putClusterInto(createSingletonCluster(service, sink), acc);
+				}
 				if (bubbleSourcesToKeepIntact.contains(n.getId())) {
 					System.out.println("Intact bubble: " + n.getProperty("ID"));
 					int sinkRank = (int) sink.getProperty(SequenceProperties.RANK.name());
 					this.startNodes.clear();
 					n.getRelationships(RelTypes.NEXT, Direction.OUTGOING)
-						.forEach(rel -> this.startNodes.add(rel.getEndNode()));
-					cluster(service, this.startNodes, sinkRank - 1, acc);
+						.forEach(rel -> {
+							// FIXME: is this necessary?
+							if (rel.getEndNode() != sink) {
+								this.startNodes.add(rel.getEndNode());
+							}
+						});
+					cluster(service, this.startNodes, sinkRank - 1, acc, visitedSinks);
 				} else {
 					System.out.println("Collapsed bubble: " + n.getProperty("ID"));
 					// Cluster the bubble.
@@ -160,7 +168,8 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 				putClusterInto(createSingletonCluster(service, n), acc);
 			}
 		}
-		System.out.println("End Recursion level: " + recursionLevel);
+		recursionLevelGlobal = recursionLevel;
+		System.out.println("--> End Recursion level: " + recursionLevel);
 	}
 
 	private boolean isSource(Node n) {

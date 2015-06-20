@@ -72,7 +72,7 @@ public class Neo4jClusterTest {
 		// CHECKSTYLE.OFF: MagicNumber
 		Map<Integer, List<Cluster>> clusters = db.getAllClusters(0, 6, 11);
 		System.out.println(clusters);
-		assertProperClustering(clusters, 9);
+		assertProperClustering(clusters, 10);
 		testSingleNestedBubbleNodes(clusters);
 		// CHECKSTYLE.ON: MagicNumber
 	}
@@ -93,7 +93,11 @@ public class Neo4jClusterTest {
 		assertUnorderedIDEquals(Sets.newSet("4"), clusters.get(3).get(0).getNodes());
 
 		// Collapsed bubble.
-		assertUnorderedIDEquals(Sets.newSet("5", "6", "7"), clusters.get(4).get(0).getNodes());
+		assertUnorderedIDEquals(Sets.newSet("5"), clusters.get(4).get(1).getNodes());
+		assertUnorderedIDEquals(Sets.newSet("6"), clusters.get(4).get(0).getNodes());
+
+		// Multiple bubble sink.
+		assertUnorderedIDEquals(Sets.newSet("7", "20"), clusters.get(5).get(0).getNodes());
 
 		// Sink node is not collapsed.
 		assertUnorderedIDEquals(Sets.newSet("8"), clusters.get(6).get(0).getNodes());
@@ -144,7 +148,7 @@ public class Neo4jClusterTest {
 		// CHECKSTYLE.OFF: MagicNumber
 		Map<Integer, List<Cluster>> clusters = db.getAllClusters(0, 13, 11);
 		System.out.println(clusters);
-		assertProperClustering(clusters, 20);
+		assertProperClustering(clusters, 21);
 		testSingleNestedBubbleNodes(clusters);
 		testMultipleNestedBubbleNodes(clusters);
 		// CHECKSTYLE.ON: MagicNumber
