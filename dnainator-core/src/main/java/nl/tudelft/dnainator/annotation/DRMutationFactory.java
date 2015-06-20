@@ -1,7 +1,7 @@
 package nl.tudelft.dnainator.annotation;
 
 import nl.tudelft.dnainator.annotation.impl.DRMutation;
-import nl.tudelft.dnainator.parser.DRMutationParser;
+import nl.tudelft.dnainator.parser.Parser;
 
 import java.io.IOException;
 
@@ -17,7 +17,7 @@ public class DRMutationFactory {
 	 * @param parser The parser that parses the drug resistant mutations file.
 	 * @return The {@link AnnotationCollection} with the drug resistant mutations added to it.
 	 */
-	public AnnotationCollection build(AnnotationCollection annotations, DRMutationParser parser) {
+	public AnnotationCollection build(AnnotationCollection annotations, Parser<DRMutation> parser) {
 		try {
 			while (parser.hasNext()) {
 				DRMutation m = parser.next();
