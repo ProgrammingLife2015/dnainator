@@ -57,11 +57,13 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 	protected static final double MEDIUM_RADIUS = 5;
 	protected static final double LARGE_RADIUS = 6;
 	protected static final int PIETHRESHOLD = 20;
+	private static final int INTERESTINGNESS_THRESHOLD = 600;
 	private Cluster cluster;
 	private Set<String> sources;
 	private Text label;
 	private Pie pie;
 	private Map<PropertyType, String> properties;
+	private int interestingness;
 
 	/**
 	 * Construct a new mid level {@link ClusterDrawable} using the default graph.
@@ -74,6 +76,9 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 		this.sources = cluster.getNodes().stream()
 				.flatMap(e -> e.getSources().stream())
 				.collect(Collectors.toSet());
+		this.interestingness = cluster.getNodes().stream()
+				.mapToInt(e -> e.getInterestingnessScore())
+				.max().getAsInt();
 		label = new Text(Integer.toString(cluster.getNodes().size()));
 		setOnMouseClicked(e -> AbstractView.setLastClicked(this));
 		draw(colorServer);
@@ -91,7 +96,7 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 		properties.put(ClusterPropertyTypes.SOURCES, cluster.getNodes().stream()
 								.flatMap(e -> e.getSources().stream())
 								.collect(Collectors.toList()).toString());
-
+		properties.put(ClusterPropertyTypes.SCORE, Integer.toString(interestingness));
 		if (cluster.getNodes().size() == 1) {
 			initSingletonProperties();
 		}
@@ -114,10 +119,11 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 	private void draw(ColorServer colorServer) {
 		double radius = getRadius();
 
+		Circle commonNode = new Circle(radius);
+		getChildren().add(commonNode);
+
 		if (sources.size() > PIETHRESHOLD) {
-			Circle commonNode = new Circle(radius);
 			commonNode.getStyleClass().add("common-node");
-			getChildren().add(commonNode);
 		} else {
 			colorServer.addListener(this::onColorServerChanged);
 
@@ -127,6 +133,9 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 					.collect(Collectors.toList());
 			pie = new Pie(radius, collect);
 			getChildren().add(pie);
+		}
+		if (interestingness > INTERESTINGNESS_THRESHOLD) {
+			commonNode.getStyleClass().add("interesting-node");
 		}
 		getChildren().add(label);
 	}

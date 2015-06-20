@@ -49,6 +49,11 @@
 	-fx-stroke-width: .5;
 }
 
+.interesting-node {
+	-fx-stroke: #FF0000;
+	-fx-stroke-width: .5;
+}
+
 AbstractNode {
 	-fx-font-size: 4px;
 }
