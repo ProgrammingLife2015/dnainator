@@ -167,21 +167,6 @@ public class Neo4jSequenceNode implements EnrichedSequenceNode {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof SequenceNode)) {
-			return false;
-		}
-
-		SequenceNode other = (SequenceNode) obj;
-		return getId().equals(other.getId());
-	}
-
-	@Override
-	public int hashCode() {
-		return id.hashCode();
-	}
-
-	@Override
 	public String toString() {
 		return "SequenceNode<" + getId() + "," + getSequence().length() + ">";
 	}
