@@ -1,7 +1,7 @@
 package nl.tudelft.dnainator.parser.impl;
 
 import nl.tudelft.dnainator.core.impl.Edge;
-import nl.tudelft.dnainator.parser.BufferedEdgeParser;
+import nl.tudelft.dnainator.parser.BufferedParser;
 import nl.tudelft.dnainator.parser.exceptions.InvalidEdgeFormatException;
 
 import java.io.BufferedReader;
@@ -17,7 +17,7 @@ import java.util.Set;
 /**
  * An implementation for parsing an edge file input stream.
  */
-public class EdgeParserImpl extends BufferedEdgeParser {
+public class EdgeParserImpl extends BufferedParser<Edge<String>> {
 	private Edge<String> current;
 	private boolean needParse = true; // Whether we have to parse a new line or not.
 	private int currentChar;
@@ -50,7 +50,7 @@ public class EdgeParserImpl extends BufferedEdgeParser {
 	}
 
 	@Override
-	public boolean hasNext() throws IOException, InvalidEdgeFormatException {
+	public boolean hasNext() throws IOException {
 		if (needParse) {
 			current = parse();
 			needParse = false;
@@ -66,7 +66,7 @@ public class EdgeParserImpl extends BufferedEdgeParser {
 	 * the first character marked the end of the file.
 	 * @throws IOException Thrown when the reader fails.
 	 */
-	private Edge<String> parse() throws IOException, InvalidEdgeFormatException {
+	private Edge<String> parse() throws IOException {
 		currentChar = br.read();
 		eatWhitespace();
 		if (currentChar == -1) {
@@ -118,7 +118,7 @@ public class EdgeParserImpl extends BufferedEdgeParser {
 	 * @return The destination id, as an int.
 	 * @throws IOException Thrown when the BufferedReader fails.
 	 */
-	private String parseDest() throws IOException, InvalidEdgeFormatException {
+	private String parseDest() throws IOException {
 		StringBuilder dest = new StringBuilder(ID_LENGTH_GUESS);
 		boolean destParsed = false;
 		char next;

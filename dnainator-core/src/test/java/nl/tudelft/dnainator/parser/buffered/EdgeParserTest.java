@@ -1,9 +1,10 @@
 package nl.tudelft.dnainator.parser.buffered;
 
 import nl.tudelft.dnainator.core.impl.Edge;
-import nl.tudelft.dnainator.parser.EdgeParser;
+import nl.tudelft.dnainator.parser.Parser;
 import nl.tudelft.dnainator.parser.exceptions.InvalidEdgeFormatException;
 import nl.tudelft.dnainator.parser.impl.EdgeParserImpl;
+
 import org.junit.Test;
 
 import java.io.BufferedReader;
@@ -29,11 +30,11 @@ public class EdgeParserTest {
 	@Test(expected = NoSuchElementException.class)
 	public void testParseEmpty() {
 		BufferedReader in = toBufferedReader("");
-		EdgeParser ep = new EdgeParserImpl(in);
+		Parser<Edge<String>> ep = new EdgeParserImpl(in);
 		try {
 			assertFalse(ep.hasNext());
 			ep.next();
-		} catch (IOException | InvalidEdgeFormatException e) {
+		} catch (IOException e) {
 			fail("Shouldn't happen.");
 		}
 
@@ -41,17 +42,13 @@ public class EdgeParserTest {
 
 	/**
 	 * Tests an empty input.
-	 * @throws InvalidEdgeFormatException means that the test succeeded.
+	 * @throws IOException when the format was invalid
 	 */
 	@Test(expected = InvalidEdgeFormatException.class)
-	public void testParseOneCharacter() throws InvalidEdgeFormatException {
+	public void testParseOneCharacter() throws IOException {
 		BufferedReader in = toBufferedReader("a");
-		EdgeParser ep = new EdgeParserImpl(in);
-		try {
-			ep.next();
-		} catch (IOException e) {
-			fail("Shouldn't happen.");
-		}
+		Parser<Edge<String>> ep = new EdgeParserImpl(in);
+		ep.next();
 	}
 
 	/**
@@ -66,7 +63,7 @@ public class EdgeParserTest {
 				"6 40",
 				"123 456"
 				));
-		EdgeParser ep = new EdgeParserImpl(in);
+		Parser<Edge<String>> ep = new EdgeParserImpl(in);
 		try {
 			assertTrue(ep.hasNext());
 			Edge<String> next = ep.next();
@@ -81,7 +78,7 @@ public class EdgeParserTest {
 			next = ep.next();
 			assertEdgeEquals(new Edge<>("123", "456"), next);
 			assertFalse(ep.hasNext());
-		} catch (IOException | InvalidEdgeFormatException e) {
+		} catch (IOException e) {
 			fail("Shouldn't happen.");
 		}
 	}
@@ -98,7 +95,7 @@ public class EdgeParserTest {
 				"6 40   ",			// Trailing spaces.
 				"  123   456   "	// All of them at once.
 				));
-		EdgeParser ep = new EdgeParserImpl(in);
+		Parser<Edge<String>> ep = new EdgeParserImpl(in);
 		try {
 			assertTrue(ep.hasNext());
 			Edge<String> next = ep.next();
@@ -113,53 +110,45 @@ public class EdgeParserTest {
 			next = ep.next();
 			assertEdgeEquals(new Edge<>("123", "456"), next);
 			assertFalse(ep.hasNext());
-		} catch (IOException | InvalidEdgeFormatException e) {
+		} catch (IOException e) {
 			fail("Shouldn't happen.");
 		}
 	}
 
 	/**
 	 * Tests exception throwing.
-	 * @throws InvalidEdgeFormatException on test success.
+	 * @throws IOException when the format was invalid
 	 */
-	@Test(expected = InvalidEdgeFormatException.class)
-	public void testParseEdgesMissingDest() throws InvalidEdgeFormatException {
+	@Test(expected = IOException.class)
+	public void testParseEdgesMissingDest() throws IOException {
 		BufferedReader in = toBufferedReader(String.join("\n",
 				"1 2",
 				"3 ",
 				"4 5"
 				));
-		EdgeParser ep = new EdgeParserImpl(in);
-		try {
-			assertTrue(ep.hasNext());
-			Edge<String> next = ep.next();
-			assertEdgeEquals(new Edge<>("1", "2"), next);
-			ep.next();
-		} catch (IOException e) {
-			fail("Shouldn't happen.");
-		}
+		Parser<Edge<String>> ep = new EdgeParserImpl(in);
+		assertTrue(ep.hasNext());
+		Edge<String> next = ep.next();
+		assertEdgeEquals(new Edge<>("1", "2"), next);
+		ep.next();
 	}
 
 	/**
 	 * Tests exception throwing.
-	 * @throws InvalidEdgeFormatException on test success.
+	 * @throws IOException when the format was invalid
 	 */
-	@Test(expected = InvalidEdgeFormatException.class)
-	public void testParseEdgesExtraNode() throws InvalidEdgeFormatException {
+	@Test(expected = IOException.class)
+	public void testParseEdgesExtraNode() throws IOException {
 		BufferedReader in = toBufferedReader(String.join("\n",
 				"1 2",
 				"3 4 5",
 				"6 7"
 				));
-		EdgeParser ep = new EdgeParserImpl(in);
-		try {
-			assertTrue(ep.hasNext());
-			Edge<String> next = ep.next();
-			assertEdgeEquals(new Edge<>("1", "2"), next);
-			ep.next();
-		} catch (IOException e) {
-			fail("Shouldn't happen.");
-		}
+		Parser<Edge<String>> ep = new EdgeParserImpl(in);
+		assertTrue(ep.hasNext());
+		Edge<String> next = ep.next();
+		assertEdgeEquals(new Edge<>("1", "2"), next);
+		ep.next();
 	}
 
 	/**
@@ -171,13 +160,13 @@ public class EdgeParserTest {
 				"1 2",
 				""
 				));
-		EdgeParser ep = new EdgeParserImpl(in);
+		Parser<Edge<String>> ep = new EdgeParserImpl(in);
 		try {
 			assertTrue(ep.hasNext());
 			Edge<String> next = ep.next();
 			assertEdgeEquals(new Edge<>("1", "2"), next);
 			assertFalse(ep.hasNext());
-		} catch (IOException | InvalidEdgeFormatException e) {
+		} catch (IOException e) {
 			fail("Shouldn't happen.");
 		}
 	}
@@ -191,13 +180,13 @@ public class EdgeParserTest {
 				"1 2",
 				"    "
 				));
-		EdgeParser ep = new EdgeParserImpl(in);
+		Parser<Edge<String>> ep = new EdgeParserImpl(in);
 		try {
 			assertTrue(ep.hasNext());
 			Edge<String> next = ep.next();
 			assertEdgeEquals(new Edge<>("1", "2"), next);
 			assertFalse(ep.hasNext());
-		} catch (IOException | InvalidEdgeFormatException e) {
+		} catch (IOException e) {
 			fail("Shouldn't happen.");
 		}
 	}
@@ -212,7 +201,7 @@ public class EdgeParserTest {
 				"    ",
 				"3 4"
 				));
-		EdgeParser ep = new EdgeParserImpl(in);
+		Parser<Edge<String>> ep = new EdgeParserImpl(in);
 		try {
 			assertTrue(ep.hasNext());
 			Edge<String> next = ep.next();
@@ -220,7 +209,7 @@ public class EdgeParserTest {
 			assertTrue(ep.hasNext());
 			next = ep.next();
 			assertEdgeEquals(new Edge<>("3", "4"), next);
-		} catch (IOException | InvalidEdgeFormatException e) {
+		} catch (IOException e) {
 			fail("Shouldn't happen.");
 		}
 	}
@@ -235,7 +224,7 @@ public class EdgeParserTest {
 				"",
 				"3 4"
 				));
-		EdgeParser ep = new EdgeParserImpl(in);
+		Parser<Edge<String>> ep = new EdgeParserImpl(in);
 		try {
 			assertTrue(ep.hasNext());
 			Edge<String> next = ep.next();
@@ -243,7 +232,7 @@ public class EdgeParserTest {
 			assertTrue(ep.hasNext());
 			next = ep.next();
 			assertEdgeEquals(new Edge<>("3", "4"), next);
-		} catch (IOException | InvalidEdgeFormatException e) {
+		} catch (IOException e) {
 			fail("Shouldn't happen.");
 		}
 	}
@@ -254,7 +243,7 @@ public class EdgeParserTest {
 	@Test
 	public void testFileConstructor() {
 		try {
-			EdgeParser ep = new EdgeParserImpl(new File(getClass().getResource(
+			Parser<Edge<String>> ep = new EdgeParserImpl(new File(getClass().getResource(
 					"/strains/simple_graph.edge.graph").getFile()));
 			assertTrue(ep.hasNext());
 		} catch (Exception e) {

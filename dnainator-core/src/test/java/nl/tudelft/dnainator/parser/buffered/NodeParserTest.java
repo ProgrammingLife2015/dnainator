@@ -3,9 +3,9 @@ package nl.tudelft.dnainator.parser.buffered;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.SequenceNodeFactoryImpl;
 import nl.tudelft.dnainator.core.impl.SequenceNodeImpl;
-import nl.tudelft.dnainator.parser.NodeParser;
-import nl.tudelft.dnainator.parser.exceptions.InvalidHeaderFormatException;
+import nl.tudelft.dnainator.parser.Parser;
 import nl.tudelft.dnainator.parser.impl.NodeParserImpl;
+
 import org.junit.Test;
 
 import java.io.BufferedReader;
@@ -22,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**
- * Tests the JFASTA implementation of the NodeParser interface.
+ * Tests the JFASTA implementation of the Parser interface.
  */
 public class NodeParserTest {
 
@@ -33,10 +33,10 @@ public class NodeParserTest {
 	public void testParseNodesEmpty() {
 		BufferedReader in = toBufferedReader("");
 		try {
-			NodeParser np = new NodeParserImpl(new SequenceNodeFactoryImpl(), in);
+			Parser<SequenceNode> np = new NodeParserImpl(new SequenceNodeFactoryImpl(), in);
 			assertFalse(np.hasNext());
 			np.next();
-		} catch (IOException | InvalidHeaderFormatException e) {
+		} catch (IOException e) {
 			fail("Shouldn't happen.");
 		}
 	}
@@ -138,7 +138,7 @@ public class NodeParserTest {
 				"ATATATATATATA"
 				));
 		try {
-			NodeParser np = new NodeParserImpl(new SequenceNodeFactoryImpl(), in);
+			Parser<SequenceNode> np = new NodeParserImpl(new SequenceNodeFactoryImpl(), in);
 			//CHECKSTYLE.OFF: MagicNumber
 			assertTrue(np.hasNext());
 			assertEquals(new SequenceNodeImpl("4", Arrays.asList("ASDF"),
@@ -148,7 +148,7 @@ public class NodeParserTest {
 					42, 84, "ATATATATATATA"), np.next());
 			assertFalse(np.hasNext());
 			//CHECKSTYLE.ON: MagicNumber
-		} catch (IOException | InvalidHeaderFormatException e) {
+		} catch (IOException e) {
 			fail("Shouldn't happen.");
 		}
 	}
@@ -165,7 +165,7 @@ public class NodeParserTest {
 				" A T A T A T A T A T A T A"
 				));
 		try {
-			NodeParser np = new NodeParserImpl(new SequenceNodeFactoryImpl(), in);
+			Parser<SequenceNode> np = new NodeParserImpl(new SequenceNodeFactoryImpl(), in);
 			//CHECKSTYLE.OFF: MagicNumber
 			assertTrue(np.hasNext());
 			assertEquals(new SequenceNodeImpl("4", Arrays.asList("ASDF"),
@@ -175,7 +175,7 @@ public class NodeParserTest {
 					42, 84, "ATATATATATATA"), np.next());
 			assertFalse(np.hasNext());
 			//CHECKSTYLE.ON: MagicNumber
-		} catch (IOException | InvalidHeaderFormatException e) {
+		} catch (IOException e) {
 			fail("Shouldn't happen.");
 		}
 	}
@@ -186,7 +186,7 @@ public class NodeParserTest {
 	@Test
 	public void testFileConstructor() {
 		try {
-			NodeParser np = new NodeParserImpl(new File(getClass().getResource(
+			Parser<SequenceNode> np = new NodeParserImpl(new File(getClass().getResource(
 					"/strains/simple_graph.node.graph").getFile()));
 			assertTrue(np.hasNext());
 		} catch (Exception e) {

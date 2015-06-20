@@ -4,16 +4,17 @@ import java.io.BufferedReader;
 import java.io.IOException;
 
 /**
- * An {@link EdgeParser} which uses a {@link BufferedReader} as its source.
+ * A generic {@link Parser} which uses a {@link BufferedReader} as its source.
+ * @param <T> the type this parser returns
  */
-public abstract class BufferedEdgeParser implements EdgeParser {
+public abstract class BufferedParser <T> implements Parser<T> {
 	protected BufferedReader br;
 
 	/**
-	 * Construct a new {@link BufferedEdgeParser}.
+	 * Construct a new {@link BufferedParser}.
 	 * @param br The {@link BufferedReader} to read from.
 	 */
-	public BufferedEdgeParser(BufferedReader br) {
+	public BufferedParser(BufferedReader br) {
 		this.br = br;
 	}
 

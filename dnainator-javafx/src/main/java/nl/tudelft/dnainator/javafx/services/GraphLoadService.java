@@ -7,11 +7,12 @@ import javafx.concurrent.Task;
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
 import nl.tudelft.dnainator.annotation.DRMutationFactory;
 import nl.tudelft.dnainator.annotation.impl.AnnotationCollectionFactoryImpl;
+import nl.tudelft.dnainator.core.SequenceNode;
+import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.Neo4jBatchBuilder;
 import nl.tudelft.dnainator.parser.AnnotationParser;
-import nl.tudelft.dnainator.parser.EdgeParser;
-import nl.tudelft.dnainator.parser.NodeParser;
+import nl.tudelft.dnainator.parser.Parser;
 import nl.tudelft.dnainator.parser.TreeParser;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
 import nl.tudelft.dnainator.parser.impl.DRMutationParserImpl;
@@ -216,8 +217,8 @@ public class GraphLoadService extends Service<Graph> {
 					node = new TreeParser(getNewickFile()).parse();
 				}
 
-				EdgeParser ep = new EdgeParserImpl(getEdgeFile());
-				NodeParser np = new NodeParserImpl(getNodeFile());
+				Parser<Edge<String>> ep = new EdgeParserImpl(getEdgeFile());
+				Parser<SequenceNode> np = new NodeParserImpl(getNodeFile());
 
 				return new Neo4jBatchBuilder(database.get(), annotations, node)
 					.constructGraph(np, ep).build();

@@ -10,11 +10,9 @@ import nl.tudelft.dnainator.core.impl.SequenceNodeFactoryImpl;
 import nl.tudelft.dnainator.core.impl.SequenceNodeImpl;
 import nl.tudelft.dnainator.graph.impl.command.AnalyzeCommand;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
-import nl.tudelft.dnainator.parser.EdgeParser;
-import nl.tudelft.dnainator.parser.NodeParser;
+import nl.tudelft.dnainator.parser.Parser;
 import nl.tudelft.dnainator.parser.TreeParser;
 import nl.tudelft.dnainator.parser.exceptions.InvalidEdgeFormatException;
-import nl.tudelft.dnainator.parser.exceptions.ParseException;
 import nl.tudelft.dnainator.parser.impl.EdgeParserImpl;
 import nl.tudelft.dnainator.parser.impl.NodeParserImpl;
 import nl.tudelft.dnainator.tree.TreeNode;
@@ -70,9 +68,9 @@ public class Neo4jGraphTest {
 			FileUtils.deleteRecursively(new File(DB_PATH));
 			nodeFile = getNodeFile();
 			edgeFile = getEdgeFile();
-			NodeParser np = new NodeParserImpl(new SequenceNodeFactoryImpl(),
+			Parser<SequenceNode> np = new NodeParserImpl(new SequenceNodeFactoryImpl(),
 					new BufferedReader(new InputStreamReader(nodeFile, "UTF-8")));
-			EdgeParser ep = new EdgeParserImpl(new BufferedReader(
+			Parser<Edge<String>> ep = new EdgeParserImpl(new BufferedReader(
 							new InputStreamReader(edgeFile, "UTF-8")));
 			TreeNode phylo = new TreeParser(getTreeFile()).parse();
 			db = (Neo4jGraph) new Neo4jBatchBuilder(DB_PATH, new AnnotationCollectionImpl(), phylo)
@@ -80,8 +78,6 @@ public class Neo4jGraphTest {
 				.build();
 		} catch (IOException e) {
 			fail("Couldn't initialize DB");
-		} catch (ParseException e) {
-			fail("Couldn't parse file: " + e.getMessage());
 		}
 		//CHECKSTYLE.OFF: MagicNumber
 		first = new AnnotationImpl("first", 0, 10, true);
@@ -138,7 +134,7 @@ public class Neo4jGraphTest {
 	public void testTopologicalOrder() {
 		LinkedList<Integer> order = new LinkedList<>();
 		try {
-			EdgeParser ep = new EdgeParserImpl(new BufferedReader(
+			Parser<Edge<String>> ep = new EdgeParserImpl(new BufferedReader(
 							new InputStreamReader(getEdgeFile(), "UTF-8")));
 
 			db.execute(e -> {

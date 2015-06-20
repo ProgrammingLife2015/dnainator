@@ -7,7 +7,7 @@ import net.sf.jfasta.impl.FASTAFileReaderImpl;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.SequenceNodeFactory;
 import nl.tudelft.dnainator.core.impl.SequenceNodeFactoryImpl;
-import nl.tudelft.dnainator.parser.BufferedNodeParser;
+import nl.tudelft.dnainator.parser.BufferedParser;
 import nl.tudelft.dnainator.parser.HeaderParser;
 import nl.tudelft.dnainator.parser.exceptions.InvalidHeaderFormatException;
 
@@ -22,9 +22,10 @@ import static java.lang.Integer.parseInt;
 /**
  * A {@link BufferedNodeParser} which uses JFASTA's parser internally.
  */
-public class NodeParserImpl extends BufferedNodeParser {
+public class NodeParserImpl extends BufferedParser<SequenceNode> {
 
 	private FASTAElementIterator it;
+	private SequenceNodeFactory sf;
 
 	/**
 	 * Constructs a new NodeParserImpl.
@@ -55,7 +56,8 @@ public class NodeParserImpl extends BufferedNodeParser {
 	 * @throws IOException If something goes wrong constructing.
 	 */
 	public NodeParserImpl(SequenceNodeFactory sf, BufferedReader br) throws IOException {
-		super(sf, br);
+		super(br);
+		this.sf = sf;
 		FASTAFileReader fr = new FASTAFileReaderImpl(this.br);
 		it = fr.getIterator();
 	}
