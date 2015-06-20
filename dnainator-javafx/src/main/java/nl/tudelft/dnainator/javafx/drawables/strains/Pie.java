@@ -6,7 +6,6 @@ import javafx.collections.SetChangeListener;
 import javafx.scene.Group;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.ArcType;
-import javafx.scene.shape.Circle;
 
 import java.util.List;
 
@@ -31,7 +30,7 @@ public class Pie extends Group {
 		this.styles = FXCollections.observableSet();
 		this.styles.addListener(this::onChange);
 
-		getChildren().addAll(new Circle(radius), slices);
+		getChildren().add(slices);
 		styles.forEach(e -> this.styles.add(e));
 	}
 

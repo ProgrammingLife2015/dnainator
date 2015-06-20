@@ -35,11 +35,11 @@ public class PieTest {
 		Pie emptypie = new Pie(1, new ArrayList<String>());
 
 		// CHECKSTYLE.OFF: MagicNumber
-		assertEquals(2, emptypie.getChildren().size());
+		assertEquals(1, emptypie.getChildren().size());
 		assertEquals(0, emptypie.getStyles().size());
 		assertEquals(0, getNumberArcs(emptypie));
 
-		assertEquals(2, pie.getChildren().size());
+		assertEquals(1, pie.getChildren().size());
 		assertEquals(4, pie.getStyles().size());
 		assertEquals(4, getNumberArcs(pie));
 		// CHECKSTYLE.ON: MagicNumber
@@ -53,7 +53,7 @@ public class PieTest {
 		pie.getStyles().add("default");
 
 		// CHECKSTYLE.OFF: MagicNumber
-		assertEquals(2, pie.getChildren().size());
+		assertEquals(1, pie.getChildren().size());
 		assertEquals(5, pie.getStyles().size());
 		assertEquals(5, getNumberArcs(pie));
 		// CHECKSTYLE.ON: MagicNumber
@@ -67,7 +67,7 @@ public class PieTest {
 		pie.getStyles().remove("4");
 
 		// CHECKSTYLE.OFF: MagicNumber
-		assertEquals(2, pie.getChildren().size());
+		assertEquals(1, pie.getChildren().size());
 		assertEquals(3, pie.getStyles().size());
 		assertEquals(3, getNumberArcs(pie));
 		// CHECKSTYLE.ON: MagicNumber
@@ -81,7 +81,7 @@ public class PieTest {
 		pie.getStyles().clear();
 
 		// CHECKSTYLE.OFF: MagicNumber
-		assertEquals(2, pie.getChildren().size());
+		assertEquals(1, pie.getChildren().size());
 		assertEquals(0, pie.getStyles().size());
 		assertEquals(0, getNumberArcs(pie));
 		// CHECKSTYLE.ON: MagicNumber
