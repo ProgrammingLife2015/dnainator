@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
  * Represents a location within the graph.
  */
 public interface ScoreContainer {
-
 	/**
 	 * @param id the identifier of the property, which is used to get the score of
 	 * a particular property.

@@ -1,6 +1,5 @@
 package nl.tudelft.dnainator.javafx.drawables.strains;
 
-import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.shape.Rectangle;
@@ -10,14 +9,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
 /**
@@ -28,7 +23,7 @@ import static org.mockito.Mockito.verify;
 public class StrainTest {
 	@Mock private Graph graph;
 	@Mock private Node node;
-	@Mock private Group child, content;
+	@Mock private Group content;
 	private Strain strain;
 
 	/**
@@ -36,59 +31,9 @@ public class StrainTest {
 	 */
 	@Before
 	public void setup() {
-		child = new Group();
 		content = new Group();
-		strain = new Strain(new ColorServer(), graph, content, child);
-	}
-
-	/**
-	 * Test construction of a graphitem.
-	 * Should not query the model for anything yet.
-	 */
-	@Test
-	public void testConstruction() {
-		verify(graph, never()).getRank(anyInt());
-	}
-
-	/**
-	 * Test whether this item is in a specified viewport.
-	 * The drawable we're testing currently extends to x = 40000, y = 20.
-	 */
-	@Test
-	public void testInViewPort() {
 		// CHECKSTYLE.OFF: MagicNumber
-		Bounds viewport = new Rectangle(640, 480).getBoundsInLocal();
-		assertEquals(true, strain.isInViewport(viewport));
-
-		content.setTranslateX(0);
-		content.setTranslateY(-1);
-		assertEquals(false, strain.isInViewport(viewport));
-
-		content.setTranslateX(0);
-		content.setTranslateY(480);
-		assertEquals(true, strain.isInViewport(viewport));
-
-		content.setTranslateX(0);
-		content.setTranslateY(481);
-		assertEquals(false, strain.isInViewport(viewport));
-
-		content.setTranslateX(640);
-		content.setTranslateY(0);
-		assertEquals(true, strain.isInViewport(viewport));
-
-		content.setTranslateX(641);
-		content.setTranslateY(0);
-		assertEquals(false, strain.isInViewport(viewport));
-		// CHECKSTYLE.ON: MagicNumber
-	}
-
-	/**
-	 * Toggle visibility of this item.
-	 */
-	@Test
-	public void testToggle() {
-		// CHECKSTYLE.OFF: MagicNumber
-		// TODO
+		strain = new Strain(new ColorServer(), graph, content);
 		// CHECKSTYLE.ON: MagicNumber
 	}
 
@@ -100,20 +45,16 @@ public class StrainTest {
 	public void testUpdate() {
 		// CHECKSTYLE.OFF: MagicNumber
 		strain.update(new Rectangle(20000, 10000).getBoundsInLocal(), 1.0);
-		assertTrue(content.isVisible());
-		verify(graph, never()).getRank(anyInt());
+		verify(graph, atLeastOnce()).getRank(anyInt());
 
-		strain.update(new Rectangle(5000, 2500).getBoundsInLocal(), 1.7);
-		assertFalse(content.isVisible());
-		verify(graph, Mockito.atLeastOnce()).getRank(anyInt());
+		strain.update(new Rectangle(5000, 2500).getBoundsInLocal(), 2.0);
+		verify(graph, atLeastOnce()).getRank(anyInt());
 
 		strain.update(new Rectangle(1000, 500).getBoundsInLocal(), 10.0);
-		assertFalse(content.isVisible());
-		verify(graph, Mockito.atLeastOnce()).getRank(anyInt());
+		verify(graph, atLeastOnce()).getRank(anyInt());
 
 		strain.update(new Rectangle(20000, 10000).getBoundsInLocal(), 1.4);
-		assertTrue(content.isVisible());
-		verify(graph, Mockito.atLeastOnce()).getRank(anyInt());
+		verify(graph, atLeastOnce()).getRank(anyInt());
 		// CHECKSTYLE.ON: MagicNumber
 	}
 }

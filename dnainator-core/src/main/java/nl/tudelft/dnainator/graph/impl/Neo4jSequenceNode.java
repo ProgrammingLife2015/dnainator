@@ -59,11 +59,10 @@ public class Neo4jSequenceNode implements EnrichedSequenceNode {
 		this.scores = new HashMap<>();
 
 		try (Transaction tx = service.beginTx()) {
-			this.id = (String) node.getProperty(SequenceProperties.ID.name());
+			this.id         = (String) node.getProperty(SequenceProperties.ID.name());
+			basedist        = (int) node.getProperty(SequenceProperties.BASE_DIST.name());
+			interestingness = (int) node.getProperty(SequenceProperties.INTERESTINGNESS.name(), 0);
 
-			node.getRelationships(RelTypes.ANNOTATED, Direction.OUTGOING).forEach(e -> {
-				annotations.add(new Neo4jAnnotation(service, e.getEndNode()));
-			});
 			node.getRelationships(RelTypes.NEXT, Direction.OUTGOING).forEach(e -> {
 				outgoing.add((String) e.getEndNode().getProperty(SequenceProperties.ID.name()));
 			});
@@ -81,13 +80,24 @@ public class Neo4jSequenceNode implements EnrichedSequenceNode {
 	}
 
 	@Override
-	public List<Annotation> getAnnotations() {
-		return annotations;
+	public int getBaseDistance() {
+		return basedist;
+	}
+
+	@Override
+	public List<String> getOutgoing() {
+		return outgoing;
 	}
 
 	@Override
 	public Set<String> getSources() {
 		return sources;
+	}
+
+	@Override
+	public List<Annotation> getAnnotations() {
+		load();
+		return annotations;
 	}
 
 	@Override
@@ -109,20 +119,9 @@ public class Neo4jSequenceNode implements EnrichedSequenceNode {
 	}
 
 	@Override
-	public int getBaseDistance() {
-		load();
-		return basedist;
-	}
-
-	@Override
 	public int getRank() {
 		load();
 		return rank;
-	}
-
-	@Override
-	public List<String> getOutgoing() {
-		return outgoing;
 	}
 
 	@Override
@@ -139,7 +138,6 @@ public class Neo4jSequenceNode implements EnrichedSequenceNode {
 
 	@Override
 	public int getInterestingnessScore() {
-		load();
 		return interestingness;
 	}
 
@@ -154,31 +152,17 @@ public class Neo4jSequenceNode implements EnrichedSequenceNode {
 			start    = (int)    node.getProperty(SequenceProperties.STARTREF.name());
 			end      = (int)    node.getProperty(SequenceProperties.ENDREF.name());
 			sequence = (String) node.getProperty(SequenceProperties.SEQUENCE.name());
-			basedist = (int)    node.getProperty(SequenceProperties.BASE_DIST.name());
 			rank     = (int)    node.getProperty(SequenceProperties.RANK.name());
+			node.getRelationships(RelTypes.ANNOTATED, Direction.OUTGOING).forEach(e -> {
+				annotations.add(new Neo4jAnnotation(service, e.getEndNode()));
+			});
 			for (ScoreIdentifier id : Scores.values()) {
 				scores.put(id, (Integer) node.getProperty(id.name(), 0));
 			}
-			interestingness = (int) node.getProperty(SequenceProperties.INTERESTINGNESS.name(), 0);
 			tx.success();
 		}
 
 		loaded = true;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof SequenceNode)) {
-			return false;
-		}
-
-		SequenceNode other = (SequenceNode) obj;
-		return getId().equals(other.getId());
-	}
-
-	@Override
-	public int hashCode() {
-		return id.hashCode();
 	}
 
 	@Override

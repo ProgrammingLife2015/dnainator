@@ -16,7 +16,7 @@ import nl.tudelft.dnainator.javafx.drawables.Drawable;
  * internal nodes.
  */
 public abstract class AbstractNode extends Group implements Drawable {
-	protected static final int DIM = 8;
+	protected static final int DIM = 80;
 	protected DoubleProperty margin = new SimpleDoubleProperty(0, "margin");
 	protected IntegerProperty leafCount = new SimpleIntegerProperty(0, "leafCount");
 	protected Shape shape;

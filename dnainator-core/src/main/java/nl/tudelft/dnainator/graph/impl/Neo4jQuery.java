@@ -37,7 +37,8 @@ public final class Neo4jQuery implements GraphQuery {
 	private Predicate<SequenceNode> p;
 
 	private Neo4jQuery() {
-		this.sb = new StringBuilder("MATCH n-[" + SourceProperties.SOURCE.name() + "]->p\n");
+		this.sb = new StringBuilder("MATCH (n: " + NodeLabels.NODE.name()
+				+ ")-[" + SourceProperties.SOURCE.name() + "]->p\n");
 	}
 
 	private void addCondition(String c) {

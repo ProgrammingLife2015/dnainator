@@ -44,7 +44,7 @@ public class DRMutation implements Annotation {
 
 	@Override
 	public Range getRange() {
-		return new Range(position, position + 1);
+		return new Range(position, position);
 	}
 
 	@Override

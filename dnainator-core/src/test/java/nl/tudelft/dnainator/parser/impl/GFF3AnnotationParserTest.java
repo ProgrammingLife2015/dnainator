@@ -16,6 +16,13 @@ import static org.junit.Assert.assertTrue;
  * Test the GFF annotation parser.
  */
 public class GFF3AnnotationParserTest {
+	/**
+	 * Utility function that creates a parser.
+	 * @param resourceFilePath The file path
+	 * @return a parser
+	 * @throws IOException when the file could not be opened
+	 * @throws URISyntaxException when the uri is incorrect
+	 */
 	private AnnotationParser createParser(String resourceFilePath) throws IOException,
 		URISyntaxException {
 		String gffFilePath = new File(getClass().getResource(resourceFilePath)
@@ -25,8 +32,8 @@ public class GFF3AnnotationParserTest {
 
 	/**
 	 * Test ignoring annotations that are not of the "CDS" type.
-	 * @throws IOException 
-	 * @throws URISyntaxException 
+	 * @throws IOException when the file could not be opened
+	 * @throws URISyntaxException when the uri is incorrect
 	 */
 	@Test
 	public void testIgnoreNonCDS() throws IOException, URISyntaxException {
@@ -38,8 +45,8 @@ public class GFF3AnnotationParserTest {
 	/**
 	 * Test for {@link NoSuchElementException} when there's no more
 	 * annotations of type "CDS".
-	 * @throws IOException 
-	 * @throws URISyntaxException 
+	 * @throws IOException when the file could not be opened
+	 * @throws URISyntaxException when the uri is incorrect
 	 */
 	@Test(expected = NoSuchElementException.class)
 	public void testNoSuchElement() throws IOException, URISyntaxException {
@@ -51,8 +58,8 @@ public class GFF3AnnotationParserTest {
 
 	/**
 	 * Test the hasNext function.
-	 * @throws IOException 
-	 * @throws URISyntaxException 
+	 * @throws IOException when the file could not be opened
+	 * @throws URISyntaxException when the uri is incorrect
 	 */
 	@Test
 	public void testHasNext() throws IOException, URISyntaxException {
@@ -66,8 +73,8 @@ public class GFF3AnnotationParserTest {
 
 	/**
 	 * Test whether hasNext works when there's no elements from the start.
-	 * @throws IOException 
-	 * @throws URISyntaxException 
+	 * @throws IOException when the file could not be opened
+	 * @throws URISyntaxException when the uri is incorrect
 	 */
 	@Test
 	public void testNotHasNext() throws IOException, URISyntaxException {

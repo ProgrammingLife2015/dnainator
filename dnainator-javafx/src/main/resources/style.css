@@ -1,7 +1,57 @@
 @import "tango.css";
 
+.root {
+	-fx-background-color: #DBDBDB;
+}
+
+#welcome > ListView {
+	-fx-background-color: #c1c1c1;
+	-fx-background-insets: 0; 
+	-fx-background-radius: 5;
+	-fx-effect: innershadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 0);
+}
+
+#welcome > ListView .list-cell {
+	-fx-background-color: #c1c1c1;
+	-fx-text-fill: #141414;
+}
+
+#welcome > ListView .list-cell:filled:selected {
+	-fx-background-color: #737373;
+	-fx-text-fill: white;
+}
+
+#welcome > ListView .list-cell:filled:hover {
+	-fx-background-color: #8c8c8c;
+	-fx-text-fill: white;
+}
+
+.button, ProgressDialog > * > .button {
+	-fx-text-fill: #141414;
+	-fx-background-insets: 0;
+	-fx-background-color: linear-gradient(#d0d0d0 0%, #c1c1c1 30%, #b1b1b1 60%, #bdbdbd 100%);
+	-fx-background-radius: 3, 2, 1;
+}
+
+.button:hover, .button-bar > .button:hover {
+	-fx-background-insets: -1;
+	-fx-text-fill: white;
+}
+
+.button:pressed, .button-bar > .button:pressed {
+	-fx-background-insets: 1;
+	-fx-text-fill: white;
+}
+
+.dialog-pane .header-panel {
+	-fx-background-color: #DBDBDB;
+	-fx-border-width: 0 0 1 0;
+	-fx-border-color: #FFFFFF #FFFFFF #b1b1b1 #FFFFFF;
+}
+
 .dialog-pane .button-bar {
-	-fx-border-color: #D4D4D4 #FFFFFF #FFFFFF #FFFFFF;
+	-fx-border-width: 1 0 0 0;
+	-fx-border-color: #b1b1b1 #FFFFFF #FFFFFF #FFFFFF;
 }
 
 .dialog-pane .label {
@@ -10,8 +60,12 @@
 
 .dialog-pane .header-panel .label {
 	-fx-alignment: top-left;
-	-fx-font-size: 38px;
+	-fx-font-size: 24px;
 	-fx-font-weight: bold;
+}
+
+.exception-style:header .header-panel .label {
+	-fx-font-size: 14px;
 }
 
 .hotkey-title {
@@ -22,16 +76,73 @@
 	-fx-font-family: Verdana;
 }
 
+.menu-bar {
+	-fx-background-color: linear-gradient(#dedede 0%, #cdcdcd 30%, #bdbdbd 60%, #adadad 100%);
+}
+
+.menu-bar .context-menu, .context-menu:focused, .context-menu:showing {
+	-fx-background-color: #c1c1c1;
+}
+
+.menu:hover, .menu:showing, .menu:focused {
+	-fx-background-color: linear-gradient(#bdbdbd 0%, #adadad 30%, #8c8c8c 60%, #7b7b7b 100%);
+	-fx-text-fill: white;
+}
+
+.menu-item, .context-menu, .menu-bar {
+	-fx-text-fill: #282828;
+}
+
+.menu-item:hover, .menu-item:showing, .menu-item:focused {
+	-fx-background-color: #8c8c8c;
+}
+
+.menu-item:hover .label, .menu-item:showing .label, .menu-item:focused .label {
+	-fx-text-fill: white;
+}
+
+.openpane-title {
+	-fx-font-weight: bold;
+}
+
 .property-header {
+	-fx-font-size: 18px;
 	-fx-font-weight: bold;
 }
 
 .property-info {
+	-fx-background-insets: 0;
 	-fx-wrap-text: true;
 }
 
+.progress-bar > .bar {
+	-fx-accent: white;
+	-fx-text-box-border: #4C4C4C;
+	-fx-background-radius: 2;
+}
+
+.progress-bar:indeterminate > .bar {
+    -fx-background-color: linear-gradient(to left, transparent, derive(-fx-accent, 2%));
+}
+
+.progress-bar > .track {
+	-fx-control-inner-background: #4C4C4C, -fx-box-border, linear-gradient(to bottom, derive(-fx-color, -5%), derive(-fx-color, 2.2%) 20%, derive(-fx-color, 10%));
+	-fx-background-insets: 0, 1;
+	-fx-opacity: 0.3;
+}
+
+.scroll-pane {
+    -fx-background-insets: 0;
+    -fx-background-radius: 5;
+    -fx-background: white;
+}
+
+.scroll-pane:focused {
+    -fx-background-insets: 0;
+}
+
 .view {
-	-fx-background-color: #FFFFFF;
+	-fx-background-color: #efefef;
 }
 
 #about > .label {
@@ -41,61 +152,138 @@
 
 .gray-label {
 	-fx-font-size: 11px;
-	-fx-text-fill: #a8a8a8;
+	-fx-text-fill: #3B3B3B;
+	-fx-prompt-text-fill: #3B3B3B;
+	-fx-opacity: 0.5;
+}
+
+.split-pane *.split-pane-divider {
+	-fx-background-color: linear-gradient(#d0d0d0 0%, #c1c1c1 30%, #b1b1b1 60%, #929292 100%);
+	-fx-border-color: transparent;
+	-fx-padding: 0 0.35 0 0.35;  
+	-fx-background-insets: 0, 0 1 0 1;
 }
 
 .common-node {
 	-fx-stroke: #a8a8a8;
-	-fx-stroke-width: .5;
+	-fx-stroke-width: 5;
 }
 
-AbstractNode {
-	-fx-font-size: 4px;
+.interesting-node {
+	-fx-stroke: #FF0000;
+	-fx-stroke-width: 5;
 }
 
-AbstractNode Edge {
+CollapsedNode Text,
+LeafNode Text {
+	-fx-font-size: 120pt;
+}
+
+InternalNode Edge {
 	-fx-stroke: #000000;
-	-fx-stroke-width: .2;
+	-fx-stroke-width: 20;
+}
+
+Label {
+	-fx-text-fill: #3B3B3B;
+}
+
+InternalNode Rectangle:hover, CollapsedNode Circle:hover {
+	-fx-scale-x: 1.7;
+	-fx-scale-y: 1.7;
+	-fx-opacity: 0.5;
+}
+
+LeafNode Text:hover {
+	-fx-opacity: 0.5;
 }
 
 Strain ClusterDrawable {
 	-fx-font-size: 4px;
 }
 
+Strain ClusterDrawable Circle:hover, Pie:hover {
+	-fx-scale-x: 1.2;
+	-fx-scale-y: 1.2;
+	-fx-opacity: 0.5;
+}
+
 Strain ClusterDrawable Circle {
 	-fx-fill: #4C4C4C;
+	-fx-smooth: true;
 }
 
-Strain Edge {
-	-fx-font-size: 4px;
+Pie Arc {
+	-fx-smooth: true;
 }
 
-Strain Edge Circle {
+.ghost {
+	-fx-font-size: 12pt;
+	-fx-opacity: 0.2;
+}
+
+.ghost Circle {
 	-fx-fill: #4C4C4C;
+	-fx-opacity: 0.2;
+}
+
+.ghost Line {
+	-fx-opacity: 0.2;
+	-fx-stroke: #000000;
+	-fx-stroke-width: 2;
 }
 
 Strain Edge Line {
 	-fx-stroke: #000000;
-	-fx-stroke-width: .2;
+	-fx-stroke-width: 2;
+}
+
+Strain Edge Line:hover {
+	-fx-stroke-width: 1;
+}
+
+StrainView, PhylogeneticView {
+	-fx-border-color: #eaeaea;
+	-fx-border-width: 1;
+	-fx-border-style: solid;
+	-fx-effect: innershadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 0);
+}
+
+.move-cursor {
+	-fx-cursor: move;
 }
 
 Gene {
-	-fx-font-size: 12px;
+	-fx-font-size: 12pt;
 	-fx-background-color: rgba(255, 255, 228, 0.8);
 	-fx-border-color: #D4D4D4;
 	-fx-border-style: solid;
-	-fx-border-width: 1;
+	-fx-border-width: 2;
 }
 
 Minimap .view {
-	-fx-fill: rgba(165, 42, 42, 0.7);
+	-fx-fill: #436DA3;
+	-fx-opacity: 0.5;
 }
 
 Minimap .spacer {
-	-fx-fill: #310C0C;
+	-fx-fill: #4C4C4C;
 }
 
 StrainControl .jump-invalid-prompt {
-	-fx-prompt-text-fill: red;
+	-fx-background-color: #ED6D6D;
+	-fx-prompt-text-fill: white;
+	-fx-opacity: 1.0;
 }
 
+StrainControl > TextField, .openpane-field {
+	-fx-text-fill: #141414;
+	-fx-prompt-text-fill: #adadad;
+	-fx-background-color: #EBEBEB;
+	-fx-border-color: #CFCFCF;
+	-fx-border-size: 1;
+	-fx-border-radius: 3.75;
+}
+StrainControl > TextField:hover, .openpane-field:hover {
+	-fx-background-color: #EDEDED;
+}

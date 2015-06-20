@@ -97,6 +97,9 @@ public class StrainControl extends VBox {
 	}
 	
 	private void setupTextField(String name) {
+		jumpTo.textProperty().addListener((obj, oldV, newV) -> {
+			resetPromptText(name);
+		});
 		if (jumpTo.getPromptText().equals(name) && jumpTo.isVisible()) {
 			jumpTo.setVisible(!jumpTo.isVisible());
 		} else {

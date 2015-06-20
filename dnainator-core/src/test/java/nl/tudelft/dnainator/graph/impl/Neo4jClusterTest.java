@@ -4,6 +4,7 @@ import nl.tudelft.dnainator.annotation.impl.AnnotationCollectionImpl;
 import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.core.impl.SequenceNodeFactoryImpl;
+import nl.tudelft.dnainator.graph.interestingness.Scores;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
@@ -145,6 +146,8 @@ public class Neo4jClusterTest {
 	 */
 	@Test
 	public void testEntireGraph() {
+		// Set the interestingness strategy to return the sequence length.
+		db.setInterestingnessStrategy(container -> container.getScore(Scores.SEQ_LENGTH));
 		// CHECKSTYLE.OFF: MagicNumber
 		Map<Integer, List<Cluster>> clusters = db.getAllClusters(0, 13, 11);
 		System.out.println(clusters);

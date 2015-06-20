@@ -1,6 +1,5 @@
 package nl.tudelft.dnainator.graph.impl.query;
 
-import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.graph.impl.Neo4jScoreContainer;
@@ -188,7 +187,7 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 	private Cluster createSingletonCluster(GraphDatabaseService service, Node n) {
 		EnrichedSequenceNode sn = new Neo4jSequenceNode(service, n);
 		return new Cluster((int) n.getProperty(SequenceProperties.RANK.name()),
-				Collections.singletonList(sn), sn.getAnnotations());
+				Collections.singletonList(sn));
 	}
 
 	private Cluster collapseBubble(GraphDatabaseService service,
@@ -202,10 +201,7 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 				nodesWithinBubble(service, sourceRank, sinkRank, source, sink)
 				.map(n -> new Neo4jSequenceNode(service, n))
 				.collect(Collectors.toList());
-		List<Annotation> annotations = nodes.stream()
-				.flatMap(e -> e.getAnnotations().stream())
-				.collect(Collectors.toList());
-		Cluster cluster = new Cluster(clusterRank, nodes, annotations);
+		Cluster cluster = new Cluster(clusterRank, nodes);
 		return cluster;
 	}
 

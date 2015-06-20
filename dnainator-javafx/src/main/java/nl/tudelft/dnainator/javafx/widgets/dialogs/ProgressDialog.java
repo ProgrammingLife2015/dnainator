@@ -11,6 +11,7 @@ import javafx.scene.control.ProgressBar;
  */
 public class ProgressDialog extends Alert {
 	private static final int PROGRESSBAR_WIDTH = 300;
+	private static final String STYLE = "/style.css";
 	private Node parent;
 	private ProgressBar progressBar;
 
@@ -30,7 +31,7 @@ public class ProgressDialog extends Alert {
 		this.setTitle("DNAinator");
 		this.setHeaderText("Loading...");
 		this.getButtonTypes().add(ButtonType.CANCEL);
-
+		this.getDialogPane().getStylesheets().add(getClass().getResource(STYLE).toString());
 		this.initOwner(parent.getScene().getWindow());
 		this.getDialogPane().setContent(progressBar);
 	}

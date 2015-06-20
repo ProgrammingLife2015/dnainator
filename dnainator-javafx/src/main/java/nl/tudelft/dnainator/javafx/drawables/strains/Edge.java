@@ -37,6 +37,7 @@ enum EdgePropertyTypes implements PropertyType {
  * The drawable edge is a line that can be bound to the a source and a destination cluster.
  */
 public class Edge extends Group implements Propertyable {
+	private static final double RADIUS = 20;
 	private Line edge;
 	private Map<PropertyType, String> properties;
 
@@ -79,7 +80,7 @@ public class Edge extends Group implements Propertyable {
 		edge.endXProperty().bind(src.translateXProperty());
 		properties.put(EdgePropertyTypes.DEST, destid);
 
-		VBox box = new VBox(new Text(destid), new Circle(2));
+		VBox box = new VBox(new Text(destid), new Circle(RADIUS));
 		box.setAlignment(Pos.CENTER);
 		box.translateXProperty().bind(edge.endXProperty().subtract(box.widthProperty().divide(2)));
 		box.translateYProperty().bind(edge.endYProperty().subtract(box.heightProperty()));

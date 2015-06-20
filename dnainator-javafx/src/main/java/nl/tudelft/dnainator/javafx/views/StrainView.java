@@ -111,7 +111,7 @@ public class StrainView extends AbstractView {
 			// This has to be done separately to first pan to where the sequence node should be
 			// in order for it to get loaded and drawn with a cluster drawable.
 			if (cluster != null) {
-					setPan(0, cluster.getTranslateY() * strain.getRankWidth());
+				translate.setY(-cluster.getTranslateY());
 			}
 		}
 	}

@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  * An implementation of {@link AbstractView} for displaying a phylogenetic tree.
  */
 public class PhylogeneticView extends AbstractView {
-	private static final int SCALE = 1;
+	private static final double SCALE = 0.1;
 	private ColorServer colorServer;
 
 	/**

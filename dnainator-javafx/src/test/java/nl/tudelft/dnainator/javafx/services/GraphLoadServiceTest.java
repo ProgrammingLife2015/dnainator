@@ -39,6 +39,7 @@ public class GraphLoadServiceTest {
 	private File edgeFile;
 	private File treeFile;
 	private File drFile;
+	private File gffFile;
 
 	/**
 	 * Setup the database and construct the graph.
@@ -63,13 +64,15 @@ public class GraphLoadServiceTest {
 			edgeFile = new File(getClass().getResource("/strains/test.edge.graph").toURI());
 			treeFile = new File(getClass().getResource("/strains/test.nwk").toURI());
 			drFile = new File(getClass().getResource("/annotations/dr_test.txt").toURI());
-		} catch (URISyntaxException e) {
+			gffFile  = File.createTempFile("foo", ".bar");			
+		} catch (URISyntaxException | IOException e) {
 			fail(e.getMessage());
 		}
 		loadService.setNodeFile(nodeFile);
 		loadService.setEdgeFile(edgeFile);
 		loadService.setNewickFile(treeFile);
 		loadService.setDRFile(drFile);
+		loadService.setGffFilePath(gffFile.getAbsolutePath());
 	}
 
 	/**
@@ -195,13 +198,54 @@ public class GraphLoadServiceTest {
 	public void testDrFileProperty() {
 		assertNotNull(loadService.drFileProperty());
 	}
+	
+	/**
+	 * Tests setEdgeFile().
+	 */
+	@Test
+	public void testSetGffFile() {
+		loadService.setGffFilePath("foo");
+		assertEquals("foo", loadService.getGffFilePath());
+	}
+
+	/**
+	 * Tests getEdgeFile().
+	 */
+	@Test
+	public void testGetGffFile() {
+		assertEquals(gffFile.getAbsolutePath(), loadService.getGffFilePath());
+	}
+
+	/**
+	 * Tests edgeFileProperty().
+	 */
+	@Test
+	public void testGffFileProperty() {
+		assertNotNull(loadService.gffFilePathProperty());
+	}
+
+	/**
+	 * Tests getEdgeFile().
+	 */
+	@Test
+	public void testGetDb() {
+		assertNotNull(loadService.getDatabase());
+	}
+
+	/**
+	 * Tests edgeFileProperty().
+	 */
+	@Test
+	public void testDbProperty() {
+		assertNotNull(loadService.databaseProperty());
+	}
 
 	/**
 	 * Performs the actual test, in that it initializes the CompletableFuture,
 	 * attaches the listeners and does the assertions.
-	 * @throws InterruptedException 
-	 * @throws ExecutionException 
-	 * @throws TimeoutException 
+	 * @throws InterruptedException when the completablefuture was interrupted
+	 * @throws ExecutionException when an error occurs in loading
+	 * @throws TimeoutException  when the completablefuture does not complete
 	 */
 	public void doTest() throws InterruptedException, ExecutionException, TimeoutException {
 		// Create a completableFuture to test the background task of the service. This
@@ -225,9 +269,9 @@ public class GraphLoadServiceTest {
 
 	/**
 	 * Tests loading a file properly.
-	 * @throws TimeoutException 
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
+	 * @throws InterruptedException when the completablefuture was interrupted
+	 * @throws ExecutionException when an error occurs in loading
+	 * @throws TimeoutException  when the completablefuture does not complete
 	 */
 	@Test
 	public void testProperFile() throws InterruptedException, ExecutionException, TimeoutException {
@@ -236,9 +280,9 @@ public class GraphLoadServiceTest {
 
 	/**
 	 * Tests loading a file that is not a node file.
-	 * @throws TimeoutException 
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
+	 * @throws InterruptedException when the completablefuture was interrupted
+	 * @throws ExecutionException when an error occurs in loading
+	 * @throws TimeoutException  when the completablefuture does not complete
 	 */
 	@Test(expected = ExecutionException.class)
 	public void notANodeFile() throws InterruptedException, ExecutionException, TimeoutException {
@@ -254,9 +298,9 @@ public class GraphLoadServiceTest {
 
 	/**
 	 * Tests loading a file that is not an edge file.
-	 * @throws TimeoutException 
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
+	 * @throws InterruptedException when the completablefuture was interrupted
+	 * @throws ExecutionException when an error occurs in loading
+	 * @throws TimeoutException  when the completablefuture does not complete
 	 */
 	@Test(expected = ExecutionException.class)
 	public void notAnEdgeFile() throws InterruptedException, ExecutionException, TimeoutException {

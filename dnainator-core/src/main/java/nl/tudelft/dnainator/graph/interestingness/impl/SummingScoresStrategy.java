@@ -10,14 +10,14 @@ import nl.tudelft.dnainator.graph.interestingness.Scores;
  * {@link Scores} together.
  */
 public class SummingScoresStrategy implements InterestingnessStrategy {
-
 	@Override
 	public int compute(ScoreContainer container) {
 		int sum = 0;
 		for (ScoreIdentifier id : Scores.values()) {
-			sum += container.getScore(id);
+			sum += id.applyImportanceModifier(container.getScore(id));
 		}
-		return sum;
+		// Clamp between 0 and 1000.
+		return Math.max(RANGE_LOWER, Math.min(sum, RANGE_UPPER));
 	}
 
 }
