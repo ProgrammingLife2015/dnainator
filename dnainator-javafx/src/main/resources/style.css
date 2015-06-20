@@ -166,21 +166,22 @@
 
 .common-node {
 	-fx-stroke: #a8a8a8;
-	-fx-stroke-width: .5;
+	-fx-stroke-width: 5;
 }
 
 .interesting-node {
 	-fx-stroke: #FF0000;
-	-fx-stroke-width: .5;
+	-fx-stroke-width: 5;
 }
 
-AbstractNode {
-	-fx-font-size: 4px;
+CollapsedNode Text,
+LeafNode Text {
+	-fx-font-size: 120pt;
 }
 
-AbstractNode Edge {
+InternalNode Edge {
 	-fx-stroke: #000000;
-	-fx-stroke-width: .2;
+	-fx-stroke-width: 20;
 }
 
 Label {
@@ -216,17 +217,25 @@ Pie Arc {
 	-fx-smooth: true;
 }
 
-Strain Edge {
-	-fx-font-size: 4px;
+.ghost {
+	-fx-font-size: 12pt;
+	-fx-opacity: 0.2;
 }
 
-Strain Edge Circle {
+.ghost Circle {
 	-fx-fill: #4C4C4C;
+	-fx-opacity: 0.2;
+}
+
+.ghost Line {
+	-fx-opacity: 0.2;
+	-fx-stroke: #000000;
+	-fx-stroke-width: 2;
 }
 
 Strain Edge Line {
 	-fx-stroke: #000000;
-	-fx-stroke-width: .2;
+	-fx-stroke-width: 2;
 }
 
 Strain Edge Line:hover {
@@ -245,11 +254,11 @@ StrainView, PhylogeneticView {
 }
 
 Gene {
-	-fx-font-size: 12px;
+	-fx-font-size: 12pt;
 	-fx-background-color: rgba(255, 255, 228, 0.8);
 	-fx-border-color: #D4D4D4;
 	-fx-border-style: solid;
-	-fx-border-width: 1;
+	-fx-border-width: 2;
 }
 
 Minimap .view {

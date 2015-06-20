@@ -13,9 +13,9 @@ import nl.tudelft.dnainator.javafx.widgets.dialogs.ExceptionDialog;
  * a label, displaying the source of the DNA strain it represents.
  */
 public class LeafNode extends AbstractNode {
-	protected static final double LEAFHEIGHT = 30;
-	protected static final int LABEL_X_OFFSET = 8;
-	protected static final int LABEL_Y_OFFSET = 4;
+	protected static final double LEAFHEIGHT = 300;
+	protected static final int LABEL_X_OFFSET = 80;
+	protected static final int LABEL_Y_OFFSET = 40;
 	private TreeNode node;
 	private Text label;
 	private ColorServer colorServer;

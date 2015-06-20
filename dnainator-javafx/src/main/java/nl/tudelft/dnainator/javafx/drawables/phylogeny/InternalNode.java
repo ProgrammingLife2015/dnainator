@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * It can be collapsed by means of a clicklistener.
  */
 public class InternalNode extends AbstractNode {
-	private static final double LEVELWIDTH = 150;
+	private static final double LEVELWIDTH = 1500;
 	private List<AbstractNode> children;
 	private List<Edge> outgoingEdges;
 
