@@ -198,10 +198,6 @@ LeafNode Text:hover {
 	-fx-opacity: 0.5;
 }
 
-Strain ClusterDrawable {
-	-fx-font-size: 4px;
-}
-
 Strain ClusterDrawable:hover {
 	-fx-scale-x: 1.2;
 	-fx-scale-y: 1.2;
@@ -216,10 +212,6 @@ Strain ClusterDrawable Circle {
 .ghost {
 	-fx-font-size: 12pt;
 	-fx-opacity: 0.2;
-}
-
-Strain Edge {
-	-fx-font-size: 4px;
 }
 
 .ghost Circle {
@@ -239,7 +231,7 @@ Strain Edge Line {
 }
 
 Strain Edge Line:hover {
-	-fx-stroke-width: 1;
+	-fx-stroke-width: 6;
 	-fx-opacity: 0.5;
 }
 
