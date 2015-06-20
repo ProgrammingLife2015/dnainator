@@ -3,6 +3,7 @@ package nl.tudelft.dnainator.javafx.services;
 import static nl.tudelft.dnainator.javafx.services.LoadServiceTestUtils.registerListeners;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
@@ -22,7 +23,7 @@ import org.neo4j.io.fs.FileUtils;
 import de.saxsys.javafx.test.JfxRunner;
 
 /**
- * Test class for the {@link NewickLoadService}.
+ * Test class for the {@link DBLoadService}.
  * <p>
  * See http://blog.buildpath.de/how-to-test-javafx-services/ for
  * an explanation on how to test JavaFX code.
@@ -77,9 +78,9 @@ public class DBLoadServiceTest {
 	/**
 	 * Performs the actual test, in that it initializes the CompletableFuture,
 	 * attaches the listeners and does the assertions.
-	 * @throws InterruptedException 
-	 * @throws ExecutionException 
-	 * @throws TimeoutException 
+	 * @throws InterruptedException when the completablefuture was interrupted
+	 * @throws ExecutionException when an error occurs in loading
+	 * @throws TimeoutException  when the completablefuture does not complete
 	 */
 	public void doTest() throws InterruptedException, ExecutionException, TimeoutException {
 		// Create a completableFuture to test the background task of the service. This
@@ -103,9 +104,9 @@ public class DBLoadServiceTest {
 	
 	/**
 	 * Tests loading a database properly.
-	 * @throws TimeoutException Thrown on timeout.
-	 * @throws ExecutionException Thrown when an exception occurs when trying to execute.
-	 * @throws InterruptedException Thrown when the service is interrupted.
+	 * @throws InterruptedException when the completablefuture was interrupted
+	 * @throws ExecutionException when an error occurs in loading
+	 * @throws TimeoutException  when the completablefuture does not complete
 	 */
 	@Test
 	public void testProperDatabase() throws InterruptedException, 
