@@ -59,8 +59,9 @@ public class Neo4jSequenceNode implements EnrichedSequenceNode {
 		this.scores = new HashMap<>();
 
 		try (Transaction tx = service.beginTx()) {
-			this.id  = (String) node.getProperty(SequenceProperties.ID.name());
-			basedist = (int)    node.getProperty(SequenceProperties.BASE_DIST.name());
+			this.id         = (String) node.getProperty(SequenceProperties.ID.name());
+			basedist        = (int) node.getProperty(SequenceProperties.BASE_DIST.name());
+			interestingness = (int) node.getProperty(SequenceProperties.INTERESTINGNESS.name(), 0);
 
 			node.getRelationships(RelTypes.NEXT, Direction.OUTGOING).forEach(e -> {
 				outgoing.add((String) e.getEndNode().getProperty(SequenceProperties.ID.name()));
@@ -137,7 +138,6 @@ public class Neo4jSequenceNode implements EnrichedSequenceNode {
 
 	@Override
 	public int getInterestingnessScore() {
-		load();
 		return interestingness;
 	}
 
@@ -159,7 +159,6 @@ public class Neo4jSequenceNode implements EnrichedSequenceNode {
 			for (ScoreIdentifier id : Scores.values()) {
 				scores.put(id, (Integer) node.getProperty(id.name(), 0));
 			}
-			interestingness = (int) node.getProperty(SequenceProperties.INTERESTINGNESS.name(), 0);
 			tx.success();
 		}
 

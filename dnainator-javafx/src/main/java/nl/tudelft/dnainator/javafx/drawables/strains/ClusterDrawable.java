@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 import javafx.collections.MapChangeListener;
 import javafx.scene.Group;
 import javafx.scene.shape.Circle;
-import javafx.scene.text.Text;
 
 /**
  * This enum represents all properties a Cluster can have.
@@ -32,7 +31,7 @@ enum ClusterPropertyTypes implements PropertyType {
 	SOURCES("Sources"),
 	STARTRANK("Start rank"),
 	BASEDIST("Start base"),
-	SCORE("Total interestingness score");
+	SCORE("Maximum interestingness score");
 
 	private String description;
 	private ClusterPropertyTypes(String description) {
@@ -60,7 +59,6 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 	private static final int INTERESTINGNESS_THRESHOLD = 600;
 	private Cluster cluster;
 	private Set<String> sources;
-	private Text label;
 	private Pie pie;
 	private Map<PropertyType, String> properties;
 	private int interestingness;
@@ -79,7 +77,6 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 		this.interestingness = cluster.getNodes().stream()
 				.mapToInt(e -> e.getInterestingnessScore())
 				.max().getAsInt();
-		label = new Text(Integer.toString(cluster.getNodes().size()));
 		setOnMouseClicked(e -> AbstractView.setLastClicked(this));
 		draw(colorServer);
 	}
@@ -88,7 +85,7 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 	 * Add all properties of a cluster to the property pane.
 	 */
 	private void initProperties() {
-		properties.put(ClusterPropertyTypes.TITLE, null);
+		properties.put(ClusterPropertyTypes.TITLE, cluster.getNodes().size() + " nodes");
 		properties.put(ClusterPropertyTypes.ID, cluster.getNodes().stream()
 								.map(e -> e.getId())
 								.collect(Collectors.toList()).toString());
@@ -107,12 +104,13 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 	 */
 	private void initSingletonProperties() {
 		EnrichedSequenceNode sn = cluster.getNodes().iterator().next();
+		String score = properties.remove(ClusterPropertyTypes.SCORE);
 		properties.put(ClusterPropertyTypes.BASEDIST, Integer.toString(sn.getBaseDistance()));
 		properties.put(ClusterPropertyTypes.STARTREF, Integer.toString(sn.getStartRef()));
 		properties.put(ClusterPropertyTypes.ENDREF, Integer.toString(sn.getEndRef()));
 		properties.put(ClusterPropertyTypes.SEQUENCE, sn.getSequence());
+		properties.put(ClusterPropertyTypes.SCORE, score);
 
-		properties.put(ClusterPropertyTypes.SCORE, Integer.toString(sn.getInterestingnessScore()));
 		sn.getScores().forEach((k, v) -> properties.put(k, Integer.toString(v)));
 	}
 
@@ -137,7 +135,6 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 		if (interestingness > INTERESTINGNESS_THRESHOLD) {
 			commonNode.getStyleClass().add("interesting-node");
 		}
-		getChildren().add(label);
 	}
 
 	/**
