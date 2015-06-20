@@ -243,9 +243,9 @@ public class GraphLoadServiceTest {
 	/**
 	 * Performs the actual test, in that it initializes the CompletableFuture,
 	 * attaches the listeners and does the assertions.
-	 * @throws InterruptedException 
-	 * @throws ExecutionException 
-	 * @throws TimeoutException 
+	 * @throws InterruptedException when the completablefuture was interrupted
+	 * @throws ExecutionException when an error occurs in loading
+	 * @throws TimeoutException  when the completablefuture does not complete
 	 */
 	public void doTest() throws InterruptedException, ExecutionException, TimeoutException {
 		// Create a completableFuture to test the background task of the service. This
@@ -269,9 +269,9 @@ public class GraphLoadServiceTest {
 
 	/**
 	 * Tests loading a file properly.
-	 * @throws TimeoutException 
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
+	 * @throws InterruptedException when the completablefuture was interrupted
+	 * @throws ExecutionException when an error occurs in loading
+	 * @throws TimeoutException  when the completablefuture does not complete
 	 */
 	@Test
 	public void testProperFile() throws InterruptedException, ExecutionException, TimeoutException {
@@ -280,9 +280,9 @@ public class GraphLoadServiceTest {
 
 	/**
 	 * Tests loading a file that is not a node file.
-	 * @throws TimeoutException 
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
+	 * @throws InterruptedException when the completablefuture was interrupted
+	 * @throws ExecutionException when an error occurs in loading
+	 * @throws TimeoutException  when the completablefuture does not complete
 	 */
 	@Test(expected = ExecutionException.class)
 	public void notANodeFile() throws InterruptedException, ExecutionException, TimeoutException {
@@ -298,9 +298,9 @@ public class GraphLoadServiceTest {
 
 	/**
 	 * Tests loading a file that is not an edge file.
-	 * @throws TimeoutException 
-	 * @throws ExecutionException 
-	 * @throws InterruptedException 
+	 * @throws InterruptedException when the completablefuture was interrupted
+	 * @throws ExecutionException when an error occurs in loading
+	 * @throws TimeoutException  when the completablefuture does not complete
 	 */
 	@Test(expected = ExecutionException.class)
 	public void notAnEdgeFile() throws InterruptedException, ExecutionException, TimeoutException {
