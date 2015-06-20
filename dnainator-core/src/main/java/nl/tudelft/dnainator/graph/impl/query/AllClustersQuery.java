@@ -127,8 +127,11 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 		return result;
 	}
 
+	private int recursionLevelGlobal = 0;
 	private void cluster(GraphDatabaseService service,
 			Iterable<Node> startNodes, int endRank, Map<Integer, List<Cluster>> acc) {
+		int recursionLevel = recursionLevelGlobal;
+		System.out.println("Begin Recursion level: " + recursionLevelGlobal++);
 		for (Node n : withinRange(service, startNodes, endRank, BubbleSkipper.get())) {
 			if (visited.contains(n.getId())) {
 				return;
@@ -146,7 +149,7 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 					this.startNodes.clear();
 					n.getRelationships(RelTypes.NEXT, Direction.OUTGOING)
 						.forEach(rel -> this.startNodes.add(rel.getEndNode()));
-					cluster(service, this.startNodes, sinkRank, acc);
+					cluster(service, this.startNodes, sinkRank - 1, acc);
 				} else {
 					System.out.println("Collapsed bubble: " + n.getProperty("ID"));
 					// Cluster the bubble.
@@ -157,6 +160,7 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 				putClusterInto(createSingletonCluster(service, n), acc);
 			}
 		}
+		System.out.println("End Recursion level: " + recursionLevel);
 	}
 
 	private boolean isSource(Node n) {
