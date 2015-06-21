@@ -2,9 +2,7 @@ package nl.tudelft.dnainator.graph;
 
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Edge;
-import nl.tudelft.dnainator.parser.EdgeParser;
-import nl.tudelft.dnainator.parser.NodeParser;
-import nl.tudelft.dnainator.parser.exceptions.ParseException;
+import nl.tudelft.dnainator.parser.Iterator;
 
 import java.io.IOException;
 
@@ -18,7 +16,7 @@ public interface GraphBuilder {
 	 * @param edge The edge containing the source and destination node.
 	 * @return the {@link GraphBuilder}, after adding the edge.
 	 */
-	GraphBuilder addEdge(Edge<String> edge);
+	GraphBuilder addEdge(Edge<?> edge);
 
 	/**
 	 * Add a {@link SequenceNode} to the graph.
@@ -29,14 +27,13 @@ public interface GraphBuilder {
 
 	/**
 	 * Construct a graph using the supplied parsers as a source for nodes and edges.
-	 * @param np The {@link NodeParser} to supply the nodes.
-	 * @param ep The {@link EdgeParser} to supply the edges.
+	 * @param np The {@link Iterator} to supply the nodes.
+	 * @param ep The {@link Iterator} to supply the edges.
 	 * @throws IOException If something goes wrong with IO while parsing.
-	 * @throws ParseException if one of the input files is invalid.
 	 * @return the {@link GraphBuilder}, after adding the nodes and edges.
 	 */
-	default GraphBuilder constructGraph(NodeParser np, EdgeParser ep)
-			throws IOException, ParseException {
+	default GraphBuilder constructGraph(Iterator<SequenceNode> np, Iterator<Edge<?>> ep)
+			throws IOException {
 		try {
 			while (np.hasNext()) {
 				addNode(np.next());

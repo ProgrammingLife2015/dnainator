@@ -4,20 +4,21 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
+import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
 import nl.tudelft.dnainator.annotation.DRMutationFactory;
-import nl.tudelft.dnainator.annotation.impl.AnnotationCollectionFactoryImpl;
+import nl.tudelft.dnainator.annotation.impl.AnnotationCollectionImpl;
+import nl.tudelft.dnainator.core.SequenceNode;
+import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.Neo4jBatchBuilder;
-import nl.tudelft.dnainator.parser.AnnotationParser;
-import nl.tudelft.dnainator.parser.EdgeParser;
-import nl.tudelft.dnainator.parser.NodeParser;
+import nl.tudelft.dnainator.parser.Iterator;
 import nl.tudelft.dnainator.parser.TreeParser;
 import nl.tudelft.dnainator.parser.exceptions.ParseException;
-import nl.tudelft.dnainator.parser.impl.DRMutationParserImpl;
-import nl.tudelft.dnainator.parser.impl.EdgeParserImpl;
-import nl.tudelft.dnainator.parser.impl.GFF3AnnotationParser;
-import nl.tudelft.dnainator.parser.impl.NodeParserImpl;
+import nl.tudelft.dnainator.parser.impl.DRMutationIterator;
+import nl.tudelft.dnainator.parser.impl.EdgeIterator;
+import nl.tudelft.dnainator.parser.impl.AnnotationIterator;
+import nl.tudelft.dnainator.parser.impl.NodeIterator;
 import nl.tudelft.dnainator.tree.TreeNode;
 
 import java.io.File;
@@ -200,15 +201,15 @@ public class GraphLoadService extends Service<Graph> {
 			protected Graph call() throws IOException, ParseException {
 				AnnotationCollection annotations;
 				if (gffFilePath.getValue() == null) {
-					annotations = new AnnotationCollectionFactoryImpl().build();
+					annotations = new AnnotationCollectionImpl();
 				} else {
-					AnnotationParser as = new GFF3AnnotationParser(gffFilePath.get());
-					annotations = new AnnotationCollectionFactoryImpl().build(as);
+					Iterator<Annotation> as = new AnnotationIterator(gffFilePath.get());
+					annotations = new AnnotationCollectionImpl(as);
 				}
 
 				if (drFile.getValue() != null) {
 					annotations = new DRMutationFactory().build(annotations,
-							new DRMutationParserImpl(drFile.get()));
+							new DRMutationIterator(drFile.get()));
 				}
 
 				TreeNode node = null;
@@ -216,8 +217,8 @@ public class GraphLoadService extends Service<Graph> {
 					node = new TreeParser(getNewickFile()).parse();
 				}
 
-				EdgeParser ep = new EdgeParserImpl(getEdgeFile());
-				NodeParser np = new NodeParserImpl(getNodeFile());
+				Iterator<Edge<?>> ep = new EdgeIterator(getEdgeFile());
+				Iterator<SequenceNode> np = new NodeIterator(getNodeFile());
 
 				return new Neo4jBatchBuilder(database.get(), annotations, node)
 					.constructGraph(np, ep).build();

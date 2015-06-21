@@ -30,7 +30,7 @@ final class ParserTestUtils {
 	 * @param expected the expected Edge.
 	 * @param actual the actual Edge.
 	 */
-	protected static void assertEdgeEquals(Edge<String> expected, Edge<String> actual) {
+	protected static void assertEdgeEquals(Edge<?> expected, Edge<?> actual) {
 		assertEquals(expected.getSource(), actual.getSource());
 		assertEquals(expected.getDest(), actual.getDest());
 	}

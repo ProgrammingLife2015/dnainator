@@ -7,7 +7,7 @@ import net.sf.jfasta.impl.FASTAFileReaderImpl;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.SequenceNodeFactory;
 import nl.tudelft.dnainator.core.impl.SequenceNodeFactoryImpl;
-import nl.tudelft.dnainator.parser.BufferedNodeParser;
+import nl.tudelft.dnainator.parser.BufferedIterator;
 import nl.tudelft.dnainator.parser.HeaderParser;
 import nl.tudelft.dnainator.parser.exceptions.InvalidHeaderFormatException;
 
@@ -20,43 +20,43 @@ import java.io.InputStreamReader;
 import static java.lang.Integer.parseInt;
 
 /**
- * A {@link BufferedNodeParser} which uses JFASTA's parser internally.
+ * A buffered {@link NodeIterator} that parses node files.
  */
-public class NodeParserImpl extends BufferedNodeParser {
+public class NodeIterator extends BufferedIterator<SequenceNode> {
 
 	private FASTAElementIterator it;
+	private SequenceNodeFactory sf;
+	private FASTAFileReader fr;
 
 	/**
-	 * Constructs a new NodeParserImpl.
-	 *
+	 * Constructs a {@link NodeIterator}, which reads from the given {@link File}.
 	 * @param f  The {@link File} from which to read.
-	 * @throws IOException If something goes wrong constructing.
+	 * @throws IOException	when file is not found or encoding is invalid
 	 */
-	public NodeParserImpl(File f) throws IOException {
+	public NodeIterator(File f) throws IOException {
 		this(new SequenceNodeFactoryImpl(), f);
 	}
 
 	/**
-	 * Constructs a new NodeParserImpl.
-	 *
-	 * @param f  The {@link File} from which to read.
+	 * Constructs a {@link EdgeIterator}, which reads from the given {@link BufferedReader}.
 	 * @param sf The {@link SequenceNodeFactory} used to created {@link SequenceNode}s.
-	 * @throws IOException If something goes wrong constructing.
+	 * @param f  The {@link File} from which to read.
+	 * @throws IOException	when file is not found or encoding is invalid
 	 */
-	public NodeParserImpl(SequenceNodeFactory sf, File f) throws IOException {
+	public NodeIterator(SequenceNodeFactory sf, File f) throws IOException {
 		this(sf, new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8")));
 	}
 
 	/**
-	 * Constructs a new JFASTAParser.
-	 *
+	 * Constructs a new {@link NodeIterator}.
 	 * @param br The {@link BufferedReader} from which to read.
 	 * @param sf The {@link SequenceNodeFactory} used to created {@link SequenceNode}s.
-	 * @throws IOException If something goes wrong constructing.
+	 * @throws IOException	when file is not found or encoding is invalid
 	 */
-	public NodeParserImpl(SequenceNodeFactory sf, BufferedReader br) throws IOException {
-		super(sf, br);
-		FASTAFileReader fr = new FASTAFileReaderImpl(this.br);
+	public NodeIterator(SequenceNodeFactory sf, BufferedReader br) throws IOException {
+		super(br);
+		this.sf = sf;
+		fr = new FASTAFileReaderImpl(this.br);
 		it = fr.getIterator();
 	}
 
@@ -73,4 +73,9 @@ public class NodeParserImpl extends BufferedNodeParser {
 				parseInt(p.next()), next.getSequence());
 	}
 
+	@Override
+	public void close() throws IOException {
+		fr.close();
+		super.close();
+	}
 }

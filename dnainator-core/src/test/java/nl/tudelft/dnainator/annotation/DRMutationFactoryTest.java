@@ -1,7 +1,7 @@
 package nl.tudelft.dnainator.annotation;
 
 import nl.tudelft.dnainator.annotation.impl.DRMutation;
-import nl.tudelft.dnainator.parser.impl.DRMutationParserImpl;
+import nl.tudelft.dnainator.parser.impl.DRMutationIterator;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +26,7 @@ public class DRMutationFactoryTest {
 	private void createDRMutations() throws IOException, URISyntaxException {
 		DRMutationFactory factory = new DRMutationFactory();
 		File testFile = new File(getClass().getResource("/annotations/dr_test.txt").toURI());
-		annotations = factory.build(annotations, new DRMutationParserImpl(testFile));
+		annotations = factory.build(annotations, new DRMutationIterator(testFile));
 	}
 
 	/**

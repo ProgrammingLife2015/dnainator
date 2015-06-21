@@ -2,7 +2,6 @@ package nl.tudelft.dnainator.graph.impl;
 
 import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
-import nl.tudelft.dnainator.annotation.AnnotationCollectionFactory;
 import nl.tudelft.dnainator.annotation.Range;
 import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.core.SequenceNode;
@@ -20,7 +19,7 @@ import nl.tudelft.dnainator.graph.interestingness.InterestingnessStrategy;
 import nl.tudelft.dnainator.graph.interestingness.Scores;
 import nl.tudelft.dnainator.graph.interestingness.impl.SummingScoresStrategy;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
-import nl.tudelft.dnainator.parser.AnnotationParser;
+import nl.tudelft.dnainator.parser.Iterator;
 import nl.tudelft.dnainator.tree.TreeNode;
 
 import org.neo4j.graphdb.Direction;
@@ -76,8 +75,7 @@ public final class Neo4jGraph implements Graph {
 	private InterestingnessStrategy is;
 
 	/**
-	 * Constructs a Neo4j database on the specified path, using
-	 * the default annotation collection factory ({@link AnnotationCollectionFactory}).
+	 * Constructs a Neo4j database on the specified path.
 	 * @param path			specified path
 	 */
 	public Neo4jGraph(String path) {
@@ -214,7 +212,7 @@ public final class Neo4jGraph implements Graph {
 	}
 
 	@Override
-	public void addAnnotations(AnnotationParser source) {
+	public void addAnnotations(Iterator<Annotation> source) {
 		execute(e -> addAnnotations(source));
 	}
 

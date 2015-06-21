@@ -1,7 +1,8 @@
 package nl.tudelft.dnainator.annotation;
 
-import nl.tudelft.dnainator.parser.AnnotationParser;
+import nl.tudelft.dnainator.parser.Iterator;
 
+import java.io.IOException;
 import java.util.Collection;
 
 /**
@@ -13,9 +14,13 @@ public interface AnnotationCollection {
 	 * Add annotations from a given source.
 	 * @param source The source of the annotations.
 	 */
-	default void addAnnotations(AnnotationParser source) {
-		while (source.hasNext()) {
-			addAnnotation(source.next());
+	default void addAnnotations(Iterator<Annotation> source) {
+		try {
+			while (source.hasNext()) {
+				addAnnotation(source.next());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 

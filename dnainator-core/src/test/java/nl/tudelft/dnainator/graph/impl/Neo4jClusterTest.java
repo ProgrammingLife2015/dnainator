@@ -1,14 +1,14 @@
 package nl.tudelft.dnainator.graph.impl;
 
 import nl.tudelft.dnainator.annotation.impl.AnnotationCollectionImpl;
+import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
+import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.core.impl.SequenceNodeFactoryImpl;
 import nl.tudelft.dnainator.graph.interestingness.Scores;
-import nl.tudelft.dnainator.parser.EdgeParser;
-import nl.tudelft.dnainator.parser.NodeParser;
-import nl.tudelft.dnainator.parser.exceptions.ParseException;
-import nl.tudelft.dnainator.parser.impl.EdgeParserImpl;
-import nl.tudelft.dnainator.parser.impl.NodeParserImpl;
+import nl.tudelft.dnainator.parser.Iterator;
+import nl.tudelft.dnainator.parser.impl.EdgeIterator;
+import nl.tudelft.dnainator.parser.impl.NodeIterator;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -49,14 +49,14 @@ public class Neo4jClusterTest {
 			edgeFile = Neo4jGraphTest.class.getResourceAsStream("/strains/cluster.edge.graph");
 //			nodeFile = new File("10_strains_graph/simple_graph.node.graph");
 //			edgeFile = new File("10_strains_graph/simple_graph.edge.graph");
-			NodeParser np = new NodeParserImpl(new SequenceNodeFactoryImpl(),
+			Iterator<SequenceNode> np = new NodeIterator(new SequenceNodeFactoryImpl(),
 					new BufferedReader(new InputStreamReader(nodeFile, "UTF-8")));
-			EdgeParser ep = new EdgeParserImpl(new BufferedReader(
+			Iterator<Edge<?>> ep = new EdgeIterator(new BufferedReader(
 							new InputStreamReader(edgeFile, "UTF-8")));
 			db = (Neo4jGraph) new Neo4jBatchBuilder(DB_PATH, new AnnotationCollectionImpl())
 				.constructGraph(np, ep)
 				.build();
-		} catch (IOException | ParseException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

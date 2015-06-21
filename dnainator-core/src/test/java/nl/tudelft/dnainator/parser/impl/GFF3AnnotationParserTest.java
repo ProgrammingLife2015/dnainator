@@ -1,6 +1,8 @@
 package nl.tudelft.dnainator.parser.impl;
 
-import nl.tudelft.dnainator.parser.AnnotationParser;
+import nl.tudelft.dnainator.annotation.Annotation;
+import nl.tudelft.dnainator.parser.Iterator;
+
 import org.junit.Test;
 
 import java.io.File;
@@ -23,11 +25,11 @@ public class GFF3AnnotationParserTest {
 	 * @throws IOException when the file could not be opened
 	 * @throws URISyntaxException when the uri is incorrect
 	 */
-	private AnnotationParser createParser(String resourceFilePath) throws IOException,
+	private Iterator<Annotation> createParser(String resourceFilePath) throws IOException,
 		URISyntaxException {
 		String gffFilePath = new File(getClass().getResource(resourceFilePath)
 				.toURI()).toString();
-		return new GFF3AnnotationParser(gffFilePath);
+		return new AnnotationIterator(gffFilePath);
 	}
 
 	/**
@@ -37,7 +39,7 @@ public class GFF3AnnotationParserTest {
 	 */
 	@Test
 	public void testIgnoreNonCDS() throws IOException, URISyntaxException {
-		AnnotationParser ap = createParser("/annotations/test.gff");
+		Iterator<Annotation> ap = createParser("/annotations/test.gff");
 		assertEquals("TEST2", ap.next().getGeneName());
 		assertEquals("TEST4", ap.next().getGeneName());
 	}
@@ -50,7 +52,7 @@ public class GFF3AnnotationParserTest {
 	 */
 	@Test(expected = NoSuchElementException.class)
 	public void testNoSuchElement() throws IOException, URISyntaxException {
-		AnnotationParser ap = createParser("/annotations/test.gff");
+		Iterator<Annotation> ap = createParser("/annotations/test.gff");
 		assertEquals("TEST2", ap.next().getGeneName());
 		assertEquals("TEST4", ap.next().getGeneName());
 		System.out.println(ap.next());
@@ -63,7 +65,7 @@ public class GFF3AnnotationParserTest {
 	 */
 	@Test
 	public void testHasNext() throws IOException, URISyntaxException {
-		AnnotationParser ap = createParser("/annotations/test.gff");
+		Iterator<Annotation> ap = createParser("/annotations/test.gff");
 		assertTrue(ap.hasNext());
 		ap.next();
 		assertTrue(ap.hasNext());
@@ -78,7 +80,7 @@ public class GFF3AnnotationParserTest {
 	 */
 	@Test
 	public void testNotHasNext() throws IOException, URISyntaxException {
-		AnnotationParser ap = createParser("/annotations/test_no_cds.gff");
+		Iterator<Annotation> ap = createParser("/annotations/test_no_cds.gff");
 		assertFalse(ap.hasNext());
 		assertFalse(ap.hasNext());
 	}

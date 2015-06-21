@@ -1,14 +1,12 @@
 package nl.tudelft.dnainator.parser;
 
-import nl.tudelft.dnainator.core.SequenceNode;
-import nl.tudelft.dnainator.parser.exceptions.InvalidHeaderFormatException;
-
 import java.io.IOException;
 
 /**
- * An interface for parsing nodes, using the Iterator pattern.
+ * A generic {@link Iterator} that throws exceptions.
+ * @param <T> the type this parser returns
  */
-public interface NodeParser {
+public interface Iterator<T> {
 
 	/**
 	 * Whether there's a next node to be parsed.
@@ -18,12 +16,11 @@ public interface NodeParser {
 	boolean hasNext() throws IOException;
 
 	/**
-	 * Get the next parsed {@link SequenceNode}.
-	 * @return the {@link SequenceNode} parsed.
+	 * Get the next parsed item.
+	 * @return the parsed item.
 	 * @throws IOException if something went wrong while reading.
-	 * @throws InvalidHeaderFormatException if the header of the node is invalid.
 	 */
-	SequenceNode next() throws IOException, InvalidHeaderFormatException;
+	T next() throws IOException;
 
 	/**
 	 * Tries to close the {@link java.io.BufferedReader}.

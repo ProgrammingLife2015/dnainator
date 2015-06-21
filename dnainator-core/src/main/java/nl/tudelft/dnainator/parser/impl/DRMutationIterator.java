@@ -1,7 +1,7 @@
 package nl.tudelft.dnainator.parser.impl;
 
 import nl.tudelft.dnainator.annotation.impl.DRMutation;
-import nl.tudelft.dnainator.parser.DRMutationParser;
+import nl.tudelft.dnainator.parser.BufferedIterator;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,25 +11,24 @@ import java.io.InputStreamReader;
 import java.util.NoSuchElementException;
 
 /**
- * An implementation for parsing the known drug resistant mutations file.
+ * An annotation iterator which parses known DR mutations.
  */
-public class DRMutationParserImpl implements DRMutationParser {
+public class DRMutationIterator extends BufferedIterator<DRMutation> {
 	private static final int TYPE_IDX = 0;
 	private static final int CHANGE_IDX = 1;
 	private static final int FILTER_IDX = 2;
 	private static final int POSITION_IDX = 3;
 
-	private BufferedReader br;
 	private DRMutation current;
 	private boolean needParse = true;
 
 	/**
-	 * Constructs a {@link DRMutation}, which reads from the given file.
+	 * Constructs a {@link DRMutationIterator}, which reads from the given file.
 	 * @param file The file to read from.
 	 * @throws IOException when the file is not found or invalid.
 	 */
-	public DRMutationParserImpl(File file) throws IOException {
-		br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+	public DRMutationIterator(File file) throws IOException {
+		super(new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8")));
 		current = null;
 		needParse = true;
 	}
