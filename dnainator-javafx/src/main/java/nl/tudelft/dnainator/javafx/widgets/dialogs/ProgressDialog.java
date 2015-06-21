@@ -21,7 +21,7 @@ public class ProgressDialog extends Alert {
 	 * @param parent The parent Node of this dialog.
 	 * @param service The service being watched.
 	 */
-	public ProgressDialog(Node parent, Service service) {
+	public ProgressDialog(Node parent, Service<?> service) {
 		super(AlertType.NONE);
 		this.parent = parent;
 		this.setOnCloseRequest(e -> service.cancel());
