@@ -74,9 +74,4 @@ public class DRMutationIterator extends BufferedIterator<Annotation> {
 		}
 		throw new NoSuchElementException();
 	}
-
-	@Override
-	public void close() throws IOException {
-		br.close();
-	}
 }
