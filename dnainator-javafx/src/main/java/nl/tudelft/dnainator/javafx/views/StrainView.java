@@ -140,4 +140,11 @@ public class StrainView extends AbstractView {
 	public StrainControl getStrainControl() {
 		return control;
 	}
+
+	/**
+	 * Toggles the visibility of the {@link StrainControl}.
+	 */
+	public void toggleStrainControl() {
+		control.setVisible(!control.isVisible());
+	}
 }

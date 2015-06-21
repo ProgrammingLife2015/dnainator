@@ -100,17 +100,12 @@ public class StrainControl extends VBox {
 		jumpTo.textProperty().addListener((obj, oldV, newV) -> {
 			resetPromptText(name);
 		});
-		if (jumpTo.getPromptText().equals(name) && jumpTo.isVisible()) {
-			jumpTo.setVisible(!jumpTo.isVisible());
-		} else {
-			jumpTo.clear();
-			jumpTo.setPrefColumnCount(name.length());
-			resetPromptText(name);
-			jumpTo.setVisible(true);
-			requestFocus();
-		}
+		jumpTo.clear();
+		jumpTo.setPrefColumnCount(name.length());
+		resetPromptText(name);
+		requestFocus();
 	}
-	
+
 	private void resetPromptText(String name) {
 		jumpTo.getStyleClass().remove(INVALIDPROMPT);
 		jumpTo.setPromptText(name);
@@ -129,7 +124,7 @@ public class StrainControl extends VBox {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Toggle the jump to node text field.
 	 */
