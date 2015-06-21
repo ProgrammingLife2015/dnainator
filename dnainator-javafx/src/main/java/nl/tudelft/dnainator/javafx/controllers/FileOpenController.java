@@ -17,6 +17,7 @@ import nl.tudelft.dnainator.javafx.widgets.animations.SlidingAnimation;
 import nl.tudelft.dnainator.javafx.widgets.animations.TransitionAnimation.Position;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.ExceptionDialog;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.ProgressDialog;
+import org.neo4j.io.fs.FileUtils;
 
 import java.io.File;
 
@@ -74,6 +75,14 @@ public class FileOpenController {
 		graphLoadService = new GraphLoadService();
 		graphLoadService.progressProperty().addListener((e, oldV, newV) -> {
 			progressDialog.setProgress(newV.doubleValue());
+		});
+		graphLoadService.setOnCancelled(e -> {
+			progressDialog.close();
+			try {
+				FileUtils.deleteRecursively(new File(graphLoadService.getDatabase()));
+			} catch (Exception exc) {
+				new ExceptionDialog(container.getParent(), exc, "Failed to delete database.");
+			}
 		});
 		graphLoadService.setOnFailed(e -> {
 			progressDialog.close();
@@ -154,7 +163,7 @@ public class FileOpenController {
 	 */
 	@SuppressWarnings("unused") @FXML
 	private void onOpenAction() {
-		progressDialog = new ProgressDialog(container.getParent());
+		progressDialog = new ProgressDialog(container.getParent(), graphLoadService);
 		resetTextFields();
 		animation.toggle();
 		if (graphLoadService.canLoad()) {

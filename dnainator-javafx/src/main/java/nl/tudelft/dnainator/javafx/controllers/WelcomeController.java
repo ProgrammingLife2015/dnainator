@@ -54,6 +54,9 @@ public class WelcomeController {
 	}
 
 	private void initDBLoad() {
+		dbload.setOnCancelled(e -> {
+			progressDialog.close();
+		});
 		dbload.setOnFailed(e -> {
 			progressDialog.close();
 			new ExceptionDialog(dblist.getParent(), dbload.getException(),
@@ -104,7 +107,7 @@ public class WelcomeController {
 			dirload.setDirectory(dir.getAbsolutePath());
 			dirload.restart();
 		} else {
-			progressDialog = new ProgressDialog(dblist.getParent());
+			progressDialog = new ProgressDialog(dblist.getParent(), dbload);
 			dbload.restart();
 			dirload.restart();
 		}
