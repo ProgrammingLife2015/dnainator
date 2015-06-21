@@ -27,8 +27,7 @@ public class GFF3AnnotationParserTest {
 	 */
 	private Iterator<Annotation> createParser(String resourceFilePath) throws IOException,
 		URISyntaxException {
-		String gffFilePath = new File(getClass().getResource(resourceFilePath)
-				.toURI()).toString();
+		File gffFilePath = new File(getClass().getResource(resourceFilePath).toURI());
 		return new AnnotationIterator(gffFilePath);
 	}
 

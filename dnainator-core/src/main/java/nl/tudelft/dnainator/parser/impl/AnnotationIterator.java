@@ -23,11 +23,11 @@ public class AnnotationIterator implements Iterator<Annotation> {
 
 	/**
 	 * Constructs a {@link AnnotationIterator}, which reads from the given {@link File}.
-	 * @param filename	The filename to read from.
+	 * @param file	The file to read from.
 	 * @throws IOException	when file is not found or encoding is invalid
 	 */
-	public AnnotationIterator(String filename) throws IOException {
-		FeatureList reader = GFF3Reader.read(filename);
+	public AnnotationIterator(File file) throws IOException {
+		FeatureList reader = GFF3Reader.read(file.getAbsolutePath());
 		delegate = reader.iterator();
 		next = null;
 	}

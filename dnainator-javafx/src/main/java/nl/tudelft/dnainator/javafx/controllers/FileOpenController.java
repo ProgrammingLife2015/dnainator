@@ -72,6 +72,9 @@ public class FileOpenController {
 	 */
 	private void setupServices() {
 		graphLoadService = new GraphLoadService();
+		graphLoadService.progressProperty().addListener((e, oldV, newV) -> {
+			progressDialog.setProgress(newV.doubleValue());
+		});
 		graphLoadService.setOnFailed(e -> {
 			progressDialog.close();
 			new ExceptionDialog(container.getParent(), graphLoadService.getException(),
@@ -100,10 +103,9 @@ public class FileOpenController {
 	 */
 	@SuppressWarnings("unused") @FXML
 	private void onNodeFieldClicked() {
-		File nodeFile = selectFile("Node file", NODE);
+		File nodeFile = selectFile("Node file", NODE,
+					nodeField, graphLoadService.nodeFileProperty());
 		if (nodeFile != null) {
-			graphLoadService.setNodeFile(nodeFile);
-			nodeField.setText(graphLoadService.getNodeFile().getAbsolutePath());
 			graphLoadService.setEdgeFile(openEdgeFile(nodeFile.getPath()));
 			edgeField.setText(graphLoadService.getEdgeFile().getAbsolutePath());
 		}
@@ -115,10 +117,9 @@ public class FileOpenController {
 	 */
 	@SuppressWarnings("unused") @FXML
 	private void onEdgeFieldClicked() {
-		File edgeFile = selectFile("Edge file", EDGE);
+		File edgeFile = selectFile("Edge file", EDGE,
+					edgeField, graphLoadService.edgeFileProperty());
 		if (edgeFile != null) {
-			graphLoadService.setEdgeFile(edgeFile);
-			edgeField.setText(graphLoadService.getEdgeFile().getAbsolutePath());
 			graphLoadService.setNodeFile(openNodeFile(edgeFile.getPath()));
 			nodeField.setText(graphLoadService.getNodeFile().getAbsolutePath());
 		}
@@ -130,11 +131,7 @@ public class FileOpenController {
 	 */
 	@SuppressWarnings("unused") @FXML
 	private void onNewickFieldClicked() {
-		File newickFile = selectFile("Newick file", NEWICK);
-		if (newickFile != null) {
-			graphLoadService.setNewickFile(newickFile);
-			newickField.setText(graphLoadService.getNewickFile().getAbsolutePath());
-		}
+		selectFile("Newick file", NEWICK, newickField, graphLoadService.newickFileProperty());
 	}
 
 	/*
@@ -143,20 +140,12 @@ public class FileOpenController {
 	 */
 	@SuppressWarnings("unused") @FXML
 	private void onGFFFieldClicked() {
-		File gffFile = selectFile("GFF file", GFF);
-		if (gffFile != null) {
-			graphLoadService.setGffFilePath(gffFile.getAbsolutePath());
-			gffField.setText(graphLoadService.getGffFilePath());
-		}
+		selectFile("GFF file", GFF, gffField, graphLoadService.gffFileProperty());
 	}
 
 	@SuppressWarnings("unused") @FXML
 	private void onDRFieldClicked() {
-		File drFile = selectFile("Drug resistant mutations file", DR);
-		if (drFile != null) {
-			graphLoadService.setDRFile(drFile);
-			drField.setText(graphLoadService.getDrFile().getAbsolutePath());
-		}
+		selectFile("DR mutations file", DR, drField, graphLoadService.drFileProperty());
 	}
 
 	/*
@@ -168,21 +157,9 @@ public class FileOpenController {
 		progressDialog = new ProgressDialog(container.getParent());
 		resetTextFields();
 		animation.toggle();
-		if (graphLoadService.getGffFilePath() != null
-				&& graphLoadService.getNodeFile() != null
-				&& graphLoadService.getEdgeFile() != null
-				&& graphLoadService.getNewickFile() != null) {
+		if (graphLoadService.canLoad()) {
 			graphLoadService.setDatabase(graphLoadService.getNewPath());
 			graphLoadService.restart();
-
-			curNewickLabel.setText(graphLoadService.getNewickFile().getAbsolutePath());
-			curGffLabel.setText(graphLoadService.getGffFilePath());
-			curNodeLabel.setText(graphLoadService.getNodeFile().getAbsolutePath());
-			curEdgeLabel.setText(graphLoadService.getEdgeFile().getAbsolutePath());
-
-			if (graphLoadService.getDrFile() != null) {
-				curDrLabel.setText(graphLoadService.getDrFile().getAbsolutePath());
-			}
 		}
 	}
 
@@ -190,11 +167,12 @@ public class FileOpenController {
 	@SuppressWarnings("unused") @FXML
 	private void onCancelAction(ActionEvent actionEvent) {
 		animation.toggle();
-		graphLoadService.setGffFilePath(null);
+		graphLoadService.setGffFile(null);
 		graphLoadService.setNodeFile(null);
 		graphLoadService.setEdgeFile(null);
 		graphLoadService.setNewickFile(null);
 		graphLoadService.setDRFile(null);
+		graphLoadService.cancel();
 		resetTextFields();
 	}
 
@@ -210,16 +188,25 @@ public class FileOpenController {
 	 * Sets up the {@link FileChooser} to use have the specified title and to use the
 	 * given extension as a filter.
 	 *
-	 * @param title     The title of the {@link FileChooser}.
-	 * @param extension The value to filter for the
-	 *                  {@link javafx.stage.FileChooser.ExtensionFilter}.
+	 * @param title          The title of the {@link FileChooser}.
+	 * @param extension      The value to filter for the
+	 *                       {@link javafx.stage.FileChooser.ExtensionFilter}.
+	 * @param field          The {@link TextField} that has to be updated
+	 * @param objectProperty The file property that has to be set
 	 * @return The selected file, or null if none is chosen.
 	 */
-	private File selectFile(String title, String extension) {
+	private File selectFile(String title, String extension,
+				TextField field, ObjectProperty<File> objectProperty) {
 		fileChooser.setTitle(title);
 		fileChooser.getExtensionFilters().setAll(
 				new FileChooser.ExtensionFilter(title, "*" + extension));
-		return fileChooser.showOpenDialog(container.getScene().getWindow());
+
+		File file = fileChooser.showOpenDialog(container.getScene().getWindow());
+		if (file != null) {
+			objectProperty.setValue(file);
+			field.setText(file.getAbsolutePath());
+		}
+		return file;
 	}
 
 	/**

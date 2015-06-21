@@ -40,4 +40,12 @@ public class ProgressDialog extends Alert {
 		progressBar = new ProgressBar();
 		progressBar.setPrefWidth(PROGRESSBAR_WIDTH);
 	}
+
+	/**
+	 * Set the progress of this dialog.
+	 * @param progress	the progress
+	 */
+	public void setProgress(double progress) {
+		progressBar.setProgress(progress);
+	}
 }

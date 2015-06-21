@@ -1,5 +1,6 @@
 package nl.tudelft.dnainator.javafx.controllers;
 
+import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.javafx.ColorServer;
 import nl.tudelft.dnainator.javafx.views.AbstractView;
 import nl.tudelft.dnainator.javafx.views.PhylogeneticView;
@@ -22,47 +23,38 @@ import javafx.scene.layout.BorderPane;
  * </p>
  */
 public class WindowController {
-	@SuppressWarnings("unused") @FXML
-	private BorderPane root;
-	@SuppressWarnings("unused") @FXML
-	private FileOpenController fileOpenController;
-	@SuppressWarnings("unused") @FXML
-	private WelcomeController welcomeController;
-	@SuppressWarnings("unused") @FXML
-	private PropertyPaneController propertyPaneController;
-	@SuppressWarnings("unused") @FXML
-	private Menu menuFile;
-	@SuppressWarnings("unused") @FXML
-	private Menu menuView;
-	@SuppressWarnings("unused") @FXML
-	private Menu menuNavigate;
-	@SuppressWarnings("unused") @FXML
-	private Menu menuHelp;
+	@SuppressWarnings("unused") @FXML private FileOpenController fileOpenController;
+	@SuppressWarnings("unused") @FXML private WelcomeController welcomeController;
+	@SuppressWarnings("unused") @FXML private PropertyPaneController propertyPaneController;
+
+	@SuppressWarnings("unused") @FXML private BorderPane root;
+
+	@SuppressWarnings("unused") @FXML private Menu menuFile;
+	@SuppressWarnings("unused") @FXML private Menu menuView;
+	@SuppressWarnings("unused") @FXML private Menu menuNavigate;
+	@SuppressWarnings("unused") @FXML private Menu menuHelp;
 
 	private StrainView strainView;
 	private PhylogeneticView phyloView;
 
 	@SuppressWarnings("unused") @FXML
 	private void initialize() {
-		ColorServer colorServer = new ColorServer();
-		fileOpenController.graphProperty().addListener((obj, oldV, newV) -> {
-			strainView = new StrainView(colorServer, newV);
-			phyloView = new PhylogeneticView(colorServer, newV.getTree());
-			constructView();
-		});
-		welcomeController.currentDBProperty().addListener((obj, oldV, newV) -> {
-			strainView = new StrainView(colorServer, newV);
-			phyloView = new PhylogeneticView(colorServer, newV.getTree());
-			constructView();
-		});
+		fileOpenController.graphProperty().addListener((obj, oldV, newV) -> constructView(newV));
+		welcomeController.currentDBProperty().addListener((obj, oldV, newV) -> constructView(newV));
 	}
 	
-	private void constructView() {
+	private void constructView(Graph newV) {
+		ColorServer colorServer = new ColorServer();
+		strainView = new StrainView(colorServer, newV);
+		phyloView = new PhylogeneticView(colorServer, newV.getTree());
+
 		SplitPane splitPane = new SplitPane(strainView, phyloView);
 		splitPane.setOrientation(Orientation.VERTICAL);
 		root.setCenter(splitPane);
+
 		AbstractView.lastClickedProperty().addListener(
 				(ob, ov, nv) -> propertyPaneController.update(nv));
+
 		enableAllMenuItems();
 	}
 	

@@ -72,7 +72,7 @@ public class GraphLoadServiceTest {
 		loadService.setEdgeFile(edgeFile);
 		loadService.setNewickFile(treeFile);
 		loadService.setDRFile(drFile);
-		loadService.setGffFilePath(gffFile.getAbsolutePath());
+		loadService.setGffFile(gffFile);
 	}
 
 	/**
@@ -204,8 +204,14 @@ public class GraphLoadServiceTest {
 	 */
 	@Test
 	public void testSetGffFile() {
-		loadService.setGffFilePath("foo");
-		assertEquals("foo", loadService.getGffFilePath());
+		try {
+			File foo = File.createTempFile("foo", ".bar");
+			loadService.setNewickFile(foo);
+			assertEquals(foo, loadService.getNewickFile());
+			foo.delete();
+		} catch (IOException e) {
+			fail(e.getMessage());
+		}
 	}
 
 	/**
@@ -213,7 +219,7 @@ public class GraphLoadServiceTest {
 	 */
 	@Test
 	public void testGetGffFile() {
-		assertEquals(gffFile.getAbsolutePath(), loadService.getGffFilePath());
+		assertEquals(gffFile, loadService.getGffFile());
 	}
 
 	/**
@@ -221,7 +227,7 @@ public class GraphLoadServiceTest {
 	 */
 	@Test
 	public void testGffFileProperty() {
-		assertNotNull(loadService.gffFilePathProperty());
+		assertNotNull(loadService.gffFileProperty());
 	}
 
 	/**
