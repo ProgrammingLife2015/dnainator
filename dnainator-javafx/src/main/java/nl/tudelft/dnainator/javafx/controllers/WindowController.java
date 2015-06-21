@@ -119,7 +119,17 @@ public class WindowController {
 	private void toggleProperties(ActionEvent e) {
 		propertyPaneController.toggle();
 	}
-	
+
+	@SuppressWarnings("unused") @FXML
+	private void toggleMinimap(ActionEvent e) {
+		strainView.toggleMinimap();
+	}
+
+	@SuppressWarnings("unused") @FXML
+	private void toggleJumpToAction(ActionEvent e) {
+		strainView.toggleStrainControl();
+	}
+
 	@SuppressWarnings("unused") @FXML
 	private void jumpNodeAction(ActionEvent e) {
 		strainView.getStrainControl().toggleJumpNode();

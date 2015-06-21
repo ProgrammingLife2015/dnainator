@@ -20,6 +20,7 @@ public class StrainView extends AbstractView {
 	private static final int GENE_LENGTH = 5;
 	private Graph graph;
 	private Strain strain;
+	private Minimap minimap;
 	private StrainControl control;
 
 	/**
@@ -38,7 +39,7 @@ public class StrainView extends AbstractView {
 	}
 
 	private Minimap setupMinimap(Strain strain, Graph graph) {
-		Minimap minimap = new Minimap(strain, graph, this);
+		minimap = new Minimap(strain, graph, this);
 		minimap.translateXProperty().bind(translateXProperty());
 		minimap.translateYProperty().bind(heightProperty().subtract(minimap.heightProperty()));
 		widthProperty().addListener((obj, oldV, newV) -> minimap.setPrefWidth(newV.doubleValue()));
@@ -135,9 +136,23 @@ public class StrainView extends AbstractView {
 	}
 
 	/**
+	 * Toggles the visibility of the {@link Minimap}.
+	 */
+	public void toggleMinimap() {
+		minimap.setVisible(!minimap.isVisible());
+	}
+
+	/**
 	 * @return the {@link StrainControl} of the {@link StrainView}.
 	 */
 	public StrainControl getStrainControl() {
 		return control;
+	}
+
+	/**
+	 * Toggles the visibility of the {@link StrainControl}.
+	 */
+	public void toggleStrainControl() {
+		control.setVisible(!control.isVisible());
 	}
 }
