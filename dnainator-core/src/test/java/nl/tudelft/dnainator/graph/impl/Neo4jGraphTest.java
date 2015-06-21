@@ -3,12 +3,12 @@ package nl.tudelft.dnainator.graph.impl;
 import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.annotation.impl.AnnotationCollectionImpl;
 import nl.tudelft.dnainator.annotation.impl.AnnotationImpl;
-import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.core.impl.SequenceNodeFactoryImpl;
 import nl.tudelft.dnainator.core.impl.SequenceNodeImpl;
 import nl.tudelft.dnainator.graph.impl.command.AnalyzeCommand;
+import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 import nl.tudelft.dnainator.parser.EdgeParser;
 import nl.tudelft.dnainator.parser.NodeParser;
@@ -22,7 +22,10 @@ import nl.tudelft.dnainator.tree.TreeNode;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.neo4j.graphdb.Direction;
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Node;
+import org.neo4j.helpers.collection.IteratorUtil;
 import org.neo4j.io.fs.FileUtils;
 
 import java.io.BufferedReader;
@@ -37,10 +40,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
-import java.util.stream.Collectors;
 
+import static nl.tudelft.dnainator.graph.impl.Neo4jTestUtils.assertUnorderedIDEquals;
 import static nl.tudelft.dnainator.graph.impl.properties.SequenceProperties.ID;
-
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -111,9 +113,9 @@ public class Neo4jGraphTest {
 	@Test
 	public void testNodeLookup() {
 		// CHECKSTYLE.OFF: MagicNumber
-		SequenceNode node1 = new SequenceNodeImpl("2", Arrays.asList("ASDF", "ASD"), 1, 5, "TATA");
-		SequenceNode node2 = new SequenceNodeImpl("3", Arrays.asList("ASDF"), 5, 9, "TATA");
-		SequenceNode node3 = new SequenceNodeImpl("5", Arrays.asList("ASDF"), 4, 8, "TATA");
+		SequenceNode node1 = new SequenceNodeImpl("2", Arrays.asList("A", "B", "C"), 2, 6, "TATA");
+		SequenceNode node2 = new SequenceNodeImpl("3", Arrays.asList("C"), 5, 9, "TATA");
+		SequenceNode node3 = new SequenceNodeImpl("5", Arrays.asList("A", "B", "C"), 4, 8, "TATA");
 		assertEquals(node1, db.getNode("2"));
 		assertEquals(node2, db.getNode("3"));
 		assertEquals(node3, db.getNode("5"));
@@ -126,7 +128,8 @@ public class Neo4jGraphTest {
 	@Test
 	public void testRootLookup() {
 		// CHECKSTYLE.OFF: MagicNumber
-		SequenceNode root = new SequenceNodeImpl("5", Arrays.asList("ASDF"), 4, 8, "TATA");
+		SequenceNode root = new SequenceNodeImpl("1", Arrays.asList("A", "B", "C", "D"),
+				1, 5, "TATA");
 		assertEquals(root, db.getRootNode());
 		// CHECKSTYLE.ON: MagicNumber
 	}
@@ -169,17 +172,26 @@ public class Neo4jGraphTest {
 	 */
 	@Test
 	public void testRanks() {
+		// CHECKSTYLE.OFF: MagicNumber
 		Set<String> rank0Expect = new HashSet<>();
-		Collections.addAll(rank0Expect, "7", "5", "3");
+		Collections.addAll(rank0Expect, "1");
 		assertUnorderedIDEquals(rank0Expect, db.getRank(0));
-
 		Set<String> rank1Expect = new HashSet<>();
-		Collections.addAll(rank1Expect, "11", "8");
+		Collections.addAll(rank1Expect, "11", "2");
 		assertUnorderedIDEquals(rank1Expect, db.getRank(1));
-
 		Set<String> rank2Expect = new HashSet<>();
-		Collections.addAll(rank2Expect, "2", "9", "10");
+		Collections.addAll(rank2Expect, "13", "14", "15", "3", "7");
 		assertUnorderedIDEquals(rank2Expect, db.getRank(2));
+		Set<String> rank3Expect = new HashSet<>();
+		Collections.addAll(rank3Expect, "12", "4", "8", "10");
+		assertUnorderedIDEquals(rank3Expect, db.getRank(3));
+		Set<String> rank4Expect = new HashSet<>();
+		Collections.addAll(rank4Expect, "5");
+		assertUnorderedIDEquals(rank4Expect, db.getRank(4));
+		Set<String> rank5Expect = new HashSet<>();
+		Collections.addAll(rank5Expect, "6");
+		assertUnorderedIDEquals(rank5Expect, db.getRank(5));
+		// CHECKSTYLE.ON: MagicNumber
 	}
 
 	/**
@@ -192,7 +204,7 @@ public class Neo4jGraphTest {
 			.fromRank(0)
 			.toRank(2);
 		Set<String> expect = new HashSet<>();
-		Collections.addAll(expect, "7", "5", "3", "11", "8");
+		Collections.addAll(expect, "1", "11", "2");
 		assertUnorderedIDEquals(expect, db.queryNodes(qd));
 	}
 
@@ -229,7 +241,7 @@ public class Neo4jGraphTest {
 			.filter((sn) -> Integer.parseInt(sn.getId()) > 8);
 		// CHECKSTYLE.ON: MagicNumber
 		Set<String> expect = new HashSet<>();
-		Collections.addAll(expect, "9", "10", "11");
+		Collections.addAll(expect, "10", "11", "12", "13", "14", "15");
 		assertUnorderedIDEquals(expect, db.queryNodes(qd));
 	}
 
@@ -239,19 +251,19 @@ public class Neo4jGraphTest {
 	@Test
 	public void testQuerySources() {
 		GraphQueryDescription qd = new GraphQueryDescription()
-			.containsSource("ASDF");
+			.containsSource("A");
 		Set<String> expect = new HashSet<>();
-		Collections.addAll(expect, "2", "5", "3", "7", "8", "11");
+		Collections.addAll(expect, "1", "2", "5", "6", "7", "8");
 		assertUnorderedIDEquals(expect, db.queryNodes(qd));
 
 		// Also test for multiple sources (reusing the old one)
-		qd = qd.containsSource("ASD");
-		Collections.addAll(expect, "9", "10");
+		qd = qd.containsSource("B");
+		Collections.addAll(expect, "10");
 		assertUnorderedIDEquals(expect, db.queryNodes(qd));
 
 		// Search non-existing source.
 		qd = new GraphQueryDescription()
-			.containsSource("FOO");
+			.containsSource("NONEXISTINGSOURCE");
 		// Expect an empty result
 		expect = new HashSet<>();
 		assertUnorderedIDEquals(expect, db.queryNodes(qd));
@@ -283,10 +295,29 @@ public class Neo4jGraphTest {
 		assertTrue(as.contains(last));
 	}
 
-	private static void assertUnorderedIDEquals(Collection<String> expected,
-			Collection<EnrichedSequenceNode> actual) {
-		assertEquals(expected.stream().collect(Collectors.toSet()),
-				actual.stream().map(sn -> sn.getId()).collect(Collectors.toSet()));
+	/**
+	 * Test bubble creation.
+	 */
+	@Test
+	public void testBubbles() {
+		db.execute(service -> {
+			assertBubble(service, "1", "6");
+			assertBubble(service, "2", "5");
+			// Tests for one source node across multiple bubbles, not able to implement right now.
+			//assertBubble(service, "2", "4");
+			assertBubble(service, "7", "5");
+			assertBubble(service, "11", "12");
+		});
+	}
+
+	private void assertBubble(GraphDatabaseService service, String source, String sink) {
+		Node sourceN = service.findNode(NodeLabels.BUBBLE_SOURCE,
+				SequenceProperties.ID.name(), source);
+		Node sinkN = service.findNode(NodeLabels.NODE, SequenceProperties.ID.name(), sink);
+		assertTrue(IteratorUtil.asCollection(sourceN.getRelationships(RelTypes.BUBBLE_SOURCE_OF,
+				Direction.OUTGOING)).stream()
+				.map(rel -> rel.getEndNode())
+				.anyMatch(n -> n.getId() == sinkN.getId()));
 	}
 
 	/**

@@ -10,4 +10,6 @@ public enum RelTypes implements RelationshipType {
 	ANNOTATED,
 	NEXT,
 	SOURCE,
+	MUTATION,
+	BUBBLE_SOURCE_OF
 }

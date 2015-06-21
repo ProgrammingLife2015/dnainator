@@ -169,9 +169,9 @@ public final class Neo4jGraph implements Graph {
 	}
 
 	@Override
-	public Map<Integer, List<Cluster>> getAllClusters(List<String> startNodes,
+	public Map<Integer, List<Cluster>> getAllClusters(int start,
 							int end, int threshold) {
-		return query(new AllClustersQuery(startNodes, end, threshold, is));
+		return query(new AllClustersQuery(start, end, threshold, is));
 	}
 
 	@Override
@@ -268,8 +268,12 @@ public final class Neo4jGraph implements Graph {
 	 * order, to assign ranks and scores to nodes.
 	 */
 	protected void analyze() {
-		// Rank the graph.
-		execute(e -> new AnalyzeCommand(rootIterator()).execute(e));
+		ResourceIterator<Node> roots;
+		try (Transaction tx = service.beginTx()) {
+			roots = rootIterator();
+			new AnalyzeCommand(roots).execute(service);
+			tx.success();
+		}
 	}
 
 	@Override

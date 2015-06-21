@@ -5,7 +5,6 @@ import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.annotation.Range;
-import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.javafx.ColorServer;
@@ -83,12 +82,8 @@ public class Strain extends SemanticDrawable {
 				+ " with zoom level " + zoom + " (" + interestingness + ": " + lastThreshold + ")");
 
 		List<Annotation> annotations = getSortedAnnotations(ranks);
-		List<String> roots = graph.getRank(lastLoaded.getX()).stream()
-				.map(SequenceNode::getId)
-				.sorted((s1, s2) -> s1.compareTo(s2))
-				.collect(Collectors.toList());
-		Map<Integer, List<Cluster>> result = graph.getAllClusters(roots, lastLoaded.getY(),
-				lastThreshold.get());
+		Map<Integer, List<Cluster>> result = graph.getAllClusters(lastLoaded.getX(),
+				lastLoaded.getY(), lastThreshold.get());
 
 		content.getChildren().clear();
 		clusters.clear();

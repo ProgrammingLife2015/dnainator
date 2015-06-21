@@ -1,16 +1,28 @@
-> 2 | ASDF,ASD | 1 | 5
+> 1 | A,B,C,D | 1 | 5
 TATA
-> 9 | ASD | 2 | 6
+> 2 | A,B,C | 2 | 6
 TATA
-> 10 | ASD | 3 | 7
+> 3 | C | 5 | 9
 TATA
-> 5 | ASDF | 4 | 8
+> 4 | C | 4 | 8
 TATA
-> 3 | ASDF | 5 | 9
+> 5 | A,B,C | 4 | 8
 TATA
-> 7 | ASDF | 6 | 10
+> 6 | A,B,C,D | 6 | 10
 TATA
-> 11 | ASD,FDSA,ASDF | 7 | 11
+> 7 | A,B | 7 | 11
 TATA
-> 8 | ASDF | 8 | 12
+> 8 | A | 8 | 12
+TATA
+> 10 | B | 8 | 12
+TATA
+> 11 | D | 8 | 12
+TATA
+> 12 | D | 8 | 12
+TATA
+> 13 | D | 8 | 12
+TATA
+> 14 | D | 8 | 12
+TATA
+> 15 | D | 8 | 12
 TATA
