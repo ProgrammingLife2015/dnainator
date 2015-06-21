@@ -26,28 +26,28 @@ public class DirectoryLoadService extends Service<ObservableList<String>> {
 	private ObjectProperty<String> directory = new SimpleObjectProperty<>(this, "database");
 
 	/**
-	 * Construct a DBLoadService with a default database path.
+	 * Construct a DirectoryLoadService with a default directory path.
 	 */
 	public DirectoryLoadService() {
 		setDirectory(DNAinator.DEFAULT_DB_PATH);
 	}
 
 	/**
-	 * @param dbpath	The database to use.
+	 * @param scanpath	The directory to scan.
 	 */
-	public final void setDirectory(String dbpath) {
-		directory.set(dbpath);
+	public final void setDirectory(String scanpath) {
+		directory.set(scanpath);
 	}
 
 	/**
-	 * @return The database to use, if any.
+	 * @return The directory to scan, if any.
 	 */
 	public final String getDirectory() {
 		return directory.get();
 	}
 
 	/**
-	 * @return The database property.
+	 * @return The directory property.
 	 */
 	public ObjectProperty<String> directoryProperty() {
 		return directory;

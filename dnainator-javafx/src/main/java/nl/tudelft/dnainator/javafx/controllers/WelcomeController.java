@@ -32,7 +32,6 @@ public class WelcomeController {
 	private DirectoryChooser dirChooser;
 	private ProgressDialog progressDialog;
 	private ObservableList<String> databases;
-	private static final String DEFAULT_DB_PATH = "target" + File.separator + "db";
 	@SuppressWarnings("unused") @FXML private Button deleteButton;
 	@SuppressWarnings("unused") @FXML private Button loadButton;
 	@SuppressWarnings("unused") @FXML private ListView<String> list;
@@ -130,19 +129,17 @@ public class WelcomeController {
 	 * Shows a {@link ProgressDialog} when loading the db.
 	 */
 	private void loadDB() {
-		if (!dbload.getDatabase().equals(DEFAULT_DB_PATH)) {
-			if (dbload.getDatabase().equals(selectDB)) {
-				File dir = selectDirectory();
-				if (dir == null) {
-					return;
-				}
-				dirload.setDirectory(dir.getAbsolutePath());
-				dirload.restart();
-			} else {
-				progressDialog = new ProgressDialog(list.getParent());
-				dbload.restart();
-				dirload.restart();
+		if (dbload.getDatabase().equals(selectDB)) {
+			File dir = selectDirectory();
+			if (dir == null) {
+				return;
 			}
+			dirload.setDirectory(dir.getAbsolutePath());
+			dirload.restart();
+		} else {
+			progressDialog = new ProgressDialog(list.getParent());
+			dbload.restart();
+			dirload.restart();
 		}
 	}
 	

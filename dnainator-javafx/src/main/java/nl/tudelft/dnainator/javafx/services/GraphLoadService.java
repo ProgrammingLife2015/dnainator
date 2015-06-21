@@ -6,7 +6,6 @@ import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
-import nl.tudelft.dnainator.annotation.DRMutationFactory;
 import nl.tudelft.dnainator.annotation.impl.AnnotationCollectionImpl;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Edge;
@@ -205,8 +204,7 @@ public class GraphLoadService extends Service<Graph> {
 				}
 
 				if (drFile.getValue() != null) {
-					annotations = new DRMutationFactory().build(annotations,
-							new DRMutationIterator(drFile.get()));
+					annotations.addAnnotations(new DRMutationIterator(drFile.get()));
 				}
 
 				TreeNode node = null;
