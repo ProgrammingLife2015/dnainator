@@ -1,9 +1,7 @@
 package nl.tudelft.dnainator.javafx.controllers;
 
 import javafx.beans.binding.BooleanBinding;
-import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -54,8 +52,6 @@ public class FileOpenController {
 	private SlidingAnimation animation;
 
 	private GraphLoadService graphLoadService;
-
-	private ListProperty<String> dbPathProperty;
 	private ObjectProperty<Graph> graphProperty;
 
 	/*
@@ -64,7 +60,6 @@ public class FileOpenController {
 	@SuppressWarnings("unused") @FXML
 	private void initialize() {
 		fileChooser = new FileChooser();
-		dbPathProperty = new SimpleListProperty<>(this, "dbpath");
 		graphProperty = new SimpleObjectProperty<>(this, "graph");
 		setupServices();
 		
@@ -177,7 +172,7 @@ public class FileOpenController {
 				&& graphLoadService.getNodeFile() != null
 				&& graphLoadService.getEdgeFile() != null
 				&& graphLoadService.getNewickFile() != null) {
-			graphLoadService.setDatabase(graphLoadService.getNewPath(dbPathProperty.getValue()));
+			graphLoadService.setDatabase(graphLoadService.getNewPath());
 			graphLoadService.restart();
 
 			curNewickLabel.setText(graphLoadService.getNewickFile().getAbsolutePath());
@@ -252,13 +247,6 @@ public class FileOpenController {
 	 */
 	public ObjectProperty<Graph> graphProperty() {
 		return graphProperty;
-	}
-
-	/**
-	 * @return the dbPathProperty.
-	 */
-	public ListProperty<String> dbPathProperty() {
-		return dbPathProperty;
 	}
 	
 	/**

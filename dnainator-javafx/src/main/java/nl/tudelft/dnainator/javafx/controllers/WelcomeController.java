@@ -1,20 +1,17 @@
 package nl.tudelft.dnainator.javafx.controllers;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import org.neo4j.io.fs.FileUtils;
 
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.javafx.services.DBLoadService;
+import nl.tudelft.dnainator.javafx.services.DirectoryLoadService;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.ExceptionDialog;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.ProgressDialog;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -29,13 +26,13 @@ import javafx.stage.DirectoryChooser;
  * Controller for the welcome screen.
  */
 public class WelcomeController {
-	private ObjectProperty<Graph> dbProperty;
+	private ObjectProperty<Graph> currentDatabase;
 	private DBLoadService dbload;
+	private DirectoryLoadService dirload;
 	private DirectoryChooser dirChooser;
 	private ProgressDialog progressDialog;
-	private ObservableList<String> items;
+	private ObservableList<String> databases;
 	private static final String DEFAULT_DB_PATH = "target" + File.separator + "db";
-	private static final String CORE = "neostore";
 	@SuppressWarnings("unused") @FXML private Button deleteButton;
 	@SuppressWarnings("unused") @FXML private Button loadButton;
 	@SuppressWarnings("unused") @FXML private ListView<String> list;
@@ -44,8 +41,8 @@ public class WelcomeController {
 	@SuppressWarnings("unused") @FXML 
 	private void deleteButtonAction(ActionEvent a) {
 		try {
-			FileUtils.deleteRecursively(new File(getDBPath()));
-			items.remove(getDBPath());
+			FileUtils.deleteRecursively(new File(dbload.getDatabase()));
+			databases.remove(dbload.getDatabase());
 		} catch (Exception e) {
 			new ExceptionDialog(list.getParent(), e, "Failed to delete database.");
 		}
@@ -72,10 +69,18 @@ public class WelcomeController {
 	
 	@SuppressWarnings("unused") @FXML
 	private void initialize() {
+		currentDatabase = new SimpleObjectProperty<>(this, "graph");
 		dirChooser = new DirectoryChooser();
 		dbload = new DBLoadService();
-		items = list.getItems();
+		dirload = new DirectoryLoadService();
+		databases = FXCollections.observableArrayList();
 
+		initDBLoad();
+		initDirLoad();
+		initSelection();
+	}
+
+	private void initDBLoad() {
 		dbload.setOnFailed(e -> {
 			progressDialog.close();
 			new ExceptionDialog(list.getParent(), dbload.getException(),
@@ -84,12 +89,26 @@ public class WelcomeController {
 		dbload.setOnRunning(e -> progressDialog.show());
 		dbload.setOnSucceeded(e -> {
 			progressDialog.close();
-			dbProperty.setValue(dbload.getValue());
+			currentDatabase.setValue(dbload.getValue());
 		});
-		dbProperty = new SimpleObjectProperty<>(this, "graph");
-		scanDirectory(DEFAULT_DB_PATH);
-		list.setItems(items);
-		list.getSelectionModel().select(getDBPath());
+	}
+
+	private void initDirLoad() {
+		dirload.setOnFailed(e -> {
+			new ExceptionDialog(list.getParent(), dirload.getException(),
+					"Could not load directories.");
+		});
+		dirload.setOnSucceeded(e -> {
+			databases.clear();
+			databases.add(selectDB);
+			databases.addAll(dirload.getValue());
+		});
+		dirload.restart();
+	}
+
+	private void initSelection() {
+		list.setItems(databases);
+		list.getSelectionModel().select(dbload.getDatabase());
 		list.getSelectionModel().selectedItemProperty().addListener((obj, oldV, newV) -> {
 			deleteButton.setDisable(true);
 			if (newV != selectDB && newV != null) {
@@ -99,45 +118,11 @@ public class WelcomeController {
 		});
 	}
 	
-	private String getDBPath() {
-		return dbload.getDatabase();
-	}
-	
-	/**
-	 * @return the list of database paths of the welcome screen.
-	 */
-	public ObservableList<String> getListedPaths() {
-		return items;
-	}
-	
-	/**
-	 * Scan the directory containing the default location of databases.
-	 * If the default directory does not exist, create it.
-	 * Adds all the directories found to the welcomescreen's list of selectables.
-	 */
-	private void scanDirectory(String dbpath) {
-		if (!Files.exists(Paths.get(dbpath)) && new File(dbpath).mkdirs()) {
-			return;
-		} else {
-			try (DirectoryStream<Path> ds = Files.newDirectoryStream(Paths.get(dbpath))) {
-				for (Path path : ds) {
-					if (Files.isDirectory(path) 
-							&& Files.exists(Paths.get(path.toString() + File.separator + CORE))) {
-						items.add(path.toString());
-					}
-				}
-			} catch (IOException e) {
-				new ExceptionDialog(list.getParent(), e, "Failed to retrieve databases.");
-			}
-		}
-		items.sort((e1, e2) -> e1.compareTo(e2));
-	}
-	
 	/**
 	 * @return The {@link ObjectProperty} used to indicate if the welcome screen is done.
 	 */
-	public ObjectProperty<Graph> dbProperty() {
-		return dbProperty;
+	public ObjectProperty<Graph> currentDBProperty() {
+		return currentDatabase;
 	}
 	
 	/**
@@ -145,17 +130,18 @@ public class WelcomeController {
 	 * Shows a {@link ProgressDialog} when loading the db.
 	 */
 	private void loadDB() {
-		if (!getDBPath().equals(DEFAULT_DB_PATH)) {
-			if (getDBPath().equals(selectDB)) {
+		if (!dbload.getDatabase().equals(DEFAULT_DB_PATH)) {
+			if (dbload.getDatabase().equals(selectDB)) {
 				File dir = selectDirectory();
 				if (dir == null) {
 					return;
 				}
-				items.removeIf(item -> !item.equals(selectDB));
-				scanDirectory(dir.getAbsolutePath());
+				dirload.setDirectory(dir.getAbsolutePath());
+				dirload.restart();
 			} else {
 				progressDialog = new ProgressDialog(list.getParent());
 				dbload.restart();
+				dirload.restart();
 			}
 		}
 	}

@@ -25,7 +25,6 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 /**
  * A JavaFX background service to load files into graphs.
@@ -56,13 +55,11 @@ public class GraphLoadService extends Service<Graph> {
 	/**
 	 * Checks what paths are already in use and constructs an unique path,
 	 * that does not collide with existing ones.
-	 * @param paths the existing database paths.
 	 * @return unique path for the database.
 	 */
-	public String getNewPath(List<String> paths) {
+	public String getNewPath() {
 		DateTimeFormatter format = DateTimeFormatter.ofPattern("YYYYMMdd-HHmmss");
 		String newPath = DB_PATH + (LocalDateTime.now().format(format));
-		paths.add(newPath);
 		return newPath;
 	}
 

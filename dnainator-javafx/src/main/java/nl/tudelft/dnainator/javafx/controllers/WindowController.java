@@ -45,13 +45,12 @@ public class WindowController {
 	@SuppressWarnings("unused") @FXML
 	private void initialize() {
 		ColorServer colorServer = new ColorServer();
-		fileOpenController.dbPathProperty().set(welcomeController.getListedPaths());
 		fileOpenController.graphProperty().addListener((obj, oldV, newV) -> {
 			strainView = new StrainView(colorServer, newV);
 			phyloView = new PhylogeneticView(colorServer, newV.getTree());
 			constructView();
 		});
-		welcomeController.dbProperty().addListener((obj, oldV, newV) -> {
+		welcomeController.currentDBProperty().addListener((obj, oldV, newV) -> {
 			strainView = new StrainView(colorServer, newV);
 			phyloView = new PhylogeneticView(colorServer, newV.getTree());
 			constructView();
