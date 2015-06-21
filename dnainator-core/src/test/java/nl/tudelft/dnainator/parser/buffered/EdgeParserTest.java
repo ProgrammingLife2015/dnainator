@@ -29,7 +29,7 @@ public class EdgeParserTest {
 	@Test(expected = NoSuchElementException.class)
 	public void testParseEmpty() {
 		BufferedReader in = toBufferedReader("");
-		Iterator<Edge<String>> ep = new EdgeIterator(in);
+		Iterator<Edge<?>> ep = new EdgeIterator(in);
 		try {
 			assertFalse(ep.hasNext());
 			ep.next();
@@ -46,7 +46,7 @@ public class EdgeParserTest {
 	@Test(expected = InvalidEdgeFormatException.class)
 	public void testParseOneCharacter() throws IOException {
 		BufferedReader in = toBufferedReader("a");
-		Iterator<Edge<String>> ep = new EdgeIterator(in);
+		Iterator<Edge<?>> ep = new EdgeIterator(in);
 		ep.next();
 	}
 
@@ -62,10 +62,10 @@ public class EdgeParserTest {
 				"6 40",
 				"123 456"
 				));
-		Iterator<Edge<String>> ep = new EdgeIterator(in);
+		Iterator<Edge<?>> ep = new EdgeIterator(in);
 		try {
 			assertTrue(ep.hasNext());
-			Edge<String> next = ep.next();
+			Edge<?> next = ep.next();
 			assertEdgeEquals(new Edge<>("1", "2"), next);
 			assertTrue(ep.hasNext());
 			next = ep.next();
@@ -94,10 +94,10 @@ public class EdgeParserTest {
 				"6 40   ",			// Trailing spaces.
 				"  123   456   "	// All of them at once.
 				));
-		Iterator<Edge<String>> ep = new EdgeIterator(in);
+		Iterator<Edge<?>> ep = new EdgeIterator(in);
 		try {
 			assertTrue(ep.hasNext());
-			Edge<String> next = ep.next();
+			Edge<?> next = ep.next();
 			assertEdgeEquals(new Edge<>("1", "2"), next);
 			assertTrue(ep.hasNext());
 			next = ep.next();
@@ -125,9 +125,9 @@ public class EdgeParserTest {
 				"3 ",
 				"4 5"
 				));
-		Iterator<Edge<String>> ep = new EdgeIterator(in);
+		Iterator<Edge<?>> ep = new EdgeIterator(in);
 		assertTrue(ep.hasNext());
-		Edge<String> next = ep.next();
+		Edge<?> next = ep.next();
 		assertEdgeEquals(new Edge<>("1", "2"), next);
 		ep.next();
 	}
@@ -143,9 +143,9 @@ public class EdgeParserTest {
 				"3 4 5",
 				"6 7"
 				));
-		Iterator<Edge<String>> ep = new EdgeIterator(in);
+		Iterator<Edge<?>> ep = new EdgeIterator(in);
 		assertTrue(ep.hasNext());
-		Edge<String> next = ep.next();
+		Edge<?> next = ep.next();
 		assertEdgeEquals(new Edge<>("1", "2"), next);
 		ep.next();
 	}
@@ -159,10 +159,10 @@ public class EdgeParserTest {
 				"1 2",
 				""
 				));
-		Iterator<Edge<String>> ep = new EdgeIterator(in);
+		Iterator<Edge<?>> ep = new EdgeIterator(in);
 		try {
 			assertTrue(ep.hasNext());
-			Edge<String> next = ep.next();
+			Edge<?> next = ep.next();
 			assertEdgeEquals(new Edge<>("1", "2"), next);
 			assertFalse(ep.hasNext());
 		} catch (IOException e) {
@@ -179,10 +179,10 @@ public class EdgeParserTest {
 				"1 2",
 				"    "
 				));
-		Iterator<Edge<String>> ep = new EdgeIterator(in);
+		Iterator<Edge<?>> ep = new EdgeIterator(in);
 		try {
 			assertTrue(ep.hasNext());
-			Edge<String> next = ep.next();
+			Edge<?> next = ep.next();
 			assertEdgeEquals(new Edge<>("1", "2"), next);
 			assertFalse(ep.hasNext());
 		} catch (IOException e) {
@@ -200,10 +200,10 @@ public class EdgeParserTest {
 				"    ",
 				"3 4"
 				));
-		Iterator<Edge<String>> ep = new EdgeIterator(in);
+		Iterator<Edge<?>> ep = new EdgeIterator(in);
 		try {
 			assertTrue(ep.hasNext());
-			Edge<String> next = ep.next();
+			Edge<?> next = ep.next();
 			assertEdgeEquals(new Edge<>("1", "2"), next);
 			assertTrue(ep.hasNext());
 			next = ep.next();
@@ -223,10 +223,10 @@ public class EdgeParserTest {
 				"",
 				"3 4"
 				));
-		Iterator<Edge<String>> ep = new EdgeIterator(in);
+		Iterator<Edge<?>> ep = new EdgeIterator(in);
 		try {
 			assertTrue(ep.hasNext());
-			Edge<String> next = ep.next();
+			Edge<?> next = ep.next();
 			assertEdgeEquals(new Edge<>("1", "2"), next);
 			assertTrue(ep.hasNext());
 			next = ep.next();
@@ -242,7 +242,7 @@ public class EdgeParserTest {
 	@Test
 	public void testFileConstructor() {
 		try {
-			Iterator<Edge<String>> ep = new EdgeIterator(new File(getClass().getResource(
+			Iterator<Edge<?>> ep = new EdgeIterator(new File(getClass().getResource(
 					"/strains/simple_graph.edge.graph").getFile()));
 			assertTrue(ep.hasNext());
 		} catch (Exception e) {

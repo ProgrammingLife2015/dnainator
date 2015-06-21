@@ -69,7 +69,7 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 	}
 
 	@Override
-	public GraphBuilder addEdge(Edge<String> edge) {
+	public GraphBuilder addEdge(Edge<?> edge) {
 		batchInserter.createRelationship(sequenceIDToNodeID.get(edge.getSource()),
 				sequenceIDToNodeID.get(edge.getDest()),
 				RelTypes.NEXT, null);

@@ -70,7 +70,7 @@ public class Neo4jGraphTest {
 			edgeFile = getEdgeFile();
 			Iterator<SequenceNode> np = new NodeIterator(new SequenceNodeFactoryImpl(),
 					new BufferedReader(new InputStreamReader(nodeFile, "UTF-8")));
-			Iterator<Edge<String>> ep = new EdgeIterator(new BufferedReader(
+			Iterator<Edge<?>> ep = new EdgeIterator(new BufferedReader(
 							new InputStreamReader(edgeFile, "UTF-8")));
 			TreeNode phylo = new TreeParser(getTreeFile()).parse();
 			db = (Neo4jGraph) new Neo4jBatchBuilder(DB_PATH, new AnnotationCollectionImpl(), phylo)
@@ -134,7 +134,7 @@ public class Neo4jGraphTest {
 	public void testTopologicalOrder() {
 		LinkedList<Integer> order = new LinkedList<>();
 		try {
-			Iterator<Edge<String>> ep = new EdgeIterator(new BufferedReader(
+			Iterator<Edge<?>> ep = new EdgeIterator(new BufferedReader(
 							new InputStreamReader(getEdgeFile(), "UTF-8")));
 
 			db.execute(e -> {
@@ -143,9 +143,9 @@ public class Neo4jGraphTest {
 				}
 			});
 			while (ep.hasNext()) {
-				Edge<String> next = ep.next();
-				int source = Integer.parseInt(next.getSource());
-				int dest = Integer.parseInt(next.getDest());
+				Edge<?> next = ep.next();
+				int source = Integer.parseInt((String) next.getSource());
+				int dest = Integer.parseInt((String) next.getDest());
 				assertThat(order.indexOf(source), lessThan(order.indexOf(dest)));
 			}
 		} catch (NumberFormatException e) {

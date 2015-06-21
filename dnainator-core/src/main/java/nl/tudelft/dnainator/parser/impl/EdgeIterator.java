@@ -17,8 +17,8 @@ import java.util.Set;
 /**
  * A buffered {@link EdgeIterator} that parses edge files.
  */
-public class EdgeIterator extends BufferedIterator<Edge<String>> {
-	private Edge<String> current;
+public class EdgeIterator extends BufferedIterator<Edge<?>> {
+	private Edge<?> current;
 	private boolean needParse = true; // Whether we have to parse a new line or not.
 	private int currentChar;
 	private static final int ID_LENGTH_GUESS = 8;
@@ -63,7 +63,7 @@ public class EdgeIterator extends BufferedIterator<Edge<String>> {
 	 * the first character marked the end of the file.
 	 * @throws IOException Thrown when the reader fails.
 	 */
-	private Edge<String> parse() throws IOException {
+	private Edge<?> parse() throws IOException {
 		currentChar = br.read();
 		eatWhitespace();
 		if (currentChar == -1) {
@@ -75,7 +75,6 @@ public class EdgeIterator extends BufferedIterator<Edge<String>> {
 	/**
 	 * Parses the source part of the input line.
 	 *
-	 * @param first The first character of the input line. Always >= 0.
 	 * @return The source id, as an int.
 	 * @throws IOException Thrown when the reader fails.
 	 */
@@ -146,7 +145,7 @@ public class EdgeIterator extends BufferedIterator<Edge<String>> {
 	}
 
 	@Override
-	public Edge<String> next() throws IOException {
+	public Edge<?> next() throws IOException {
 		if (hasNext()) {
 			needParse = true;
 			return current;

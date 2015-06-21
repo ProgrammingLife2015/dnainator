@@ -16,7 +16,7 @@ public interface GraphBuilder {
 	 * @param edge The edge containing the source and destination node.
 	 * @return the {@link GraphBuilder}, after adding the edge.
 	 */
-	GraphBuilder addEdge(Edge<String> edge);
+	GraphBuilder addEdge(Edge<?> edge);
 
 	/**
 	 * Add a {@link SequenceNode} to the graph.
@@ -32,7 +32,7 @@ public interface GraphBuilder {
 	 * @throws IOException If something goes wrong with IO while parsing.
 	 * @return the {@link GraphBuilder}, after adding the nodes and edges.
 	 */
-	default GraphBuilder constructGraph(Iterator<SequenceNode> np, Iterator<Edge<String>> ep)
+	default GraphBuilder constructGraph(Iterator<SequenceNode> np, Iterator<Edge<?>> ep)
 			throws IOException {
 		try {
 			while (np.hasNext()) {

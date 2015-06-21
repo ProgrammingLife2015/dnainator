@@ -217,7 +217,7 @@ public class GraphLoadService extends Service<Graph> {
 					node = new TreeParser(getNewickFile()).parse();
 				}
 
-				Iterator<Edge<String>> ep = new EdgeIterator(getEdgeFile());
+				Iterator<Edge<?>> ep = new EdgeIterator(getEdgeFile());
 				Iterator<SequenceNode> np = new NodeIterator(getNodeFile());
 
 				return new Neo4jBatchBuilder(database.get(), annotations, node)

@@ -51,7 +51,7 @@ public class Neo4jClusterTest {
 //			edgeFile = new File("10_strains_graph/simple_graph.edge.graph");
 			Iterator<SequenceNode> np = new NodeIterator(new SequenceNodeFactoryImpl(),
 					new BufferedReader(new InputStreamReader(nodeFile, "UTF-8")));
-			Iterator<Edge<String>> ep = new EdgeIterator(new BufferedReader(
+			Iterator<Edge<?>> ep = new EdgeIterator(new BufferedReader(
 							new InputStreamReader(edgeFile, "UTF-8")));
 			db = (Neo4jGraph) new Neo4jBatchBuilder(DB_PATH, new AnnotationCollectionImpl())
 				.constructGraph(np, ep)
