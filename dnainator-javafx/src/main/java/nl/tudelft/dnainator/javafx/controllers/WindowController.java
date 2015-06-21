@@ -121,6 +121,11 @@ public class WindowController {
 	}
 
 	@SuppressWarnings("unused") @FXML
+	private void toggleMinimap(ActionEvent e) {
+		strainView.toggleMinimap();
+	}
+
+	@SuppressWarnings("unused") @FXML
 	private void toggleJumpToAction(ActionEvent e) {
 		strainView.toggleStrainControl();
 	}

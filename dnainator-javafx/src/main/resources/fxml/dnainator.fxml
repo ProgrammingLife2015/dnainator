@@ -49,7 +49,7 @@
                     <accelerator>
                         <KeyCodeCombination alt="UP" code="J" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                     </accelerator></CheckMenuItem>
-                  <CheckMenuItem disable="true" mnemonicParsing="false" selected="true" text="Show minimap">
+                  <CheckMenuItem disable="true" mnemonicParsing="false" selected="true" onAction="#toggleMinimap" text="Show minimap">
                      <accelerator>
                         <KeyCodeCombination alt="UP" code="M" control="UP" meta="UP" shift="UP" shortcut="DOWN" />
                      </accelerator></CheckMenuItem>
