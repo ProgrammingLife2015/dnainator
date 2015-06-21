@@ -3,9 +3,9 @@ package nl.tudelft.dnainator.graph.impl.command;
 import java.util.HashMap;
 import java.util.Map;
 
-import nl.tudelft.dnainator.graph.impl.NodeLabels;
-import nl.tudelft.dnainator.graph.impl.RelTypes;
 import nl.tudelft.dnainator.graph.impl.properties.AnnotationProperties;
+import nl.tudelft.dnainator.graph.impl.properties.NodeLabels;
+import nl.tudelft.dnainator.graph.impl.properties.RelTypes;
 import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
 import nl.tudelft.dnainator.graph.impl.properties.SourceProperties;
 import nl.tudelft.dnainator.graph.interestingness.Scores;

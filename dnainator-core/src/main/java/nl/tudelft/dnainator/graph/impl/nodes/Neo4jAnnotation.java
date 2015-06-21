@@ -1,8 +1,10 @@
-package nl.tudelft.dnainator.graph.impl;
+package nl.tudelft.dnainator.graph.impl.nodes;
 
 import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.annotation.Range;
 import nl.tudelft.dnainator.graph.impl.properties.AnnotationProperties;
+import nl.tudelft.dnainator.graph.impl.properties.NodeLabels;
+import nl.tudelft.dnainator.graph.impl.properties.RelTypes;
 import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
 
 import org.neo4j.graphdb.Direction;

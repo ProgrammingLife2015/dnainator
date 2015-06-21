@@ -1,6 +1,8 @@
 package nl.tudelft.dnainator.parser;
 
 import nl.tudelft.dnainator.parser.exceptions.InvalidHeaderFormatException;
+import nl.tudelft.dnainator.parser.impl.HeaderParser;
+
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

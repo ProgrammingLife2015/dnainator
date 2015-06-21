@@ -1,11 +1,11 @@
-package nl.tudelft.dnainator.tree;
+package nl.tudelft.dnainator.core.impl;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * This class represents an item in the phylogenetic tree. The
- * {@link nl.tudelft.dnainator.parser.TreeParser} returns the root item, via which all
+ * {@link nl.tudelft.dnainator.parser.impl.TreeParser} returns the root item, via which all
  * children can be accessed.
  */
 public class TreeNode {

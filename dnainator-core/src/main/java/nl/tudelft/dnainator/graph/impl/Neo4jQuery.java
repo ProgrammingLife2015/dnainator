@@ -2,6 +2,8 @@ package nl.tudelft.dnainator.graph.impl;
 
 import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.core.SequenceNode;
+import nl.tudelft.dnainator.graph.impl.nodes.Neo4jSequenceNode;
+import nl.tudelft.dnainator.graph.impl.properties.NodeLabels;
 import nl.tudelft.dnainator.graph.impl.properties.SourceProperties;
 import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
 import nl.tudelft.dnainator.graph.query.GraphQuery;

@@ -1,6 +1,6 @@
 package nl.tudelft.dnainator.graph.impl.query;
 
-import nl.tudelft.dnainator.graph.impl.Neo4jScoreContainer;
+import nl.tudelft.dnainator.graph.impl.nodes.Neo4jScoreContainer;
 import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
 import nl.tudelft.dnainator.graph.interestingness.InterestingnessStrategy;
 

@@ -3,9 +3,9 @@ package nl.tudelft.dnainator.javafx.drawables.phylogeny;
 import javafx.collections.MapChangeListener;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import nl.tudelft.dnainator.tree.TreeNode;
-import nl.tudelft.dnainator.javafx.exceptions.AllColorsInUseException;
+import nl.tudelft.dnainator.core.impl.TreeNode;
 import nl.tudelft.dnainator.javafx.ColorMap;
+import nl.tudelft.dnainator.javafx.exceptions.AllColorsInUseException;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.ExceptionDialog;
 
 /**

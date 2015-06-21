@@ -1,7 +1,5 @@
 package nl.tudelft.dnainator.javafx.views;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Point2D;
 import javafx.geometry.VerticalDirection;
@@ -10,9 +8,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import nl.tudelft.dnainator.core.impl.TreeNode;
 import nl.tudelft.dnainator.javafx.ColorMap;
-import nl.tudelft.dnainator.tree.TreeNode;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -20,6 +17,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.testfx.framework.junit.ApplicationTest;
 
 import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This class tests the implementation of the {@link PhylogeneticView}.

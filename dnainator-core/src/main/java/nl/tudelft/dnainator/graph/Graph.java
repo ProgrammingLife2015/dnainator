@@ -5,9 +5,9 @@ import nl.tudelft.dnainator.annotation.AnnotationCollection;
 import nl.tudelft.dnainator.annotation.Range;
 import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
+import nl.tudelft.dnainator.core.impl.TreeNode;
 import nl.tudelft.dnainator.graph.interestingness.InterestingnessStrategy;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
-import nl.tudelft.dnainator.tree.TreeNode;
 
 import java.util.Collection;
 import java.util.List;
