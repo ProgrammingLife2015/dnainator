@@ -27,23 +27,112 @@ import javafx.stage.DirectoryChooser;
  */
 public class WelcomeController {
 	private ObjectProperty<Graph> currentDatabase;
+	private ObservableList<String> databases;
+
 	private DBLoadService dbload;
 	private DirectoryLoadService dirload;
+
 	private DirectoryChooser dirChooser;
 	private ProgressDialog progressDialog;
-	private ObservableList<String> databases;
+
 	@SuppressWarnings("unused") @FXML private Button deleteButton;
 	@SuppressWarnings("unused") @FXML private Button loadButton;
-	@SuppressWarnings("unused") @FXML private ListView<String> list;
+	@SuppressWarnings("unused") @FXML private ListView<String> dblist;
 	@SuppressWarnings("unused") @FXML private String selectDB;
+
+	@SuppressWarnings("unused") @FXML
+	private void initialize() {
+		currentDatabase = new SimpleObjectProperty<>(this, "graph");
+		dirChooser = new DirectoryChooser();
+		dbload = new DBLoadService();
+		dirload = new DirectoryLoadService();
+		databases = FXCollections.observableArrayList();
+
+		initDBLoad();
+		initDirLoad();
+		initSelection();
+	}
+
+	private void initDBLoad() {
+		dbload.setOnFailed(e -> {
+			progressDialog.close();
+			new ExceptionDialog(dblist.getParent(), dbload.getException(),
+					"Database is already in use, please choose another.");
+		});
+		dbload.setOnRunning(e -> progressDialog.show());
+		dbload.setOnSucceeded(e -> {
+			progressDialog.close();
+			currentDatabase.setValue(dbload.getValue());
+		});
+	}
+
+	private void initDirLoad() {
+		dirload.setOnFailed(e -> {
+			new ExceptionDialog(dblist.getParent(), dirload.getException(),
+					"Could not load directories.");
+		});
+		dirload.setOnSucceeded(e -> {
+			databases.clear();
+			databases.add(selectDB);
+			databases.addAll(dirload.getValue());
+		});
+		dirload.restart();
+	}
+
+	private void initSelection() {
+		dblist.setItems(databases);
+		dblist.getSelectionModel().select(dbload.getDatabase());
+		dblist.getSelectionModel().selectedItemProperty().addListener((obj, oldV, newV) -> {
+			deleteButton.setDisable(true);
+			if (newV != selectDB && newV != null) {
+				deleteButton.setDisable(false);
+			}
+			dbload.setDatabase(newV);
+		});
+	}
+
+	/**
+	 * Handle loading the database based on the selection in the list.
+	 * Shows a {@link ProgressDialog} when loading the db.
+	 */
+	private void loadDB() {
+		if (dbload.getDatabase().equals(selectDB)) {
+			File dir = selectDirectory();
+			if (dir == null) {
+				return;
+			}
+			dirload.setDirectory(dir.getAbsolutePath());
+			dirload.restart();
+		} else {
+			progressDialog = new ProgressDialog(dblist.getParent());
+			dbload.restart();
+			dirload.restart();
+		}
+	}
+
+	/**
+	 * @return The {@link ObjectProperty} used to indicate if the welcome screen is done.
+	 */
+	public ObjectProperty<Graph> currentDBProperty() {
+		return currentDatabase;
+	}
 	
+	/**
+	 * Sets up the {@link DirectoryChooser}.
+	 * @return The selected directory, or null if none is chosen.
+	 */
+	private File selectDirectory() {
+		dirChooser.setTitle(selectDB);
+		return dirChooser.showDialog(dblist.getScene().getWindow());
+	}
+
 	@SuppressWarnings("unused") @FXML 
 	private void deleteButtonAction(ActionEvent a) {
 		try {
 			FileUtils.deleteRecursively(new File(dbload.getDatabase()));
 			databases.remove(dbload.getDatabase());
 		} catch (Exception e) {
-			new ExceptionDialog(list.getParent(), e, "Failed to delete database.");
+			new ExceptionDialog(dblist.getParent(), e, "Failed to delete database.");
 		}
 	}
 	
@@ -64,91 +153,5 @@ public class WelcomeController {
 		if (e.getCode() == KeyCode.ENTER) {
 			loadDB();
 		}
-	}
-	
-	@SuppressWarnings("unused") @FXML
-	private void initialize() {
-		currentDatabase = new SimpleObjectProperty<>(this, "graph");
-		dirChooser = new DirectoryChooser();
-		dbload = new DBLoadService();
-		dirload = new DirectoryLoadService();
-		databases = FXCollections.observableArrayList();
-
-		initDBLoad();
-		initDirLoad();
-		initSelection();
-	}
-
-	private void initDBLoad() {
-		dbload.setOnFailed(e -> {
-			progressDialog.close();
-			new ExceptionDialog(list.getParent(), dbload.getException(),
-					"Database is already in use, please choose another.");
-		});
-		dbload.setOnRunning(e -> progressDialog.show());
-		dbload.setOnSucceeded(e -> {
-			progressDialog.close();
-			currentDatabase.setValue(dbload.getValue());
-		});
-	}
-
-	private void initDirLoad() {
-		dirload.setOnFailed(e -> {
-			new ExceptionDialog(list.getParent(), dirload.getException(),
-					"Could not load directories.");
-		});
-		dirload.setOnSucceeded(e -> {
-			databases.clear();
-			databases.add(selectDB);
-			databases.addAll(dirload.getValue());
-		});
-		dirload.restart();
-	}
-
-	private void initSelection() {
-		list.setItems(databases);
-		list.getSelectionModel().select(dbload.getDatabase());
-		list.getSelectionModel().selectedItemProperty().addListener((obj, oldV, newV) -> {
-			deleteButton.setDisable(true);
-			if (newV != selectDB && newV != null) {
-				deleteButton.setDisable(false);
-			}
-			dbload.setDatabase(newV);
-		});
-	}
-	
-	/**
-	 * @return The {@link ObjectProperty} used to indicate if the welcome screen is done.
-	 */
-	public ObjectProperty<Graph> currentDBProperty() {
-		return currentDatabase;
-	}
-	
-	/**
-	 * Handle loading the database based on the selection in the list.
-	 * Shows a {@link ProgressDialog} when loading the db.
-	 */
-	private void loadDB() {
-		if (dbload.getDatabase().equals(selectDB)) {
-			File dir = selectDirectory();
-			if (dir == null) {
-				return;
-			}
-			dirload.setDirectory(dir.getAbsolutePath());
-			dirload.restart();
-		} else {
-			progressDialog = new ProgressDialog(list.getParent());
-			dbload.restart();
-			dirload.restart();
-		}
-	}
-	
-	/**
-	 * Sets up the {@link DirectoryChooser}.
-	 * @return The selected directory, or null if none is chosen.
-	 */
-	private File selectDirectory() {
-		dirChooser.setTitle(selectDB);
-		return dirChooser.showDialog(list.getScene().getWindow());
 	}
 }
