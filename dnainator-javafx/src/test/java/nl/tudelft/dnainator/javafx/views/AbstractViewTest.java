@@ -6,16 +6,18 @@ import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.javafx.ColorServer;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-
 import de.saxsys.javafx.test.JfxRunner;
 
+/**
+ * This class tests the implementation of the {@link AbstractView}.
+ * All views are extended from this abstract implementation.
+ */
 @RunWith(JfxRunner.class)
 public class AbstractViewTest {
 
