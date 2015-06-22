@@ -1,17 +1,21 @@
 package nl.tudelft.dnainator.javafx.views;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.javafx.ColorServer;
+import nl.tudelft.dnainator.javafx.widgets.Propertyable;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+
 import de.saxsys.javafx.test.JfxRunner;
 
 /**
@@ -25,6 +29,7 @@ public class AbstractViewTest {
 	@Mock private Graph graph;
 	@Mock private ColorServer colorServer;
 	@Mock private Group group;
+	@Mock private Propertyable p;
 	
 	/**
 	 * Set up common variables.
@@ -84,10 +89,10 @@ public class AbstractViewTest {
 		assertTrue(abstractView.scale.getMxx() > zoomPrevious);
 		assertTrue(abstractView.scale.getMyy() > zoomPrevious);
 
-		double zoomPrevious2 = abstractView.scale.getMxx();
+		zoomPrevious = abstractView.scale.getMxx();
 		abstractView.zoomIn();
-		assertTrue(abstractView.scale.getMxx() > zoomPrevious2);
-		assertTrue(abstractView.scale.getMyy() > zoomPrevious2);
+		assertTrue(abstractView.scale.getMxx() > zoomPrevious);
+		assertTrue(abstractView.scale.getMyy() > zoomPrevious);
 	}
 	
 	/**
@@ -102,10 +107,10 @@ public class AbstractViewTest {
 		assertTrue(abstractView.scale.getMxx() < zoomPrevious);
 		assertTrue(abstractView.scale.getMyy() < zoomPrevious);
 
-		double zoomPrevious2 = abstractView.scale.getMxx();
+		zoomPrevious = abstractView.scale.getMxx();
 		abstractView.zoomOut();
-		assertTrue(abstractView.scale.getMxx() < zoomPrevious2);
-		assertTrue(abstractView.scale.getMyy() < zoomPrevious2);
+		assertTrue(abstractView.scale.getMxx() < zoomPrevious);
+		assertTrue(abstractView.scale.getMyy() < zoomPrevious);
 	}
 	
 	/**
@@ -138,5 +143,15 @@ public class AbstractViewTest {
 		assertEquals(0, abstractView.scale.getTx(), 0.001);
 		assertEquals(0, abstractView.scale.getTy(), 0.001);
 		// CHECKSTYLE.ON: MagicNumber
+	}
+	
+	/**
+	 * Test the last clicked {@link Propertyable}.
+	 */
+	@Test
+	public void testLastClicked() {
+		AbstractView.setLastClicked(p);
+		assertEquals(p, AbstractView.getLastClicked());
+		assertNotNull(AbstractView.lastClickedProperty());
 	}
 }
