@@ -19,6 +19,7 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.PathExpander;
 import org.neo4j.graphdb.PathExpanders;
+import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.ResourceIterable;
 import org.neo4j.helpers.collection.IteratorUtil;
 
@@ -126,14 +127,15 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 		return result;
 	}
 
+	// For debugging purposes.
 	private int recursionLevelGlobal = 0;
 	private void cluster(GraphDatabaseService service, Iterable<Node> startNodes,
 			int endRank, Map<Integer, List<Cluster>> acc, Set<Long> visitedSinks) {
-		int recursionLevel = recursionLevelGlobal;
-		System.out.println("--> Begin Recursion level: " + recursionLevelGlobal++);
+		int recursionLevel = recursionLevelGlobal;;
+		System.out.println("--> Begin Recursion level: " + recursionLevelGlobal++);;
 		for (Node n : withinRange(service, startNodes, endRank, BubbleSkipper.get())) {
 			if (visited.contains(n.getId())) {
-				return;
+				continue;
 			}
 			visited.add(n.getId());
 			if (isSource(n)) {
@@ -146,7 +148,7 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 					putClusterInto(createSingletonCluster(service, sink), acc);
 				}
 				if (bubbleSourcesToKeepIntact.contains(n.getId())) {
-					System.out.println("Intact bubble: " + n.getProperty("ID"));
+					System.out.println("Intact bubble: " + n.getProperty("ID"));;
 					int sinkRank = (int) sink.getProperty(SequenceProperties.RANK.name());
 					this.startNodes.clear();
 					n.getRelationships(RelTypes.NEXT, Direction.OUTGOING)
@@ -158,17 +160,17 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 						});
 					cluster(service, this.startNodes, sinkRank - 1, acc, visitedSinks);
 				} else {
-					System.out.println("Collapsed bubble: " + n.getProperty("ID"));
+					System.out.println("Collapsed bubble: " + n.getProperty("ID"));;
 					// Cluster the bubble.
 					putClusterInto(collapseBubble(service, n, sink), acc);
 				}
 			} else if (!n.hasRelationship(RelTypes.BUBBLE_SOURCE_OF)) {
-				System.out.println("Singleton: " + n.getProperty("ID"));
+				System.out.println("Singleton: " + n.getProperty("ID"));;
 				putClusterInto(createSingletonCluster(service, n), acc);
 			}
 		}
-		recursionLevelGlobal = recursionLevel;
-		System.out.println("--> End Recursion level: " + recursionLevel);
+		recursionLevelGlobal = recursionLevel;;
+		System.out.println("--> End Recursion level: " + recursionLevel);;
 	}
 
 	private boolean isSource(Node n) {
@@ -176,12 +178,22 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 	}
 
 	private boolean isSink(Node n) {
-		return n.hasRelationship(RelTypes.BUBBLE_SOURCE_OF, Direction.INCOMING);
+		for (Relationship in : getSourcesFromSink(n)) {
+			if ((int) in.getStartNode().getProperty(SequenceProperties.RANK.name()) >= minRank) {
+				// If the source is outside of the range, pretend it's not there.
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private static Node getSinkFromSource(Node source) {
 		return source.getSingleRelationship(RelTypes.BUBBLE_SOURCE_OF, Direction.OUTGOING)
 				.getEndNode();
+	}
+
+	private static Iterable<Relationship> getSourcesFromSink(Node sink) {
+		return sink.getRelationships(RelTypes.BUBBLE_SOURCE_OF, Direction.INCOMING);
 	}
 
 	private Cluster createSingletonCluster(GraphDatabaseService service, Node n) {
