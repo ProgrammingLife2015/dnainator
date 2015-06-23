@@ -1,0 +1,1180 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="13.3">
+  <zoom_level>5</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>685</x>
+      <y>745</y>
+      <w>175</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+/AnnotationCollection/
+--
++addAnnotations(source: Iterator&lt;Annotation)
++addAnnotation(a: Annotation)
++getAll(): List&lt;Annotation&gt;
++getSubrange(r: Range): List&lt;Annotation&gt;
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>410</x>
+      <y>745</y>
+      <w>135</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+/Annotation/
+--
++getGeneName(): String
++getRange(): Range
++getStart(): int
++getEnd(): int
++isMutation(): bool
++isSense(): bool
++getAnnotatedNodes(): List&lt;String&gt;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>300</x>
+      <y>880</y>
+      <w>170</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>BioJavaAnnotation
+--
++BioJavaAnnotation(Feature feature)
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>485</x>
+      <y>880</y>
+      <w>170</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>DRMutation
+--
++DRMutation(geneName: String, type: String,
+                       change: String, filter: String,
+                       position: Int, drug: String)
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>385</x>
+      <y>820</y>
+      <w>100</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>180.0;10.0;180.0;60.0;10.0;60.0;10.0;120.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>470</x>
+      <y>820</y>
+      <w>110</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;60.0;200.0;60.0;200.0;120.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>665</x>
+      <y>880</y>
+      <w>210</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>AnnotationCollectionImpl
+--
++AnnotationCollectionImpl()
++AnnotationCollectionImpl(source: Iterator&lt;Annotation&gt;)
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>770</x>
+      <y>800</y>
+      <w>15</w>
+      <h>90</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;160.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>290</x>
+      <y>725</y>
+      <w>595</w>
+      <h>205</h>
+    </coordinates>
+    <panel_attributes>annotation
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>540</x>
+      <y>770</y>
+      <w>155</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+r1=1
+r2=0..*</panel_attributes>
+    <additional_attributes>290.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1295</x>
+      <y>470</y>
+      <w>140</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+/Iterator&lt;T&gt;/
+--
+/+hasNext(): boolean/
+/+next(): T/
+/+close()/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1295</x>
+      <y>425</y>
+      <w>60</w>
+      <h>25</h>
+    </coordinates>
+    <panel_attributes>HeaderParser
+--
++next(): String</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1295</x>
+      <y>545</y>
+      <w>140</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>/BufferedIterator&lt;T&gt;/
+--
++BufferedIterator(br: BufferedReader)
++close()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1360</x>
+      <y>515</y>
+      <w>15</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1110</x>
+      <y>425</y>
+      <w>130</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>NodeIterator
+--
++NodeIterator(f: File)
++NodeIterator(sf: SequenceFactory,
+                         f: File)
++NodeIterator(sf: SequenceFactory,
+                       br: BufferedReader)
++hasNext(): boolean
++next(): SequenceNode
++close()</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1235</x>
+      <y>560</y>
+      <w>70</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>120.0;10.0;60.0;10.0;60.0;140.0;10.0;140.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1235</x>
+      <y>430</y>
+      <w>70</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=-
+uses &gt;</panel_attributes>
+    <additional_attributes>10.0;20.0;120.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1110</x>
+      <y>510</y>
+      <w>130</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>EdgeIterator
+--
++EdgeIterator(f: File)
++EdgeIterator(br: BufferedReader)
++hasNext(): boolean
++next(): Edge&lt;String&gt;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1235</x>
+      <y>560</y>
+      <w>70</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>120.0;10.0;60.0;10.0;60.0;50.0;10.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1110</x>
+      <y>610</y>
+      <w>130</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>DRMutationIterator
+--
++DRMutationIterator(f: File)
++hasNext(): boolean
++next(): Annotation</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1235</x>
+      <y>525</y>
+      <w>70</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>120.0;80.0;60.0;80.0;60.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1110</x>
+      <y>565</y>
+      <w>130</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>AnnotationIterator
+--
++AnnotationIterator(f: File)
++hasNext(): boolean
++next(): Annotation</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1235</x>
+      <y>475</y>
+      <w>70</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>120.0;180.0;60.0;180.0;60.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1110</x>
+      <y>655</y>
+      <w>130</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>TreeParser
+--
++TreeParser(f: File)
++parse(): TreeNode
++build(s: String): TreeNode</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>1105</x>
+      <y>405</y>
+      <w>340</w>
+      <h>300</h>
+    </coordinates>
+    <panel_attributes>parser
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>955</x>
+      <y>335</y>
+      <w>100</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>Edge&lt;T&gt;
+--
++Edge(source: T, dest: T)
++getSource(): T
++getDest(): T</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>540</x>
+      <y>330</y>
+      <w>185</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>Cluster
+--
++Cluster(rankStart: Int,
+               nodes: List&lt;EnrichedSequenceNodes&gt;)
++getNodes(): List&lt;EnrichedSequenceNodes&gt;
++getStartRank(): Int</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>735</x>
+      <y>330</y>
+      <w>175</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>SequenceNodeImpl
+--
++SequenceNodeImpl(id: String,
+                                  sources: List&lt;String&gt;,
+                                  start: Int, end: Int,
+                                  sequence: String)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>735</x>
+      <y>235</y>
+      <w>175</w>
+      <h>65</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+/SequenceNode/
+--
+/+getId(): String/
+/+getSources(): Set&lt;String&gt;/
+/+getStartRef(): Int/
+/+getEndRef(): Int/
+/+getSequence(): String/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>815</x>
+      <y>295</y>
+      <w>15</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>530</x>
+      <y>110</y>
+      <w>610</w>
+      <h>280</h>
+    </coordinates>
+    <panel_attributes>core
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>545</x>
+      <y>180</y>
+      <w>150</w>
+      <h>65</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+/EnrichedSequenceNode/
+--
+/+getAnnotations(): List&lt;annotation&gt;/
+/+getOutgoing(): List&lt;String&gt;/
+/+getBaseDistance(): Int/
+/+getRank(): Int/
+/+getInterestingnessScore(): Int/
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>615</x>
+      <y>240</y>
+      <w>130</w>
+      <h>55</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;&gt;</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;90.0;240.0;90.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>375</x>
+      <y>240</y>
+      <w>255</w>
+      <h>55</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;&gt;</panel_attributes>
+    <additional_attributes>490.0;10.0;490.0;90.0;10.0;90.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>230</x>
+      <y>270</y>
+      <w>150</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+/ScoreContainer/
+--
+/+getScore(id: ScoreIdentifier): Int/
++getScores(): Map&lt;ScoreIdentifier, Int&gt;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>660</x>
+      <y>240</y>
+      <w>25</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-
+r1=1
+r2=1..*</panel_attributes>
+    <additional_attributes>10.0;180.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>990</x>
+      <y>165</y>
+      <w>110</w>
+      <h>25</h>
+    </coordinates>
+    <panel_attributes>SequenceNodeFactoryImpl
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>955</x>
+      <y>220</y>
+      <w>175</w>
+      <h>100</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+/SequenceNodeFactory/
+--
+/+build(id: String, sources: String,/
+/           start: Int, end: Int,/
+/           sequence: String): SequenceNode/
++build(id: String, sources: List&lt;String&gt;,
+           start: Int, end: Int,
+           sequence: String): SequenceNode
+/+build(id: String, sources: Set&lt;String&gt;,/
+/           start: Int, end: Int,/
+/           sequence: String): SequenceNode/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1040</x>
+      <y>185</y>
+      <w>15</w>
+      <h>45</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;70.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>10</x>
+      <y>175</y>
+      <w>380</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>interestingness
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>905</x>
+      <y>250</y>
+      <w>60</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=-
+&lt; creates</panel_attributes>
+    <additional_attributes>100.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>795</x>
+      <y>585</y>
+      <w>325</w>
+      <h>170</h>
+    </coordinates>
+    <panel_attributes>lt=-
+r1=1
+m2=1
+iterates &gt;</panel_attributes>
+    <additional_attributes>10.0;320.0;10.0;220.0;580.0;220.0;580.0;10.0;630.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>795</x>
+      <y>635</y>
+      <w>325</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m2=1</panel_attributes>
+    <additional_attributes>10.0;220.0;10.0;120.0;580.0;120.0;580.0;10.0;630.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>600</x>
+      <y>430</y>
+      <w>190</w>
+      <h>75</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+/Graph/
+--
++getRootNode(): SequenceNode
++getNode(s: String): SequenceNode
++getRank(rank: int): List&lt;SequenceNode&gt;
++getRanks(): List&lt;List&lt;SequenceNode&gt;&gt;
++getCluster(s: String, thres: int): List&lt;SequenceNode&gt;
++queryNodes(q: QueryDesc): List&lt;SequenceNode&gt;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>135</x>
+      <y>410</y>
+      <w>880</w>
+      <h>270</h>
+    </coordinates>
+    <panel_attributes>graph
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>635</x>
+      <y>530</y>
+      <w>105</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>Neo4jGraph
+--
++Neo4jGraph(path: String)
++clear()
++addEdge(Edge&lt;String&gt;)
++addNode(SequenceNode)
++execute(c: Command)
++query(q: Query&lt;T&gt;): T</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>680</x>
+      <y>500</y>
+      <w>15</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>750</x>
+      <y>500</y>
+      <w>15</w>
+      <h>255</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;&gt;</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;490.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>545</x>
+      <y>560</y>
+      <w>100</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=-
+&lt; executes</panel_attributes>
+    <additional_attributes>180.0;10.0;10.0;80.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>545</x>
+      <y>525</y>
+      <w>100</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=-
+&lt; executes</panel_attributes>
+    <additional_attributes>180.0;80.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>390</x>
+      <y>580</y>
+      <w>160</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+/Command/
+--
++execute(service: GraphDatabaseService)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>390</x>
+      <y>510</y>
+      <w>160</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+/Query&lt;T&gt;/
+--
++query(service: GraphDatabaseService): T</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>145</x>
+      <y>580</y>
+      <w>190</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>AnalyzeCommand
+--
++IndexCommand(roots: ResourceIterator&lt;Node&gt;)
++execute(service: GraphDatabaseService)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>330</x>
+      <y>595</y>
+      <w>70</w>
+      <h>15</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>120.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>145</x>
+      <y>510</y>
+      <w>190</w>
+      <h>55</h>
+    </coordinates>
+    <panel_attributes>AllClustersQuery
+--
++AllClustersQuery(startNodes: List&lt;String&gt;,
+                              maxRank: int, threshold: int,
+                              is: InterestingnessStrategy)
++execute(service: GraphDatabaseService):
+                Map&lt;Integer, List&lt;Cluster&gt; &gt;</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>330</x>
+      <y>525</y>
+      <w>70</w>
+      <h>15</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>120.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>835</x>
+      <y>430</y>
+      <w>150</w>
+      <h>55</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+/GraphBuilder/
+--
+/+addEdge(Edge&lt;String&gt;)/
+/+addNode(SequenceNode)/
++constructGraph(NodeParser, EdgeParser)
+/+build(): Graph/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1110</x>
+      <y>755</y>
+      <w>125</w>
+      <h>85</h>
+    </coordinates>
+    <panel_attributes>TreeNode
+--
++TreeNode(parent: TreeNode)
++addChild(child:TreeNode)
++getChildren(): List&lt;TreeNode&gt;
++getDistance(): Double
++getName(): String
++getParent(): TreeNode
++setDistance(distance: Double)
++setParent(parent: TreeNode)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>980</x>
+      <y>455</y>
+      <w>140</w>
+      <h>95</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m2=1</panel_attributes>
+    <additional_attributes>10.0;10.0;210.0;10.0;210.0;160.0;260.0;160.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>980</x>
+      <y>450</y>
+      <w>140</w>
+      <h>25</h>
+    </coordinates>
+    <panel_attributes>lt=-
+r1=1
+m2=1
+iterates &gt;</panel_attributes>
+    <additional_attributes>10.0;20.0;260.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>815</x>
+      <y>530</y>
+      <w>190</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>Neo4jBatchBuilder
+--
++Neo4jBatchBuilder(storeDir: String,
+                                 annotations: AnnotationCollection)
++Neo4jBatchBuilder(storeDir: String,
+                                 annotations: AnnotationCollection,
+                                 phylogeny: TreeNode)
++addEdge(edge: Edge&lt;?&gt;)
++addNode(node: SequenceNode)
++build(): Graph</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>900</x>
+      <y>480</y>
+      <w>15</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;100.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>785</x>
+      <y>450</y>
+      <w>60</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=-
+&lt; creates</panel_attributes>
+    <additional_attributes>10.0;20.0;100.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>815</x>
+      <y>605</y>
+      <w>95</w>
+      <h>150</h>
+    </coordinates>
+    <panel_attributes>lt=-
+&lt; builds from</panel_attributes>
+    <additional_attributes>170.0;10.0;170.0;240.0;10.0;240.0;10.0;280.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>895</x>
+      <y>605</y>
+      <w>285</w>
+      <h>160</h>
+    </coordinates>
+    <panel_attributes>lt=-
+builds from &gt;</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;240.0;550.0;240.0;550.0;300.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1080</x>
+      <y>315</y>
+      <w>40</w>
+      <h>140</h>
+    </coordinates>
+    <panel_attributes>lt=-
+&lt; uses</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;260.0;60.0;260.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>390</x>
+      <y>630</y>
+      <w>185</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>Neo4jAnnotation
+--
++Neo4jAnnotation(service: GraphDatabaseService,
+                              delegate: Node)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>475</x>
+      <y>660</y>
+      <w>15</w>
+      <h>95</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;170.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>395</x>
+      <y>430</y>
+      <w>190</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>Neo4jSequenceNode
+--
++Neo4jSequenceNode(service: GraphDatabaseService,
+                                    delegate: Node)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>490</x>
+      <y>240</y>
+      <w>85</w>
+      <h>200</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>150.0;10.0;150.0;150.0;10.0;150.0;10.0;380.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>225</x>
+      <y>430</y>
+      <w>150</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>Neo4jScoreContainer
+--
++Neo4jSequenceNode(delegate: Node)</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>295</x>
+      <y>305</y>
+      <w>15</w>
+      <h>135</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;250.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>1100</x>
+      <y>735</y>
+      <w>145</w>
+      <h>115</h>
+    </coordinates>
+    <panel_attributes>tree
+--</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1195</x>
+      <y>690</y>
+      <w>40</w>
+      <h>75</h>
+    </coordinates>
+    <panel_attributes>lt=-
+builds &gt;</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;130.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>20</x>
+      <y>265</y>
+      <w>145</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+/InterestingnessStrategy/
+--
+/+compute(container: ScoreContainer/</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>220</x>
+      <y>195</y>
+      <w>160</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;interface&gt;&gt;
+/ScoreIdentifier/
+--
++applyImportanceModifier(rawScore: Int): Int</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>20</x>
+      <y>330</y>
+      <w>145</w>
+      <h>25</h>
+    </coordinates>
+    <panel_attributes>SummingScoresStrategy
+--
++compute(container: ScoreContainer</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>90</x>
+      <y>300</y>
+      <w>15</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>545</x>
+      <y>130</y>
+      <w>90</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>PropertyType
+--
++name(): String
++description(): String</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>375</x>
+      <y>145</y>
+      <w>180</w>
+      <h>80</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>340.0;10.0;280.0;10.0;280.0;140.0;10.0;140.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>295</x>
+      <y>230</y>
+      <w>25</w>
+      <h>50</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=0..*</panel_attributes>
+    <additional_attributes>10.0;80.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>125</x>
+      <y>300</y>
+      <w>65</w>
+      <h>220</h>
+    </coordinates>
+    <panel_attributes>lt=-
+&lt; computes</panel_attributes>
+    <additional_attributes>110.0;420.0;110.0;40.0;10.0;40.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>160</x>
+      <y>280</y>
+      <w>80</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=-
+uses &gt;</panel_attributes>
+    <additional_attributes>10.0;20.0;140.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>210</x>
+      <y>375</y>
+      <w>435</w>
+      <h>145</h>
+    </coordinates>
+    <panel_attributes>lt=-
+creates &gt;</panel_attributes>
+    <additional_attributes>10.0;270.0;10.0;50.0;850.0;50.0;850.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>20</x>
+      <y>195</y>
+      <w>145</w>
+      <h>40</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;enum&gt;&gt;
+Scores
+--
+SEQ_LENGTH
+DR_MUT</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>160</x>
+      <y>210</y>
+      <w>70</w>
+      <h>15</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;.</panel_attributes>
+    <additional_attributes>120.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1020</x>
+      <y>370</y>
+      <w>100</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>lt=-
+&lt; creates</panel_attributes>
+    <additional_attributes>180.0;360.0;10.0;360.0;10.0;10.0</additional_attributes>
+  </element>
+</diagram>
