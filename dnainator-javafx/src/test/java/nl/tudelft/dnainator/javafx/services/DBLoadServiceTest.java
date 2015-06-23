@@ -20,6 +20,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.neo4j.io.fs.FileUtils;
+import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 
 
@@ -48,7 +49,10 @@ public class DBLoadServiceTest extends ApplicationTest {
 	}
 
 	@Override
-	public void start(Stage arg0) throws Exception { }
+	public void start(Stage arg0) throws Exception {
+		// Prevent exceptions from showing during service testing.
+		FxToolkit.cleanupStages();
+	}
 	
 	/**
 	 * Creates new database service.
