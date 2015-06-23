@@ -11,6 +11,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import javafx.stage.Stage;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.Neo4jGraph;
 import nl.tudelft.dnainator.javafx.DNAinator;
@@ -18,10 +19,9 @@ import nl.tudelft.dnainator.javafx.DNAinator;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.neo4j.io.fs.FileUtils;
+import org.testfx.framework.junit.ApplicationTest;
 
-import de.saxsys.javafx.test.JfxRunner;
 
 /**
  * Test class for the {@link DBLoadService}.
@@ -30,8 +30,7 @@ import de.saxsys.javafx.test.JfxRunner;
  * an explanation on how to test JavaFX code.
  * </p>
  */
-@RunWith(JfxRunner.class)
-public class DBLoadServiceTest {
+public class DBLoadServiceTest extends ApplicationTest {
 	private DBLoadService loadService;
 	private static final int DELAY = 20000;
 	private static final String DB_PATH = "target/neo4j-junit-dbload";
@@ -47,6 +46,9 @@ public class DBLoadServiceTest {
 			e.printStackTrace();
 		}
 	}
+
+	@Override
+	public void start(Stage arg0) throws Exception { }
 	
 	/**
 	 * Creates new database service.
@@ -113,5 +115,4 @@ public class DBLoadServiceTest {
 		ExecutionException, TimeoutException {
 		doTest();
 	}
-
 }

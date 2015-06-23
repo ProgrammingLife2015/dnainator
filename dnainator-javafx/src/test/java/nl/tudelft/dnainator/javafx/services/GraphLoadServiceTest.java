@@ -1,14 +1,13 @@
 package nl.tudelft.dnainator.javafx.services;
 
-import de.saxsys.javafx.test.JfxRunner;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.Neo4jGraph;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.neo4j.io.fs.FileUtils;
+import org.testfx.framework.junit.ApplicationTest;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,6 +17,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import javafx.stage.Stage;
 import static nl.tudelft.dnainator.javafx.services.LoadServiceTestUtils.registerListeners;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -30,8 +30,7 @@ import static org.junit.Assert.fail;
  * an explanation on how to test JavaFX code.
  * </p>
  */
-@RunWith(JfxRunner.class)
-public class GraphLoadServiceTest {
+public class GraphLoadServiceTest extends ApplicationTest {
 	private static final String DB_PATH = "target/neo4j-junit-graphload";
 	private static final int DELAY = 20000;
 	private GraphLoadService loadService;
@@ -52,6 +51,9 @@ public class GraphLoadServiceTest {
 			e.printStackTrace();
 		}
 	}
+
+	@Override
+	public void start(Stage arg0) throws Exception { }
 
 	/**
 	 * Creates test node and edge files.
