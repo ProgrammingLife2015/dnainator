@@ -170,7 +170,7 @@
 }
 
 .interesting-node {
-	-fx-stroke: #FF0000;
+	-fx-stroke: #ED6D6D;
 	-fx-stroke-width: 5;
 }
 
@@ -246,12 +246,20 @@ StrainView, PhylogeneticView {
 	-fx-cursor: move;
 }
 
-Gene {
+.dr-mutation,
+.annotation {
 	-fx-font-size: 12pt;
 	-fx-background-color: rgba(255, 255, 228, 0.8);
-	-fx-border-color: #D4D4D4;
 	-fx-border-style: solid;
 	-fx-border-width: 2;
+}
+
+.dr-mutation {
+	-fx-border-color: #ED6D6D;
+}
+
+.annotation {
+	-fx-border-color: #D4D4D4;
 }
 
 Minimap .view {
