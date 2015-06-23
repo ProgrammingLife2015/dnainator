@@ -1,7 +1,7 @@
 package nl.tudelft.dnainator.javafx.controllers;
 
 import nl.tudelft.dnainator.graph.Graph;
-import nl.tudelft.dnainator.javafx.ColorServer;
+import nl.tudelft.dnainator.javafx.ColorMap;
 import nl.tudelft.dnainator.javafx.views.AbstractView;
 import nl.tudelft.dnainator.javafx.views.PhylogeneticView;
 import nl.tudelft.dnainator.javafx.views.StrainView;
@@ -23,7 +23,7 @@ import javafx.scene.layout.BorderPane;
  * </p>
  */
 public class WindowController {
-	@SuppressWarnings("unused") @FXML private FileOpenController fileOpenController;
+	@SuppressWarnings("unused") @FXML private OpenPaneController openPaneController;
 	@SuppressWarnings("unused") @FXML private WelcomeController welcomeController;
 	@SuppressWarnings("unused") @FXML private PropertyPaneController propertyPaneController;
 
@@ -38,14 +38,14 @@ public class WindowController {
 
 	@SuppressWarnings("unused") @FXML
 	private void initialize() {
-		fileOpenController.graphProperty().addListener((obj, oldV, newV) -> constructView(newV));
+		openPaneController.graphProperty().addListener((obj, oldV, newV) -> constructView(newV));
 		welcomeController.currentDBProperty().addListener((obj, oldV, newV) -> constructView(newV));
 	}
 	
 	private void constructView(Graph newV) {
-		ColorServer colorServer = new ColorServer();
-		strainView = new StrainView(colorServer, newV);
-		PhylogeneticView phyloView = new PhylogeneticView(colorServer, newV.getTree());
+		ColorMap colorMap = new ColorMap();
+		strainView = new StrainView(colorMap, newV);
+		PhylogeneticView phyloView = new PhylogeneticView(colorMap, newV.getTree());
 
 		SplitPane splitPane = new SplitPane(strainView, phyloView);
 		splitPane.setOrientation(Orientation.VERTICAL);
@@ -64,7 +64,7 @@ public class WindowController {
 
 	@SuppressWarnings("unused") @FXML
 	private void openButtonAction() {
-		fileOpenController.toggle();
+		openPaneController.toggle();
 	}
 
 	@SuppressWarnings("unused") @FXML
@@ -117,21 +117,21 @@ public class WindowController {
 
 	@SuppressWarnings("unused") @FXML
 	private void toggleJumpToAction(ActionEvent e) {
-		strainView.toggleStrainControl();
+		strainView.toggleJumpTo();
 	}
 
 	@SuppressWarnings("unused") @FXML
 	private void jumpNodeAction(ActionEvent e) {
-		strainView.getStrainControl().toggleJumpNode();
+		strainView.getJumpTo().toggleJumpNode();
 	}
 	
 	@SuppressWarnings("unused") @FXML
 	private void jumpRankAction(ActionEvent e) {
-		strainView.getStrainControl().toggleJumpRank();
+		strainView.getJumpTo().toggleJumpRank();
 	}
 	
 	@SuppressWarnings("unused") @FXML
 	private void jumpAnnotationAction(ActionEvent e) {
-		strainView.getStrainControl().toggleJumpAnnotation();
+		strainView.getJumpTo().toggleJumpAnnotation();
 	}
 }

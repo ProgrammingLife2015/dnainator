@@ -6,7 +6,7 @@ import javafx.application.Platform;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import nl.tudelft.dnainator.graph.Graph;
-import nl.tudelft.dnainator.javafx.ColorServer;
+import nl.tudelft.dnainator.javafx.ColorMap;
 import nl.tudelft.dnainator.javafx.drawables.strains.Strain;
 import nl.tudelft.dnainator.javafx.views.StrainView;
 
@@ -42,7 +42,7 @@ public class MinimapTest extends ApplicationTest {
 		// CHECKSTYLE.OFF: MagicNumber
 		Mockito.when(graph.getMaxBasePairs()).thenReturn(0);
 		// CHECKSTYLE.ON: MagicNumber
-		strain = new Strain(new ColorServer(), graph);
+		strain = new Strain(new ColorMap(), graph);
 		minimap = new Minimap(strain, graph, strainView);
 	}
 	

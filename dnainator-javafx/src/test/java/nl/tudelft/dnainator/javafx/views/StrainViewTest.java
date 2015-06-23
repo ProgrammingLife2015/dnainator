@@ -7,7 +7,7 @@ import static org.junit.Assert.assertTrue;
 import javafx.stage.Stage;
 import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.graph.Graph;
-import nl.tudelft.dnainator.javafx.ColorServer;
+import nl.tudelft.dnainator.javafx.ColorMap;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +25,7 @@ public class StrainViewTest extends ApplicationTest {
 	
 	private StrainView strainView;
 	@Mock private Graph graph;
-	@Mock private ColorServer colorServer;
+	@Mock private ColorMap colorMap;
 	@Mock private EnrichedSequenceNode esn;
 	
 	@Override
@@ -38,7 +38,7 @@ public class StrainViewTest extends ApplicationTest {
 	@Before
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
-		strainView = new StrainView(colorServer, graph);
+		strainView = new StrainView(colorMap, graph);
 	}
 	
 	/**
@@ -102,19 +102,19 @@ public class StrainViewTest extends ApplicationTest {
 	 * Test getting the strain control.
 	 */
 	@Test
-	public void testGetStrainControl() {
-		assertNotNull(strainView.getStrainControl());
+	public void testGetJumpTo() {
+		assertNotNull(strainView.getJumpTo());
 	}
 	
 	/**
 	 * Test if toggling the strain controls changes its visibility.
 	 */
 	@Test
-	public void testToggleStrainControl() {
+	public void testToggleJumpTo() {
 		assertTrue(strainView.getChildren().get(1).isVisible());
-		strainView.toggleStrainControl();
+		strainView.toggleJumpTo();
 		assertFalse(strainView.getChildren().get(1).isVisible());
-		strainView.toggleStrainControl();
+		strainView.toggleJumpTo();
 		assertTrue(strainView.getChildren().get(1).isVisible());
 	}
 }

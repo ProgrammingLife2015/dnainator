@@ -3,7 +3,7 @@ package nl.tudelft.dnainator.javafx.drawables.strains;
 import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.core.PropertyType;
 import nl.tudelft.dnainator.core.impl.Cluster;
-import nl.tudelft.dnainator.javafx.ColorServer;
+import nl.tudelft.dnainator.javafx.ColorMap;
 import nl.tudelft.dnainator.javafx.drawables.phylogeny.AbstractNode;
 
 import org.junit.Before;
@@ -30,7 +30,7 @@ import static org.junit.Assert.assertTrue;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class ClusterDrawableTest {
-	@Mock private ColorServer colorserver;
+	@Mock private ColorMap colorserver;
 	@Mock private EnrichedSequenceNode node;
 	
 	private ClusterDrawable cluster;

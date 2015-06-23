@@ -19,14 +19,14 @@ import java.util.stream.StreamSupport;
 /**
  * A JavaFX service that loads all the directories from a specific path.
  */
-public class DirectoryLoadService extends Service<ObservableList<String>> {
+public class DirectoryListingService extends Service<ObservableList<String>> {
 	private static final String CORE = "neostore";
 	private ObjectProperty<String> directory = new SimpleObjectProperty<>(this, "database");
 
 	/**
-	 * Construct a DirectoryLoadService with a default directory path.
+	 * Construct a DirectoryListingService with a default directory path.
 	 */
-	public DirectoryLoadService() {
+	public DirectoryListingService() {
 		setDirectory(DNAinator.DEFAULT_DB_PATH);
 	}
 
