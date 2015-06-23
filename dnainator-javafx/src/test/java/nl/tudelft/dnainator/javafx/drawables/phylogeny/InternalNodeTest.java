@@ -1,13 +1,8 @@
 package nl.tudelft.dnainator.javafx.drawables.phylogeny;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-
 import java.util.ArrayList;
-
-import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -16,7 +11,6 @@ import org.testfx.framework.junit.ApplicationTest;
 
 public class InternalNodeTest extends ApplicationTest {
 
-	private CollapsedNode cn;
 	private InternalNode in;
 	private InternalNode spy;
 	
@@ -32,7 +26,7 @@ public class InternalNodeTest extends ApplicationTest {
 		MockitoAnnotations.initMocks(this);
 		in = new InternalNode(new ArrayList<>());
 		spy = Mockito.spy(in);
-		cn = new CollapsedNode(spy);
+
 	}
 	
 	/**
@@ -40,21 +34,21 @@ public class InternalNodeTest extends ApplicationTest {
 	 */
 	@Test
 	public void testCreate() {
-		assertEquals(2, cn.getChildren().size());
+		assertEquals(1, in.getChildren().size());
 	}
 	
 	/**
-	 * Test getting the default shape.
+	 * Test whether something was done with the positioning of an {@link InternalNode}. 
 	 */
 	@Test
-	public void testGetShape() {
-		Circle c = (Circle) cn.getShape();
-		assertNotNull(c);
-		// CHECKSTYLE.OFF: MagicNumber
-		assertEquals(0, c.getCenterX(), 0.001);
-		assertEquals(0, c.getCenterY(), 0.001);
-		assertEquals(AbstractNode.DIM / 2, c.getRadius(), 0.001);
-		// CHECKSTYLE.ON: MagicNumber
+	public void testChildPositioning() {
+		ArrayList<AbstractNode> nodes = new ArrayList<>();
+		InternalNode child = new InternalNode(new ArrayList<>());
+		InternalNode spy = Mockito.spy(child);
+		nodes.add(spy);
+		
+		new InternalNode(nodes);
+		Mockito.verify(spy, Mockito.atLeastOnce()).marginProperty();
 	}
 	
 	/**
@@ -62,8 +56,7 @@ public class InternalNodeTest extends ApplicationTest {
 	 */
 	@Test
 	public void testOnMouseClicked() {
-		cn.onMouseClicked();
+		spy.onMouseClicked();
 		Mockito.verify(spy, Mockito.atLeastOnce()).getChildren();
-		Mockito.verify(spy, Mockito.atLeastOnce()).bindMargins();
 	}
 }
