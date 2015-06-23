@@ -1,6 +1,7 @@
 package nl.tudelft.dnainator.javafx.drawables.annotations;
 
 import javafx.scene.Node;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import nl.tudelft.dnainator.annotation.Annotation;
@@ -21,13 +22,13 @@ public class Gene extends VBox implements Drawable {
 
 	private void draw(Annotation annotation) {
 		Text name = new Text(annotation.getGeneName());
-		Text coordinates = new Text("Coordinates: " + annotation.getRange());
-		Text sense = new Text("Sense: " + annotation.isSense());
-		getChildren().addAll(name, coordinates, sense);
-
-		// FIXME: Jente: probably replace this in redo-annotations?
+		Tooltip tooltip = new Tooltip("Coordinates: " + annotation.getStart() + " to "
+				+ annotation.getEnd() + "\n" + "Sense: " + annotation.isSense());
+		Tooltip.install(name, tooltip);
+		getChildren().add(name);
 		if (annotation.isMutation()) {
-			setStyle("-fx-background-color: #FF0000");
+			// FIXME: Jente: probably replace this in redo-annotations?
+			setStyle("-fx-border-color: #ED6D6D");
 		}
 	}
 
