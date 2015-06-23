@@ -55,7 +55,7 @@ public class DirectoryListingService extends Service<ObservableList<String>> {
 	 * Scan the directory containing the default location of databases.
 	 * If the default directory does not exist, create it.
 	 * Adds all the directories found to the welcomescreen's list of selectables.
-	 * @throws IOException 
+	 * @throws IOException When the default directory does not exist and cannot be created.
 	 */
 	private ObservableList<String> scanDirectory(String dbpath) throws IOException {
 		ObservableList<String> databases = FXCollections.observableArrayList();

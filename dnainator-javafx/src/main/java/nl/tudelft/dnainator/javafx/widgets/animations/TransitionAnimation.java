@@ -36,6 +36,7 @@ public abstract class TransitionAnimation extends Transition implements CustomAn
 		this.size = size;
 		this.duration = duration;
 		this.pos = pos;
+		// Inverse the animation when it is finished.
 		this.setOnFinished(actionEvent -> setRate(-getRate()));
 		setupAnimation();
 	}

@@ -30,7 +30,7 @@ public class WelcomeController {
 	private ObservableList<String> databases;
 
 	private DBLoadService dbload;
-	private DirectoryListingService dirload;
+	private DirectoryListingService dirListing;
 
 	private DirectoryChooser dirChooser;
 	private ProgressDialog progressDialog;
@@ -45,14 +45,17 @@ public class WelcomeController {
 		currentDatabase = new SimpleObjectProperty<>(this, "graph");
 		dirChooser = new DirectoryChooser();
 		dbload = new DBLoadService();
-		dirload = new DirectoryListingService();
+		dirListing = new DirectoryListingService();
 		databases = FXCollections.observableArrayList();
 
 		initDBLoad();
-		initDirLoad();
+		initDirListing();
 		initSelection();
 	}
 
+	/*
+	 * Initialises the DBLoadService.
+	 */
 	private void initDBLoad() {
 		dbload.setOnCancelled(e -> progressDialog.close());
 		dbload.setOnFailed(e -> {
@@ -67,17 +70,23 @@ public class WelcomeController {
 		});
 	}
 
-	private void initDirLoad() {
-		dirload.setOnFailed(e -> new ExceptionDialog(dblist.getParent(), dirload.getException(),
-				"Could not load directories."));
-		dirload.setOnSucceeded(e -> {
+	/*
+	 * Initialises the DirectoryListingService.
+	 */
+	private void initDirListing() {
+		dirListing.setOnFailed(e -> new ExceptionDialog(dblist.getParent(),
+				dirListing.getException(), "Could not load directories."));
+		dirListing.setOnSucceeded(e -> {
 			databases.clear();
 			databases.add(selectDB);
-			databases.addAll(dirload.getValue());
+			databases.addAll(dirListing.getValue());
 		});
-		dirload.restart();
+		dirListing.restart();
 	}
 
+	/*
+	 * Initialises the list's selection.
+	 */
 	private void initSelection() {
 		dblist.setItems(databases);
 		dblist.getSelectionModel().select(dbload.getDatabase());
@@ -100,12 +109,12 @@ public class WelcomeController {
 			if (dir == null) {
 				return;
 			}
-			dirload.setDirectory(dir.getAbsolutePath());
-			dirload.restart();
+			dirListing.setDirectory(dir.getAbsolutePath());
+			dirListing.restart();
 		} else {
 			progressDialog = new ProgressDialog(dblist.getScene().getWindow(), dbload);
 			dbload.restart();
-			dirload.restart();
+			dirListing.restart();
 		}
 	}
 

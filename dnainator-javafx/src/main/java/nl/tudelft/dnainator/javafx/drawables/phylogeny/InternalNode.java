@@ -51,6 +51,9 @@ public class InternalNode extends AbstractNode {
 				.map(AbstractNode::marginProperty).toArray(DoubleProperty[]::new)));
 	}
 
+	/**
+	 * Bind this leaf count property to the sum of the children leaf count properties.
+	 */
 	private void bindLeafCount() {
 		this.leafCountProperty().bind(Bindings.createIntegerBinding(() -> children.stream()
 				.collect(Collectors.summingInt(AbstractNode::getLeafCount)), children.stream()
