@@ -108,30 +108,30 @@ public class PhylogeneticViewTest extends ApplicationTest {
 	@Test
 	public void testOnKeyPressed() {
 		double prevX, prevY, prevZoom;
-
+		clickOn(view);
 		prevX = view.translate.getX();
-		clickOn(view).type(KeyCode.RIGHT);
+		type(KeyCode.RIGHT);
 		assertTrue(view.translate.getX() < prevX);
 
 		prevX = view.translate.getX();
-		clickOn(view).type(KeyCode.LEFT);
+		type(KeyCode.LEFT);
 		assertTrue(view.translate.getX() > prevX);
 
 		prevY = view.translate.getY();
-		clickOn(view).type(KeyCode.DOWN);
+		type(KeyCode.DOWN);
 		assertTrue(view.translate.getY() < prevY);
 
 		prevY = view.translate.getY();
-		clickOn(view).type(KeyCode.UP);
+		type(KeyCode.UP);
 		assertTrue(view.translate.getY() > prevY);
 
 		prevZoom = view.scale.getMxx();
-		clickOn(view).type(KeyCode.PLUS);
+		type(KeyCode.EQUALS);
 		assertTrue(view.scale.getMxx() > prevZoom);
 		assertTrue(view.scale.getMyy() > prevZoom);
 
 		prevZoom = view.scale.getMxx();
-		clickOn(view).type(KeyCode.MINUS);
+		type(KeyCode.MINUS);
 		assertTrue(view.scale.getMxx() < prevZoom);
 		assertTrue(view.scale.getMyy() < prevZoom);
 	}

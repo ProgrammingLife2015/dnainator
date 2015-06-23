@@ -5,9 +5,12 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 /**
- * Test the color server.
+ * Test the {@link AllColorsInUseException}.
+ * This exception is thrown whenever all colors from the color palette are in use,
+ * and another is requested.
  */
 public class AllColorsInUseExceptionTest {
+	
 	/**
 	 * Test what happens when all colors are in use.
 	 * @throws AllColorsInUseException	when no colors are free.

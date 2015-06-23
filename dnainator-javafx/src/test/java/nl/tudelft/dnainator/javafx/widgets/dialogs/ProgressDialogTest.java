@@ -9,12 +9,9 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-
-
 import org.junit.Test;
 import org.mockito.Mock;
 import org.testfx.framework.junit.ApplicationTest;
-
 
 /**
  * This class tests the implementation of the {@link ProgressDialog}.
@@ -37,9 +34,8 @@ public class ProgressDialogTest extends ApplicationTest {
 	}
 	
 	/**
-	 * Test creating a {@link HotkeyHelpDialog}.
+	 * Test creating a {@link ProgressDialog}.
 	 * Ensure that there is a button.
-	 * No menus are given.
 	 */
 	@Test
 	public void testCreate() {
