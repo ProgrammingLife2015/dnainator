@@ -153,6 +153,10 @@ public class FileOpenController {
 		selectFile("GFF file", GFF, gffField, graphLoadService.gffFileProperty());
 	}
 
+	/*
+	 * If the DR textfield is clicked, open the filechooser and if a file is selected,
+	 * fill in the DR textfield.
+	 */
 	@SuppressWarnings("unused") @FXML
 	private void onDRFieldClicked() {
 		selectFile("DR mutations file", DR, drField, graphLoadService.drFileProperty());
