@@ -3,6 +3,7 @@ package nl.tudelft.dnainator.javafx.controllers;
 import org.hamcrest.Matcher;
 import org.junit.Test;
 import org.testfx.api.FxAssert;
+import org.testfx.api.FxRobot;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.base.NodeMatchers;
 
@@ -15,6 +16,8 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import javafx.util.Callback;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 /**
  * Test the file open controller by simulating user interaction.
@@ -36,8 +39,17 @@ public class FileOpenControllerTest extends ApplicationTest {
 		Scene scene = new Scene(openpane, WIDTH, HEIGHT);
 		stage.setScene(scene);
 		stage.show();
-		
+
 		control = loader.getController();
+	}
+
+	/**
+	 * Test creation.
+	 */
+	@Test
+	public void testCreate() {
+		assertNotNull(control.graphProperty());
+		assertNull(control.graphProperty().get());
 	}
 
 	/**
@@ -46,7 +58,7 @@ public class FileOpenControllerTest extends ApplicationTest {
 	 */
 	@Test
 	public void testNodeField() {
-		clickFieldAndNavigateFileChooser("#nodeField");
+		togglePane().clickOn("#nodeField");
 
 		FxAssert.verifyThat("#nodeField", verify(FileOpenController.NODE));
 		FxAssert.verifyThat("#edgeField", verify(FileOpenController.EDGE));
@@ -57,7 +69,7 @@ public class FileOpenControllerTest extends ApplicationTest {
 	 */
 	@Test
 	public void testEdgeField() {
-		clickFieldAndNavigateFileChooser("#edgeField");
+		togglePane().clickOn("#edgeField");
 
 		FxAssert.verifyThat("#nodeField", verify(FileOpenController.NODE));
 		FxAssert.verifyThat("#edgeField", verify(FileOpenController.EDGE));
@@ -68,7 +80,7 @@ public class FileOpenControllerTest extends ApplicationTest {
 	 */
 	@Test
 	public void testTreeField() {
-		clickFieldAndNavigateFileChooser("#newickField");
+		togglePane().clickOn("#newickField");
 
 		FxAssert.verifyThat("#newickField", verify(FileOpenController.NEWICK));
 	}
@@ -78,15 +90,61 @@ public class FileOpenControllerTest extends ApplicationTest {
 	 */
 	@Test
 	public void testGffField() {
-		clickFieldAndNavigateFileChooser("#gffField");
+		togglePane().clickOn("#gffField");
 
 		FxAssert.verifyThat("#gffField", verify(FileOpenController.GFF));
 	}
 
-	private void clickFieldAndNavigateFileChooser(String field) {
+	/**
+	 * Test clicking the dr field.
+	 */
+	@Test
+	public void testDRField() {
+		togglePane().clickOn("#drField");
+
+		FxAssert.verifyThat("#drField", verify(FileOpenController.DR));
+	}
+
+	/**
+	 * Test enabling the load button.
+	 */
+	@Test
+	public void testEnable() {
+		togglePane();
+
+		FxAssert.verifyThat("#openButton", NodeMatchers.isDisabled());
+
+		clickOn("#nodeField")
+		.clickOn("#newickField")
+		.clickOn("#gffField");
+
+		FxAssert.verifyThat("#openButton", NodeMatchers.isEnabled());
+	}
+
+	/**
+	 * Test loading.
+	 * FIXME: Doesn't work on travis?
+	 */
+//	@Test
+//	public void testLoad() {
+//		togglePane();
+//
+//		FxAssert.verifyThat("#openButton", NodeMatchers.isDisabled());
+//
+//		clickOn("#nodeField")
+//		.clickOn("#newickField")
+//		.clickOn("#gffField")
+//		.clickOn("#openButton")
+//		.sleep(2, TimeUnit.SECONDS)
+//		.type(KeyCode.ENTER)
+//		.type(KeyCode.ESCAPE);
+//
+//		FxAssert.verifyThat("#container", NodeMatchers.isInvisible());
+//	}
+
+	private FxRobot togglePane() {
 		control.toggle();
-		sleep(1, TimeUnit.SECONDS)
-		.clickOn(field);
+		return sleep(1, TimeUnit.SECONDS);
 	}
 
 	private Matcher<Node> verify(String node) {

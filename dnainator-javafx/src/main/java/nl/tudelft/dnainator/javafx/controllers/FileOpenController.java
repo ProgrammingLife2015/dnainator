@@ -164,7 +164,7 @@ public class FileOpenController {
 	 */
 	@SuppressWarnings("unused") @FXML
 	private void onOpenAction() {
-		progressDialog = new ProgressDialog(container.getParent(), graphLoadService);
+		progressDialog = new ProgressDialog(container.getScene().getWindow(), graphLoadService);
 		resetTextFields();
 		animation.toggle();
 		if (graphLoadService.canLoad()) {
