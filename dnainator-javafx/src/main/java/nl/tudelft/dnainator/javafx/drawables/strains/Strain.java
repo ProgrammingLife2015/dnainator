@@ -25,8 +25,10 @@ import java.util.stream.Collectors;
 public class Strain extends SemanticDrawable {
 	// Max zoom is 800. 1 / .05 * 40 = 800, which is our max threshold.
 	private static final double THRESHOLD_FACTOR = 40;
-	private static final double ANNOTATION_HEIGHT = 50;
+	private static final double ANNOTATION_HEIGHT = 20;
 	private static final double OFFSET = 300;
+	private static final int MAX_ANNOTATIONS = 20;
+	private int curAnnotationY;
 	private ColorServer colorServer;
 	private Graph graph;
 	private LinkedHashMap<String, ClusterDrawable> clusters;
@@ -94,7 +96,7 @@ public class Strain extends SemanticDrawable {
 		clusters.clear();
 		result.forEach(this::loadRank);
 		clusters.values().forEach(this::loadEdges);
-		drawAnnotations(annotations);
+		annotations.forEach(this::loadAnnotations);
 		content.getChildren().addAll(clusters.values().stream().distinct()
 				.collect(Collectors.toList()));
 	}
@@ -116,39 +118,18 @@ public class Strain extends SemanticDrawable {
 				.collect(Collectors.toList());
 	}
 
-	private void drawAnnotations(Collection<Annotation> annotations) {
-		Gene prev = null;
-		for (Annotation a : annotations) {
-			prev = loadAnnotations(a, prev);
-		}
-	}
-
-	private Gene loadAnnotations(Annotation annotation, Gene prev) {
+	private Gene loadAnnotations(Annotation annotation) {
 		Gene g = new Gene(annotation);
 		ClusterDrawable left = getClusterDrawable(annotation, Double.MAX_VALUE,
 				(x, acc) -> x <= acc);
 		ClusterDrawable right = getClusterDrawable(annotation, Double.MIN_VALUE,
 				(x, acc) -> x >= acc);
-		/*if (left != null) {
-			content.getChildren().add(new Connection(g.translateXProperty().add(0),
-					g.translateYProperty().add(0), left.translateXProperty().add(0),
-					left.translateYProperty().add(0)));
-		}
-		if (right != null) {
-			content.getChildren().add(new Connection(g.translateXProperty().add(
-					g.widthProperty()), g.translateYProperty().add(0),
-					right.translateXProperty().add(0), right.translateYProperty().add(0)));
-		}*/
 		if (left != null && right != null) {
 			g.translateXProperty().bind(Bindings.add(left.translateXProperty(), Bindings.subtract(
 					Bindings.divide(right.translateXProperty().subtract(left.translateXProperty()),
 							2), g.widthProperty().divide(2))));
-			if (prev != null && g.getLayoutBounds().intersects(prev.getLayoutBounds())) {
-				g.translateYProperty().bind(prev.translateYProperty()
-						.add(prev.heightProperty()).add(ANNOTATION_HEIGHT));
-			} else {
-				g.translateYProperty().bind(left.translateYProperty().add(ANNOTATION_HEIGHT));
-			}
+			g.translateYProperty().setValue(ANNOTATION_HEIGHT
+					* (curAnnotationY++ % MAX_ANNOTATIONS));
 		}
 		content.getChildren().add(g);
 		return g;

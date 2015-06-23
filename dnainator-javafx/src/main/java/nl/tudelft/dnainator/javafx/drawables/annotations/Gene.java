@@ -27,8 +27,9 @@ public class Gene extends VBox implements Drawable {
 		Tooltip.install(name, tooltip);
 		getChildren().add(name);
 		if (annotation.isMutation()) {
-			// FIXME: Jente: probably replace this in redo-annotations?
-			setStyle("-fx-border-color: #ED6D6D");
+			getStyleClass().add("dr-mutation");
+		} else {
+			getStyleClass().add("annotation");
 		}
 	}
 
