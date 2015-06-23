@@ -8,9 +8,9 @@ import nl.tudelft.dnainator.annotation.Range;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.graph.Graph;
-import nl.tudelft.dnainator.javafx.ColorServer;
+import nl.tudelft.dnainator.javafx.ColorMap;
 import nl.tudelft.dnainator.javafx.drawables.SemanticDrawable;
-import nl.tudelft.dnainator.javafx.drawables.annotations.Gene;
+import nl.tudelft.dnainator.javafx.drawables.annotations.AnnotationDrawable;
 
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -29,7 +29,7 @@ public class Strain extends SemanticDrawable {
 	private static final double OFFSET = 300;
 	private static final int MAX_ANNOTATIONS = 20;
 	private int curAnnotationY;
-	private ColorServer colorServer;
+	private ColorMap colorMap;
 	private Graph graph;
 	private LinkedHashMap<String, ClusterDrawable> clusters;
 	private Range lastLoaded;
@@ -38,24 +38,24 @@ public class Strain extends SemanticDrawable {
 	/**
 	 * Construct a new top level {@link Strain} using the specified graph.
 	 *
-	 * @param colorServer The {@link ColorServer} to bind to.
+	 * @param colorMap The {@link ColorMap} to bind to.
 	 * @param graph The specified graph.
 	 */
-	public Strain(ColorServer colorServer, Graph graph) {
-		this(colorServer, graph, new Group());
+	public Strain(ColorMap colorMap, Graph graph) {
+		this(colorMap, graph, new Group());
 	}
 
 	/**
 	 * Construct a new top level {@link Strain} using the specified graph, content and child
 	 * content.
 	 *
-	 * @param colorServer The {@link ColorServer} to bind to.
+	 * @param colorMap The {@link ColorMap} to bind to.
 	 * @param graph	The specified graph.
 	 * @param content The specified graph content.
 	 */
-	public Strain(ColorServer colorServer, Graph graph, Group content) {
+	public Strain(ColorMap colorMap, Graph graph, Group content) {
 		super(content);
-		this.colorServer = colorServer;
+		this.colorMap = colorMap;
 		this.graph = graph;
 		this.clusters = new LinkedHashMap<>();
 		this.lastLoaded = new Range(Integer.MAX_VALUE, Integer.MIN_VALUE);
@@ -116,8 +116,8 @@ public class Strain extends SemanticDrawable {
 				.collect(Collectors.toList());
 	}
 
-	private Gene loadAnnotations(Annotation annotation) {
-		Gene g = new Gene(annotation);
+	private AnnotationDrawable loadAnnotations(Annotation annotation) {
+		AnnotationDrawable g = new AnnotationDrawable(annotation);
 		ClusterDrawable left = getClusterDrawable(annotation, Double.MAX_VALUE,
 				(x, acc) -> x <= acc);
 		ClusterDrawable right = getClusterDrawable(annotation, Double.MIN_VALUE,
@@ -155,7 +155,7 @@ public class Strain extends SemanticDrawable {
 
 	private void loadRank(Integer key, List<Cluster> value) {
 		for (int i = 0; i < value.size(); i++) {
-			ClusterDrawable cluster = new ClusterDrawable(colorServer, value.get(i));
+			ClusterDrawable cluster = new ClusterDrawable(colorMap, value.get(i));
 			cluster.getCluster().getNodes().forEach(e -> clusters.put(e.getId(), cluster));
 			cluster.setTranslateX(key * RANK_WIDTH);
 			cluster.setTranslateY(i * RANK_WIDTH - value.size() * RANK_WIDTH / 2);

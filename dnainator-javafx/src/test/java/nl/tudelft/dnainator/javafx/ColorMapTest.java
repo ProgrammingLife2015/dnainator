@@ -1,5 +1,6 @@
 package nl.tudelft.dnainator.javafx;
 
+import nl.tudelft.dnainator.javafx.exceptions.AllColorsInUseException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -7,19 +8,19 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Testset for the {@link ColorServer}.
+ * Testset for the {@link ColorMap}.
  */
-public class ColorServerTest {
+public class ColorMapTest {
 	private static final String TKK_REF = "TKK_REF";
 	private static final String TKK_REF_0026 = "TKK_REF_0026";
-	private ColorServer colorServer;
+	private ColorMap colorMap;
 
 	/**
 	 * Sets up the test environment.
 	 */
 	@Before
 	public void setup() {
-		colorServer = new ColorServer();
+		colorMap = new ColorMap();
 	}
 
 	/**
@@ -28,26 +29,26 @@ public class ColorServerTest {
 	 */
 	@Test
 	public void testGetColorSimple() throws AllColorsInUseException {
-		colorServer.askColor(TKK_REF);
-		String col0 = colorServer.getColor(TKK_REF);
+		colorMap.askColor(TKK_REF);
+		String col0 = colorMap.getColor(TKK_REF);
 		assertEquals("color-0", col0);
-		colorServer.revokeColor(TKK_REF);
+		colorMap.revokeColor(TKK_REF);
 	}
 
 	/**
-	 * Tests if the {@link ColorServer} correctly increments the count.
+	 * Tests if the {@link ColorMap} correctly increments the count.
 	 * @throws AllColorsInUseException Won't be thrown.
 	 */
 	@Test
 	public void testGetColorMultiple() throws AllColorsInUseException {
-		colorServer.askColor(TKK_REF);
-		String col0 = colorServer.getColor(TKK_REF);
+		colorMap.askColor(TKK_REF);
+		String col0 = colorMap.getColor(TKK_REF);
 		assertEquals("color-0", col0);
-		colorServer.askColor(TKK_REF_0026);
-		String col1 = colorServer.getColor(TKK_REF_0026);
+		colorMap.askColor(TKK_REF_0026);
+		String col1 = colorMap.getColor(TKK_REF_0026);
 		assertEquals("color-1", col1);
-		colorServer.revokeColor(TKK_REF);
-		colorServer.revokeColor(TKK_REF_0026);
+		colorMap.revokeColor(TKK_REF);
+		colorMap.revokeColor(TKK_REF_0026);
 	}
 
 	/**
@@ -56,11 +57,11 @@ public class ColorServerTest {
 	 */
 	@Test
 	public void testGetColorSame() throws AllColorsInUseException {
-		colorServer.askColor(TKK_REF);
-		String col0 = colorServer.getColor(TKK_REF);
-		String col1 = colorServer.getColor(TKK_REF);
+		colorMap.askColor(TKK_REF);
+		String col0 = colorMap.getColor(TKK_REF);
+		String col1 = colorMap.getColor(TKK_REF);
 		assertTrue(col0 == col1);
-		colorServer.revokeColor(TKK_REF);
+		colorMap.revokeColor(TKK_REF);
 	}
 
 	/**
@@ -69,14 +70,14 @@ public class ColorServerTest {
 	 */
 	@Test
 	public void testRevoke() throws AllColorsInUseException {
-		colorServer.askColor(TKK_REF);
-		String col0 = colorServer.getColor(TKK_REF);
+		colorMap.askColor(TKK_REF);
+		String col0 = colorMap.getColor(TKK_REF);
 		assertEquals("color-0", col0);
-		colorServer.revokeColor(TKK_REF);
-		colorServer.askColor(TKK_REF);
-		String col1 = colorServer.getColor(TKK_REF);
+		colorMap.revokeColor(TKK_REF);
+		colorMap.askColor(TKK_REF);
+		String col1 = colorMap.getColor(TKK_REF);
 		assertEquals("color-0", col1);
 		assertTrue(col0 == col1);
-		colorServer.revokeColor(TKK_REF);
+		colorMap.revokeColor(TKK_REF);
 	}
 }

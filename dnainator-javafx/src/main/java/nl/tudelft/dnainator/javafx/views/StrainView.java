@@ -4,11 +4,11 @@ import javafx.geometry.Point2D;
 import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.graph.Graph;
-import nl.tudelft.dnainator.javafx.ColorServer;
+import nl.tudelft.dnainator.javafx.ColorMap;
 import nl.tudelft.dnainator.javafx.drawables.strains.ClusterDrawable;
 import nl.tudelft.dnainator.javafx.drawables.strains.Strain;
 import nl.tudelft.dnainator.javafx.widgets.Minimap;
-import nl.tudelft.dnainator.javafx.widgets.StrainControl;
+import nl.tudelft.dnainator.javafx.widgets.JumpTo;
 
 import java.util.Collection;
 import java.util.NoSuchElementException;
@@ -21,17 +21,17 @@ public class StrainView extends AbstractView {
 	private Graph graph;
 	private Strain strain;
 	private Minimap minimap;
-	private StrainControl control;
+	private JumpTo control;
 
 	/**
 	 * Creates a new strain view instance.
-	 * @param colorServer The {@link ColorServer} to communicate with.
+	 * @param colorMap The {@link ColorMap} to communicate with.
 	 * @param graph The Graph that holds the strains.
 	 */
-	public StrainView(ColorServer colorServer, Graph graph) {
+	public StrainView(ColorMap colorMap, Graph graph) {
 		super();
 		this.graph = graph;
-		this.strain = new Strain(colorServer, graph);
+		this.strain = new Strain(colorMap, graph);
 
 		setTransforms(strain);
 		getChildren().addAll(strain, setupStrainControl(), setupMinimap(strain, graph));
@@ -46,8 +46,8 @@ public class StrainView extends AbstractView {
 		return minimap;
 	}
 
-	private StrainControl setupStrainControl() {
-		control = new StrainControl(this);
+	private JumpTo setupStrainControl() {
+		control = new JumpTo(this);
 		control.translateXProperty().bind(widthProperty().subtract(control.widthProperty()));
 		return control;
 	}
@@ -143,14 +143,14 @@ public class StrainView extends AbstractView {
 	}
 
 	/**
-	 * @return the {@link StrainControl} of the {@link StrainView}.
+	 * @return the {@link JumpTo} of the {@link StrainView}.
 	 */
-	public StrainControl getStrainControl() {
+	public JumpTo getStrainControl() {
 		return control;
 	}
 
 	/**
-	 * Toggles the visibility of the {@link StrainControl}.
+	 * Toggles the visibility of the {@link JumpTo}.
 	 */
 	public void toggleStrainControl() {
 		control.setVisible(!control.isVisible());

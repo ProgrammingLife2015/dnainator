@@ -5,7 +5,7 @@ import javafx.scene.transform.Affine;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Transform;
 import nl.tudelft.dnainator.tree.TreeNode;
-import nl.tudelft.dnainator.javafx.ColorServer;
+import nl.tudelft.dnainator.javafx.ColorMap;
 import nl.tudelft.dnainator.javafx.drawables.phylogeny.AbstractNode;
 import nl.tudelft.dnainator.javafx.drawables.phylogeny.InternalNode;
 import nl.tudelft.dnainator.javafx.drawables.phylogeny.LeafNode;
@@ -19,16 +19,16 @@ public class PhylogeneticView extends AbstractView {
 	private static final double SCALE = 0.1;
 	private static final double ZOOM_IN_BOUND = 0.5;
 	private static final double ZOOM_OUT_BOUND = 0.015;
-	private ColorServer colorServer;
+	private ColorMap colorMap;
 
 	/**
 	 * Constructs a new {@link PhylogeneticView}.
-	 * @param colorServer The {@link ColorServer} to communicate with.
+	 * @param colorMap The {@link ColorMap} to communicate with.
 	 * @param root The root {@link TreeNode}.
 	 */
-	public PhylogeneticView(ColorServer colorServer, TreeNode root) {
+	public PhylogeneticView(ColorMap colorMap, TreeNode root) {
 		super();
-		this.colorServer = colorServer;
+		this.colorMap = colorMap;
 		redraw(root);
 	}
 
@@ -55,7 +55,7 @@ public class PhylogeneticView extends AbstractView {
 
 	private AbstractNode draw(TreeNode node) {
 		if (node.getChildren().size() == 0) {
-			return new LeafNode(node, colorServer);
+			return new LeafNode(node, colorMap);
 		}
 
 		AbstractNode self = new InternalNode(node.getChildren().stream()

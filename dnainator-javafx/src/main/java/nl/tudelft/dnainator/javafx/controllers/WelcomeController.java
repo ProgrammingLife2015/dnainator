@@ -2,11 +2,11 @@ package nl.tudelft.dnainator.javafx.controllers;
 
 import java.io.File;
 
+import nl.tudelft.dnainator.javafx.services.DirectoryListingService;
 import org.neo4j.io.fs.FileUtils;
 
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.javafx.services.DBLoadService;
-import nl.tudelft.dnainator.javafx.services.DirectoryLoadService;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.ExceptionDialog;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.ProgressDialog;
 import javafx.beans.property.ObjectProperty;
@@ -30,7 +30,7 @@ public class WelcomeController {
 	private ObservableList<String> databases;
 
 	private DBLoadService dbload;
-	private DirectoryLoadService dirload;
+	private DirectoryListingService dirload;
 
 	private DirectoryChooser dirChooser;
 	private ProgressDialog progressDialog;
@@ -45,7 +45,7 @@ public class WelcomeController {
 		currentDatabase = new SimpleObjectProperty<>(this, "graph");
 		dirChooser = new DirectoryChooser();
 		dbload = new DBLoadService();
-		dirload = new DirectoryLoadService();
+		dirload = new DirectoryListingService();
 		databases = FXCollections.observableArrayList();
 
 		initDBLoad();

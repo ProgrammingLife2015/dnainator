@@ -1,7 +1,7 @@
 package nl.tudelft.dnainator.javafx.controllers;
 
 import nl.tudelft.dnainator.graph.Graph;
-import nl.tudelft.dnainator.javafx.ColorServer;
+import nl.tudelft.dnainator.javafx.ColorMap;
 import nl.tudelft.dnainator.javafx.views.AbstractView;
 import nl.tudelft.dnainator.javafx.views.PhylogeneticView;
 import nl.tudelft.dnainator.javafx.views.StrainView;
@@ -44,9 +44,9 @@ public class WindowController {
 	}
 	
 	private void constructView(Graph newV) {
-		ColorServer colorServer = new ColorServer();
-		strainView = new StrainView(colorServer, newV);
-		phyloView = new PhylogeneticView(colorServer, newV.getTree());
+		ColorMap colorMap = new ColorMap();
+		strainView = new StrainView(colorMap, newV);
+		phyloView = new PhylogeneticView(colorMap, newV.getTree());
 
 		SplitPane splitPane = new SplitPane(strainView, phyloView);
 		splitPane.setOrientation(Orientation.VERTICAL);
