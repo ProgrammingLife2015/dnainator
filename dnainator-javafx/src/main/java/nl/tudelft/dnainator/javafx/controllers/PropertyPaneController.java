@@ -72,7 +72,7 @@ public class PropertyPaneController {
 	}
 	
 	/**
-	 * Opens the {@link PropertyPane} when a drawable is clicked and it was not open.
+	 * Opens the property pane when a drawable is clicked and it was not open.
 	 */
 	private void onClickOpenPane() {
 		if (!propertyPane.isVisible()) {

@@ -50,17 +50,16 @@ public class ExceptionDialog extends Alert {
 		this.showAndWait();
 	}
 
-	private TextArea initTextArea(Throwable t) {
-		StringWriter sw = new StringWriter();
-		PrintWriter pw = new PrintWriter(sw);
-		t.printStackTrace(pw);
-		String exceptionText = sw.toString();
+	private TextArea initTextArea(Throwable throwable) {
+		StringWriter stringWriter = new StringWriter();
+		PrintWriter printWriter = new PrintWriter(stringWriter);
+		throwable.printStackTrace(printWriter);
+		String exceptionText = stringWriter.toString();
 
 		TextArea textArea = new TextArea(exceptionText);
 		textArea.setEditable(false);
 		textArea.setWrapText(true);
 		textArea.setMaxWidth(Double.MAX_VALUE);
-//		textArea.setMaxHeight(Double.MAX_VALUE);
 		return textArea;
 	}
 }

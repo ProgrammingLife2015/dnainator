@@ -29,7 +29,7 @@ public class DownSlideAnimation extends SlidingAnimation {
 	}
 
 	@Override
-	public void setVisibility(Pane pane, Position position) {
+	public void setVisibility(Pane pane, Position pos) {
 		if (pos == Position.TOP && getRate() < 0) {
 			pane.setVisible(false);
 		} else if (pos == Position.BOTTOM && getRate() > 0) {

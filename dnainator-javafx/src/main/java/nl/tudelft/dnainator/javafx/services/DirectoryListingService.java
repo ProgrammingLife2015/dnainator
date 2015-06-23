@@ -1,6 +1,5 @@
 package nl.tudelft.dnainator.javafx.services;
 
-
 import nl.tudelft.dnainator.javafx.DNAinator;
 
 import java.io.File;
@@ -21,14 +20,14 @@ import javafx.concurrent.Task;
 /**
  * A JavaFX service that loads all the directories from a specific path.
  */
-public class DirectoryLoadService extends Service<ObservableList<String>> {
+public class DirectoryListingService extends Service<ObservableList<String>> {
 	private static final String CORE = "neostore";
 	private ObjectProperty<String> directory = new SimpleObjectProperty<>(this, "database");
 
 	/**
-	 * Construct a DirectoryLoadService with a default directory path.
+	 * Construct a DirectoryListingService with a default directory path.
 	 */
-	public DirectoryLoadService() {
+	public DirectoryListingService() {
 		setDirectory(DNAinator.DEFAULT_DB_PATH);
 	}
 
@@ -57,7 +56,7 @@ public class DirectoryLoadService extends Service<ObservableList<String>> {
 	 * Scan the directory containing the default location of databases.
 	 * If the default directory does not exist, create it.
 	 * Adds all the directories found to the welcomescreen's list of selectables.
-	 * @throws IOException 
+	 * @throws IOException When the default directory does not exist and cannot be created.
 	 */
 	private ObservableList<String> scanDirectory(String dbpath) throws IOException {
 		ObservableList<String> databases = FXCollections.observableArrayList();

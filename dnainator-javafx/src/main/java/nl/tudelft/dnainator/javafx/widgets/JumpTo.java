@@ -15,7 +15,7 @@ import nl.tudelft.dnainator.javafx.views.StrainView;
 /**
  * A widget that shows several {@link Control}s to interact with the {@link StrainView}.
  */
-public class StrainControl extends VBox {
+public class JumpTo extends VBox {
 	private static final double PADDING = 10;
 	private static final double WIDTH = 200;
 	private static final String NODE = "Jump to node...";
@@ -29,10 +29,10 @@ public class StrainControl extends VBox {
 	private Collection<String> attachedAnnotations;
 
 	/**
-	 * Instantiates a new {@link StrainControl}.
+	 * Instantiates a new {@link JumpTo}.
 	 * @param strainView The {@link StrainView} to interact with.
 	 */
-	public StrainControl(StrainView strainView) {
+	public JumpTo(StrainView strainView) {
 		this.strainView = strainView;
 		setPadding(new Insets(PADDING));
 		setSpacing(PADDING);
@@ -76,11 +76,14 @@ public class StrainControl extends VBox {
 
 	private void gotoAnnotation(String inputText) {
 		resetPromptText(ANNOTATION);
+		// If the current input matches the previous and the previous was succesfully used to
+		// retrieve annotations, go to the next node to which this annotation applies.
 		if (previousInput != null && previousInput.equals(inputText)
 				&& attachedAnnotations != null && !attachedAnnotations.isEmpty()) {
 			gotoNextAnnotationNode();
 			return;
 		}
+		// Otherwise, retrieve a new collection of nodes to which the input annotation applies.
 		previousInput = inputText;
 		attachedAnnotations = strainView.getAnnotatedNodeIDs(inputText);
 		gotoNextAnnotationNode();

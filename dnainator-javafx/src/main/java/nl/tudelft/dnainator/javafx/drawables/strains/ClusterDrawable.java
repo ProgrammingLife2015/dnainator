@@ -4,7 +4,7 @@ import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.core.PropertyType;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
-import nl.tudelft.dnainator.javafx.ColorServer;
+import nl.tudelft.dnainator.javafx.ColorMap;
 import nl.tudelft.dnainator.javafx.drawables.Drawable;
 import nl.tudelft.dnainator.javafx.views.AbstractView;
 import nl.tudelft.dnainator.javafx.widgets.Propertyable;
@@ -65,10 +65,10 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 
 	/**
 	 * Construct a new mid level {@link ClusterDrawable} using the default graph.
-	 * @param colorServer the {@link ColorServer} to bind to.
+	 * @param colorMap the {@link ColorMap} to bind to.
 	 * @param cluster	the {@link Cluster} containing a list of {@link SequenceNode}s.
 	 */
-	public ClusterDrawable(ColorServer colorServer, Cluster cluster) {
+	public ClusterDrawable(ColorMap colorMap, Cluster cluster) {
 		this.cluster = cluster;
 		this.properties = new LinkedHashMap<>();
 		this.sources = cluster.getNodes().stream()
@@ -78,7 +78,7 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 				.mapToInt(e -> e.getInterestingnessScore())
 				.max().getAsInt();
 		setOnMouseClicked(e -> AbstractView.setLastClicked(this));
-		draw(colorServer);
+		draw(colorMap);
 	}
 
 	/**
@@ -114,19 +114,20 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 		sn.getScores().forEach((k, v) -> properties.put(k, Integer.toString(v)));
 	}
 
-	private void draw(ColorServer colorServer) {
+	private void draw(ColorMap colorMap) {
 		double radius = getRadius();
 
 		Circle commonNode = new Circle(radius);
 		getChildren().add(commonNode);
 
+		// Above this threshold, drawing slows down considerably.
 		if (sources.size() > PIETHRESHOLD) {
 			commonNode.getStyleClass().add("common-node");
 		} else {
-			colorServer.addListener(this::onColorServerChanged);
+			colorMap.addListener(this::onColorServerChanged);
 
 			List<String> collect = sources.stream()
-					.map(e -> colorServer.getColor(e))
+					.map(e -> colorMap.getColor(e))
 					.filter(e -> e != null)
 					.collect(Collectors.toList());
 			pie = new Pie(radius, collect);

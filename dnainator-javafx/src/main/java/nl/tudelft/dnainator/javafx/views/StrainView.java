@@ -4,11 +4,11 @@ import javafx.geometry.Point2D;
 import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.graph.Graph;
-import nl.tudelft.dnainator.javafx.ColorServer;
+import nl.tudelft.dnainator.javafx.ColorMap;
 import nl.tudelft.dnainator.javafx.drawables.strains.ClusterDrawable;
 import nl.tudelft.dnainator.javafx.drawables.strains.Strain;
 import nl.tudelft.dnainator.javafx.widgets.Minimap;
-import nl.tudelft.dnainator.javafx.widgets.StrainControl;
+import nl.tudelft.dnainator.javafx.widgets.JumpTo;
 
 import java.util.Collection;
 import java.util.NoSuchElementException;
@@ -21,20 +21,20 @@ public class StrainView extends AbstractView {
 	private Graph graph;
 	private Strain strain;
 	private Minimap minimap;
-	private StrainControl control;
+	private JumpTo jumpto;
 
 	/**
 	 * Creates a new strain view instance.
-	 * @param colorServer The {@link ColorServer} to communicate with.
+	 * @param colorMap The {@link ColorMap} to communicate with.
 	 * @param graph The Graph that holds the strains.
 	 */
-	public StrainView(ColorServer colorServer, Graph graph) {
+	public StrainView(ColorMap colorMap, Graph graph) {
 		super();
 		this.graph = graph;
-		this.strain = new Strain(colorServer, graph);
+		this.strain = new Strain(colorMap, graph);
 
 		setTransforms(strain);
-		getChildren().addAll(strain, setupStrainControl(), setupMinimap(strain, graph));
+		getChildren().addAll(strain, setupJumpTo(), setupMinimap(strain, graph));
 		updateStrain();
 	}
 
@@ -46,10 +46,10 @@ public class StrainView extends AbstractView {
 		return minimap;
 	}
 
-	private StrainControl setupStrainControl() {
-		control = new StrainControl(this);
-		control.translateXProperty().bind(widthProperty().subtract(control.widthProperty()));
-		return control;
+	private JumpTo setupJumpTo() {
+		jumpto = new JumpTo(this);
+		jumpto.translateXProperty().bind(widthProperty().subtract(jumpto.widthProperty()));
+		return jumpto;
 	}
 	
 	private void updateStrain() {
@@ -124,6 +124,8 @@ public class StrainView extends AbstractView {
 	 */
 	public Collection<String> getAnnotatedNodeIDs(String geneName) {
 		try {
+			// Find an Annotation whose name is longer than the threshold and matches the searched
+			// name. Of this stream, take the first and retrieve it.
 			Annotation annotation = graph.getAnnotations().getAll().stream()
 					.filter(a -> geneName.length() > GENE_LENGTH
 							&& a.getGeneName().toLowerCase().contains(geneName.toLowerCase()))
@@ -143,16 +145,16 @@ public class StrainView extends AbstractView {
 	}
 
 	/**
-	 * @return the {@link StrainControl} of the {@link StrainView}.
+	 * @return the {@link JumpTo} of the {@link StrainView}.
 	 */
-	public StrainControl getStrainControl() {
-		return control;
+	public JumpTo getJumpTo() {
+		return jumpto;
 	}
 
 	/**
-	 * Toggles the visibility of the {@link StrainControl}.
+	 * Toggles the visibility of the {@link JumpTo}.
 	 */
-	public void toggleStrainControl() {
-		control.setVisible(!control.isVisible());
+	public void toggleJumpTo() {
+		jumpto.setVisible(!jumpto.isVisible());
 	}
 }

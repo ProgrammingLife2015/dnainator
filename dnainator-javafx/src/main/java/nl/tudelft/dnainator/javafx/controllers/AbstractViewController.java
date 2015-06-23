@@ -11,7 +11,7 @@ import javafx.scene.input.ScrollEvent;
 import nl.tudelft.dnainator.javafx.views.AbstractView;
 
 /**
- * Controller class for all views.
+ * Controller class for all {@link AbstractView}.
  */
 public class AbstractViewController {
 	private static final String MOVE_CURSOR = "move-cursor";
