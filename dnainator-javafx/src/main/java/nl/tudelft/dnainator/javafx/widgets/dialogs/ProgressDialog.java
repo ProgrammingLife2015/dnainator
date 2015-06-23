@@ -1,10 +1,10 @@
 package nl.tudelft.dnainator.javafx.widgets.dialogs;
 
 import javafx.concurrent.Service;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ProgressBar;
+import javafx.stage.Window;
 
 /**
  * Creates an {@link Alert} while a file is loading.
@@ -12,18 +12,18 @@ import javafx.scene.control.ProgressBar;
 public class ProgressDialog extends Alert {
 	private static final int PROGRESSBAR_WIDTH = 300;
 	private static final String STYLE = "/style.css";
-	private Node parent;
+	private Window window;
 	private ProgressBar progressBar;
 
 	/**
 	 * Sets up the {@link Alert}, using the {@link Service} provided.
 	 * When the service has succeeded, the alert is closed.
-	 * @param parent The parent Node of this dialog.
+	 * @param window The parent Node of this dialog.
 	 * @param service The service being watched.
 	 */
-	public ProgressDialog(Node parent, Service service) {
+	public ProgressDialog(Window window, Service<?> service) {
 		super(AlertType.NONE);
-		this.parent = parent;
+		this.window = window;
 		this.setOnCloseRequest(e -> service.cancel());
 		setupProgressBar();
 		setupAlert();
@@ -34,7 +34,7 @@ public class ProgressDialog extends Alert {
 		this.setHeaderText("Loading...");
 		this.getButtonTypes().add(ButtonType.CANCEL);
 		this.getDialogPane().getStylesheets().add(getClass().getResource(STYLE).toString());
-		this.initOwner(parent.getScene().getWindow());
+		this.initOwner(window);
 		this.getDialogPane().setContent(progressBar);
 	}
 

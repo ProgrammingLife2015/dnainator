@@ -1,6 +1,5 @@
 package nl.tudelft.dnainator.javafx.services;
 
-
 import nl.tudelft.dnainator.javafx.DNAinator;
 
 import java.io.File;

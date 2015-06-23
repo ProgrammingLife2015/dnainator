@@ -18,11 +18,17 @@
             <artifactId>dnainator-core</artifactId>
             <version>0.9</version>
         </dependency>
-        <!-- See: http://blog.buildpath.de/javafx-testrunner/ -->
         <dependency>
-            <groupId>de.saxsys</groupId>
-            <artifactId>jfx-testrunner</artifactId>
-            <version>1.0</version>
+            <groupId>org.testfx</groupId>
+            <artifactId>testfx-core</artifactId>
+            <version>4.0.1-alpha</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testfx</groupId>
+            <artifactId>testfx-junit</artifactId>
+            <version>4.0.1-alpha</version>
+            <scope>test</scope>
         </dependency>
         <!-- From here on, all plugins are inherited from parent -->
         <dependency>

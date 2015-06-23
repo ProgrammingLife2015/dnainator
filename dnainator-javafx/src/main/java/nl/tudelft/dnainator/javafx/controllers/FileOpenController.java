@@ -17,6 +17,7 @@ import nl.tudelft.dnainator.javafx.widgets.animations.SlidingAnimation;
 import nl.tudelft.dnainator.javafx.widgets.animations.TransitionAnimation.Position;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.ExceptionDialog;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.ProgressDialog;
+
 import org.neo4j.io.fs.FileUtils;
 
 import java.io.File;
@@ -26,11 +27,11 @@ import java.io.File;
  * to open node, edge and newick files.
  */
 public class FileOpenController {
-	private static final String EDGE = ".edge.graph";
-	private static final String NODE = ".node.graph";
-	private static final String NEWICK = ".nwk";
-	private static final String GFF = ".gff";
-	private static final String DR = ".txt";
+	public static final String EDGE = ".edge.graph";
+	public static final String NODE = ".node.graph";
+	public static final String NEWICK = ".nwk";
+	public static final String GFF = ".gff";
+	public static final String DR = ".txt";
 
 	private static final int WIDTH = 550;
 	private static final int ANIM_DURATION = 250;
@@ -163,7 +164,7 @@ public class FileOpenController {
 	 */
 	@SuppressWarnings("unused") @FXML
 	private void onOpenAction() {
-		progressDialog = new ProgressDialog(container.getParent(), graphLoadService);
+		progressDialog = new ProgressDialog(container.getScene().getWindow(), graphLoadService);
 		resetTextFields();
 		animation.toggle();
 		if (graphLoadService.canLoad()) {
@@ -206,11 +207,7 @@ public class FileOpenController {
 	 */
 	private File selectFile(String title, String extension,
 				TextField field, ObjectProperty<File> objectProperty) {
-		fileChooser.setTitle(title);
-		fileChooser.getExtensionFilters().setAll(
-				new FileChooser.ExtensionFilter(title, "*" + extension));
-
-		File file = fileChooser.showOpenDialog(container.getScene().getWindow());
+		File file = showFileChooser(title, extension);
 		if (file != null) {
 			objectProperty.setValue(file);
 			field.setText(file.getAbsolutePath());
@@ -219,12 +216,25 @@ public class FileOpenController {
 	}
 
 	/**
+	 * Show the file chooser.
+	 * @param title		the title
+	 * @param extension	the extension filter
+	 * @return		the selected file or null
+	 */
+	public File showFileChooser(String title, String extension) {
+		fileChooser.setTitle(title);
+		fileChooser.getExtensionFilters().setAll(
+				new FileChooser.ExtensionFilter(title, "*" + extension));
+		return fileChooser.showOpenDialog(container.getScene().getWindow());
+	}
+
+	/**
 	 * @param path Creates an edge file from the path of a node file. This requires
 	 *             the edge file to be in the same directory and to have the same name
 	 *             as the node file.
 	 * @return The edge file.
 	 */
-	private File openEdgeFile(String path) {
+	public File openEdgeFile(String path) {
 		return new File(path.substring(0, path.length() - NODE.length()).concat(EDGE));
 	}
 
@@ -234,7 +244,7 @@ public class FileOpenController {
 	 *             as the edge file.
 	 * @return The edge file.
 	 */
-	private File openNodeFile(String path) {
+	public File openNodeFile(String path) {
 		return new File(path.substring(0, path.length() - EDGE.length()).concat(NODE));
 	}
 
