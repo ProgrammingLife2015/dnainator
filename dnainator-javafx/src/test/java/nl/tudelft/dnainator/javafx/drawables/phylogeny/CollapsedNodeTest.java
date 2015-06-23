@@ -14,6 +14,10 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testfx.framework.junit.ApplicationTest;
 
+/**
+ * Test the {@link CollapsedNode} the phylogenetic tree.
+ * This is the node that is drawn when an {@link InternalNode} is beign collapsed.
+ */
 public class CollapsedNodeTest extends ApplicationTest {
 
 	private CollapsedNode cn;

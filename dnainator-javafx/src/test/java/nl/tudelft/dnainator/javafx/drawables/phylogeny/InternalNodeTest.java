@@ -1,14 +1,20 @@
 package nl.tudelft.dnainator.javafx.drawables.phylogeny;
 
 import static org.junit.Assert.assertEquals;
+
 import java.util.ArrayList;
+
 import javafx.stage.Stage;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testfx.framework.junit.ApplicationTest;
 
+/**
+ * Test the {@link InternalNode} of the phylogenetic tree.
+ */
 public class InternalNodeTest extends ApplicationTest {
 
 	private InternalNode in;
@@ -30,7 +36,7 @@ public class InternalNodeTest extends ApplicationTest {
 	}
 	
 	/**
-	 * Test the creation of a {@link CollapsedNode}.
+	 * Test the creation of a {@link InternalNode}.
 	 */
 	@Test
 	public void testCreate() {
@@ -52,7 +58,7 @@ public class InternalNodeTest extends ApplicationTest {
 	}
 	
 	/**
-	 * Test what happens when a {@link CollapsedNode} is clicked with the mouse.
+	 * Test what happens when a {@link InternalNode} is clicked with the mouse.
 	 */
 	@Test
 	public void testOnMouseClicked() {

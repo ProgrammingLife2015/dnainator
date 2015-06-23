@@ -1,7 +1,6 @@
 package nl.tudelft.dnainator.javafx.drawables.phylogeny;
 
 import static org.junit.Assert.assertEquals;
-
 import javafx.stage.Stage;
 import nl.tudelft.dnainator.javafx.AllColorsInUseException;
 import nl.tudelft.dnainator.javafx.ColorServer;
@@ -13,6 +12,9 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testfx.framework.junit.ApplicationTest;
 
+/**
+ * Test the {@link LeafNode} of the phylogenetic tree.
+ */
 public class LeafNodeTest extends ApplicationTest {
 
 	private LeafNode ln;
@@ -37,7 +39,7 @@ public class LeafNodeTest extends ApplicationTest {
 	}
 	
 	/**
-	 * Test the creation of a {@link CollapsedNode}.
+	 * Test the creation of a {@link LeafNode}.
 	 */
 	@Test
 	public void testCreate() {
@@ -45,7 +47,8 @@ public class LeafNodeTest extends ApplicationTest {
 	}
 	
 	/**
-	 * Test what happens when a {@link CollapsedNode} is clicked with the mouse.
+	 * Test what happens when a {@link LeafNode} is clicked with the mouse.
+	 * @throws AllColorsInUseException when all colors are in use.
 	 */
 	@Test
 	public void testOnMouseClicked() throws AllColorsInUseException {
