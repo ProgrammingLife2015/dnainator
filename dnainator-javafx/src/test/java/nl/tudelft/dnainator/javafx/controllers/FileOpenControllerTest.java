@@ -7,7 +7,6 @@ import org.testfx.api.FxRobot;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.base.NodeMatchers;
 
-import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import javafx.fxml.FXMLLoader;
@@ -54,7 +53,6 @@ public class FileOpenControllerTest extends ApplicationTest {
 
 	/**
 	 * Test clicking the node field.
-	 * @throws IOException
 	 */
 	@Test
 	public void testNodeField() {

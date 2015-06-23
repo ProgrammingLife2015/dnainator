@@ -52,7 +52,10 @@ public class ProgressDialogTest extends ApplicationTest {
 			assertNotNull(pd.getDialogPane().getContent());
 		});
 	}
-	
+
+	/**
+	 * Test setting the progress of the dialog.
+	 */
 	@Test
 	public void testSetProgress() {
 		Platform.runLater(() -> {

@@ -4,9 +4,15 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
+/**
+ * Test the color server.
+ */
 public class AllColorsInUseExceptionTest {
-
-	@Test(expected=AllColorsInUseException.class)
+	/**
+	 * Test what happens when all colors are in use.
+	 * @throws AllColorsInUseException	when no colors are free.
+	 */
+	@Test(expected = AllColorsInUseException.class)
 	public void testAllColorsInUseException() throws AllColorsInUseException {
 		AllColorsInUseException colorsInUse = new AllColorsInUseException();
 		assertEquals("All colors are currently in use. To highlight another strain, "

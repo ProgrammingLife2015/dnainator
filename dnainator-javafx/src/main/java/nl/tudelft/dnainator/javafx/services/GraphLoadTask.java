@@ -21,7 +21,7 @@ import java.io.IOException;
 import javafx.concurrent.Task;
 
 /**
- * This class is instantiated by a {@link GraphLoadService in order to load a sequence graph.
+ * This class is instantiated by a {@link GraphLoadService} in order to load a sequence graph.
  */
 public class GraphLoadTask extends Task<Graph> {
 	private static final int STEPS = 5;
