@@ -271,13 +271,13 @@ Minimap .spacer {
 	-fx-fill: #4C4C4C;
 }
 
-StrainControl .jump-invalid-prompt {
+JumpTo .jump-invalid-prompt {
 	-fx-background-color: #ED6D6D;
 	-fx-prompt-text-fill: white;
 	-fx-opacity: 1.0;
 }
 
-StrainControl > TextField, .openpane-field {
+JumpTo > TextField, .openpane-field {
 	-fx-text-fill: #141414;
 	-fx-prompt-text-fill: #adadad;
 	-fx-background-color: #EBEBEB;
@@ -285,6 +285,7 @@ StrainControl > TextField, .openpane-field {
 	-fx-border-size: 1;
 	-fx-border-radius: 3.75;
 }
-StrainControl > TextField:hover, .openpane-field:hover {
+
+JumpTo > TextField:hover, .openpane-field:hover {
 	-fx-background-color: #EDEDED;
 }

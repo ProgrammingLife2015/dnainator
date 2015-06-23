@@ -21,7 +21,7 @@ public class StrainView extends AbstractView {
 	private Graph graph;
 	private Strain strain;
 	private Minimap minimap;
-	private JumpTo control;
+	private JumpTo jumpto;
 
 	/**
 	 * Creates a new strain view instance.
@@ -34,7 +34,7 @@ public class StrainView extends AbstractView {
 		this.strain = new Strain(colorMap, graph);
 
 		setTransforms(strain);
-		getChildren().addAll(strain, setupStrainControl(), setupMinimap(strain, graph));
+		getChildren().addAll(strain, setupJumpTo(), setupMinimap(strain, graph));
 		updateStrain();
 	}
 
@@ -46,10 +46,10 @@ public class StrainView extends AbstractView {
 		return minimap;
 	}
 
-	private JumpTo setupStrainControl() {
-		control = new JumpTo(this);
-		control.translateXProperty().bind(widthProperty().subtract(control.widthProperty()));
-		return control;
+	private JumpTo setupJumpTo() {
+		jumpto = new JumpTo(this);
+		jumpto.translateXProperty().bind(widthProperty().subtract(jumpto.widthProperty()));
+		return jumpto;
 	}
 	
 	private void updateStrain() {
@@ -145,14 +145,14 @@ public class StrainView extends AbstractView {
 	/**
 	 * @return the {@link JumpTo} of the {@link StrainView}.
 	 */
-	public JumpTo getStrainControl() {
-		return control;
+	public JumpTo getJumpTo() {
+		return jumpto;
 	}
 
 	/**
 	 * Toggles the visibility of the {@link JumpTo}.
 	 */
-	public void toggleStrainControl() {
-		control.setVisible(!control.isVisible());
+	public void toggleJumpTo() {
+		jumpto.setVisible(!jumpto.isVisible());
 	}
 }

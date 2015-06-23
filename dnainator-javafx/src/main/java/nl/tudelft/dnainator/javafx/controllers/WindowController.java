@@ -118,21 +118,21 @@ public class WindowController {
 
 	@SuppressWarnings("unused") @FXML
 	private void toggleJumpToAction(ActionEvent e) {
-		strainView.toggleStrainControl();
+		strainView.toggleJumpTo();
 	}
 
 	@SuppressWarnings("unused") @FXML
 	private void jumpNodeAction(ActionEvent e) {
-		strainView.getStrainControl().toggleJumpNode();
+		strainView.getJumpTo().toggleJumpNode();
 	}
 	
 	@SuppressWarnings("unused") @FXML
 	private void jumpRankAction(ActionEvent e) {
-		strainView.getStrainControl().toggleJumpRank();
+		strainView.getJumpTo().toggleJumpRank();
 	}
 	
 	@SuppressWarnings("unused") @FXML
 	private void jumpAnnotationAction(ActionEvent e) {
-		strainView.getStrainControl().toggleJumpAnnotation();
+		strainView.getJumpTo().toggleJumpAnnotation();
 	}
 }

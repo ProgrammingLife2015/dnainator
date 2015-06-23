@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import javafx.geometry.Point2D;
 import javafx.stage.Stage;
-import nl.tudelft.dnainator.javafx.ColorServer;
+import nl.tudelft.dnainator.javafx.ColorMap;
 import nl.tudelft.dnainator.tree.TreeNode;
 
 import org.junit.Before;
@@ -21,7 +21,7 @@ public class PhylogeneticViewTest extends ApplicationTest {
 
 	private PhylogeneticView phyloView;
 	private TreeNode tn;
-	@Mock private ColorServer colorServer;
+	@Mock private ColorMap colorMap;
 	
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -34,7 +34,7 @@ public class PhylogeneticViewTest extends ApplicationTest {
 	public void setup() {
 		tn = new TreeNode(null);
 		MockitoAnnotations.initMocks(this);
-		phyloView = new PhylogeneticView(colorServer, tn);	
+		phyloView = new PhylogeneticView(colorMap, tn);
 	}
 	
 	/**
@@ -43,7 +43,7 @@ public class PhylogeneticViewTest extends ApplicationTest {
 	@Test
 	public void testCreate() {
 		tn.addChild(new TreeNode(tn));
-		phyloView = new PhylogeneticView(colorServer, tn);
+		phyloView = new PhylogeneticView(colorMap, tn);
 		// CHECKSTYLE.OFF: MagicNumber
 		assertEquals(2, tn.getChildren().size());
 		// CHECKSTYLE.ON: MagicNumber

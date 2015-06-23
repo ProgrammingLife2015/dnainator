@@ -7,7 +7,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.Group;
 import javafx.stage.Stage;
 import nl.tudelft.dnainator.graph.Graph;
-import nl.tudelft.dnainator.javafx.ColorServer;
+import nl.tudelft.dnainator.javafx.ColorMap;
 import nl.tudelft.dnainator.javafx.widgets.Propertyable;
 
 import org.junit.Before;
@@ -25,7 +25,7 @@ public class AbstractViewTest extends ApplicationTest {
 
 	private AbstractView abstractView;
 	@Mock private Graph graph;
-	@Mock private ColorServer colorServer;
+	@Mock private ColorMap colorMap;
 	@Mock private Group group;
 	@Mock private Propertyable p;
 	
@@ -42,7 +42,7 @@ public class AbstractViewTest extends ApplicationTest {
 		// CHECKSTYLE.OFF: MagicNumber
 		Mockito.when(graph.getMaxBasePairs()).thenReturn(0);
 		// CHECKSTYLE.ON: MagicNumber
-		abstractView = new StrainView(colorServer, graph);
+		abstractView = new StrainView(colorMap, graph);
 	}
 	
 	/**
