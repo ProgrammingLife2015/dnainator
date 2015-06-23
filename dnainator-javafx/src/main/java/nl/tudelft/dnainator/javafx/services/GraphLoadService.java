@@ -5,6 +5,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import nl.tudelft.dnainator.graph.Graph;
+import nl.tudelft.dnainator.javafx.DNAinator;
 
 import java.io.File;
 import java.time.LocalDateTime;
@@ -18,7 +19,7 @@ import java.time.format.DateTimeFormatter;
  * </p>
  */
 public class GraphLoadService extends Service<Graph> {
-	private static final String DB_PATH = "target" + File.separator + "db" 
+	private static final String DB_PATH = DNAinator.DEFAULT_DB_PATH
 			+ File.separator + "dna-graph-";
 	
 	private ObjectProperty<String> database = new SimpleObjectProperty<>(this, "database");
