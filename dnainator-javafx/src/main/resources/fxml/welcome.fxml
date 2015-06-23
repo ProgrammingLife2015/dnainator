@@ -29,7 +29,7 @@
               </Label>
          </children>
       </HBox>
-      <ListView fx:id="list" onKeyPressed="#onKeyPressed" onMouseClicked="#onMouseClicked" prefHeight="200.0" prefWidth="400.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="100.0">
+      <ListView fx:id="dblist" onKeyPressed="#onKeyPressed" onMouseClicked="#onMouseClicked" prefHeight="200.0" prefWidth="400.0" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="100.0">
         <items>
           <FXCollections fx:factory="observableArrayList">
              <String fx:id="selectDB" fx:value="Select a directory containing databases..." />

@@ -4,28 +4,12 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.concurrent.Service;
 import javafx.concurrent.Task;
-import nl.tudelft.dnainator.annotation.Annotation;
-import nl.tudelft.dnainator.annotation.AnnotationCollection;
-import nl.tudelft.dnainator.annotation.DRMutationFactory;
-import nl.tudelft.dnainator.annotation.impl.AnnotationCollectionImpl;
-import nl.tudelft.dnainator.core.SequenceNode;
-import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.graph.Graph;
-import nl.tudelft.dnainator.graph.impl.Neo4jBatchBuilder;
-import nl.tudelft.dnainator.parser.Iterator;
-import nl.tudelft.dnainator.parser.TreeParser;
-import nl.tudelft.dnainator.parser.exceptions.ParseException;
-import nl.tudelft.dnainator.parser.impl.DRMutationIterator;
-import nl.tudelft.dnainator.parser.impl.EdgeIterator;
-import nl.tudelft.dnainator.parser.impl.AnnotationIterator;
-import nl.tudelft.dnainator.parser.impl.NodeIterator;
-import nl.tudelft.dnainator.tree.TreeNode;
+import nl.tudelft.dnainator.javafx.DNAinator;
 
 import java.io.File;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 
 /**
  * A JavaFX background service to load files into graphs.
@@ -35,12 +19,11 @@ import java.util.List;
  * </p>
  */
 public class GraphLoadService extends Service<Graph> {
-	private static final String DB_PATH = "target" + File.separator + "db" 
+	private static final String DB_PATH = DNAinator.DEFAULT_DB_PATH
 			+ File.separator + "dna-graph-";
 	
 	private ObjectProperty<String> database = new SimpleObjectProperty<>(this, "database");
-	private ObjectProperty<String> gffFilePath =
-			new SimpleObjectProperty<>(this, "gffFilePath");
+	private ObjectProperty<File> gffFile = new SimpleObjectProperty<>(this, "gffFile");
 	private ObjectProperty<File> nodeFile = new SimpleObjectProperty<>(this, "nodeFile");
 	private ObjectProperty<File> edgeFile = new SimpleObjectProperty<>(this, "edgeFile");
 	private ObjectProperty<File> newickFile = new SimpleObjectProperty<>(this, "newickFile");
@@ -56,36 +39,42 @@ public class GraphLoadService extends Service<Graph> {
 	/**
 	 * Checks what paths are already in use and constructs an unique path,
 	 * that does not collide with existing ones.
-	 * @param paths the existing database paths.
 	 * @return unique path for the database.
 	 */
-	public String getNewPath(List<String> paths) {
+	public String getNewPath() {
 		DateTimeFormatter format = DateTimeFormatter.ofPattern("YYYYMMdd-HHmmss");
-		String newPath = DB_PATH + (LocalDateTime.now().format(format));
-		paths.add(newPath);
-		return newPath;
+		return DB_PATH + (LocalDateTime.now().format(format));
 	}
 
 	/**
-	 * Sets the GFF filename to the specified value.
-	 * @param fileName The new filename.
+	 * Indicates whether the service can start loading.
+	 * @return	true when ready, false otherwise
 	 */
-	public final void setGffFilePath(String fileName) {
-		gffFilePath.set(fileName);
+	public boolean canLoad() {
+		return getGffFile() != null && getNodeFile() != null
+				&& getEdgeFile() != null && getNewickFile() != null;
 	}
 
 	/**
-	 * @return The filename of the GFF file.
+	 * Sets the GFF file to the specified value.
+	 * @param file The new file.
 	 */
-	public final String getGffFilePath() {
-		return gffFilePath.get();
+	public final void setGffFile(File file) {
+		gffFile.set(file);
 	}
 
 	/**
-	 * @return The GFF filename property.
+	 * @return The GFF file to load.
 	 */
-	public ObjectProperty<String> gffFilePathProperty() {
-		return gffFilePath;
+	public final File getGffFile() {
+		return gffFile.get();
+	}
+
+	/**
+	 * @return The GFF file property.
+	 */
+	public ObjectProperty<File> gffFileProperty() {
+		return gffFile;
 	}
 	
 	/**
@@ -196,33 +185,6 @@ public class GraphLoadService extends Service<Graph> {
 
 	@Override
 	protected Task<Graph> createTask() {
-		return new Task<Graph>() {
-			@Override
-			protected Graph call() throws IOException, ParseException {
-				AnnotationCollection annotations;
-				if (gffFilePath.getValue() == null) {
-					annotations = new AnnotationCollectionImpl();
-				} else {
-					Iterator<Annotation> as = new AnnotationIterator(gffFilePath.get());
-					annotations = new AnnotationCollectionImpl(as);
-				}
-
-				if (drFile.getValue() != null) {
-					annotations = new DRMutationFactory().build(annotations,
-							new DRMutationIterator(drFile.get()));
-				}
-
-				TreeNode node = null;
-				if (newickFile.getValue() != null) {
-					node = new TreeParser(getNewickFile()).parse();
-				}
-
-				Iterator<Edge<?>> ep = new EdgeIterator(getEdgeFile());
-				Iterator<SequenceNode> np = new NodeIterator(getNodeFile());
-
-				return new Neo4jBatchBuilder(database.get(), annotations, node)
-					.constructGraph(np, ep).build();
-			}
-		};
+		return new GraphLoadTask(this);
 	}
 }

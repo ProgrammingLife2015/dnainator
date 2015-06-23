@@ -13,6 +13,7 @@ import java.util.concurrent.TimeoutException;
 
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.impl.Neo4jGraph;
+import nl.tudelft.dnainator.javafx.DNAinator;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -33,7 +34,6 @@ import de.saxsys.javafx.test.JfxRunner;
 public class DBLoadServiceTest {
 	private DBLoadService loadService;
 	private static final int DELAY = 20000;
-	private static final String DEFAULT_DB_PATH = "target" + File.separator + "db";
 	private static final String DB_PATH = "target/neo4j-junit-dbload";
 	
 	/**
@@ -61,7 +61,7 @@ public class DBLoadServiceTest {
 	 */
 	@Test
 	public void testDBPath() {
-		assertEquals(loadService.getDatabase(), DEFAULT_DB_PATH);
+		assertEquals(loadService.getDatabase(), DNAinator.DEFAULT_DB_PATH);
 		
 		loadService.setDatabase("other path");
 		assertEquals(loadService.getDatabase(), "other path");

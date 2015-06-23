@@ -32,7 +32,7 @@ public class PropertyPaneController {
 	}
 
 	/**
-	 * Updates the displayed information.
+	 * Updates the property pane with the information of a {@link Propertyable}.
 	 * @param p The new {@link Propertyable} whose information to display.
 	 */
 	public void update(Propertyable p) {
@@ -41,12 +41,20 @@ public class PropertyPaneController {
 		p.getPropertyMap().forEach((k, v) -> addLabel(k, v));
 	}
 
+	/**
+	 * Adds a label to the property pane, with the title specified in the {@link PropertyType}.
+	 * @param type	the {@link PropertyType}
+	 * @param value	the value of the property
+	 */
 	private void addLabel(PropertyType type, String value) {
 		Label description = new Label(type.description());
 		description.getStyleClass().add("property-header");
 
+		// Create a label and add a style class.
 		Node label = new Label(value);
 		label.getStyleClass().add("property-info");
+
+		// Wrap the label in a scroll pane if needed.
 		if (value != null && value.length() > MAX_PROPERTY_SIZE) {
 			ScrollPane sp = new ScrollPane(label);
 			sp.setFitToWidth(true);

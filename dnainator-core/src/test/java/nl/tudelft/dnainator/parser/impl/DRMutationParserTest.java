@@ -1,6 +1,6 @@
 package nl.tudelft.dnainator.parser.impl;
 
-import nl.tudelft.dnainator.annotation.impl.DRMutation;
+import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.parser.Iterator;
 
 import org.junit.After;
@@ -18,9 +18,9 @@ import static org.junit.Assert.assertTrue;
  * Test class for {@link DRMutationIterator}.
  */
 public class DRMutationParserTest {
-	private Iterator<DRMutation> ap;
+	private Iterator<Annotation> ap;
 
-	private Iterator<DRMutation> createParser(String resourceFilePath) throws IOException,
+	private Iterator<Annotation> createParser(String resourceFilePath) throws IOException,
 			URISyntaxException {
 		File drFile = new File(getClass().getResource(resourceFilePath).toURI());
 		return new DRMutationIterator(drFile);

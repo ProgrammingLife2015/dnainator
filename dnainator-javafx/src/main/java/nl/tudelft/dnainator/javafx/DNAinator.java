@@ -10,6 +10,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.ExceptionDialog;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -20,6 +21,7 @@ import java.io.IOException;
  * </p>
  */
 public class DNAinator extends Application {
+	public static final String DEFAULT_DB_PATH = "dnainator" + File.separator + "db";
 	private static final String DNAINATOR = "DNAinator";
 	private static final String FXML = "/fxml/dnainator.fxml";
 	private static final String ICON = "/dnainator.iconset/icon_512x512.png";

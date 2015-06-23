@@ -19,10 +19,12 @@ public class ProgressDialog extends Alert {
 	 * Sets up the {@link Alert}, using the {@link Service} provided.
 	 * When the service has succeeded, the alert is closed.
 	 * @param parent The parent Node of this dialog.
+	 * @param service The service being watched.
 	 */
-	public ProgressDialog(Node parent) {
+	public ProgressDialog(Node parent, Service service) {
 		super(AlertType.NONE);
 		this.parent = parent;
+		this.setOnCloseRequest(e -> service.cancel());
 		setupProgressBar();
 		setupAlert();
 	}
@@ -39,5 +41,13 @@ public class ProgressDialog extends Alert {
 	private void setupProgressBar() {
 		progressBar = new ProgressBar();
 		progressBar.setPrefWidth(PROGRESSBAR_WIDTH);
+	}
+
+	/**
+	 * Set the progress of this dialog.
+	 * @param progress	the progress
+	 */
+	public void setProgress(double progress) {
+		progressBar.setProgress(progress);
 	}
 }

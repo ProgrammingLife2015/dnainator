@@ -1,5 +1,6 @@
 package nl.tudelft.dnainator.parser.impl;
 
+import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.annotation.impl.DRMutation;
 import nl.tudelft.dnainator.parser.BufferedIterator;
 
@@ -13,7 +14,7 @@ import java.util.NoSuchElementException;
 /**
  * An annotation iterator which parses known DR mutations.
  */
-public class DRMutationIterator extends BufferedIterator<DRMutation> {
+public class DRMutationIterator extends BufferedIterator<Annotation> {
 	private static final int TYPE_IDX = 0;
 	private static final int CHANGE_IDX = 1;
 	private static final int FILTER_IDX = 2;
@@ -72,10 +73,5 @@ public class DRMutationIterator extends BufferedIterator<DRMutation> {
 			return current;
 		}
 		throw new NoSuchElementException();
-	}
-
-	@Override
-	public void close() throws IOException {
-		br.close();
 	}
 }
