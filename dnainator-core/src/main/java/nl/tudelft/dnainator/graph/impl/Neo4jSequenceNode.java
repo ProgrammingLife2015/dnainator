@@ -146,8 +146,6 @@ public class Neo4jSequenceNode implements EnrichedSequenceNode {
 			return;
 		}
 
-		System.out.println("--- loading sequence node " + getId() + " ---");
-
 		try (Transaction tx = service.beginTx()) {
 			start    = (int)    node.getProperty(SequenceProperties.STARTREF.name());
 			end      = (int)    node.getProperty(SequenceProperties.ENDREF.name());
