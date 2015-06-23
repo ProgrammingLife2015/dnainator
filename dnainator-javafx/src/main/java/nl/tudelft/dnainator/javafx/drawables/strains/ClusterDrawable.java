@@ -125,6 +125,7 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 		Circle commonNode = new Circle(radius);
 		getChildren().add(commonNode);
 
+		// Above this threshold, drawing slows down considerably.
 		if (sources.size() > PIETHRESHOLD) {
 			commonNode.getStyleClass().add("common-node");
 		} else {

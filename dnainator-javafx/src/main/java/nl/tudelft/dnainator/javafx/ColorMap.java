@@ -28,6 +28,8 @@ public class ColorMap {
 	}
 
 	private void setColors() {
+		// The colormap needs to hand out the same references during its lifetime, so that these
+		// style classes can be removed via getStyleClass().remove(Object o).
 		for (int i = 0; i < COLORS; i++) {
 			colors[i] = "color-" + i;
 		}

@@ -124,6 +124,8 @@ public class StrainView extends AbstractView {
 	 */
 	public Collection<String> getAnnotatedNodeIDs(String geneName) {
 		try {
+			// Find an Annotation whose name is longer than the threshold and matches the searched
+			// name. Of this stream, take the first and retrieve it.
 			Annotation annotation = graph.getAnnotations().getAll().stream()
 					.filter(a -> geneName.length() > GENE_LENGTH
 							&& a.getGeneName().toLowerCase().contains(geneName.toLowerCase()))

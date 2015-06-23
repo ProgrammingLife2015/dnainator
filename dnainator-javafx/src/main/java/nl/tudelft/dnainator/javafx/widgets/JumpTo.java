@@ -76,11 +76,14 @@ public class JumpTo extends VBox {
 
 	private void gotoAnnotation(String inputText) {
 		resetPromptText(ANNOTATION);
+		// If the current input matches the previous and the previous was succesfully used to
+		// retrieve annotations, go to the next node to which this annotation applies.
 		if (previousInput != null && previousInput.equals(inputText)
 				&& attachedAnnotations != null && !attachedAnnotations.isEmpty()) {
 			gotoNextAnnotationNode();
 			return;
 		}
+		// Otherwise, retrieve a new collection of nodes to which the input annotation applies.
 		previousInput = inputText;
 		attachedAnnotations = strainView.getAnnotatedNodeIDs(inputText);
 		gotoNextAnnotationNode();
