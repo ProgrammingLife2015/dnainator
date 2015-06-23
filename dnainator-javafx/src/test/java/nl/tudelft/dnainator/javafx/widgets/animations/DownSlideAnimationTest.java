@@ -4,32 +4,31 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
+import org.testfx.framework.junit.ApplicationTest;
 import nl.tudelft.dnainator.javafx.widgets.animations.TransitionAnimation.Position;
-
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.MockitoAnnotations;
-
-import de.saxsys.javafx.test.JfxRunner;
 
 /**
  * This class tests the implementation of the {@link DownSlideAnimation}.
  * This animation causes a {@link Pane} to slide in a downward direction.
  */
-@RunWith(JfxRunner.class)
-public class DownSlideAnimationTest {
+public class DownSlideAnimationTest extends ApplicationTest {
 
 	private Pane pane;
 	private DownSlideAnimation dsa;
+	
+	@Override
+	public void start(Stage stage) throws Exception {
+		pane = new Pane();
+	}
 	
 	/**
 	 * Set up common variables.
 	 */
 	@Before
 	public void setup() {
-		MockitoAnnotations.initMocks(this);
-		pane = new Pane();
 		// CHECKSTYLE.OFF: MagicNumber
 		dsa = new DownSlideAnimation(pane, 100.0, 1.0, Position.TOP);
 		// CHECKSTYLE.ON: MagicNumber

@@ -5,31 +5,33 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import javafx.geometry.Point2D;
 import javafx.scene.Group;
+import javafx.stage.Stage;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.javafx.ColorServer;
 import nl.tudelft.dnainator.javafx.widgets.Propertyable;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-
-import de.saxsys.javafx.test.JfxRunner;
+import org.testfx.framework.junit.ApplicationTest;
 
 /**
  * This class tests the implementation of the {@link AbstractView}.
  * All views are extended from this abstract implementation.
  */
-@RunWith(JfxRunner.class)
-public class AbstractViewTest {
+public class AbstractViewTest extends ApplicationTest {
 
 	private AbstractView abstractView;
 	@Mock private Graph graph;
 	@Mock private ColorServer colorServer;
 	@Mock private Group group;
 	@Mock private Propertyable p;
+	
+	@Override
+	public void start(Stage stage) throws Exception {
+	}
 	
 	/**
 	 * Set up common variables.
@@ -118,9 +120,11 @@ public class AbstractViewTest {
 	 */
 	@Test
 	public void resetPan() {
+		// CHECKSTYLE.OFF: MagicNumber
 		abstractView.pan(new Point2D(1.0, 2.0));
 		assertEquals(1.0, abstractView.translate.getX(), 0.001);
 		assertEquals(2.0, abstractView.translate.getY(), 0.001);
+		// CHECKSTYLE.ON: MagicNumber
 		
 		abstractView.resetTranslate();
 		// CHECKSTYLE.OFF: MagicNumber

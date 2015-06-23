@@ -4,32 +4,32 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 import nl.tudelft.dnainator.javafx.widgets.animations.TransitionAnimation.Position;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.MockitoAnnotations;
-
-import de.saxsys.javafx.test.JfxRunner;
+import org.testfx.framework.junit.ApplicationTest;
 
 /**
  * This class tests the implementation of the {@link RightSlideAnimation}.
  * This animation causes a {@link Pane} to slide in a right way direction.
  */
-@RunWith(JfxRunner.class)
-public class RightSlideAnimationTest {
+public class RightSlideAnimationTest extends ApplicationTest {
 
 	private Pane pane;
 	private RightSlideAnimation rsa;
+	
+	@Override
+	public void start(Stage stage) throws Exception {
+		pane = new Pane();
+	}
 	
 	/**
 	 * Set up common variables.
 	 */
 	@Before
 	public void setup() {
-		MockitoAnnotations.initMocks(this);
-		pane = new Pane();
 		// CHECKSTYLE.OFF: MagicNumber
 		rsa = new RightSlideAnimation(pane, 100.0, 1.0, Position.LEFT);
 		// CHECKSTYLE.ON: MagicNumber

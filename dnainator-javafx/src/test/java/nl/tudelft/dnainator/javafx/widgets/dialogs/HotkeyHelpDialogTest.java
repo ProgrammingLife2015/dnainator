@@ -3,6 +3,7 @@ package nl.tudelft.dnainator.javafx.widgets.dialogs;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
@@ -12,21 +13,17 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
+import javafx.stage.Stage;
 
-import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.MockitoAnnotations;
+import org.testfx.framework.junit.ApplicationTest;
 
-import de.saxsys.javafx.test.JfxRunner;
-import de.saxsys.javafx.test.TestInJfxThread;
 
 /**
  * This class tests the implementation of the {@link HotkeyHelpDialog}.
  * Shows all hotkeys that are being used.
  */
-@RunWith(JfxRunner.class)
-public class HotkeyHelpDialogTest {
+public class HotkeyHelpDialogTest extends ApplicationTest {
 	
 	private HotkeyHelpDialog hhd;
 	private Pane pane;
@@ -36,12 +33,8 @@ public class HotkeyHelpDialogTest {
 	private Scene scene;
 	private static final String TITLE = "Hotkeys";
 	
-	/**
-	 * Set up common variables.
-	 */
-	@Before
-	public void setup() {
-		MockitoAnnotations.initMocks(this);
+	@Override
+	public void start(Stage stage) throws Exception {
 		pane = new Pane();
 		scene = new Scene(pane);
 	}
@@ -52,19 +45,20 @@ public class HotkeyHelpDialogTest {
 	 * No menus are given.
 	 */
 	@Test
-	@TestInJfxThread
 	public void testCreateNoMenus() {
-		hhd = new HotkeyHelpDialog(pane);
-		// CHECKSTYLE.OFF: MagicNumber
-		assertEquals(1, hhd.getButtonTypes().size());
-		assertEquals(300, hhd.getDialogPane().getPrefWidth(), 0.001);
-		// CHECKSTYLE.ON: MagicNumber
-		assertEquals(TITLE, hhd.getTitle());
-		assertEquals(TITLE, hhd.getHeaderText());
-		assertEquals(Modality.NONE, hhd.getModality());
-		
-		GridPane gp = (GridPane) hhd.getDialogPane().getContent();
-		assertTrue(gp.getChildren().isEmpty());
+		Platform.runLater(() -> {
+			hhd = new HotkeyHelpDialog(pane);
+			// CHECKSTYLE.OFF: MagicNumber
+			assertEquals(1, hhd.getButtonTypes().size());
+			assertEquals(300, hhd.getDialogPane().getPrefWidth(), 0.001);
+			// CHECKSTYLE.ON: MagicNumber
+			assertEquals(TITLE, hhd.getTitle());
+			assertEquals(TITLE, hhd.getHeaderText());
+			assertEquals(Modality.NONE, hhd.getModality());
+			
+			GridPane gp = (GridPane) hhd.getDialogPane().getContent();
+			assertTrue(gp.getChildren().isEmpty());
+		});
 	}
 	
 	/**
@@ -73,24 +67,24 @@ public class HotkeyHelpDialogTest {
 	 * Use a given menu.
 	 */
 	@Test
-	@TestInJfxThread
 	public void testCreateMenus() {
-		Menu menu = new Menu();
-		MenuItem mi = new MenuItem();
-		mi.setAccelerator(new KeyCodeCombination(KeyCode.F1, KeyCombination.SHORTCUT_ANY));
-		menu.getItems().add(mi);
-		
-		hhd = new HotkeyHelpDialog(pane, menu);
-		// CHECKSTYLE.OFF: MagicNumber
-		assertEquals(1, hhd.getButtonTypes().size());
-		assertEquals(300, hhd.getDialogPane().getPrefWidth(), 0.001);
-		// CHECKSTYLE.ON: MagicNumber
-		assertEquals(TITLE, hhd.getTitle());
-		assertEquals(TITLE, hhd.getHeaderText());
-		assertEquals(Modality.NONE, hhd.getModality());
-		
-		GridPane gp = (GridPane) hhd.getDialogPane().getContent();
-		assertFalse(gp.getChildren().isEmpty());
+		Platform.runLater(() -> {
+			Menu menu = new Menu();
+			MenuItem mi = new MenuItem();
+			mi.setAccelerator(new KeyCodeCombination(KeyCode.F1, KeyCombination.SHORTCUT_ANY));
+			menu.getItems().add(mi);
+			
+			hhd = new HotkeyHelpDialog(pane, menu);
+			// CHECKSTYLE.OFF: MagicNumber
+			assertEquals(1, hhd.getButtonTypes().size());
+			assertEquals(300, hhd.getDialogPane().getPrefWidth(), 0.001);
+			// CHECKSTYLE.ON: MagicNumber
+			assertEquals(TITLE, hhd.getTitle());
+			assertEquals(TITLE, hhd.getHeaderText());
+			assertEquals(Modality.NONE, hhd.getModality());
+			
+			GridPane gp = (GridPane) hhd.getDialogPane().getContent();
+			assertFalse(gp.getChildren().isEmpty());
+		});
 	}
-	
 }

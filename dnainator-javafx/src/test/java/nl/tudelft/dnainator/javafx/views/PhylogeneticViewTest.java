@@ -3,27 +3,29 @@ package nl.tudelft.dnainator.javafx.views;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import javafx.geometry.Point2D;
+import javafx.stage.Stage;
 import nl.tudelft.dnainator.javafx.ColorServer;
 import nl.tudelft.dnainator.tree.TreeNode;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
-import de.saxsys.javafx.test.JfxRunner;
+import org.testfx.framework.junit.ApplicationTest;
 
 /**
  * This class tests the implementation of the {@link PhylogeneticView}.
  * This is the view responsible for everything related to the phylogenetic tree.
  */
-@RunWith(JfxRunner.class)
-public class PhylogeneticViewTest {
+public class PhylogeneticViewTest extends ApplicationTest {
 
 	private PhylogeneticView phyloView;
 	private TreeNode tn;
 	@Mock private ColorServer colorServer;
+	
+	@Override
+	public void start(Stage stage) throws Exception {
+	}
 	
 	/**
 	 * Set up common variables.
@@ -32,7 +34,7 @@ public class PhylogeneticViewTest {
 	public void setup() {
 		tn = new TreeNode(null);
 		MockitoAnnotations.initMocks(this);
-		phyloView = new PhylogeneticView(colorServer, tn);
+		phyloView = new PhylogeneticView(colorServer, tn);	
 	}
 	
 	/**
@@ -42,7 +44,9 @@ public class PhylogeneticViewTest {
 	public void testCreate() {
 		tn.addChild(new TreeNode(tn));
 		phyloView = new PhylogeneticView(colorServer, tn);
+		// CHECKSTYLE.OFF: MagicNumber
 		assertEquals(2, tn.getChildren().size());
+		// CHECKSTYLE.ON: MagicNumber
 	}
 	
 	/**
@@ -63,10 +67,9 @@ public class PhylogeneticViewTest {
 		zoomPrevious = phyloView.scale.getMxx();
 		// CHECKSTYLE.OFF: MagicNumber
 		phyloView.zoom(Double.MAX_VALUE, new Point2D(1.0, 2.0));
-		// CHECKSTYLE.ON: MagicNumber
-		
 		assertEquals(zoomPrevious, phyloView.scale.getMxx(), 0.001);
 		assertEquals(zoomPrevious, phyloView.scale.getMyy(), 0.001);
+		// CHECKSTYLE.ON: MagicNumber
 	}
 	
 	/**

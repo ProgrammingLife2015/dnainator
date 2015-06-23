@@ -4,29 +4,33 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import javafx.stage.Stage;
 import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.javafx.ColorServer;
+
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import de.saxsys.javafx.test.JfxRunner;
+import org.testfx.framework.junit.ApplicationTest;
 
 /**
  * This class tests the implementation of the {@link StrainView}.
  * This is the view responsible for everything related to the {@link Graph}.
  * This includes controls used in the {@link StrainView}.
  */
-@RunWith(JfxRunner.class)
-public class StrainViewTest {
+public class StrainViewTest extends ApplicationTest {
 	
 	private StrainView strainView;
 	@Mock private Graph graph;
 	@Mock private ColorServer colorServer;
 	@Mock private EnrichedSequenceNode esn;
+	
+	@Override
+	public void start(Stage stage) throws Exception {
+	}
 	
 	/**
 	 * Set up common variables.
@@ -66,7 +70,9 @@ public class StrainViewTest {
 	@Test
 	public void testGotoNode() {
 		Mockito.when(graph.getNode(Mockito.anyString())).thenReturn(esn);
+		// CHECKSTYLE.OFF: MagicNumber
 		Mockito.when(esn.getRank()).thenReturn(6);
+		// CHECKSTYLE.ON: MagicNumber
 		strainView.gotoNode("some node");
 		
 		// CHECKSTYLE.OFF: MagicNumber
