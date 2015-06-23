@@ -49,7 +49,6 @@ public class ExceptionDialogTest extends ApplicationTest {
 	@Test
 	public void testCreateMenus() {
 		Platform.runLater(() -> {
-			// TODO: issue with showAndWait in the constructor.
 			ed = new ExceptionDialog(pane, throwable, "msg");
 			// CHECKSTYLE.OFF: MagicNumber
 			assertEquals(1, ed.getButtonTypes().size());
