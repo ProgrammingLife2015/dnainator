@@ -9,19 +9,19 @@ import java.util.Map;
 /**
  * This is a dummy class, for testing purposes.
  */
-public class DummyFileOpenController extends FileOpenController {
+public class DummyOpenPaneController extends OpenPaneController {
 	private Map<String, String> extensionmap;
 
 	/**
 	 * Constructs a new dummy file open controller, used for testing.
 	 */
-	public DummyFileOpenController() {
+	public DummyOpenPaneController() {
 		extensionmap = new HashMap<>();
-		extensionmap.put(FileOpenController.NODE, "test.node.graph");
-		extensionmap.put(FileOpenController.EDGE, "test.edge.graph");
-		extensionmap.put(FileOpenController.NEWICK, "test.nwk");
-		extensionmap.put(FileOpenController.GFF, "test.gff");
-		extensionmap.put(FileOpenController.DR, "test.txt");
+		extensionmap.put(OpenPaneController.NODE, "test.node.graph");
+		extensionmap.put(OpenPaneController.EDGE, "test.edge.graph");
+		extensionmap.put(OpenPaneController.NEWICK, "test.nwk");
+		extensionmap.put(OpenPaneController.GFF, "test.gff");
+		extensionmap.put(OpenPaneController.DR, "test.txt");
 	}
 
 	@Override
@@ -31,12 +31,12 @@ public class DummyFileOpenController extends FileOpenController {
 
 	@Override
 	public File openNodeFile(String path) {
-		return createMock(FileOpenController.NODE);
+		return createMock(OpenPaneController.NODE);
 	}
 
 	@Override
 	public File openEdgeFile(String path) {
-		return createMock(FileOpenController.EDGE);
+		return createMock(OpenPaneController.EDGE);
 	}
 
 	private File createMock(String extension) {

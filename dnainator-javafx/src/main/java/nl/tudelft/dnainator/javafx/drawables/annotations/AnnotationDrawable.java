@@ -10,13 +10,13 @@ import nl.tudelft.dnainator.javafx.drawables.Drawable;
 /**
  * An implementation of {@link Drawable} to display a gene from an {@link Annotation}.
  */
-public class Gene extends VBox implements Drawable {
+public class AnnotationDrawable extends VBox implements Drawable {
 
 	/**
-	 * Instantiates a new {@link Gene}.
+	 * Instantiates a new {@link AnnotationDrawable}.
 	 * @param annotation The {@link Annotation} to display.
 	 */
-	public Gene(Annotation annotation) {
+	public AnnotationDrawable(Annotation annotation) {
 		draw(annotation);
 	}
 

@@ -4,8 +4,8 @@ import javafx.collections.MapChangeListener;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import nl.tudelft.dnainator.tree.TreeNode;
-import nl.tudelft.dnainator.javafx.AllColorsInUseException;
-import nl.tudelft.dnainator.javafx.ColorServer;
+import nl.tudelft.dnainator.javafx.exceptions.AllColorsInUseException;
+import nl.tudelft.dnainator.javafx.ColorMap;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.ExceptionDialog;
 
 /**
@@ -17,20 +17,20 @@ public class LeafNode extends AbstractNode {
 	protected static final int LABEL_X_OFFSET = 80;
 	protected static final int LABEL_Y_OFFSET = 40;
 	private TreeNode node;
-	private ColorServer colorServer;
+	private ColorMap colorMap;
 	private boolean highlighted;
 
 	/**
 	 * Constructs a new {@link LeafNode}.
 	 * @param node The original treenode.
-	 * @param colorServer The {@link ColorServer} to bind to for colors.
+	 * @param colorMap The {@link ColorMap} to bind to for colors.
 	 */
-	public LeafNode(TreeNode node, ColorServer colorServer) {
+	public LeafNode(TreeNode node, ColorMap colorMap) {
 		this.node = node;
 		Text label = new Text(LABEL_X_OFFSET, LABEL_Y_OFFSET, node.getName());
 		label.onMouseClickedProperty().bind(shape.onMouseClickedProperty());
-		this.colorServer = colorServer;
-		this.colorServer.addListener(change -> {
+		this.colorMap = colorMap;
+		this.colorMap.addListener(change -> {
 			if (change.getKey().equals(node.getName())) {
 				onColorServerChanged(change);
 			}
@@ -58,12 +58,12 @@ public class LeafNode extends AbstractNode {
 	public void onMouseClicked() {
 		if (!highlighted) {
 			try {
-				colorServer.askColor(node.getName());
+				colorMap.askColor(node.getName());
 			} catch (AllColorsInUseException e) {
 				new ExceptionDialog(null, e, "All colors are currently in use!");
 			}
 		} else {
-			colorServer.revokeColor(node.getName());
+			colorMap.revokeColor(node.getName());
 		}
 	}
 }

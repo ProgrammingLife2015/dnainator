@@ -10,8 +10,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import nl.tudelft.dnainator.javafx.ColorServer;
-import nl.tudelft.dnainator.javafx.controllers.AbstractViewController;
+import nl.tudelft.dnainator.javafx.ColorMap;
 import nl.tudelft.dnainator.tree.TreeNode;
 
 import org.junit.Test;
@@ -31,14 +30,13 @@ public class PhylogeneticViewTest extends ApplicationTest {
 	private static final int WIDTH = 800;
 	private static final int HEIGHT = 600;
 	private Window window;
-	private AbstractViewController control;
 	private PhylogeneticView view;
-	@Mock private ColorServer colorServer;
+	@Mock private ColorMap colorMap;
 	
 	@Override
 	public void start(Stage stage) throws Exception {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/view.fxml"));
-		view = new PhylogeneticView(new ColorServer(), createTree());
+		view = new PhylogeneticView(new ColorMap(), createTree());
 		loader.setRoot(view);
 		loader.load();
 
@@ -47,7 +45,6 @@ public class PhylogeneticViewTest extends ApplicationTest {
 		stage.show();
 
 		window = scene.getWindow();
-		control = loader.getController();
 	}
 	
 	/**
@@ -56,7 +53,7 @@ public class PhylogeneticViewTest extends ApplicationTest {
 	@Test
 	public void testCreate() {
 		TreeNode tree = createTree();
-		view = new PhylogeneticView(colorServer, tree);
+		view = new PhylogeneticView(colorMap, tree);
 		// CHECKSTYLE.OFF: MagicNumber
 		assertEquals(2, tree.getChildren().size());
 		// CHECKSTYLE.ON: MagicNumber

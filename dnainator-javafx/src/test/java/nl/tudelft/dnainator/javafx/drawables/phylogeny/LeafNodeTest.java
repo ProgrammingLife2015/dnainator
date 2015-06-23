@@ -2,8 +2,8 @@ package nl.tudelft.dnainator.javafx.drawables.phylogeny;
 
 import static org.junit.Assert.assertEquals;
 import javafx.stage.Stage;
-import nl.tudelft.dnainator.javafx.AllColorsInUseException;
-import nl.tudelft.dnainator.javafx.ColorServer;
+import nl.tudelft.dnainator.javafx.exceptions.AllColorsInUseException;
+import nl.tudelft.dnainator.javafx.ColorMap;
 import nl.tudelft.dnainator.tree.TreeNode;
 
 import org.junit.Before;
@@ -19,8 +19,8 @@ public class LeafNodeTest extends ApplicationTest {
 
 	private LeafNode ln;
 	private TreeNode tn;
-	private ColorServer cs;
-	private ColorServer csSpy;
+	private ColorMap cs;
+	private ColorMap csSpy;
 	
 	@Override
 	public void start(Stage stage) throws Exception {
@@ -33,7 +33,7 @@ public class LeafNodeTest extends ApplicationTest {
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 		tn = new TreeNode(null);
-		cs = new ColorServer();
+		cs = new ColorMap();
 		csSpy = Mockito.spy(cs);
 		ln = new LeafNode(tn, csSpy);
 	}

@@ -17,9 +17,9 @@ import static org.junit.Assert.assertTrue;
 /**
  * Test creating an annotation connection.
  */
-public class GeneTest extends ApplicationTest {
+public class AnnotationDrawableTest extends ApplicationTest {
 
-	private Gene gene;
+	private AnnotationDrawable annotation;
 	@Mock private Annotation an;
 	
 	@Override
@@ -33,7 +33,7 @@ public class GeneTest extends ApplicationTest {
 	public void setup() {
 		MockitoAnnotations.initMocks(this);
 	
-		Mockito.when(an.getGeneName()).thenReturn("a gene");
+		Mockito.when(an.getGeneName()).thenReturn("a annotation");
 		// CHECKSTYLE.OFF: MagicNumber
 		Mockito.when(an.getStart()).thenReturn(0);
 		Mockito.when(an.getEnd()).thenReturn(50);
@@ -43,27 +43,27 @@ public class GeneTest extends ApplicationTest {
 	}
 	
 	/**
-	 * Test creating a Gene which is not a mutation.
+	 * Test creating a AnnotationDrawable which is not a mutation.
 	 */
 	@Test
 	public void testCreateNoMutation() {	
-		gene = new Gene(an);
+		annotation = new AnnotationDrawable(an);
 		Mockito.verify(an).getGeneName();
 		Mockito.verify(an).getStart();
 		Mockito.verify(an).getEnd();
 		Mockito.verify(an).isSense();
 		Mockito.verify(an).isMutation();
 		
-		assertEquals("annotation", gene.getStyleClass().get(0));
+		assertEquals("annotation", annotation.getStyleClass().get(0));
 	}
 	
 	/**
-	 * Test creating a Gene which is a mutation.
+	 * Test creating a AnnotationDrawable which is a mutation.
 	 */
 	@Test
 	public void testCreateMutation() {
 		Mockito.when(an.isMutation()).thenReturn(true);
-		gene = new Gene(an);
+		annotation = new AnnotationDrawable(an);
 		
 		Mockito.verify(an).getGeneName();
 		Mockito.verify(an).getStart();
@@ -71,7 +71,7 @@ public class GeneTest extends ApplicationTest {
 		Mockito.verify(an).isSense();
 		Mockito.verify(an).isMutation();
 		
-		assertEquals("dr-mutation", gene.getStyleClass().get(0));
+		assertEquals("dr-mutation", annotation.getStyleClass().get(0));
 	}
 
 	/**
@@ -79,15 +79,15 @@ public class GeneTest extends ApplicationTest {
 	 */
 	@Test
 	public void testAddAndRemoveStyle() {
-		gene = new Gene(an);
+		annotation = new AnnotationDrawable(an);
 		// Add style.
-		gene.getChildren().add(new Text("some gene"));
-		gene.addStyle("some style");
-		assertFalse(gene.getChildren().get(0).getStyleClass().isEmpty());
+		annotation.getChildren().add(new Text("some annotation"));
+		annotation.addStyle("some style");
+		assertFalse(annotation.getChildren().get(0).getStyleClass().isEmpty());
 		
 		// Remove the added style.
-		gene.removeStyle("some style");
-		assertTrue(gene.getChildren().get(0).getStyleClass().isEmpty());
+		annotation.removeStyle("some style");
+		assertTrue(annotation.getChildren().get(0).getStyleClass().isEmpty());
 	}
 	
 }

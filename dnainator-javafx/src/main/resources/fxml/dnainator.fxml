@@ -82,7 +82,7 @@
       <fx:include fx:id="welcome" source="welcome.fxml" />
    </center>
    <left>
-      <fx:include fx:id="fileOpen" source="openpane.fxml" />
+      <fx:include fx:id="openPane" source="openpane.fxml" />
    </left>
    <right>
       <fx:include fx:id="propertyPane" source="propertypane.fxml" />

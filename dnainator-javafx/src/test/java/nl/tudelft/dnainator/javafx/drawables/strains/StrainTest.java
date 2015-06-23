@@ -4,7 +4,7 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.shape.Rectangle;
 import nl.tudelft.dnainator.graph.Graph;
-import nl.tudelft.dnainator.javafx.ColorServer;
+import nl.tudelft.dnainator.javafx.ColorMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,7 +33,7 @@ public class StrainTest {
 	public void setup() {
 		content = new Group();
 		// CHECKSTYLE.OFF: MagicNumber
-		strain = new Strain(new ColorServer(), graph, content);
+		strain = new Strain(new ColorMap(), graph, content);
 		// CHECKSTYLE.ON: MagicNumber
 	}
 
