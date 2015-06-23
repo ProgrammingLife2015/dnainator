@@ -54,7 +54,7 @@ public class GFF3AnnotationParserTest {
 		Iterator<Annotation> ap = createParser("/annotations/test.gff");
 		assertEquals("TEST2", ap.next().getGeneName());
 		assertEquals("TEST4", ap.next().getGeneName());
-		System.out.println(ap.next());
+		ap.next();
 	}
 
 	/**

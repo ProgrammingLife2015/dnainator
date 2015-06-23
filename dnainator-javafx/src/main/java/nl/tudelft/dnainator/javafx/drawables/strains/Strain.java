@@ -81,8 +81,6 @@ public class Strain extends SemanticDrawable {
 		if (!needRedraw(ranks, newThreshold)) {
 			return;
 		}
-		System.out.println("load iteration: " + ranks.getX() + " -> " + ranks.getY()
-				+ " with zoom level " + zoom + " (" + interestingness + ": " + lastThreshold + ")");
 
 		List<Annotation> annotations = getSortedAnnotations(ranks);
 		List<String> roots = graph.getRank(lastLoaded.getX()).stream()
