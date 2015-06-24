@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import nl.tudelft.dnainator.annotation.Annotation;
-import nl.tudelft.dnainator.annotation.Range;
+import nl.tudelft.dnainator.core.Range;
 
 import org.biojava.nbio.genome.parsers.gff.Feature;
 

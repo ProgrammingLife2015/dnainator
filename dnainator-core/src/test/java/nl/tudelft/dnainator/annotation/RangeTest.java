@@ -1,5 +1,6 @@
 package nl.tudelft.dnainator.annotation;
 
+import nl.tudelft.dnainator.core.Range;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

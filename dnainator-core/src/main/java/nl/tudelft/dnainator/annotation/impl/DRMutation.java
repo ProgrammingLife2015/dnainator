@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 import nl.tudelft.dnainator.annotation.Annotation;
-import nl.tudelft.dnainator.annotation.Range;
+import nl.tudelft.dnainator.core.Range;
 
 /**
  * This class represents a drug resistance annotation on a gene annotation.

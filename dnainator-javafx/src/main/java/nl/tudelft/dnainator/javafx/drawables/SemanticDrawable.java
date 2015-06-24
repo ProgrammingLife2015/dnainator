@@ -4,7 +4,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
-import nl.tudelft.dnainator.annotation.Range;
+import nl.tudelft.dnainator.core.Range;
 
 /**
  * An abstract drawable that enables a semantic display of data.

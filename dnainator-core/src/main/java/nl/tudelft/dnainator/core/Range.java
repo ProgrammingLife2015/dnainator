@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.annotation;
+package nl.tudelft.dnainator.core;
 
 /**
  * A comparable range class, which equals another range
