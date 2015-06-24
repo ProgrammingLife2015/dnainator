@@ -1,8 +1,10 @@
 package nl.tudelft.dnainator.javafx.drawables.strains;
 
 import nl.tudelft.dnainator.core.EnrichedSequenceNode;
+import nl.tudelft.dnainator.core.PropertyType;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.javafx.ColorServer;
+import nl.tudelft.dnainator.javafx.drawables.phylogeny.AbstractNode;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,9 +15,13 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Test the drawable class that is used for clusters.
@@ -99,4 +105,38 @@ public class ClusterDrawableTest {
 		assertEquals(11, cluster.getCluster().getNodes().size());
 		// CHECKSTYLE.ON: MagicNumber
 	}
+	
+	/**
+	 * Get the property map from a {@link ClusterDrawable}.
+	 */
+	@Test
+	public void testGetPropertyMap() {
+		Cluster c = new Cluster(0, Arrays.asList(node));
+		cluster = new ClusterDrawable(colorserver, c);
+		Map<PropertyType, String> properties = cluster.getPropertyMap();
+		
+		assertNotNull(properties);
+		// CHECKSTYLE.OFF: MagicNumber
+		assertEquals(9, properties.size());
+		// CHECKSTYLE.ON: MagicNumber
+		assertEquals(properties, cluster.getPropertyMap());
+	}
+	
+	/**
+	 * Test adding and removing a css style on the children of the {@link AbstractNode}.
+	 */
+	@Test
+	public void testAddAndRemoveStyle() {
+		Cluster c = new Cluster(0, Arrays.asList(node));
+		cluster = new ClusterDrawable(colorserver, c);
+
+		// Add style.
+		cluster.addStyle("some style");
+		Pie p = (Pie) cluster.getChildren().get(1);
+		assertFalse(p.getStyles().isEmpty());
+		
+		// Remove the added style.
+		cluster.removeStyle("some style");
+		assertTrue(p.getStyles().isEmpty());
+	}	
 }

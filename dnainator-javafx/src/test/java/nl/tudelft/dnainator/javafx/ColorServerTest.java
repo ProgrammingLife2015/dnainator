@@ -79,4 +79,17 @@ public class ColorServerTest {
 		assertTrue(col0 == col1);
 		colorServer.revokeColor(TKK_REF);
 	}
+	
+	/**
+	 * Test if an exception is thrown when all colors are taken.
+	 * @throws AllColorsInUseException when all colors are in use.
+	 */
+	@Test(expected = AllColorsInUseException.class)
+	public void testException() throws AllColorsInUseException {
+		// CHECKSTYLE.OFF: MagicNumber
+		for (int i = 0; i < 22; i++) {
+			colorServer.askColor(TKK_REF + i);
+		}
+		// CHECKSTYLE.ON: MagicNumber
+	}
 }

@@ -107,7 +107,7 @@ public class WelcomeController {
 			dirload.setDirectory(dir.getAbsolutePath());
 			dirload.restart();
 		} else {
-			progressDialog = new ProgressDialog(dblist.getParent(), dbload);
+			progressDialog = new ProgressDialog(dblist.getScene().getWindow(), dbload);
 			dbload.restart();
 			dirload.restart();
 		}
