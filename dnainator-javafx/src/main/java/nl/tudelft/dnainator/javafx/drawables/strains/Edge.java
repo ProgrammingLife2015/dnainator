@@ -1,18 +1,17 @@
 package nl.tudelft.dnainator.javafx.drawables.strains;
 
-import nl.tudelft.dnainator.core.PropertyType;
-import nl.tudelft.dnainator.javafx.views.AbstractView;
-import nl.tudelft.dnainator.javafx.widgets.Propertyable;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
+import nl.tudelft.dnainator.core.PropertyType;
+import nl.tudelft.dnainator.javafx.views.AbstractView;
+import nl.tudelft.dnainator.javafx.widgets.Propertyable;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * This enum represents all properties an Edge can have.
@@ -23,7 +22,13 @@ enum EdgePropertyTypes implements PropertyType {
 	DEST("Destination");
 
 	private String description;
-	private EdgePropertyTypes(String description) {
+
+	/**
+	 * Creates the specific property types with a description that can be used for the
+	 * property pane.
+	 * @param description to be shown in the propertypane
+	 */
+	EdgePropertyTypes(String description) {
 		this.description = description;
 	}
 

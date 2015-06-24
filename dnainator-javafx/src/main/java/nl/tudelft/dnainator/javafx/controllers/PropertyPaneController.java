@@ -38,7 +38,7 @@ public class PropertyPaneController {
 	public void update(Propertyable p) {
 		onClickOpenPane();
 		propertyPane.getChildren().clear();
-		p.getPropertyMap().forEach((k, v) -> addLabel(k, v));
+		p.getPropertyMap().forEach(this::addLabel);
 	}
 
 	/**
@@ -72,7 +72,7 @@ public class PropertyPaneController {
 	}
 	
 	/**
-	 * Opens the {@link PropertyPane} when a drawable is clicked and it was not open.
+	 * Opens the property pane, a {@link VBox}, when a drawable is clicked and it was not open.
 	 */
 	private void onClickOpenPane() {
 		if (!propertyPane.isVisible()) {

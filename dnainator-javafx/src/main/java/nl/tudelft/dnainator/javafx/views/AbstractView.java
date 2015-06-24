@@ -1,7 +1,5 @@
 package nl.tudelft.dnainator.javafx.views;
 
-import java.io.IOException;
-
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXMLLoader;
@@ -16,6 +14,8 @@ import javafx.scene.transform.Transform;
 import javafx.scene.transform.Translate;
 import nl.tudelft.dnainator.javafx.widgets.Propertyable;
 import nl.tudelft.dnainator.javafx.widgets.dialogs.ExceptionDialog;
+
+import java.io.IOException;
 
 /**
  * An abstract class for common functionality needed by all the views.

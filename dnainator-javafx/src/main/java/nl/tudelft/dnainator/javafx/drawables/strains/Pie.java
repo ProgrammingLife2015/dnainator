@@ -31,7 +31,7 @@ public class Pie extends Group {
 		this.styles.addListener(this::onChange);
 
 		getChildren().add(slices);
-		styles.forEach(e -> this.styles.add(e));
+		styles.forEach(this.styles::add);
 	}
 
 	/**

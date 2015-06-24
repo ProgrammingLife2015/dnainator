@@ -1,14 +1,5 @@
 package nl.tudelft.dnainator.javafx.controllers;
 
-import java.io.File;
-
-import org.neo4j.io.fs.FileUtils;
-
-import nl.tudelft.dnainator.graph.Graph;
-import nl.tudelft.dnainator.javafx.services.DBLoadService;
-import nl.tudelft.dnainator.javafx.services.DirectoryLoadService;
-import nl.tudelft.dnainator.javafx.widgets.dialogs.ExceptionDialog;
-import nl.tudelft.dnainator.javafx.widgets.dialogs.ProgressDialog;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
@@ -21,6 +12,14 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
+import nl.tudelft.dnainator.graph.Graph;
+import nl.tudelft.dnainator.javafx.services.DBLoadService;
+import nl.tudelft.dnainator.javafx.services.DirectoryLoadService;
+import nl.tudelft.dnainator.javafx.widgets.dialogs.ExceptionDialog;
+import nl.tudelft.dnainator.javafx.widgets.dialogs.ProgressDialog;
+import org.neo4j.io.fs.FileUtils;
+
+import java.io.File;
 
 /**
  * Controller for the welcome screen.
@@ -54,9 +53,7 @@ public class WelcomeController {
 	}
 
 	private void initDBLoad() {
-		dbload.setOnCancelled(e -> {
-			progressDialog.close();
-		});
+		dbload.setOnCancelled(e -> progressDialog.close());
 		dbload.setOnFailed(e -> {
 			progressDialog.close();
 			new ExceptionDialog(dblist.getParent(), dbload.getException(),
@@ -70,10 +67,8 @@ public class WelcomeController {
 	}
 
 	private void initDirLoad() {
-		dirload.setOnFailed(e -> {
-			new ExceptionDialog(dblist.getParent(), dirload.getException(),
-					"Could not load directories.");
-		});
+		dirload.setOnFailed(e -> new ExceptionDialog(dblist.getParent(), dirload.getException(),
+				"Could not load directories."));
 		dirload.setOnSucceeded(e -> {
 			databases.clear();
 			databases.add(selectDB);
@@ -87,7 +82,7 @@ public class WelcomeController {
 		dblist.getSelectionModel().select(dbload.getDatabase());
 		dblist.getSelectionModel().selectedItemProperty().addListener((obj, oldV, newV) -> {
 			deleteButton.setDisable(true);
-			if (newV != selectDB && newV != null) {
+			if (newV != null && !newV.equals(selectDB)) {
 				deleteButton.setDisable(false);
 			}
 			dbload.setDatabase(newV);

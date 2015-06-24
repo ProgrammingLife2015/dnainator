@@ -85,7 +85,7 @@ public class Strain extends SemanticDrawable {
 		List<Annotation> annotations = getSortedAnnotations(ranks);
 		List<String> roots = graph.getRank(lastLoaded.getX()).stream()
 				.map(SequenceNode::getId)
-				.sorted((s1, s2) -> s1.compareTo(s2))
+				.sorted(String::compareTo)
 				.collect(Collectors.toList());
 		Map<Integer, List<Cluster>> result = graph.getAllClusters(roots, lastLoaded.getY(),
 				lastThreshold.get());

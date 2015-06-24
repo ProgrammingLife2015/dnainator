@@ -96,7 +96,6 @@ public class AbstractViewController {
 				view.pan(new Point2D(0, -Y_DELTA * scrollSpeedFactor));
 				return;
 			default:
-				return;
 		}
 	}
 

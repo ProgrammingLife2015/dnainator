@@ -1,5 +1,6 @@
 package nl.tudelft.dnainator.javafx.services;
 
+import javafx.concurrent.Task;
 import nl.tudelft.dnainator.annotation.AnnotationCollection;
 import nl.tudelft.dnainator.annotation.impl.AnnotationCollectionImpl;
 import nl.tudelft.dnainator.core.SequenceNode;
@@ -9,7 +10,6 @@ import nl.tudelft.dnainator.graph.GraphBuilder;
 import nl.tudelft.dnainator.graph.impl.Neo4jBatchBuilder;
 import nl.tudelft.dnainator.parser.Iterator;
 import nl.tudelft.dnainator.parser.TreeParser;
-import nl.tudelft.dnainator.parser.exceptions.ParseException;
 import nl.tudelft.dnainator.parser.impl.AnnotationIterator;
 import nl.tudelft.dnainator.parser.impl.DRMutationIterator;
 import nl.tudelft.dnainator.parser.impl.EdgeIterator;
@@ -17,8 +17,6 @@ import nl.tudelft.dnainator.parser.impl.NodeIterator;
 import nl.tudelft.dnainator.tree.TreeNode;
 
 import java.io.IOException;
-
-import javafx.concurrent.Task;
 
 /**
  * This class is instantiated by a {@link GraphLoadService} in order to load a sequence graph.
@@ -73,7 +71,7 @@ public class GraphLoadTask extends Task<Graph> {
 	}
 	
 	@Override
-	protected Graph call() throws IOException, ParseException {
+	protected Graph call() throws IOException {
 		if (!service.canLoad()) {
 			throw new IOException("Not all required fields are filled in!");
 		}

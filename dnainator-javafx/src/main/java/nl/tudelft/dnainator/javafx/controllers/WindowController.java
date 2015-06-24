@@ -35,7 +35,6 @@ public class WindowController {
 	@SuppressWarnings("unused") @FXML private Menu menuHelp;
 
 	private StrainView strainView;
-	private PhylogeneticView phyloView;
 
 	@SuppressWarnings("unused") @FXML
 	private void initialize() {
@@ -46,7 +45,7 @@ public class WindowController {
 	private void constructView(Graph newV) {
 		ColorServer colorServer = new ColorServer();
 		strainView = new StrainView(colorServer, newV);
-		phyloView = new PhylogeneticView(colorServer, newV.getTree());
+		PhylogeneticView phyloView = new PhylogeneticView(colorServer, newV.getTree());
 
 		SplitPane splitPane = new SplitPane(strainView, phyloView);
 		splitPane.setOrientation(Orientation.VERTICAL);

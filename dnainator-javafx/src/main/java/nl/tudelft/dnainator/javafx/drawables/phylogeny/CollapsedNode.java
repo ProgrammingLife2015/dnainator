@@ -9,7 +9,6 @@ import javafx.scene.text.TextAlignment;
  * Represents an {@link InternalNode} that has been collapsed.
  */
 public class CollapsedNode extends AbstractNode {
-	private Text label;
 	private InternalNode wrappedNode;
 
 	/**
@@ -23,11 +22,11 @@ public class CollapsedNode extends AbstractNode {
 		// Bind the margin of the wrapped node to this margin, so that the layout adapts.
 		wrappedNode.marginProperty().bind(this.marginProperty());
 
-		this.label = new Text(LeafNode.LABEL_X_OFFSET, LeafNode.LABEL_Y_OFFSET, "");
-		this.label.textProperty().bind(wrapped.leafCountProperty().asString().concat(" strains"));
-		this.label.onMouseClickedProperty().bind(shape.onMouseClickedProperty());
-		this.label.setTextAlignment(TextAlignment.CENTER);
-		getChildren().add(this.label);
+		Text label = new Text(LeafNode.LABEL_X_OFFSET, LeafNode.LABEL_Y_OFFSET, "");
+		label.textProperty().bind(wrapped.leafCountProperty().asString().concat(" strains"));
+		label.onMouseClickedProperty().bind(shape.onMouseClickedProperty());
+		label.setTextAlignment(TextAlignment.CENTER);
+		getChildren().add(label);
 
 		// Make it the size of a leaf.
 		this.marginProperty().set(LeafNode.LEAFHEIGHT);
