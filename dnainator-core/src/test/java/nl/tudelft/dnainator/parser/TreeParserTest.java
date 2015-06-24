@@ -1,6 +1,8 @@
 package nl.tudelft.dnainator.parser;
 
-import nl.tudelft.dnainator.tree.TreeNode;
+import nl.tudelft.dnainator.core.impl.TreeNode;
+import nl.tudelft.dnainator.parser.impl.TreeParser;
+
 import org.junit.Test;
 
 import java.io.File;

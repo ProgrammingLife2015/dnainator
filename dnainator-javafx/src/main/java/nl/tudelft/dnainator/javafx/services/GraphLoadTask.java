@@ -5,16 +5,16 @@ import nl.tudelft.dnainator.annotation.AnnotationCollection;
 import nl.tudelft.dnainator.annotation.impl.AnnotationCollectionImpl;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Edge;
+import nl.tudelft.dnainator.core.impl.TreeNode;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.graph.GraphBuilder;
 import nl.tudelft.dnainator.graph.impl.Neo4jBatchBuilder;
 import nl.tudelft.dnainator.parser.Iterator;
-import nl.tudelft.dnainator.parser.TreeParser;
 import nl.tudelft.dnainator.parser.impl.AnnotationIterator;
 import nl.tudelft.dnainator.parser.impl.DRMutationIterator;
 import nl.tudelft.dnainator.parser.impl.EdgeIterator;
 import nl.tudelft.dnainator.parser.impl.NodeIterator;
-import nl.tudelft.dnainator.tree.TreeNode;
+import nl.tudelft.dnainator.parser.impl.TreeParser;
 
 import java.io.IOException;
 

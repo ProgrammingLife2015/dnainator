@@ -1,5 +1,6 @@
 package nl.tudelft.dnainator.annotation;
 
+import nl.tudelft.dnainator.core.Range;
 import nl.tudelft.dnainator.parser.Iterator;
 
 import java.io.IOException;

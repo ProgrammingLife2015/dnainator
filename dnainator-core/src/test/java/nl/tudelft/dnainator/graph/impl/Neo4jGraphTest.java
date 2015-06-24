@@ -8,14 +8,14 @@ import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Edge;
 import nl.tudelft.dnainator.core.impl.SequenceNodeFactoryImpl;
 import nl.tudelft.dnainator.core.impl.SequenceNodeImpl;
+import nl.tudelft.dnainator.core.impl.TreeNode;
 import nl.tudelft.dnainator.graph.impl.command.AnalyzeCommand;
 import nl.tudelft.dnainator.graph.query.GraphQueryDescription;
 import nl.tudelft.dnainator.parser.Iterator;
-import nl.tudelft.dnainator.parser.TreeParser;
 import nl.tudelft.dnainator.parser.exceptions.InvalidEdgeFormatException;
 import nl.tudelft.dnainator.parser.impl.EdgeIterator;
 import nl.tudelft.dnainator.parser.impl.NodeIterator;
-import nl.tudelft.dnainator.tree.TreeNode;
+import nl.tudelft.dnainator.parser.impl.TreeParser;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -38,7 +38,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static nl.tudelft.dnainator.graph.impl.properties.SequenceProperties.ID;
-
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

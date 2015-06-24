@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.graph.impl;
+package nl.tudelft.dnainator.graph.impl.properties;
 
 import org.neo4j.graphdb.Label;
 

@@ -1,8 +1,9 @@
-package nl.tudelft.dnainator.graph.impl;
+package nl.tudelft.dnainator.graph.impl.nodes;
 
 import nl.tudelft.dnainator.annotation.Annotation;
 import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.core.SequenceNode;
+import nl.tudelft.dnainator.graph.impl.properties.RelTypes;
 import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
 import nl.tudelft.dnainator.graph.impl.properties.SourceProperties;
 import nl.tudelft.dnainator.graph.interestingness.ScoreIdentifier;

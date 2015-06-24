@@ -1,5 +1,7 @@
 package nl.tudelft.dnainator.annotation;
 
+import nl.tudelft.dnainator.core.Range;
+
 import java.util.Collection;
 
 /**

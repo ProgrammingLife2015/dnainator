@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.graph.impl;
+package nl.tudelft.dnainator.graph.impl.nodes;
 
 import nl.tudelft.dnainator.graph.interestingness.ScoreContainer;
 import nl.tudelft.dnainator.graph.interestingness.ScoreIdentifier;

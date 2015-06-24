@@ -4,7 +4,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Scale;
 import javafx.scene.transform.Transform;
-import nl.tudelft.dnainator.tree.TreeNode;
+import nl.tudelft.dnainator.core.impl.TreeNode;
 import nl.tudelft.dnainator.javafx.ColorMap;
 import nl.tudelft.dnainator.javafx.drawables.phylogeny.AbstractNode;
 import nl.tudelft.dnainator.javafx.drawables.phylogeny.InternalNode;

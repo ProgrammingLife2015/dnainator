@@ -4,7 +4,7 @@ import javafx.beans.binding.Bindings;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import nl.tudelft.dnainator.annotation.Annotation;
-import nl.tudelft.dnainator.annotation.Range;
+import nl.tudelft.dnainator.core.Range;
 import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
 import nl.tudelft.dnainator.graph.Graph;

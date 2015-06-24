@@ -1,16 +1,16 @@
 package nl.tudelft.dnainator.javafx.drawables.phylogeny;
 
-import static org.junit.Assert.assertEquals;
 import javafx.stage.Stage;
-import nl.tudelft.dnainator.javafx.exceptions.AllColorsInUseException;
+import nl.tudelft.dnainator.core.impl.TreeNode;
 import nl.tudelft.dnainator.javafx.ColorMap;
-import nl.tudelft.dnainator.tree.TreeNode;
-
+import nl.tudelft.dnainator.javafx.exceptions.AllColorsInUseException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.testfx.framework.junit.ApplicationTest;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test the {@link LeafNode} of the phylogenetic tree.

@@ -2,9 +2,9 @@ package nl.tudelft.dnainator.graph.impl.query;
 
 import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.core.impl.Cluster;
-import nl.tudelft.dnainator.graph.impl.Neo4jSequenceNode;
-import nl.tudelft.dnainator.graph.impl.NodeLabels;
-import nl.tudelft.dnainator.graph.impl.RelTypes;
+import nl.tudelft.dnainator.graph.impl.nodes.Neo4jSequenceNode;
+import nl.tudelft.dnainator.graph.impl.properties.NodeLabels;
+import nl.tudelft.dnainator.graph.impl.properties.RelTypes;
 import nl.tudelft.dnainator.graph.impl.properties.SequenceProperties;
 import nl.tudelft.dnainator.graph.interestingness.InterestingnessStrategy;
 

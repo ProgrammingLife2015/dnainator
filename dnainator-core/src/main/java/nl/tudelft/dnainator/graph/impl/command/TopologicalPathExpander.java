@@ -1,6 +1,7 @@
 package nl.tudelft.dnainator.graph.impl.command;
 
-import nl.tudelft.dnainator.graph.impl.RelTypes;
+import nl.tudelft.dnainator.graph.impl.properties.RelTypes;
+
 import org.neo4j.collection.primitive.PrimitiveLongSet;
 import org.neo4j.graphdb.Direction;
 import org.neo4j.graphdb.Node;

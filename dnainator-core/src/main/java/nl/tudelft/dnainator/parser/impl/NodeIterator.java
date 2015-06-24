@@ -8,7 +8,6 @@ import nl.tudelft.dnainator.core.SequenceNode;
 import nl.tudelft.dnainator.core.SequenceNodeFactory;
 import nl.tudelft.dnainator.core.impl.SequenceNodeFactoryImpl;
 import nl.tudelft.dnainator.parser.BufferedIterator;
-import nl.tudelft.dnainator.parser.HeaderParser;
 
 import java.io.BufferedReader;
 import java.io.File;
