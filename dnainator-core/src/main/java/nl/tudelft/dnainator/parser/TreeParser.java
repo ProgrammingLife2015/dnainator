@@ -24,7 +24,6 @@ public class TreeParser {
 	private File treeFile;
 	private TreeNode root;
 	private TreeNode current;
-	private TreeNode child;
 
 	/**
 	 * Creates a new TreeParser, that will parse the passed file.
@@ -51,12 +50,12 @@ public class TreeParser {
 		}
 	}
 
-	/**
-	 * Builds a {@link TreeNode} that represents the root of the phylogenetic tree.
-	 * @param s The {@link String} to parse.
-	 * @return The root of the phylogenetic tree.
+	/*
+	 * Builds a TreeNode that represents the root of the phylogenetic tree.
+	 * param s: The String to parse.
+	 * return: The root of the phylogenetic tree.
 	 */
-	public TreeNode build(String s) {
+	private TreeNode build(String s) {
 		if (s == null) {
 			throw new NoSuchElementException("Empty tree file.");
 		}
@@ -78,7 +77,7 @@ public class TreeParser {
 	private boolean processToken(String token) {
 		switch (token) {
 			case "(":
-				child = new TreeNode(current);
+				TreeNode child = new TreeNode(current);
 				current = child;
 				return false;
 			case ":":

@@ -9,7 +9,6 @@ import nl.tudelft.dnainator.core.SequenceNodeFactory;
 import nl.tudelft.dnainator.core.impl.SequenceNodeFactoryImpl;
 import nl.tudelft.dnainator.parser.BufferedIterator;
 import nl.tudelft.dnainator.parser.HeaderParser;
-import nl.tudelft.dnainator.parser.exceptions.InvalidHeaderFormatException;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -66,7 +65,7 @@ public class NodeIterator extends BufferedIterator<SequenceNode> {
 	}
 
 	@Override
-	public SequenceNode next() throws IOException, InvalidHeaderFormatException {
+	public SequenceNode next() throws IOException {
 		FASTAElement next = it.next();
 		HeaderParser p = new HeaderParser(next.getHeader());
 		return sf.build(p.next(), p.next(), parseInt(p.next()),

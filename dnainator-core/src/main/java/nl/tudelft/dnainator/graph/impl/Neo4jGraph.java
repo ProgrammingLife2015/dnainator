@@ -195,7 +195,7 @@ public final class Neo4jGraph implements Graph {
 	 * @return	the result of the query
 	 */
 	public <T> T query(Query<T> q) {
-		T res = null;
+		T res;
 		try (Transaction tx = service.beginTx()) {
 			res = q.execute(service);
 			tx.success();
@@ -242,7 +242,7 @@ public final class Neo4jGraph implements Graph {
 
 	@Override
 	public Collection<Annotation> getSubrange(Range r) {
-		List<Annotation> result = new LinkedList<Annotation>();
+		List<Annotation> result = new LinkedList<>();
 		execute(service -> getAnnotationRange(r, GET_SUB_RANGE).forEachRemaining(a ->
 				result.add(new Neo4jAnnotation(service, a))));
 		return result;
@@ -250,7 +250,7 @@ public final class Neo4jGraph implements Graph {
 
 	@Override
 	public Collection<Annotation> getAnnotationByRank(Range r) {
-		List<Annotation> result = new LinkedList<Annotation>();
+		List<Annotation> result = new LinkedList<>();
 		execute(service -> getAnnotationRange(r, GET_ANNOTATION_BY_RANK).forEachRemaining(a ->
 				result.add(new Neo4jAnnotation(service, a))));
 		return result;

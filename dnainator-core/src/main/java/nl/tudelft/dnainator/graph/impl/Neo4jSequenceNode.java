@@ -63,12 +63,10 @@ public class Neo4jSequenceNode implements EnrichedSequenceNode {
 			basedist        = (int) node.getProperty(SequenceProperties.BASE_DIST.name());
 			interestingness = (int) node.getProperty(SequenceProperties.INTERESTINGNESS.name(), 0);
 
-			node.getRelationships(RelTypes.NEXT, Direction.OUTGOING).forEach(e -> {
-				outgoing.add((String) e.getEndNode().getProperty(SequenceProperties.ID.name()));
-			});
-			node.getRelationships(RelTypes.SOURCE, Direction.OUTGOING).forEach(e -> {
-				sources.add((String) e.getEndNode().getProperty(SourceProperties.SOURCE.name()));
-			});
+			node.getRelationships(RelTypes.NEXT, Direction.OUTGOING).forEach(e ->
+				outgoing.add((String) e.getEndNode().getProperty(SequenceProperties.ID.name())));
+			node.getRelationships(RelTypes.SOURCE, Direction.OUTGOING).forEach(e ->
+				sources.add((String) e.getEndNode().getProperty(SourceProperties.SOURCE.name())));
 
 			tx.success();
 		}
@@ -151,9 +149,8 @@ public class Neo4jSequenceNode implements EnrichedSequenceNode {
 			end      = (int)    node.getProperty(SequenceProperties.ENDREF.name());
 			sequence = (String) node.getProperty(SequenceProperties.SEQUENCE.name());
 			rank     = (int)    node.getProperty(SequenceProperties.RANK.name());
-			node.getRelationships(RelTypes.ANNOTATED, Direction.OUTGOING).forEach(e -> {
-				annotations.add(new Neo4jAnnotation(service, e.getEndNode()));
-			});
+			node.getRelationships(RelTypes.ANNOTATED, Direction.OUTGOING).forEach(e ->
+					annotations.add(new Neo4jAnnotation(service, e.getEndNode())));
 			for (ScoreIdentifier id : Scores.values()) {
 				scores.put(id, (Integer) node.getProperty(id.name(), 0));
 			}
