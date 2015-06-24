@@ -26,7 +26,7 @@ import java.io.File;
  * Controls the file open pane on the left side of the application. It offers options
  * to open node, edge and newick files.
  */
-public class FileOpenController {
+public class OpenPaneController {
 	public static final String EDGE = ".edge.graph";
 	public static final String NODE = ".node.graph";
 	public static final String NEWICK = ".nwk";
@@ -114,7 +114,7 @@ public class FileOpenController {
 	@SuppressWarnings("unused") @FXML
 	private void onNodeFieldClicked() {
 		File nodeFile = selectFile("Node file", NODE,
-					nodeField, graphLoadService.nodeFileProperty());
+				nodeField, graphLoadService.nodeFileProperty());
 		if (nodeFile != null) {
 			graphLoadService.setEdgeFile(openEdgeFile(nodeFile.getPath()));
 			edgeField.setText(graphLoadService.getEdgeFile().getAbsolutePath());

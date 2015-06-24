@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.javafx;
+package nl.tudelft.dnainator.javafx.exceptions;
 
 import static org.junit.Assert.assertEquals;
 

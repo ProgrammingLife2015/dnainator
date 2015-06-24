@@ -1,4 +1,4 @@
-package nl.tudelft.dnainator.javafx;
+package nl.tudelft.dnainator.javafx.exceptions;
 
 /**
  * An exception to indicate to the user that all colors are currently in use.

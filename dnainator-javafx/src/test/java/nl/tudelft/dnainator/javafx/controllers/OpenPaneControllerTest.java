@@ -20,15 +20,15 @@ import static org.junit.Assert.assertNull;
 /**
  * Test the file open controller by simulating user interaction.
  */
-public class FileOpenControllerTest extends ApplicationTest {
+public class OpenPaneControllerTest extends ApplicationTest {
 	private static final int WIDTH = 800;
 	private static final int HEIGHT = 600;
-	private DummyFileOpenController control;
+	private DummyOpenPaneController control;
 	
 	@Override
 	public void start(Stage stage) throws Exception {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/openpane.fxml"));
-		loader.setControllerFactory((p) -> new DummyFileOpenController());
+		loader.setControllerFactory((p) -> new DummyOpenPaneController());
 
 		AnchorPane openpane = loader.load();
 		Scene scene = new Scene(openpane, WIDTH, HEIGHT);
@@ -54,8 +54,8 @@ public class FileOpenControllerTest extends ApplicationTest {
 	public void testNodeField() {
 		togglePane().clickOn("#nodeField");
 
-		FxAssert.verifyThat("#nodeField", verify(FileOpenController.NODE));
-		FxAssert.verifyThat("#edgeField", verify(FileOpenController.EDGE));
+		FxAssert.verifyThat("#nodeField", verify(OpenPaneController.NODE));
+		FxAssert.verifyThat("#edgeField", verify(OpenPaneController.EDGE));
 	}
 
 	/**
@@ -65,8 +65,8 @@ public class FileOpenControllerTest extends ApplicationTest {
 	public void testEdgeField() {
 		togglePane().clickOn("#edgeField");
 
-		FxAssert.verifyThat("#nodeField", verify(FileOpenController.NODE));
-		FxAssert.verifyThat("#edgeField", verify(FileOpenController.EDGE));
+		FxAssert.verifyThat("#nodeField", verify(OpenPaneController.NODE));
+		FxAssert.verifyThat("#edgeField", verify(OpenPaneController.EDGE));
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class FileOpenControllerTest extends ApplicationTest {
 	public void testTreeField() {
 		togglePane().clickOn("#newickField");
 
-		FxAssert.verifyThat("#newickField", verify(FileOpenController.NEWICK));
+		FxAssert.verifyThat("#newickField", verify(OpenPaneController.NEWICK));
 	}
 
 	/**
@@ -86,7 +86,7 @@ public class FileOpenControllerTest extends ApplicationTest {
 	public void testGffField() {
 		togglePane().clickOn("#gffField");
 
-		FxAssert.verifyThat("#gffField", verify(FileOpenController.GFF));
+		FxAssert.verifyThat("#gffField", verify(OpenPaneController.GFF));
 	}
 
 	/**
@@ -96,7 +96,7 @@ public class FileOpenControllerTest extends ApplicationTest {
 	public void testDRField() {
 		togglePane().clickOn("#drField");
 
-		FxAssert.verifyThat("#drField", verify(FileOpenController.DR));
+		FxAssert.verifyThat("#drField", verify(OpenPaneController.DR));
 	}
 
 	/**

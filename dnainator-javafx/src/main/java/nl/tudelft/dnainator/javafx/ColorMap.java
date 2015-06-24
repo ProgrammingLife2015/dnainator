@@ -3,25 +3,26 @@ package nl.tudelft.dnainator.javafx;
 import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableMap;
+import nl.tudelft.dnainator.javafx.exceptions.AllColorsInUseException;
 
 import java.util.BitSet;
 
 /**
- * The {@link ColorServer} is responsible for managing colors used in the phylogenetic tree and the
+ * The {@link ColorMap} is responsible for managing colors used in the phylogenetic tree and the
  * DNA strains.
  */
-public class ColorServer {
+public class ColorMap {
 	private static final int COLORS = 21;
 	private String[] colors;
-	private ObservableMap<String, String> map;
+	private ObservableMap<String, String> delegate;
 	private BitSet occupied;
 
 	/**
-	 * Instantiates a new {@link ColorServer}.
+	 * Instantiates a new {@link ColorMap}.
 	 */
-	public ColorServer() {
+	public ColorMap() {
 		colors = new String[COLORS];
-		map = FXCollections.observableHashMap();
+		delegate = FXCollections.observableHashMap();
 		occupied = new BitSet(COLORS);
 		setColors();
 	}
@@ -38,8 +39,8 @@ public class ColorServer {
 	 * @return The style class associated to the source strain.
 	 */
 	public String getColor(String source) {
-		if (map.containsKey(source)) {
-			return map.get(source);
+		if (delegate.containsKey(source)) {
+			return delegate.get(source);
 		} else {
 			return null;
 		}
@@ -58,19 +59,19 @@ public class ColorServer {
 
 		int index = occupied.nextClearBit(0);
 		occupied.set(index, true);
-		map.put(source, colors[index]);
+		delegate.put(source, colors[index]);
 	}
 
 	/**
-	 * Tells the {@link ColorServer} that the color belonging to the source is not used anymore.
+	 * Tells the {@link ColorMap} that the color belonging to the source is not used anymore.
 	 * @param source The source whose color is now unused.
 	 */
 	public void revokeColor(String source) {
-		if (!map.containsKey(source)) {
+		if (!delegate.containsKey(source)) {
 			return;
 		}
 
-		String color = map.remove(source);
+		String color = delegate.remove(source);
 		int index = Character.getNumericValue(color.charAt(color.length() - 1));
 		occupied.set(index, false);
 	}
@@ -80,6 +81,6 @@ public class ColorServer {
 	 * @param listener The {@link MapChangeListener} to add.
 	 */
 	public void addListener(MapChangeListener<String, String> listener) {
-		map.addListener(listener);
+		delegate.addListener(listener);
 	}
 }
