@@ -58,9 +58,8 @@ public class PhylogeneticView extends AbstractView {
 			return new LeafNode(node, colorServer);
 		}
 
-		AbstractNode self = new InternalNode(node.getChildren().stream()
+		return new InternalNode(node.getChildren().stream()
 				.map(this::draw)
 				.collect(Collectors.toList()));
-		return self;
 	}
 }

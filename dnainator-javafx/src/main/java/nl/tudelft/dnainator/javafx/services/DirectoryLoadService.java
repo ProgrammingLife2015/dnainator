@@ -1,5 +1,11 @@
 package nl.tudelft.dnainator.javafx.services;
 
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import nl.tudelft.dnainator.javafx.DNAinator;
 
 import java.io.File;
@@ -9,13 +15,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.StreamSupport;
-
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
 
 /**
  * A JavaFX service that loads all the directories from a specific path.
@@ -72,7 +71,7 @@ public class DirectoryLoadService extends Service<ObservableList<String>> {
 				throw new IOException("Failed to retrieve databases.");
 			}
 		}
-		databases.sort((e1, e2) -> e1.compareTo(e2));
+		databases.sort(String::compareTo);
 		return databases;
 	}
 

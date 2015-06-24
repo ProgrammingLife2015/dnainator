@@ -63,9 +63,8 @@ public class Neo4jBatchBuilder implements GraphBuilder {
 		annotationProperties = new HashMap<>();
 		nodeProperties = new HashMap<>();
 
-		annotations.getAll().forEach(e -> {
-			annotationIDToNodeID.put(e.getGeneName(), createAnnotation(e));
-		});
+		annotations.getAll().forEach(e ->
+				annotationIDToNodeID.put(e.getGeneName(), createAnnotation(e)));
 	}
 
 	@Override

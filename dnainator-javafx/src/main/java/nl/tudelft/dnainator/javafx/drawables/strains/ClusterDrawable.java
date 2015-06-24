@@ -1,5 +1,8 @@
 package nl.tudelft.dnainator.javafx.drawables.strains;
 
+import javafx.collections.MapChangeListener;
+import javafx.scene.Group;
+import javafx.scene.shape.Circle;
 import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.core.PropertyType;
 import nl.tudelft.dnainator.core.SequenceNode;
@@ -14,10 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import javafx.collections.MapChangeListener;
-import javafx.scene.Group;
-import javafx.scene.shape.Circle;
 
 /**
  * This enum represents all properties a Cluster can have.
@@ -34,7 +33,13 @@ enum ClusterPropertyTypes implements PropertyType {
 	SCORE("Maximum interestingness score");
 
 	private String description;
-	private ClusterPropertyTypes(String description) {
+
+	/**
+	 * Creates the specific property types with a description that can be used for the
+	 * property pane.
+	 * @param description to be shown in the propertypane
+	 */
+	ClusterPropertyTypes(String description) {
 		this.description = description;
 	}
 
@@ -75,7 +80,7 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 				.flatMap(e -> e.getSources().stream())
 				.collect(Collectors.toSet());
 		this.interestingness = cluster.getNodes().stream()
-				.mapToInt(e -> e.getInterestingnessScore())
+				.mapToInt(EnrichedSequenceNode::getInterestingnessScore)
 				.max().getAsInt();
 		setOnMouseClicked(e -> AbstractView.setLastClicked(this));
 		draw(colorServer);
@@ -87,7 +92,7 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 	private void initProperties() {
 		properties.put(ClusterPropertyTypes.TITLE, cluster.getNodes().size() + " nodes");
 		properties.put(ClusterPropertyTypes.ID, cluster.getNodes().stream()
-								.map(e -> e.getId())
+								.map(SequenceNode::getId)
 								.collect(Collectors.toList()).toString());
 		properties.put(ClusterPropertyTypes.STARTRANK, Integer.toString(cluster.getStartRank()));
 		properties.put(ClusterPropertyTypes.SOURCES, cluster.getNodes().stream()
@@ -126,7 +131,7 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 			colorServer.addListener(this::onColorServerChanged);
 
 			List<String> collect = sources.stream()
-					.map(e -> colorServer.getColor(e))
+					.map(colorServer::getColor)
 					.filter(e -> e != null)
 					.collect(Collectors.toList());
 			pie = new Pie(radius, collect);
@@ -159,7 +164,9 @@ public class ClusterDrawable extends Group implements Drawable, Propertyable {
 			MapChangeListener.Change<? extends String, ? extends String> change) {
 		if (!sources.contains(change.getKey())) {
 			return;
-		} else if (change.wasAdded()) {
+		}
+
+		if (change.wasAdded()) {
 			addStyle(change.getValueAdded());
 		} else if (change.wasRemoved()) {
 			removeStyle(change.getValueRemoved());

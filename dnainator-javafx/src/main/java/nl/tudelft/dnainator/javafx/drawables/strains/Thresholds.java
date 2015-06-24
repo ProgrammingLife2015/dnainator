@@ -3,7 +3,7 @@ package nl.tudelft.dnainator.javafx.drawables.strains;
 /**
  * This enum holds zooming thresholds for the various zooming levels, thus defining the levels of
  * semantic zooming. The amounts correspond to sequence lengths and are the threshold passed to
- * {@link nl.tudelft.dnainator.graph.impl.Neo4jGraph#getAllClusters(List, int, int)}
+ * {@link nl.tudelft.dnainator.graph.impl.Neo4jGraph#getAllClusters(java.util.List, int, int)}
  */
 public enum Thresholds {
 	INDIVIDUAL(700),
@@ -13,7 +13,12 @@ public enum Thresholds {
 	GRAPH(0);
 
 	private final int threshold;
-	private Thresholds(int threshold) {
+
+	/**
+	 * Creates the threshold enum item with the specific threshold.
+	 * @param threshold the threshold to be used for the item
+	 */
+	Thresholds(int threshold) {
 		this.threshold = threshold;
 	}
 

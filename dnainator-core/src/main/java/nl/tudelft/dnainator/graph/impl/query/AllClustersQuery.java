@@ -60,12 +60,12 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 		Queue<Cluster> rootClusters = new PriorityQueue<>((e1, e2) -> 
 			e1.getStartRank() - e2.getStartRank()
 		);
-		Map<Integer, List<Cluster>> result = new HashMap<Integer, List<Cluster>>();
+		Map<Integer, List<Cluster>> result = new HashMap<>();
 	
 		rootClusters.addAll(clustersFrom(service, startNodes));
 
 		// Find adjacent clusters as long as there are root clusters in the queue
-		int minrank = rootClusters.stream().mapToInt(e -> e.getStartRank()).min().orElse(0);
+		int minrank = rootClusters.stream().mapToInt(Cluster::getStartRank).min().orElse(0);
 		while (!rootClusters.isEmpty()) {
 			Cluster c = rootClusters.poll();
 			if (c.getStartRank() < minrank || c.getStartRank() > maxRank) {
@@ -74,16 +74,15 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 			result.putIfAbsent(c.getStartRank(), new ArrayList<>());
 			result.get(c.getStartRank()).add(c);
 
-			c.getNodes().forEach(sn -> {
-				rootClusters.addAll(clustersFrom(service, sn.getOutgoing()));
-			});
+			c.getNodes().forEach(sn ->
+					rootClusters.addAll(clustersFrom(service, sn.getOutgoing())));
 		}
 
 		return result;
 	}
 
 	private Queue<Cluster> clustersFrom(GraphDatabaseService service, List<String> startNodes) {
-		Queue<Cluster> rootClusters = new LinkedList<Cluster>();
+		Queue<Cluster> rootClusters = new LinkedList<>();
 
 		for (String sn : startNodes) {
 			// Continue if this startNode was consumed by another cluster
@@ -99,7 +98,7 @@ public class AllClustersQuery implements Query<Map<Integer, List<Cluster>>> {
 	}
 
 	private Cluster cluster(GraphDatabaseService service, String start) {
-		Cluster cluster = null;
+		Cluster cluster;
 		Node startNode = service.findNode(NodeLabels.NODE, SequenceProperties.ID.name(), start);
 		List<Node> result = new ArrayList<>();
 

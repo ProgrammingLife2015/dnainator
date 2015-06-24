@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
+import nl.tudelft.dnainator.core.EnrichedSequenceNode;
 import nl.tudelft.dnainator.graph.Graph;
 import nl.tudelft.dnainator.javafx.drawables.strains.Strain;
 import nl.tudelft.dnainator.javafx.views.StrainView;
@@ -41,7 +42,7 @@ public class Minimap extends Pane {
 		// Wait for the Strain to update its properties.
 		Platform.runLater(this::drawViewport);
 
-		setOnMouseClicked(e -> onMouseClicked(e));
+		setOnMouseClicked(this::onMouseClicked);
 	}
 
 	private void drawSpacer() {
@@ -69,7 +70,7 @@ public class Minimap extends Pane {
 
 	private int getBasePairs(int rank) {
 		return graph.getRank(rank).stream()
-				.mapToInt(n -> n.getBaseDistance())
+				.mapToInt(EnrichedSequenceNode::getBaseDistance)
 				.max().orElse(0);
 	}
 

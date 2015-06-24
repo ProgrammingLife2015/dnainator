@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 public class InternalNode extends AbstractNode {
 	private static final double LEVELWIDTH = 1500;
 	private List<AbstractNode> children;
-	private List<Edge> outgoingEdges;
 
 	/**
 	 * Constructs a new {@link InternalNode}.
@@ -25,7 +24,7 @@ public class InternalNode extends AbstractNode {
 	 */
 	public InternalNode(List<AbstractNode> children) {
 		this.children = children;
-		this.outgoingEdges = new ArrayList<>();
+		List<Edge> outgoingEdges = new ArrayList<>();
 		bindMargins();
 		bindLeafCount();
 
@@ -36,7 +35,7 @@ public class InternalNode extends AbstractNode {
 			child.translateXProperty().set(LEVELWIDTH);
 			rangeBegin = rangeBegin.add(child.marginProperty());
 			Edge e = new Edge(child);
-			this.outgoingEdges.add(e);
+			outgoingEdges.add(e);
 		}
 		this.getChildren().addAll(0, outgoingEdges);
 		// Add the nodes after the edges, so that they're on top.

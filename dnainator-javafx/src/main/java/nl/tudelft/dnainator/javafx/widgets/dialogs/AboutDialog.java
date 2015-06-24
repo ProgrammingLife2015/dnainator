@@ -54,9 +54,11 @@ public class AboutDialog extends Alert {
 
 	private String contentText() {
 		StringBuilder contents = new StringBuilder();
-		contents.append("Version: " + prop.getProperty("version") + "\n");
-		contents.append("Jente Hidskes, Gerlof Fokkema, Owen Huang, "
-				+ "Skip Lentz, Piet van Agtmaal");
+		contents.append("Version: ")
+				.append(prop.getProperty("version"))
+				.append("\n")
+				.append("Jente Hidskes, Gerlof Fokkema, Owen Huang, "
+					+ "Skip Lentz, Piet van Agtmaal");
 		return contents.toString();
 	}
 	

@@ -17,7 +17,6 @@ public class LeafNode extends AbstractNode {
 	protected static final int LABEL_X_OFFSET = 80;
 	protected static final int LABEL_Y_OFFSET = 40;
 	private TreeNode node;
-	private Text label;
 	private ColorServer colorServer;
 	private boolean highlighted;
 
@@ -28,8 +27,8 @@ public class LeafNode extends AbstractNode {
 	 */
 	public LeafNode(TreeNode node, ColorServer colorServer) {
 		this.node = node;
-		this.label = new Text(LABEL_X_OFFSET, LABEL_Y_OFFSET, node.getName());
-		this.label.onMouseClickedProperty().bind(shape.onMouseClickedProperty());
+		Text label = new Text(LABEL_X_OFFSET, LABEL_Y_OFFSET, node.getName());
+		label.onMouseClickedProperty().bind(shape.onMouseClickedProperty());
 		this.colorServer = colorServer;
 		this.colorServer.addListener(change -> {
 			if (change.getKey().equals(node.getName())) {
