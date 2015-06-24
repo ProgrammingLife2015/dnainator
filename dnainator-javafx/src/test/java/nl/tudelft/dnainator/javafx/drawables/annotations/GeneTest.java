@@ -54,13 +54,11 @@ public class GeneTest extends ApplicationTest {
 		Mockito.verify(an).isSense();
 		Mockito.verify(an).isMutation();
 		
-		// CHECKSTYLE.OFF: MagicNumber
 		assertEquals("annotation", gene.getStyleClass().get(0));
-		// CHECKSTYLE.ON: MagicNumber
 	}
 	
 	/**
-	 * Test creating a Gene which is not a mutation.
+	 * Test creating a Gene which is a mutation.
 	 */
 	@Test
 	public void testCreateMutation() {
@@ -73,9 +71,7 @@ public class GeneTest extends ApplicationTest {
 		Mockito.verify(an).isSense();
 		Mockito.verify(an).isMutation();
 		
-		// CHECKSTYLE.OFF: MagicNumber
 		assertEquals("dr-mutation", gene.getStyleClass().get(0));
-		// CHECKSTYLE.ON: MagicNumber
 	}
 
 	/**
@@ -87,15 +83,11 @@ public class GeneTest extends ApplicationTest {
 		// Add style.
 		gene.getChildren().add(new Text("some gene"));
 		gene.addStyle("some style");
-		// CHECKSTYLE.OFF: MagicNumber
 		assertFalse(gene.getChildren().get(0).getStyleClass().isEmpty());
-		// CHECKSTYLE.ON: MagicNumber
 		
 		// Remove the added style.
 		gene.removeStyle("some style");
-		// CHECKSTYLE.OFF: MagicNumber
 		assertTrue(gene.getChildren().get(0).getStyleClass().isEmpty());
-		// CHECKSTYLE.ON: MagicNumber
 	}
 	
 }

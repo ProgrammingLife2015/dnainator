@@ -132,9 +132,7 @@ public class ClusterDrawableTest {
 
 		// Add style.
 		cluster.addStyle("some style");
-		// CHECKSTYLE.OFF: MagicNumber
 		Pie p = (Pie) cluster.getChildren().get(1);
-		// CHECKSTYLE.ON: MagicNumber
 		assertFalse(p.getStyles().isEmpty());
 		
 		// Remove the added style.

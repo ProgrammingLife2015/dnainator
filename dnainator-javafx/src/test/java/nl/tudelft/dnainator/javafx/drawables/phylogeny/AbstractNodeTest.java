@@ -20,8 +20,7 @@ import org.mockito.MockitoAnnotations;
 import org.testfx.framework.junit.ApplicationTest;
 
 /**
- * Test the {@link CollapsedNode} the phylogenetic tree.
- * This is the node that is drawn when an {@link InternalNode} is beign collapsed.
+ * Test the {@link AbstractNode} which is an abstraction of all nodes in the phylogenetic tree.
  */
 public class AbstractNodeTest extends ApplicationTest {
 
@@ -33,7 +32,7 @@ public class AbstractNodeTest extends ApplicationTest {
 	}
 	
 	/**
-	 * Creates new database service.
+	 * Set up mocks and common variables.
 	 */
 	@Before
 	public void setup() {
@@ -66,14 +65,10 @@ public class AbstractNodeTest extends ApplicationTest {
 		// Add style.
 		an.getChildren().add(an.getShape());
 		an.addStyle("some style");
-		// CHECKSTYLE.OFF: MagicNumber
 		assertFalse(an.getChildren().get(0).getStyleClass().isEmpty());
-		// CHECKSTYLE.ON: MagicNumber
 		
 		// Remove the added style.
 		an.removeStyle("some style");
-		// CHECKSTYLE.OFF: MagicNumber
 		assertTrue(an.getChildren().get(0).getStyleClass().isEmpty());
-		// CHECKSTYLE.ON: MagicNumber
 	}	
 }

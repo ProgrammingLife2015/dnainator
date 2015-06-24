@@ -38,10 +38,8 @@ public class EdgeTest {
 		String dest = "some dest";
 		Edge oneDrawable = new Edge(src, dest);
 		
-		// CHECKSTYLE.OFF: MagicNumber
 		assertEquals(1, twoDrawables.getChildren().size());
 		assertEquals(2, oneDrawable.getChildren().size());
-		// CHECKSTYLE.ON: MagicNumber
 	}
 	
 	/**

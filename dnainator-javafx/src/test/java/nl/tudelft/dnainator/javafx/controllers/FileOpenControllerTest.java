@@ -14,7 +14,6 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -29,11 +28,8 @@ public class FileOpenControllerTest extends ApplicationTest {
 	@Override
 	public void start(Stage stage) throws Exception {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/openpane.fxml"));
-		loader.setControllerFactory(new Callback<Class<?>, Object>() {
-			public Object call(Class<?> p) {
-				return new DummyFileOpenController();
-			}
-		});
+		loader.setControllerFactory((p) -> new DummyFileOpenController());
+
 		AnchorPane openpane = loader.load();
 		Scene scene = new Scene(openpane, WIDTH, HEIGHT);
 		stage.setScene(scene);
@@ -118,27 +114,6 @@ public class FileOpenControllerTest extends ApplicationTest {
 
 		FxAssert.verifyThat("#openButton", NodeMatchers.isEnabled());
 	}
-
-	/**
-	 * Test loading.
-	 * FIXME: Doesn't work on travis?
-	 */
-//	@Test
-//	public void testLoad() {
-//		togglePane();
-//
-//		FxAssert.verifyThat("#openButton", NodeMatchers.isDisabled());
-//
-//		clickOn("#nodeField")
-//		.clickOn("#newickField")
-//		.clickOn("#gffField")
-//		.clickOn("#openButton")
-//		.sleep(2, TimeUnit.SECONDS)
-//		.type(KeyCode.ENTER)
-//		.type(KeyCode.ESCAPE);
-//
-//		FxAssert.verifyThat("#container", NodeMatchers.isInvisible());
-//	}
 
 	private FxRobot togglePane() {
 		control.toggle();
