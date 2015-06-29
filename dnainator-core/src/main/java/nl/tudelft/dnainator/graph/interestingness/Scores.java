@@ -22,6 +22,12 @@ public enum Scores implements ScoreIdentifier {
 			}
 			return multipliers[rawScore];
 		}
+	},
+	INDEP_MUT("independentMutation") {
+		@Override
+		public int applyImportanceModifier(int rawScore) {
+			return rawScore * 100;
+		}
 	};
 
 	private String name;
